@@ -1,0 +1,24 @@
+# --- Python / Backend ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.DS_Store
+
+# --- Database (Don't upload the live record) ---
+*.db
+*.sqlite3
+tradecore.db
+
+# --- Flutter / Frontend ---
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+android/local.properties
+.idea/
+.vscode/
