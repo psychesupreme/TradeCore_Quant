@@ -6,14 +6,16 @@ from analyst import analyze_market_structure, AnalysisRequest
 from models import Candle
 from telegram_client import TelegramNotifier
 from db_manager import DBManager 
+from news_manager import NewsManager  # <--- NEW IMPORT
 import threading
 
 class TradingBot:
     def __init__(self):
         self.gateway = MT5Gateway()
         self.notifier = TelegramNotifier() 
+        self.news_manager = NewsManager() # <--- NEW MANAGER
         
-        # --- v50.1 GOLD SPECIALIST MODE ---
+        # --- v50.2 NEWS GUARD ACTIVE ---
         self.vip_assets = [
             "EURUSD", "GBPUSD", "USDJPY", 
             "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", 
@@ -21,8 +23,8 @@ class TradingBot:
         ]
         
         self.active_symbols = [] 
-        self.MAX_OPEN_TRADES = 5 
-        self.MAX_GOLD_TRADES = 1  # <--- NEW: Limit Gold Exposure
+        self.MAX_OPEN_TRADES = 6  # Increased to 6 for flexibility
+        self.MAX_GOLD_TRADES = 1
         self.TRAIL_TRIGGER = 200 
         
         self.logs = []
@@ -42,13 +44,17 @@ class TradingBot:
             except: pass
         threading.Thread(target=_send).start()
 
-    # --- TELEGRAM COMMANDS ---
     def handle_telegram_command(self, command):
         cmd = command.split()[0].lower()
         self.log(f"📩 Received Command: {cmd}")
         
         if cmd == "/status":
             self._report_status()
+        elif cmd == "/news":
+            # <--- NEW COMMAND
+            news = self.news_manager.get_upcoming_news()
+            msg = "📰 **ForexFactory News**\n" + "\n".join(news)
+            self.async_alert(msg)
         elif cmd == "/stop":
             self.stop_service()
             self.async_alert("🛑 **Bot Stopped by User Command**")
@@ -86,11 +92,13 @@ class TradingBot:
                 mt5.symbol_select(real, True)
 
         self.is_running = True
-        self.log(f"✅ TradeCore v50.1: Gold Specialist Active. Monitoring {len(self.active_symbols)} Assets.")
+        self.log(f"✅ TradeCore v50.2: News Guard Active. Monitoring {len(self.active_symbols)} Assets.")
         
-        # Start Listening to Telegram
+        # Initial News Fetch
+        self.news_manager.fetch_calendar()
+        
         self.notifier.start_listening(self.handle_telegram_command)
-        self.async_alert("🚀 **v50.1 Gold Specialist Online**\nMax Gold Trades: 1")
+        self.async_alert("🚀 **v50.2 News Guard Online**\nTry /news to see upcoming risks.")
         return True
 
     def stop_service(self):
@@ -109,22 +117,19 @@ class TradingBot:
         self.apply_trailing_stop(current_positions)
         self.active_tickets = {p['symbol'] for p in current_positions}
 
-        # --- NEW: Check Limits ---
         gold_trades = len([p for p in current_positions if "XAU" in p['symbol']])
         
         if len(current_positions) >= self.MAX_OPEN_TRADES:
             if datetime.now().second < 5: 
-                self.log(f"⏸️ Capacity Full ({len(current_positions)}/{self.MAX_OPEN_TRADES}). Managing Trades.")
+                self.log(f"⏸️ Capacity Full ({len(current_positions)}/{self.MAX_OPEN_TRADES}).")
             return
         
         if datetime.now().second < 5:
-            self.log(f"--- Scanning Markets (Forex > 75%, Gold > 80%) ---")
+            self.log(f"--- Scanning Markets ---")
         
         for symbol in self.active_symbols:
-            # Skip Gold if Quota Full
             if "XAU" in symbol and gold_trades >= self.MAX_GOLD_TRADES:
                 continue
-                
             self.process_symbol(symbol)
 
     def check_trading_hours(self, symbol):
@@ -143,7 +148,6 @@ class TradingBot:
                 price_current = tick.bid if pos['type'] == 'BUY' else tick.ask
                 point = mt5.symbol_info(symbol).point
                 
-                # Dynamic Trailing Trigger: Gold needs more room
                 trigger = 300 if "XAU" in symbol else 200
                 
                 if pos['type'] == 'BUY':
@@ -152,7 +156,6 @@ class TradingBot:
                     profit_points = (pos['open_price'] - price_current) / point
                 
                 if profit_points > trigger:
-                    # Gold locks tighter (10 pips), Forex looser (20 pips)
                     lock_dist = 10 if "XAU" in symbol else 20
                     new_sl = pos['open_price'] + (lock_dist * point) if pos['type'] == 'BUY' else pos['open_price'] - (lock_dist * point)
                     
@@ -190,8 +193,6 @@ class TradingBot:
             analysis = analyze_market_structure(req)
             
             result_status = "SKIPPED"
-            
-            # --- NEW: VIP CONFIDENCE ---
             required_conf = 0.80 if "XAU" in symbol else 0.75
 
             if analysis.signal != "NEUTRAL":
@@ -237,7 +238,7 @@ class TradingBot:
         
         if res and res["success"]:
             self.log(f"🚀 EXECUTE CONFIRMED: {symbol} | Lot: {lot}")
-            self.async_alert(f"🚀 **v50.1 EXEC**: {symbol} {action}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
+            self.async_alert(f"🚀 **v50.2 EXEC**: {symbol} {action}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
             ticket = res.get('ticket', 0)
             DBManager.save_trade(ticket, symbol, action, lot, price, sl, tp, datetime.now())
             
