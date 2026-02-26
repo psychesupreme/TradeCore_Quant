@@ -3,24 +3,32 @@ import pandas as pd
 from datetime import datetime
 import time
 import re
+import math
 
 class MT5Gateway:
     def __init__(self):
         self.connected = False
         self.symbol_map = {} 
 
-    def start(self):
-        if mt5.initialize():
+    # NEW: Broker-Agnostic Login (Pass Deriv credentials here later)
+    def start(self, login=None, password=None, server=None):
+        if login and password and server:
+            init_res = mt5.initialize(login=int(login), password=password, server=server)
+        else:
+            init_res = mt5.initialize()
+            
+        if init_res:
             self.connected = True
             self._build_symbol_cache()
             return True
+            
         try:
-            # Fallback path if standard initialization fails
             if mt5.initialize(path=r"C:\Program Files\MetaTrader 5\terminal64.exe"):
                 self.connected = True
                 self._build_symbol_cache()
                 return True
         except: pass
+        
         self.connected = False
         print("❌ CRITICAL: MT5 Initialization Failed")
         return False
@@ -35,7 +43,6 @@ class MT5Gateway:
         count = 0
         
         for s in symbols:
-            # Only process and cache the symbol if it is one of our VIP assets
             if any(vip in s.name for vip in vip_bases):
                 self.symbol_map[s.name] = s.name
                 clean = s.name.split('.')[0].split('_')[0]
@@ -52,6 +59,23 @@ class MT5Gateway:
         for k, v in self.symbol_map.items():
             if k in target or target in k: return v
         return None
+
+    # NEW: Strict Modulus Grid Snapping (Fixes SL/TP precision errors)
+    def normalize_price(self, symbol, price):
+        if not self.connected: self.start()
+        real_symbol = self.find_symbol(symbol)
+        if not real_symbol: return price
+        
+        info = mt5.symbol_info(real_symbol)
+        if not info: return price
+        
+        tick_size = info.trade_tick_size
+        digits = info.digits
+        
+        if tick_size == 0: return round(price, digits)
+        
+        snapped_price = math.floor(price / tick_size) * tick_size
+        return round(snapped_price, digits)
 
     def get_market_data(self, symbol, timeframe=mt5.TIMEFRAME_H1, n_candles=100):
         if not self.connected: self.start()
@@ -100,15 +124,25 @@ class MT5Gateway:
             "sl": float(sl), "tp": float(tp), "magic": 27000,
             "comment": "TradeCore v51", "type_time": mt5.ORDER_TIME_GTC, "type_filling": fill
         }
-        res = mt5.order_send(req)
         
-        if res is None: return {"success": False, "message": "Order Send Failed"}
-             
-        if res.retcode == mt5.TRADE_RETCODE_DONE:
-            return {"success": True, "message": f"Opened {real_symbol}", "ticket": res.order}
-        elif res.retcode == 10018: return {"success": False, "message": "Market Closed"}
-        elif res.retcode == 10013: return {"success": False, "message": "Invalid Request"}
-        else: return {"success": False, "message": f"MT5 Error: {res.comment} ({res.retcode})"}
+        # NEW: The MT5 Ghost-Sweeper & Async Auto-Retry Loop
+        for attempt in range(5):
+            res = mt5.order_send(req)
+            if res is None:
+                time.sleep(2)
+                continue
+                
+            if res.retcode == mt5.TRADE_RETCODE_DONE:
+                return {"success": True, "message": f"Opened {real_symbol}", "ticket": res.order}
+            elif res.retcode in [10012, 10031]: # Request Timeout or Network Drop
+                print(f"⚠️ Broker Network Drop ({res.retcode}). Blocking Cascade & Retrying {attempt+1}/5...")
+                time.sleep(3) # Pauses execution so the engine doesn't spawn ghost trades
+                continue
+            elif res.retcode == 10018: return {"success": False, "message": "Market Closed"}
+            elif res.retcode == 10013: return {"success": False, "message": "Invalid Request"}
+            else: return {"success": False, "message": f"MT5 Error: {res.comment} ({res.retcode})"}
+            
+        return {"success": False, "message": "Failed after 5 network retries."}
 
     def close_position(self, ticket, symbol, volume, type_op):
         if not self.connected: self.start()
@@ -130,9 +164,18 @@ class MT5Gateway:
 
     def get_account_info(self):
         if not self.connected: self.start()
+        
         i = mt5.account_info()
+        
+        # NEW: The Heartbeat Self-Heal Protocol
+        if i is None:
+            print("⚠️ MT5 Broker Connection Lost. Attempting Auto-Reconnect...")
+            self.connected = False # Force the gateway to realize it dropped
+            if self.start(): # Try to reboot the connection
+                i = mt5.account_info() # Try fetching again
+            
         return {"balance": i.balance, "equity": i.equity, "profit": i.profit, "margin_level": i.margin_level, "free_margin": i.margin_free} if i else None
-
+    
     def get_open_positions(self):
         if not self.connected: self.start()
         pos = mt5.positions_get() or []
@@ -149,23 +192,14 @@ class MT5Gateway:
 
     def get_historical_deals(self, days=365):
         if not self.connected: self.start()
-        
-        # We use absolute dates to bypass ALL timezone mismatches between local time and the Broker
         from_date = datetime(2020, 1, 1)
         to_date = datetime(2030, 1, 1)
         
         deals = mt5.history_deals_get(from_date, to_date)
-        
-        if deals is None or len(deals) == 0:
-            print("⚠️ MT5 returned no history. Make sure MT5 History tab is set to 'All History'.")
-            return []
+        if deals is None or len(deals) == 0: return []
             
         clean_deals = []
         for d in deals:
-            # We want all deals that realized profit/loss:
-            # DEAL_ENTRY_OUT (1) = standard close
-            # DEAL_ENTRY_INOUT (2) = reverse close
-            # Or anything that modified the balance (profit != 0)
             if d.entry in [1, 2] or d.profit != 0:
                 clean_deals.append({
                     "symbol": d.symbol, 

@@ -1,78 +1,74 @@
-import requests
+import telebot
 import threading
 import time
-import os
 
 class TelegramNotifier:
     def __init__(self):
-        # 1. PASTE YOUR ACTUAL CREDENTIALS HERE
-        self.bot_token = "8357033749:AAH05DRZxdtvQv8l2rtOLUeBjCijXODw5Zw"
+        # 1. EXACTLY replace the text inside the quotes with your real credentials
+        self.token = "8357033749:AAH05DRZxdtvQv8l2rtOLUeBjCijXODw5Zw"
         self.chat_id = "5268311560"
         
+        # 2. THIS LINE IS CRITICAL - It creates the bot. Do not delete it!
+        self.bot = telebot.TeleBot(self.token)
+        
         self.is_listening = False
-        self.last_update_id = 0
+        self.polling_thread = None
 
     def send(self, message):
-        """Sends a standard formatted text message to Telegram"""
-        if not self.bot_token or self.bot_token == "PASTE_YOUR_BOT_TOKEN_HERE":
-            print("⚠️ Telegram Token not set. Message not sent.")
-            return None
-            
-        url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
-        payload = {
-            "chat_id": self.chat_id,
-            "text": message,
-            "parse_mode": "Markdown"
-        }
-        try:
-            response = requests.post(url, json=payload, timeout=10)
-            return response.json()
-        except Exception as e:
-            print(f"⚠️ Telegram Send Error: {e}")
-            return None
+        def _send_async():
+            for attempt in range(5):
+                try:
+                    self.bot.send_message(
+                        self.chat_id, 
+                        message, 
+                        parse_mode="Markdown", 
+                        timeout=60
+                    )
+                    break 
+                except Exception as e:
+                    print(f"⚠️ Telegram Network Latency ({e}). Retry {attempt+1}/5...")
+                    time.sleep(5)
+        threading.Thread(target=_send_async).start()
 
     def send_photo(self, photo_path, caption=""):
-        """Uploads a generated chart image to the Telegram chat"""
-        if not self.bot_token or self.bot_token == "PASTE_YOUR_BOT_TOKEN_HERE":
-            print("⚠️ Telegram Token not set. Photo not sent.")
-            return None
-            
-        url = f"https://api.telegram.org/bot{self.bot_token}/sendPhoto"
-        try:
-            with open(photo_path, 'rb') as photo:
-                files = {'photo': photo}
-                data = {'chat_id': self.chat_id, 'caption': caption, 'parse_mode': 'Markdown'}
-                response = requests.post(url, files=files, data=data, timeout=20)
-                return response.json()
-        except Exception as e:
-            print(f"⚠️ Telegram Photo Error: {e}")
-            return None
+        def _send_photo_async():
+            for attempt in range(5):
+                try:
+                    with open(photo_path, 'rb') as photo:
+                        self.bot.send_photo(
+                            self.chat_id, 
+                            photo, 
+                            caption=caption, 
+                            parse_mode="Markdown", 
+                            timeout=60
+                        )
+                    break 
+                except Exception as e:
+                    print(f"⚠️ Telegram Image Upload Latency: {e}. Retry {attempt+1}/5...")
+                    time.sleep(10)
+        threading.Thread(target=_send_photo_async).start()
 
-    def start_listening(self, command_handler):
-        if not self.bot_token or self.bot_token == "PASTE_YOUR_BOT_TOKEN_HERE":
-            return
+    def start_listening(self, command_callback):
         self.is_listening = True
-        threading.Thread(target=self._poll_commands, args=(command_handler,), daemon=True).start()
+        
+        @self.bot.message_handler(func=lambda message: True)
+        def handle_message(message):
+            if str(message.chat.id) == str(self.chat_id):
+                command_callback(message.text)
+                
+        def poll():
+            while self.is_listening:
+                try:
+                    # NEW: Production-grade Infinity Polling for unstable networks
+                    self.bot.infinity_polling(timeout=20, long_polling_timeout=15, logger_level=0)
+                except Exception as e:
+                    print(f"Telegram polling error: {e}")
+                    time.sleep(5)
+                    
+        self.polling_thread = threading.Thread(target=poll, daemon=True)
+        self.polling_thread.start()
 
     def stop_listening(self):
         self.is_listening = False
-
-    def _poll_commands(self, command_handler):
-        url = f"https://api.telegram.org/bot{self.bot_token}/getUpdates"
-        while self.is_listening:
-            try:
-                payload = {"offset": self.last_update_id + 1, "timeout": 5}
-                response = requests.get(url, params=payload, timeout=10)
-                data = response.json()
-                
-                if data.get("ok"):
-                    for update in data.get("result", []):
-                        self.last_update_id = update["update_id"]
-                        message = update.get("message", {})
-                        text = message.get("text", "")
-                        
-                        if text.startswith("/"):
-                            command_handler(text)
-            except:
-                pass
-            time.sleep(2)
+        if self.bot:
+            self.bot.stop_polling()

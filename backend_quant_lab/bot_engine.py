@@ -1,5 +1,6 @@
 import matplotlib
-matplotlib.use('Agg') # Forces headless memory rendering for charts
+matplotlib.use('Agg') 
+import matplotlib.pyplot as plt 
 
 import pandas as pd
 from datetime import datetime, timedelta
@@ -27,14 +28,15 @@ class TradingBot:
         
         self.active_symbols = [] 
         
-        # --- NEW PORTFOLIO CAPACITY LIMITS ---
-        self.MAX_OPEN_TRADES = 5       # Base capacity
-        self.MAX_SNIPER_SLOTS = 2      # Emergency overflow slots (Total Max = 7)
-        self.MAX_GOLD_TRADES = 2       # Base limit for Gold
+        # --- CAPACITY CONFIGURATION ---
+        self.MAX_OPEN_TRADES = 7       # Expanded to 7 normal slots
+        self.MAX_SNIPER_SLOTS = 5      # Expanded to 5 Global Sniper slots (Total 12)
+        self.MAX_GOLD_TRADES = 3       # Increased to allow XAU volume
         
         self.logs = []
         self.is_running = False
         self.active_tickets = set()
+        self.execution_lock = set() # Prevents Ghost Order Cascades
         
         self.daily_start_balance = 0.0
         self.last_trade_day = -1
@@ -57,12 +59,10 @@ class TradingBot:
         cmd = command.split()[0].lower()
         self.log(f"📩 Received Command: {cmd}")
         
-        if cmd == "/status":
-            self._report_status()
+        if cmd == "/status": self._report_status()
         elif cmd == "/news":
             news_data = self.news_manager.get_upcoming_news()
-            if not news_data:
-                self.async_alert("🌍 **No High Impact News Found.**")
+            if not news_data: self.async_alert("🌍 **No High Impact News Found.**")
             else:
                 lines = ["📰 **Upcoming News Risks**"]
                 for item in news_data[:5]:
@@ -81,7 +81,7 @@ class TradingBot:
     def _report_status(self):
         positions = self.gateway.get_open_positions()
         total_profit = sum(p['profit'] for p in positions)
-        msg = f"📊 **System Status**\n**Active Trades:** {len(positions)}\n**Total PnL:** ${total_profit:.2f}\n"
+        msg = f"📊 **System Status**\n**Active Trades:** {len(positions)}\n**Pending Executions:** {len(self.execution_lock)}\n**Total PnL:** ${total_profit:.2f}\n"
         for p in positions:
             icon = "🟢" if p['profit'] >= 0 else "🔴"
             msg += f"{icon} {p['symbol']} ({p['type']}): ${p['profit']:.2f}\n"
@@ -100,11 +100,12 @@ class TradingBot:
                 mt5.symbol_select(real, True)
 
         self.is_running = True
+        self.execution_lock.clear()
         self.log(f"✅ TradeCore v51.0: Engine Active. Monitoring {len(self.active_symbols)} Assets.")
         
         self.news_manager.fetch_calendar()
         self.notifier.start_listening(self.handle_telegram_command)
-        self.async_alert("🚀 **TradeCore v51.0 Online**\nGlobal Sniper Slots (2) & Ultra-High Conviction Logic Active.")
+        self.async_alert("🚀 **TradeCore v51.0 Master Online**\nAsync Execution & Dynamic Active Engine Armed.")
         return True
 
     def stop_service(self):
@@ -128,6 +129,29 @@ class TradingBot:
     def close_all_positions(self, positions):
         for pos in positions:
             self.gateway.close_position(pos['ticket'], pos['symbol'], pos['volume'], pos['type'])
+
+    # --- ACTIVE EVALUATION ENGINE (Dynamic Invalidation) ---
+    def evaluate_open_positions(self, positions):
+        for pos in positions:
+            try:
+                symbol = pos['symbol']
+                is_buy = pos['type'] == 'BUY'
+                
+                df = self.gateway.get_market_data(symbol)
+                if df.empty: continue
+                
+                candles = [Candle(**row) for row in df.to_dict('records') if hasattr(row['time'], 'year')]
+                req = AnalysisRequest(symbol=symbol, candles=candles, daily_trend="NEUTRAL")
+                analysis = analyze_market_structure(req)
+                
+                # If market shifts heavily against the trade, cut the risk before SL is hit
+                if analysis.signal != "NEUTRAL" and analysis.confidence >= 0.80:
+                    if (is_buy and "SELL" in analysis.signal) or (not is_buy and "BUY" in analysis.signal):
+                        self.log(f"🔄 DYNAMIC INVALIDATION: Market reversed on {symbol}. Closing early to protect margin.")
+                        self.gateway.close_position(pos['ticket'], symbol, pos['volume'], pos['type'])
+                        self.async_alert(f"🔄 **Trade Scratched Early:** {symbol} structure collapsed. Capital reclaimed.")
+            except Exception:
+                pass
 
     def run_cycle(self):
         if not self.is_running: return
@@ -171,29 +195,40 @@ class TradingBot:
             return 
 
         self.apply_trailing_stop(current_positions)
+        self.evaluate_open_positions(current_positions) 
         self.active_tickets = {p['symbol'] for p in current_positions}
 
         gold_trades = len([p for p in current_positions if "XAU" in p['symbol']])
-        current_count = len(current_positions)
+        # Capacity Check: Active Trades + Pending Executions (The Ghost Shield)
+        current_count = len(current_positions) + len(self.execution_lock) 
         
-        # --- NEW GLOBAL SNIPER OVERFLOW LOGIC ---
         if current_count >= (self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS):
             if datetime.now().second < 5: 
                 self.log(f"⏸️ Absolute Capacity Full ({current_count}/{self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS}). System maxed out.")
             return
 
+        # Sniper Mode Logic
         is_sniper_mode = (current_count >= self.MAX_OPEN_TRADES)
         if is_sniper_mode and datetime.now().second < 5:
             self.log(f"🎯 Base capacity full. 90%+ Global Sniper Mode Active ({self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS - current_count} slots left).")
         
         for symbol in self.active_symbols:
-            # Gold specific sub-limits to prevent it from consuming all slots
+            # Count how many trades are currently active/pending for THIS specific symbol
+            symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
+
             if "XAU" in symbol:
                 if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1): continue 
                 elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES: continue 
             
+            # --- NEW: PER-ASSET EXPOSURE CAP ---
+            if is_sniper_mode and symbol_trades >= 3: 
+                continue # Hard cap at 3 for 90%+ Sniper Setups
+            elif not is_sniper_mode and symbol_trades >= 2: 
+                continue # Hard cap at 2 for 85%+ Normal Setups
+            
             self.process_symbol(symbol, is_sniper_mode)
 
+    # --- DYNAMIC PERCENTAGE LOCK (Trailing Stop) ---
     def apply_trailing_stop(self, positions):
         for pos in positions:
             try:
@@ -216,27 +251,34 @@ class TradingBot:
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
                 
+                # Logic: XAU > 5.0 -> Lock 70%, XAU > 2.0 -> Lock 50%
                 if "XAU" in symbol:
-                    if profit_dist > 6.0:       
-                        lock_price = open_price + 4.0 if is_buy else open_price - 4.0
-                    elif profit_dist > 4.0:     
-                        lock_price = open_price + 2.0 if is_buy else open_price - 2.0
+                    if profit_dist > 5.0:       
+                        secured_dist = profit_dist * 0.70 
+                        lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     elif profit_dist > 2.0:     
-                        lock_price = open_price + 0.5 if is_buy else open_price - 0.5
+                        secured_dist = profit_dist * 0.50 
+                        lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     else: continue
                     
+                # Logic: JPY > 0.40 -> Lock 75%, JPY > 0.20 -> Lock 50%
                 elif "JPY" in symbol:
-                    if profit_dist > 0.300:    
-                        lock_price = open_price + 0.150 if is_buy else open_price - 0.150
+                    if profit_dist > 0.400:    
+                        secured_dist = profit_dist * 0.75 
+                        lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     elif profit_dist > 0.200:  
-                        lock_price = open_price + 0.050 if is_buy else open_price - 0.050
+                        secured_dist = profit_dist * 0.50 
+                        lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     else: continue
                     
-                else:
-                    if profit_dist > 0.0030:    
-                        lock_price = open_price + 0.0015 if is_buy else open_price - 0.0015
+                # Logic: Forex > 40 pips -> Lock 80%, Forex > 20 pips -> Lock 50%
+                else: 
+                    if profit_dist > 0.0040:    
+                        secured_dist = profit_dist * 0.80 
+                        lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     elif profit_dist > 0.0020:  
-                        lock_price = open_price + 0.0005 if is_buy else open_price - 0.0005
+                        secured_dist = profit_dist * 0.50 
+                        lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     else: continue
                 
                 if is_buy:
@@ -252,9 +294,7 @@ class TradingBot:
                 elif not is_buy and lock_price < current_sl: should_modify = True
                     
                 if should_modify:
-                    if "XAU" in symbol: lock_price = round(lock_price, 2)
-                    elif "JPY" in symbol: lock_price = round(lock_price, 3)
-                    else: lock_price = round(lock_price, 5)
+                    lock_price = self.gateway.normalize_price(symbol, lock_price) # Precision Fix
                     
                     req = {
                         "action": mt5.TRADE_ACTION_SLTP, "position": ticket,
@@ -262,14 +302,15 @@ class TradingBot:
                     }
                     res = mt5.order_send(req)
                     if res and res.retcode == mt5.TRADE_RETCODE_DONE:
-                        self.log(f"🛡️ Trailing Stop/Breakeven Locked: {symbol} SL safely moved to {lock_price}")
-            except Exception as e:
+                        self.log(f"🛡️ Dynamic Profit Locked: {symbol} SL secured at {lock_price}")
+            except Exception:
                 pass
 
     def process_symbol(self, symbol, is_sniper_mode=False):
         now = datetime.now()
         upcoming_news = self.news_manager.get_upcoming_news()
         
+        # News Guard
         for event in upcoming_news:
             if event['impact'] == 'High':
                 try:
@@ -278,10 +319,9 @@ class TradingBot:
                     if timedelta(minutes=-15) <= time_diff <= timedelta(minutes=15):
                         self.log(f"📰 News Guard Active: Blocking {symbol} due to High Impact Event.")
                         return
-                except ValueError:
-                    pass 
+                except ValueError: pass 
 
-        if symbol in self.active_tickets: return 
+        if symbol in self.active_tickets or symbol in self.execution_lock: return 
 
         props = self.gateway.get_symbol_properties(symbol)
         if not props: return
@@ -300,11 +340,11 @@ class TradingBot:
             
             result_status = "SKIPPED"
             
-            # --- NEW ULTRA-HIGH CONVICTION THRESHOLDS ---
-            if is_sniper_mode:
-                required_conf = 0.90  # Any asset utilizing the 6th/7th slot MUST be 90%+
-            else:
-                required_conf = 0.90 if "XAU" in symbol else 0.85
+            # --- CONFIDENCE THRESHOLD LOGIC ---
+            # 90% if Sniper Mode is active (Global)
+            # 87% if Gold (Normal Mode) - LOWERED FROM 90%
+            # 85% if Forex (Normal Mode)
+            required_conf = 0.90 if is_sniper_mode else (0.87 if "XAU" in symbol else 0.85)
 
             if analysis.signal != "NEUTRAL":
                  if analysis.confidence >= required_conf:
@@ -320,93 +360,100 @@ class TradingBot:
             
             indicators = {"trend": analysis.trend, "reason": analysis.reason}
             DBManager.log_signal(symbol, analysis.signal, analysis.confidence, indicators, result_status)
-
         except: pass
 
+    # --- ASYNC EXECUTION THREAD (Fire & Forget) ---
     def execute_signal(self, symbol, analysis, df):
-        is_buy = "BUY" in analysis.signal
+        if symbol in self.execution_lock: return
+        self.execution_lock.add(symbol)
         
-        tick = mt5.symbol_info_tick(symbol)
-        if not tick: return
-            
-        live_ask = tick.ask
-        live_bid = tick.bid
-        
-        if "XAU" in symbol:
-            sl_distance = 5.0
-            tp_distance = 10.0
-        elif "JPY" in symbol:
-            sl_distance = 0.500   
-            tp_distance = 1.000
-        else:
-            sl_distance = 0.0050  
-            tp_distance = 0.0100
-            
-        if is_buy:
-            action = "BUY"
-            price = live_ask
-            sl_price = live_ask - sl_distance
-            tp_price = live_ask + tp_distance
-        else:
-            action = "SELL"
-            price = live_bid
-            sl_price = live_bid + sl_distance
-            tp_price = live_bid - tp_distance
-            
-        if "XAU" in symbol:
-            sl = round(sl_price, 2)
-            tp = round(tp_price, 2)
-        elif "JPY" in symbol:
-            sl = round(sl_price, 3)
-            tp = round(tp_price, 3)
-        else:
-            sl = round(sl_price, 5)
-            tp = round(tp_price, 5)
-
-        acc_info = self.gateway.get_account_info()
-        balance = acc_info['balance'] if acc_info else 10000.0
-        free_margin = acc_info['free_margin'] if acc_info else 10000.0
-        
-        if free_margin < (balance * 0.15):
-            self.log(f"⚠️ Margin Alert: Cannot open {symbol}. Free Margin too low (${free_margin:.2f})")
-            return
-        
-        risk_capital = balance * 0.01 
-        
-        if "XAU" in symbol:
-            capital_per_lot = sl_distance * 100
-            min_lot = 0.20
-        elif "JPY" in symbol:
-            capital_per_lot = sl_distance * 1000 
-            min_lot = 0.30
-        else:
-            capital_per_lot = sl_distance * 100000
-            min_lot = 0.30
-            
-        calculated_lot = round(risk_capital / capital_per_lot, 2)
-        lot = max(min_lot, calculated_lot)
-        
-        res = self.gateway.execute_trade(symbol, action, lot, sl, tp)
-        
-        if res and res["success"]:
-            self.log(f"🚀 EXECUTE CONFIRMED: {symbol} | Lot: {lot}")
-            self.async_alert(f"🚀 **TradeCore Executed**: {symbol} {action}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
-            ticket = res.get('ticket', 0)
-            try: 
-                DBManager.save_trade(ticket, symbol, action, lot, price, sl, tp, datetime.now())
-            except: pass
-            
+        def _async_execute():
             try:
-                photo_path = VisionEngine.generate_trade_snapshot(df, symbol, action, price, sl, tp, analysis.confidence)
-                if photo_path:
-                    caption = f"🎯 **Trade Snapshot:** {symbol} {action}\nEntry: {price}\nSL: {sl} | TP: {tp}"
-                    self.notifier.send_photo(photo_path, caption)
-                    VisionEngine.cleanup_snapshot(photo_path)
-            except Exception as e:
-                self.log(f"⚠️ Vision Module failed to generate chart: {e}")
+                is_buy = "BUY" in analysis.signal
                 
-        elif res:
-            self.log(f"❌ BROKER REJECTED {symbol}: {res['message']}")
+                tick = mt5.symbol_info_tick(symbol)
+                if not tick: return
+                    
+                live_ask = tick.ask
+                live_bid = tick.bid
+                
+                # SL/TP Distances
+                if "XAU" in symbol:
+                    sl_distance = 5.0
+                    tp_distance = 10.0
+                elif "JPY" in symbol:
+                    sl_distance = 0.500   
+                    tp_distance = 1.000
+                else:
+                    sl_distance = 0.0050  
+                    tp_distance = 0.0100
+                    
+                if is_buy:
+                    action = "BUY"
+                    price = live_ask
+                    sl_price = live_ask - sl_distance
+                    tp_price = live_ask + tp_distance
+                else:
+                    action = "SELL"
+                    price = live_bid
+                    sl_price = live_bid + sl_distance
+                    tp_price = live_bid - tp_distance
+                    
+                sl = self.gateway.normalize_price(symbol, sl_price) # Precision Fix
+                tp = self.gateway.normalize_price(symbol, tp_price) # Precision Fix
+
+                acc_info = self.gateway.get_account_info()
+                balance = acc_info['balance'] if acc_info else 10000.0
+                free_margin = acc_info['free_margin'] if acc_info else 10000.0
+                
+                if free_margin < (balance * 0.15):
+                    self.log(f"⚠️ Margin Alert: Cannot open {symbol}. Free Margin too low (${free_margin:.2f})")
+                    return
+                
+                # --- FRACTIONAL KELLY SIZING ---
+                if "XAU" in symbol:
+                    risk_capital = balance * 0.01 # 1% for Gold (Lower Edge)
+                    capital_per_lot = sl_distance * 100
+                    min_lot = 0.20
+                elif "JPY" in symbol:
+                    risk_capital = balance * 0.02 # 2% for JPY (High Edge)
+                    capital_per_lot = sl_distance * 1000 
+                    min_lot = 0.30
+                else:
+                    risk_capital = balance * 0.02 # 2% for Forex (High Edge)
+                    capital_per_lot = sl_distance * 100000
+                    min_lot = 0.30
+                    
+                calculated_lot = round(risk_capital / capital_per_lot, 2)
+                lot = max(min_lot, calculated_lot)
+                
+                res = self.gateway.execute_trade(symbol, action, lot, sl, tp)
+                
+                if res and res["success"]:
+                    self.log(f"🚀 EXECUTE CONFIRMED: {symbol} | Lot: {lot}")
+                    self.async_alert(f"🚀 **TradeCore Executed**: {symbol} {action}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
+                    ticket = res.get('ticket', 0)
+                    try: DBManager.save_trade(ticket, symbol, action, lot, price, sl, tp, datetime.now())
+                    except: pass
+                    
+                    try:
+                        photo_path = VisionEngine.generate_trade_snapshot(df, symbol, action, price, sl, tp, analysis.confidence)
+                        if photo_path:
+                            caption = f"🎯 **Trade Snapshot:** {symbol} {action}\nEntry: {price}\nSL: {sl} | TP: {tp}"
+                            self.notifier.send_photo(photo_path, caption)
+                            VisionEngine.cleanup_snapshot(photo_path)
+                    except Exception as e:
+                        self.log(f"⚠️ Vision Module failed to generate chart: {e}")
+                        
+                elif res:
+                    self.log(f"❌ BROKER REJECTED {symbol}: {res['message']}")
+            except Exception as e:
+                self.log(f"⚠️ Thread Execution Error on {symbol}: {e}")
+            finally:
+                self.execution_lock.discard(symbol)
+                
+        # Launch Async Thread
+        threading.Thread(target=_async_execute).start()
             
     def get_status(self):
         acc = self.gateway.get_account_info()
