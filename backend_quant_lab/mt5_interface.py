@@ -1,6 +1,6 @@
 import MetaTrader5 as mt5
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 import time
 import re
 
@@ -15,6 +15,7 @@ class MT5Gateway:
             self._build_symbol_cache()
             return True
         try:
+            # Fallback path if standard initialization fails
             if mt5.initialize(path=r"C:\Program Files\MetaTrader 5\terminal64.exe"):
                 self.connected = True
                 self._build_symbol_cache()
@@ -28,13 +29,22 @@ class MT5Gateway:
         if self.symbol_map: return 
         symbols = mt5.symbols_get()
         if not symbols: return
-        print(f"✅ Indexing {len(symbols)} Broker Assets...")
+        
+        print("⚡ Optimizing Asset Indexing for Fast Boot...")
+        vip_bases = ["EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", "XAUUSD"]
+        count = 0
+        
         for s in symbols:
-            self.symbol_map[s.name] = s.name
-            clean = s.name.split('.')[0].split('_')[0]
-            if clean not in self.symbol_map: self.symbol_map[clean] = s.name
-            simple = re.sub(r'[^a-zA-Z0-9]', '', s.name)
-            if simple not in self.symbol_map: self.symbol_map[simple] = s.name
+            # Only process and cache the symbol if it is one of our VIP assets
+            if any(vip in s.name for vip in vip_bases):
+                self.symbol_map[s.name] = s.name
+                clean = s.name.split('.')[0].split('_')[0]
+                if clean not in self.symbol_map: self.symbol_map[clean] = s.name
+                simple = re.sub(r'[^a-zA-Z0-9]', '', s.name)
+                if simple not in self.symbol_map: self.symbol_map[simple] = s.name
+                count += 1
+                
+        print(f"✅ Fast Boot: Indexed {count} VIP Assets instead of {len(symbols)}.")
 
     def find_symbol(self, target):
         if not self.symbol_map: self._build_symbol_cache()
@@ -88,7 +98,7 @@ class MT5Gateway:
             "action": mt5.TRADE_ACTION_DEAL, "symbol": real_symbol,
             "volume": float(lot), "type": type_op, "price": price,
             "sl": float(sl), "tp": float(tp), "magic": 27000,
-            "comment": "TradeCore v49", "type_time": mt5.ORDER_TIME_GTC, "type_filling": fill
+            "comment": "TradeCore v51", "type_time": mt5.ORDER_TIME_GTC, "type_filling": fill
         }
         res = mt5.order_send(req)
         
@@ -126,7 +136,6 @@ class MT5Gateway:
     def get_open_positions(self):
         if not self.connected: self.start()
         pos = mt5.positions_get() or []
-        # FIX: Added 'open_price', 'sl', 'tp' to return dictionary
         return [{
             "ticket": p.ticket, 
             "symbol": p.symbol, 
@@ -138,7 +147,31 @@ class MT5Gateway:
             "tp": p.tp
         } for p in pos]
 
-    def get_historical_deals(self, days=30):
+    def get_historical_deals(self, days=365):
         if not self.connected: self.start()
-        deals = mt5.history_deals_get(datetime.now()-timedelta(days=days), datetime.now()+timedelta(days=1)) or []
-        return [{"symbol": d.symbol, "type": "BUY" if d.type==0 else "SELL", "volume": d.volume, "profit": d.profit, "time": datetime.fromtimestamp(d.time).strftime('%Y-%m-%d %H:%M')} for d in deals if d.entry==1]
+        
+        # We use absolute dates to bypass ALL timezone mismatches between local time and the Broker
+        from_date = datetime(2020, 1, 1)
+        to_date = datetime(2030, 1, 1)
+        
+        deals = mt5.history_deals_get(from_date, to_date)
+        
+        if deals is None or len(deals) == 0:
+            print("⚠️ MT5 returned no history. Make sure MT5 History tab is set to 'All History'.")
+            return []
+            
+        clean_deals = []
+        for d in deals:
+            # We want all deals that realized profit/loss:
+            # DEAL_ENTRY_OUT (1) = standard close
+            # DEAL_ENTRY_INOUT (2) = reverse close
+            # Or anything that modified the balance (profit != 0)
+            if d.entry in [1, 2] or d.profit != 0:
+                clean_deals.append({
+                    "symbol": d.symbol, 
+                    "type": "BUY" if d.type==0 else "SELL", 
+                    "volume": d.volume, 
+                    "profit": d.profit, 
+                    "time": datetime.fromtimestamp(d.time).strftime('%Y-%m-%d %H:%M')
+                })
+        return clean_deals

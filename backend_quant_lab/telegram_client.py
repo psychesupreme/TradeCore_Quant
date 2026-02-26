@@ -1,51 +1,78 @@
 import requests
-import time
 import threading
+import time
 import os
 
 class TelegramNotifier:
-    def __init__(self, token=None, chat_id=None):
-        # Allow hardcoding or env vars
-        self.token = token or "8357033749:AAH05DRZxdtvQv8l2rtOLUeBjCijXODw5Zw" 
-        self.chat_id = chat_id or "5268311560"
-        self.base_url = f"https://api.telegram.org/bot{self.token}"
-        self.offset = 0
-        self.running = False
+    def __init__(self):
+        # 1. PASTE YOUR ACTUAL CREDENTIALS HERE
+        self.bot_token = "8357033749:AAH05DRZxdtvQv8l2rtOLUeBjCijXODw5Zw"
+        self.chat_id = "5268311560"
+        
+        self.is_listening = False
+        self.last_update_id = 0
 
     def send(self, message):
+        """Sends a standard formatted text message to Telegram"""
+        if not self.bot_token or self.bot_token == "PASTE_YOUR_BOT_TOKEN_HERE":
+            print("⚠️ Telegram Token not set. Message not sent.")
+            return None
+            
+        url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
+        payload = {
+            "chat_id": self.chat_id,
+            "text": message,
+            "parse_mode": "Markdown"
+        }
         try:
-            url = f"{self.base_url}/sendMessage"
-            payload = {"chat_id": self.chat_id, "text": message, "parse_mode": "Markdown"}
-            requests.post(url, json=payload, timeout=5)
+            response = requests.post(url, json=payload, timeout=10)
+            return response.json()
         except Exception as e:
             print(f"⚠️ Telegram Send Error: {e}")
+            return None
+
+    def send_photo(self, photo_path, caption=""):
+        """Uploads a generated chart image to the Telegram chat"""
+        if not self.bot_token or self.bot_token == "PASTE_YOUR_BOT_TOKEN_HERE":
+            print("⚠️ Telegram Token not set. Photo not sent.")
+            return None
+            
+        url = f"https://api.telegram.org/bot{self.bot_token}/sendPhoto"
+        try:
+            with open(photo_path, 'rb') as photo:
+                files = {'photo': photo}
+                data = {'chat_id': self.chat_id, 'caption': caption, 'parse_mode': 'Markdown'}
+                response = requests.post(url, files=files, data=data, timeout=20)
+                return response.json()
+        except Exception as e:
+            print(f"⚠️ Telegram Photo Error: {e}")
+            return None
 
     def start_listening(self, command_handler):
-        """Starts a background thread to poll for commands"""
-        self.running = True
-        thread = threading.Thread(target=self._poll_updates, args=(command_handler,))
-        thread.daemon = True
-        thread.start()
+        if not self.bot_token or self.bot_token == "PASTE_YOUR_BOT_TOKEN_HERE":
+            return
+        self.is_listening = True
+        threading.Thread(target=self._poll_commands, args=(command_handler,), daemon=True).start()
 
     def stop_listening(self):
-        self.running = False
+        self.is_listening = False
 
-    def _poll_updates(self, handler):
-        print("🎧 Telegram Command Listener Active...")
-        while self.running:
+    def _poll_commands(self, command_handler):
+        url = f"https://api.telegram.org/bot{self.bot_token}/getUpdates"
+        while self.is_listening:
             try:
-                url = f"{self.base_url}/getUpdates?offset={self.offset}&timeout=30"
-                resp = requests.get(url, timeout=35)
-                data = resp.json()
+                payload = {"offset": self.last_update_id + 1, "timeout": 5}
+                response = requests.get(url, params=payload, timeout=10)
+                data = response.json()
                 
                 if data.get("ok"):
-                    for result in data["result"]:
-                        self.offset = result["update_id"] + 1
-                        message = result.get("message", {})
+                    for update in data.get("result", []):
+                        self.last_update_id = update["update_id"]
+                        message = update.get("message", {})
                         text = message.get("text", "")
                         
                         if text.startswith("/"):
-                            handler(text)
-            except Exception:
-                time.sleep(5)  # Backoff on error
-            time.sleep(1)
+                            command_handler(text)
+            except:
+                pass
+            time.sleep(2)
