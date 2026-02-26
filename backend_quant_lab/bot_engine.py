@@ -144,7 +144,6 @@ class TradingBot:
                 req = AnalysisRequest(symbol=symbol, candles=candles, daily_trend="NEUTRAL")
                 analysis = analyze_market_structure(req)
                 
-                # If market shifts heavily against the trade, cut the risk before SL is hit
                 if analysis.signal != "NEUTRAL" and analysis.confidence >= 0.80:
                     if (is_buy and "SELL" in analysis.signal) or (not is_buy and "BUY" in analysis.signal):
                         self.log(f"🔄 DYNAMIC INVALIDATION: Market reversed on {symbol}. Closing early to protect margin.")
@@ -181,9 +180,10 @@ class TradingBot:
 
         if self.daily_start_balance > 0:
             daily_dd_pct = (self.daily_start_balance - acc['equity']) / self.daily_start_balance
-            if daily_dd_pct >= 0.04: 
-                self.log(f"🛑 KILL SWITCH: 4% Daily Drawdown Hit! (Start: {self.daily_start_balance:.2f}, Equity: {acc['equity']:.2f})")
-                self.async_alert(f"🛑 **CRITICAL: DAILY KILL SWITCH TRIGGERED**\nAccount hit 4% drawdown. Liquidating {len(current_positions)} positions and locking system until midnight.")
+            # UPDATED: Expanded to 12% to accommodate Fractional Kelly Sizing
+            if daily_dd_pct >= 0.12: 
+                self.log(f"🛑 KILL SWITCH: 12% Daily Drawdown Hit! (Start: {self.daily_start_balance:.2f}, Equity: {acc['equity']:.2f})")
+                self.async_alert(f"🛑 **CRITICAL: DAILY KILL SWITCH TRIGGERED**\nAccount hit 12% drawdown. Liquidating {len(current_positions)} positions and locking system until midnight.")
                 self.close_all_positions(current_positions)
                 self.kill_switch_active = True
                 return
@@ -213,14 +213,13 @@ class TradingBot:
             self.log(f"🎯 Base capacity full. 90%+ Global Sniper Mode Active ({self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS - current_count} slots left).")
         
         for symbol in self.active_symbols:
-            # Count how many trades are currently active/pending for THIS specific symbol
+            # --- PER-ASSET EXPOSURE CAP ---
             symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
 
             if "XAU" in symbol:
                 if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1): continue 
                 elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES: continue 
             
-            # --- NEW: PER-ASSET EXPOSURE CAP ---
             if is_sniper_mode and symbol_trades >= 3: 
                 continue # Hard cap at 3 for 90%+ Sniper Setups
             elif not is_sniper_mode and symbol_trades >= 2: 
@@ -251,7 +250,6 @@ class TradingBot:
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
                 
-                # Logic: XAU > 5.0 -> Lock 70%, XAU > 2.0 -> Lock 50%
                 if "XAU" in symbol:
                     if profit_dist > 5.0:       
                         secured_dist = profit_dist * 0.70 
@@ -261,7 +259,6 @@ class TradingBot:
                         lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     else: continue
                     
-                # Logic: JPY > 0.40 -> Lock 75%, JPY > 0.20 -> Lock 50%
                 elif "JPY" in symbol:
                     if profit_dist > 0.400:    
                         secured_dist = profit_dist * 0.75 
@@ -271,7 +268,6 @@ class TradingBot:
                         lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                     else: continue
                     
-                # Logic: Forex > 40 pips -> Lock 80%, Forex > 20 pips -> Lock 50%
                 else: 
                     if profit_dist > 0.0040:    
                         secured_dist = profit_dist * 0.80 
@@ -294,7 +290,7 @@ class TradingBot:
                 elif not is_buy and lock_price < current_sl: should_modify = True
                     
                 if should_modify:
-                    lock_price = self.gateway.normalize_price(symbol, lock_price) # Precision Fix
+                    lock_price = self.gateway.normalize_price(symbol, lock_price) 
                     
                     req = {
                         "action": mt5.TRADE_ACTION_SLTP, "position": ticket,
@@ -310,7 +306,6 @@ class TradingBot:
         now = datetime.now()
         upcoming_news = self.news_manager.get_upcoming_news()
         
-        # News Guard
         for event in upcoming_news:
             if event['impact'] == 'High':
                 try:
@@ -341,9 +336,6 @@ class TradingBot:
             result_status = "SKIPPED"
             
             # --- CONFIDENCE THRESHOLD LOGIC ---
-            # 90% if Sniper Mode is active (Global)
-            # 87% if Gold (Normal Mode) - LOWERED FROM 90%
-            # 85% if Forex (Normal Mode)
             required_conf = 0.90 if is_sniper_mode else (0.87 if "XAU" in symbol else 0.85)
 
             if analysis.signal != "NEUTRAL":
@@ -363,6 +355,7 @@ class TradingBot:
         except: pass
 
     # --- ASYNC EXECUTION THREAD (Fire & Forget) ---
+    # --- ASYNC EXECUTION THREAD (Fire & Forget) ---
     def execute_signal(self, symbol, analysis, df):
         if symbol in self.execution_lock: return
         self.execution_lock.add(symbol)
@@ -377,7 +370,6 @@ class TradingBot:
                 live_ask = tick.ask
                 live_bid = tick.bid
                 
-                # SL/TP Distances
                 if "XAU" in symbol:
                     sl_distance = 5.0
                     tp_distance = 10.0
@@ -399,28 +391,39 @@ class TradingBot:
                     sl_price = live_bid + sl_distance
                     tp_price = live_bid - tp_distance
                     
-                sl = self.gateway.normalize_price(symbol, sl_price) # Precision Fix
-                tp = self.gateway.normalize_price(symbol, tp_price) # Precision Fix
+                sl = self.gateway.normalize_price(symbol, sl_price)
+                tp = self.gateway.normalize_price(symbol, tp_price)
 
                 acc_info = self.gateway.get_account_info()
                 balance = acc_info['balance'] if acc_info else 10000.0
                 free_margin = acc_info['free_margin'] if acc_info else 10000.0
+                margin_level = acc_info.get('margin_level', 9999.0) # Retrieve Live Margin Level
+                
+                # --- NEW: DYNAMIC MARGIN FLOOR (Armor against Broker Stop-Outs) ---
+                # If Margin Level drops below 300%, the bot mathematically refuses to open new positions
+                # This guarantees the broker will never trigger a 50% Stop-Out liquidation
+                if margin_level < 300.0:
+                    self.log(f"🛡️ Margin Armor Active: Cannot open {symbol}. Margin Level critically low ({margin_level:.2f}%)")
+                    return
                 
                 if free_margin < (balance * 0.15):
                     self.log(f"⚠️ Margin Alert: Cannot open {symbol}. Free Margin too low (${free_margin:.2f})")
                     return
                 
-                # --- FRACTIONAL KELLY SIZING ---
+                # --- FRACTIONAL KELLY SIZING (With Margin Scaling) ---
+                # If margin level is getting tight (between 300% and 500%), mathematically cut the Kelly risk in half
+                risk_multiplier = 0.5 if margin_level < 500.0 else 1.0 
+
                 if "XAU" in symbol:
-                    risk_capital = balance * 0.01 # 1% for Gold (Lower Edge)
+                    risk_capital = (balance * 0.01) * risk_multiplier 
                     capital_per_lot = sl_distance * 100
                     min_lot = 0.20
                 elif "JPY" in symbol:
-                    risk_capital = balance * 0.02 # 2% for JPY (High Edge)
+                    risk_capital = (balance * 0.02) * risk_multiplier 
                     capital_per_lot = sl_distance * 1000 
                     min_lot = 0.30
                 else:
-                    risk_capital = balance * 0.02 # 2% for Forex (High Edge)
+                    risk_capital = (balance * 0.02) * risk_multiplier 
                     capital_per_lot = sl_distance * 100000
                     min_lot = 0.30
                     
@@ -452,7 +455,6 @@ class TradingBot:
             finally:
                 self.execution_lock.discard(symbol)
                 
-        # Launch Async Thread
         threading.Thread(target=_async_execute).start()
             
     def get_status(self):
