@@ -10,7 +10,6 @@ class MT5Gateway:
         self.connected = False
         self.symbol_map = {} 
 
-    # NEW: Broker-Agnostic Login (Pass Deriv credentials here later)
     def start(self, login=None, password=None, server=None):
         if login and password and server:
             init_res = mt5.initialize(login=int(login), password=password, server=server)
@@ -60,7 +59,6 @@ class MT5Gateway:
             if k in target or target in k: return v
         return None
 
-    # NEW: Strict Modulus Grid Snapping (Fixes SL/TP precision errors)
     def normalize_price(self, symbol, price):
         if not self.connected: self.start()
         real_symbol = self.find_symbol(symbol)
@@ -77,7 +75,7 @@ class MT5Gateway:
         snapped_price = math.floor(price / tick_size) * tick_size
         return round(snapped_price, digits)
 
-    def get_market_data(self, symbol, timeframe=mt5.TIMEFRAME_H1, n_candles=100):
+    def get_market_data(self, symbol, timeframe=mt5.TIMEFRAME_M15, n_candles=100):
         if not self.connected: self.start()
         real_symbol = self.find_symbol(symbol)
         if not real_symbol: return pd.DataFrame() 
@@ -125,7 +123,6 @@ class MT5Gateway:
             "comment": "TradeCore v51", "type_time": mt5.ORDER_TIME_GTC, "type_filling": fill
         }
         
-        # NEW: The MT5 Ghost-Sweeper & Async Auto-Retry Loop
         for attempt in range(5):
             res = mt5.order_send(req)
             if res is None:
@@ -134,9 +131,9 @@ class MT5Gateway:
                 
             if res.retcode == mt5.TRADE_RETCODE_DONE:
                 return {"success": True, "message": f"Opened {real_symbol}", "ticket": res.order}
-            elif res.retcode in [10012, 10031]: # Request Timeout or Network Drop
+            elif res.retcode in [10012, 10031]: 
                 print(f"⚠️ Broker Network Drop ({res.retcode}). Blocking Cascade & Retrying {attempt+1}/5...")
-                time.sleep(3) # Pauses execution so the engine doesn't spawn ghost trades
+                time.sleep(3) 
                 continue
             elif res.retcode == 10018: return {"success": False, "message": "Market Closed"}
             elif res.retcode == 10013: return {"success": False, "message": "Invalid Request"}
@@ -167,12 +164,11 @@ class MT5Gateway:
         
         i = mt5.account_info()
         
-        # NEW: The Heartbeat Self-Heal Protocol
         if i is None:
             print("⚠️ MT5 Broker Connection Lost. Attempting Auto-Reconnect...")
-            self.connected = False # Force the gateway to realize it dropped
-            if self.start(): # Try to reboot the connection
-                i = mt5.account_info() # Try fetching again
+            self.connected = False 
+            if self.start(): 
+                i = mt5.account_info() 
             
         return {"balance": i.balance, "equity": i.equity, "profit": i.profit, "margin_level": i.margin_level, "free_margin": i.margin_free} if i else None
     

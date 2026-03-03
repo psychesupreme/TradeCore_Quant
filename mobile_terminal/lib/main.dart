@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:url_launcher/url_launcher.dart'; // NEW IMPORT FOR DOWNLOADING
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const TradeCoreApp());
@@ -41,7 +41,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 1; // Default to Quant Dash
   Timer? _pollingTimer;
   final String baseUrl = 'http://127.0.0.1:8000';
 
@@ -55,9 +55,16 @@ class _MainScreenState extends State<MainScreen> {
   List<dynamic> activePositions = [];
   List<dynamic> newsEvents = [];
 
+  // Institutional Risk State
+  String marketRegime = "CALIBRATING...";
+  double dailyVaR = 0.0;
+
   // Performance State
   double totalRealized = 0.0;
   double monthlyRealized = 0.0;
+  double winRate = 0.0;
+  double profitFactor = 0.0;
+  int totalTrades = 0;
   List<FlSpot> equitySpots = [];
   List<String> equityDates = [];
 
@@ -65,8 +72,8 @@ class _MainScreenState extends State<MainScreen> {
     symbol: '\$ ',
     decimalDigits: 2,
   );
-  final NumberFormat kesFormat = NumberFormat.currency(
-    symbol: 'KES ',
+  final NumberFormat compactUsdFormat = NumberFormat.compactCurrency(
+    symbol: '\$',
     decimalDigits: 2,
   );
 
@@ -78,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
   final TextEditingController _calcSlController = TextEditingController(
     text: "5.0",
   );
-  String _calcLotResult = "0.00 Lots";
+  String _calcLotResult = "0.00";
   String _calcExposureResult = "\$0.00";
 
   @override
@@ -115,6 +122,9 @@ class _MainScreenState extends State<MainScreen> {
           totalPnl = (data['total_pnl'] ?? 0).toDouble();
           activePositions = data['positions'] ?? [];
 
+          marketRegime = data['market_regime'] ?? "CALIBRATING...";
+          dailyVaR = (data['daily_var'] ?? 0).toDouble();
+
           if (_calcBalanceController.text.isEmpty && balance > 0) {
             _calcBalanceController.text = balance.toStringAsFixed(2);
             _calculatePositionSize();
@@ -131,6 +141,9 @@ class _MainScreenState extends State<MainScreen> {
           setState(() {
             totalRealized = (perfData['total_realized'] ?? 0).toDouble();
             monthlyRealized = (perfData['monthly_realized'] ?? 0).toDouble();
+            winRate = (perfData['win_rate'] ?? 0).toDouble();
+            profitFactor = (perfData['profit_factor'] ?? 0).toDouble();
+            totalTrades = perfData['total_trades'] ?? 0;
 
             final List<dynamic> curveData = perfData['curve'] ?? [];
             equitySpots.clear();
@@ -157,9 +170,7 @@ class _MainScreenState extends State<MainScreen> {
         }
       }
     } catch (e) {
-      setState(() {
-        isBackendOnline = false;
-      });
+      setState(() => isBackendOnline = false);
     }
   }
 
@@ -177,8 +188,8 @@ class _MainScreenState extends State<MainScreen> {
       double finalExposure = finalLots * capitalPerLot;
 
       setState(() {
-        _calcLotResult = "${finalLots.toStringAsFixed(2)} Lots";
-        _calcExposureResult = usdFormat.format(finalExposure);
+        _calcLotResult = finalLots.toStringAsFixed(2);
+        _calcExposureResult = compactUsdFormat.format(finalExposure);
       });
     }
   }
@@ -311,14 +322,12 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
           ),
-
           const SizedBox(height: 24),
           const Text(
             "ACTIVE TRADES",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
           ),
           const SizedBox(height: 12),
-
           if (activePositions.isEmpty)
             const Center(
               child: Padding(
@@ -387,16 +396,20 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildQuantDashboard() {
-    double targetRecovery = 19000.0;
-    double progressPct = (totalRealized / targetRecovery).clamp(0.0, 1.0);
+    // Dynamic Monthly Target: 5% of Current Balance
+    double dynamicTarget = balance > 0 ? (balance * 0.05) : 500.0;
+    double progressPct = dynamicTarget > 0
+        ? (monthlyRealized / dynamicTarget).clamp(0.0, 1.0)
+        : 0.0;
 
     return RefreshIndicator(
       onRefresh: _fetchData,
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // PROJECTIONS
           const Text(
-            "REALIZED PROFIT & RECOVERY",
+            "DYNAMIC MONTHLY TARGET (5%)",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
           ),
           const SizedBox(height: 12),
@@ -416,22 +429,17 @@ class _MainScreenState extends State<MainScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          "Total Recovered",
+                          "Achieved",
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
                         Text(
-                          usdFormat.format(totalRealized),
-                          style: const TextStyle(
+                          usdFormat.format(monthlyRealized),
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF00C853),
-                          ),
-                        ),
-                        Text(
-                          kesFormat.format(totalRealized * 130),
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
+                            color: monthlyRealized >= 0
+                                ? const Color(0xFF00C853)
+                                : Colors.redAccent,
                           ),
                         ),
                       ],
@@ -440,65 +448,100 @@ class _MainScreenState extends State<MainScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         const Text(
-                          "This Month",
+                          "Target",
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
                         Text(
-                          usdFormat.format(monthlyRealized),
+                          usdFormat.format(dynamicTarget),
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          kesFormat.format(monthlyRealized * 130),
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Target: ${usdFormat.format(targetRecovery)}",
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    Text(
-                      "${(progressPct * 100).toStringAsFixed(1)}%",
-                      style: const TextStyle(
-                        color: Color(0xFF2962FF),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
                 LinearProgressIndicator(
                   value: progressPct,
                   backgroundColor: Colors.white10,
                   color: const Color(0xFF2962FF),
-                  minHeight: 8,
+                  minHeight: 6,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 32),
+          // ALGORITHMIC AUDIT (NEW)
+          const SizedBox(height: 24),
           const Text(
-            "CUMULATIVE EQUITY CURVE",
+            "ALGORITHMIC AUDIT",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildMetricTile(
+                  "Win Rate",
+                  "${winRate.toStringAsFixed(1)}%",
+                  color: winRate > 50 ? const Color(0xFF00C853) : Colors.orange,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildMetricTile(
+                  "Profit Factor",
+                  profitFactor.toStringAsFixed(2),
+                  color: profitFactor >= 1.5
+                      ? const Color(0xFF2962FF)
+                      : Colors.white,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildMetricTile("Executions", totalTrades.toString()),
+              ),
+            ],
+          ),
+
+          // RISK METRICS
+          const SizedBox(height: 24),
+          const Text(
+            "INSTITUTIONAL RISK",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
           ),
           const SizedBox(height: 12),
           Container(
-            height: 250,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF161B22),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildStatCol("GARCH Regime", marketRegime),
+                _buildStatCol(
+                  "Daily VaR",
+                  dailyVaR == 0 ? "..." : usdFormat.format(dailyVaR),
+                ),
+              ],
+            ),
+          ),
+
+          // EQUITY CURVE
+          const SizedBox(height: 24),
+          const Text(
+            "EQUITY CURVE",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            height: 200,
             padding: const EdgeInsets.only(
               right: 20,
               left: 10,
@@ -513,7 +556,7 @@ class _MainScreenState extends State<MainScreen> {
             child: equitySpots.length < 2
                 ? const Center(
                     child: Text(
-                      "Awaiting closed trades to plot curve...",
+                      "Awaiting trade data...",
                       style: TextStyle(color: Colors.white54),
                     ),
                   )
@@ -526,7 +569,6 @@ class _MainScreenState extends State<MainScreen> {
                             const FlLine(color: Colors.white10, strokeWidth: 1),
                       ),
                       titlesData: FlTitlesData(
-                        show: true,
                         rightTitles: const AxisTitles(
                           sideTitles: SideTitles(showTitles: false),
                         ),
@@ -539,39 +581,26 @@ class _MainScreenState extends State<MainScreen> {
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
-                            reservedSize: 45,
-                            getTitlesWidget: (value, meta) {
-                              return Text(
-                                '\$${value.toInt()}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 10,
-                                ),
-                              );
-                            },
+                            reservedSize: 40,
+                            getTitlesWidget: (v, m) => Text(
+                              '\$${v.toInt()}',
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 9,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                       borderData: FlBorderData(show: false),
                       minX: 0,
                       maxX: (equitySpots.length - 1).toDouble(),
-                      minY:
-                          (equitySpots
-                              .map((s) => s.y)
-                              .reduce((a, b) => a < b ? a : b)) -
-                          10,
-                      maxY:
-                          (equitySpots
-                              .map((s) => s.y)
-                              .reduce((a, b) => a > b ? a : b)) +
-                          10,
                       lineBarsData: [
                         LineChartBarData(
                           spots: equitySpots,
                           isCurved: true,
                           color: const Color(0xFF2962FF),
-                          barWidth: 3,
-                          isStrokeCapRound: true,
+                          barWidth: 2,
                           dotData: const FlDotData(show: false),
                           belowBarData: BarAreaData(
                             show: true,
@@ -579,39 +608,19 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       ],
-                      lineTouchData: LineTouchData(
-                        touchTooltipData: LineTouchTooltipData(
-                          getTooltipItems: (touchedSpots) {
-                            return touchedSpots.map((spot) {
-                              final index = spot.x.toInt();
-                              final dateStr =
-                                  (index >= 0 && index < equityDates.length)
-                                  ? equityDates[index]
-                                  : '';
-                              return LineTooltipItem(
-                                '${usdFormat.format(spot.y)}\n$dateStr',
-                                const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
-                              );
-                            }).toList();
-                          },
-                        ),
-                      ),
                     ),
                   ),
           ),
 
-          const SizedBox(height: 32),
+          // COMPACT RISK CALCULATOR
+          const SizedBox(height: 24),
           const Text(
-            "QUANT-GRADE RISK CALCULATOR",
+            "RISK CALCULATOR & AUDIT",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
           ),
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: const Color(0xFF161B22),
               borderRadius: BorderRadius.circular(16),
@@ -619,17 +628,20 @@ class _MainScreenState extends State<MainScreen> {
             ),
             child: Column(
               children: [
-                TextField(
-                  controller: _calcBalanceController,
-                  decoration: const InputDecoration(
-                    labelText: "Account Balance (\$)",
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (_) => _calculatePositionSize(),
-                ),
-                const SizedBox(height: 12),
                 Row(
                   children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _calcBalanceController,
+                        decoration: const InputDecoration(
+                          labelText: "Bal (\$)",
+                        ),
+                        keyboardType: TextInputType.number,
+                        onChanged: (_) => _calculatePositionSize(),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
                         controller: _calcRiskController,
@@ -638,105 +650,83 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         keyboardType: TextInputType.number,
                         onChanged: (_) => _calculatePositionSize(),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
                         controller: _calcSlController,
-                        decoration: const InputDecoration(
-                          labelText: "Stop Loss (\$)",
-                        ),
+                        decoration: const InputDecoration(labelText: "SL (\$)"),
                         keyboardType: TextInputType.number,
                         onChanged: (_) => _calculatePositionSize(),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      children: [
-                        const Text(
-                          "Required Lot Size",
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                        Text(
-                          _calcLotResult,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2962FF),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      "Vol: $_calcLotResult",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2962FF),
+                      ),
                     ),
-                    Column(
-                      children: [
-                        const Text(
-                          "Capital at Risk",
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                        Text(
-                          _calcExposureResult,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      "Risk: $_calcExposureResult",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                    TextButton.icon(
+                      onPressed: _downloadAuditReport,
+                      icon: const Icon(Icons.download, size: 16),
+                      label: const Text("CSV"),
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Asymmetric Floor: Min 0.20 Lots applied",
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
 
-          const SizedBox(height: 32),
-          const Text(
-            "ACCOUNT AUDITOR",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+  Widget _buildMetricTile(
+    String label,
+    String value, {
+    Color color = Colors.white,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(color: Colors.grey, fontSize: 11),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFF161B22),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Export your entire account history directly from MetaTrader 5 into a structured CSV file for offline analysis or tax reporting.",
-                  style: TextStyle(color: Colors.white70),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _downloadAuditReport,
-                    icon: const Icon(Icons.download),
-                    label: const Text("Download CSV Audit"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2962FF),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: color,
             ),
           ),
         ],
@@ -777,7 +767,7 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "${event['country']} - ${event['impact']} Impact",
+                              "${event['country']} - ${event['impact']}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orangeAccent,
@@ -789,45 +779,15 @@ class _MainScreenState extends State<MainScreen> {
                         Text(
                           event['title'],
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Scheduled: ${event['time']}",
+                          event['time'],
                           style: const TextStyle(color: Colors.grey),
                         ),
-                        if (event['insight'] != null) ...[
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.lightbulb_outline,
-                                  size: 16,
-                                  color: Colors.white54,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    event['insight'],
-                                    style: const TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ),

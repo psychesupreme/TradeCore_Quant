@@ -18,27 +18,19 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Handles system startup and shutdown events"""
     print("\n" + "="*50)
     print("🚀 System Startup: Initializing TradeCore Recovery Engine...")
     print("="*50)
     
     try:
-        # 1. Start the MT5 Connection & Bot Service
         if bot.start_service():
             print("✅ Bot Service Started Successfully")
         else:
             print("❌ Bot Service Failed to Start")
 
-        # 2. Configure the Background Scheduler
         if not scheduler.get_jobs():
-            # Core Trading Loop: Every 60 seconds
             scheduler.add_job(bot.run_cycle, 'interval', seconds=60, id='trade_loop')
-            
-            # Automated Database Cleanup: Every 5 minutes
-            # (Ensures local DB matches MT5 closed trades)
             scheduler.add_job(sync_database, 'interval', minutes=5, id='db_cleaner')
-            
             scheduler.start()
             print("✅ Scheduler Active: Trading Loop & DB Sync Online.")
             
@@ -48,14 +40,12 @@ async def lifespan(app: FastAPI):
         
     yield
     
-    # --- SHUTDOWN ---
     print("\n⚠️ System Shutdown...")
     bot.stop_service()
     scheduler.shutdown()
 
 app = FastAPI(title="TradeCore v51.0 Recovery Edition", lifespan=lifespan)
 
-# Allow Flutter Web/Mobile to communicate with this API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -66,7 +56,6 @@ app.add_middleware(
 
 @app.get("/bot/status")
 async def get_bot_status():
-    """Provides live MT5 account vitals to the Flutter Terminal"""
     try:
         return bot.get_status()
     except Exception as e:
@@ -76,11 +65,9 @@ async def get_bot_status():
 
 @app.get("/bot/news")
 async def get_news():
-    """Returns high-impact economic events for the News Guard tab"""
     try:
         bot.news_manager.fetch_calendar()
         events = bot.news_manager.events
-        # Only return High/Medium impact to keep the UI focused on risk
         return [e for e in events if e['impact'] in ['High', 'Medium']]
     except Exception as e:
         print(f"\n❌ API ERROR on /bot/news: {e}")
@@ -88,20 +75,20 @@ async def get_news():
 
 @app.get("/bot/performance")
 async def get_performance():
-    """Calculates cumulative recovery trajectory against the $19k deficit"""
     try:
         import pandas as pd
         
-        # The historical deficit we are recovering from
-        STARTING_DEFICIT = -19000.0
-        
-        # Initialize with Point Zero so the chart can draw immediately
+        STARTING_DEFICIT = 0.0
         curve_data = [{"date": "Start", "profit": STARTING_DEFICIT}]
         
         total_realized = 0.0
         monthly_realized = 0.0
         
-        # Fetch full account history from the broker
+        # --- NEW BOT AUDIT METRICS ---
+        win_rate = 0.0
+        profit_factor = 0.0
+        total_trades = 0
+        
         deals = bot.gateway.get_historical_deals(days=365)
         
         if deals:
@@ -109,13 +96,27 @@ async def get_performance():
             if 'profit' in df.columns:
                 total_realized = float(df['profit'].sum())
                 
-                # Monthly stats for the recovery cards
                 df['time'] = pd.to_datetime(df['time'])
                 now = datetime.now()
                 monthly_df = df[(df['time'].dt.month == now.month) & (df['time'].dt.year == now.year)]
                 monthly_realized = float(monthly_df['profit'].sum())
 
-                # Build the recovery curve starting from the deficit
+                # --- CALCULATE WIN RATE & PROFIT FACTOR ---
+                wins = df[df['profit'] > 0]
+                losses = df[df['profit'] < 0]
+                
+                gross_profit = wins['profit'].sum() if not wins.empty else 0.0
+                gross_loss = abs(losses['profit'].sum()) if not losses.empty else 0.0
+                
+                total_trades = len(df)
+                if total_trades > 0:
+                    win_rate = round((len(wins) / total_trades) * 100, 1)
+                
+                if gross_loss > 0:
+                    profit_factor = round(gross_profit / gross_loss, 2)
+                elif gross_profit > 0:
+                    profit_factor = 99.9 # Mathematically perfect if no losses
+
                 df['cumulative_profit'] = df['profit'].cumsum() + STARTING_DEFICIT
                 df['date'] = df['time'].dt.strftime('%m-%d %H:%M')
                 
@@ -124,7 +125,6 @@ async def get_performance():
                 ).to_dict(orient='records')
                 curve_data.extend(trade_points)
 
-        # Safety: Ensure at least two points exist for fl_chart to render
         if len(curve_data) < 2:
             curve_data.append({
                 "date": datetime.now().strftime('%m-%d %H:%M'),
@@ -134,6 +134,9 @@ async def get_performance():
         return {
             "total_realized": total_realized,
             "monthly_realized": monthly_realized,
+            "win_rate": win_rate,
+            "profit_factor": profit_factor,
+            "total_trades": total_trades,
             "curve": curve_data
         }
     except Exception as e:
@@ -143,13 +146,11 @@ async def get_performance():
 
 @app.get("/quant/export_report")
 async def export_report():
-    """Generates a professional CSV audit of the 365-day account history"""
     try:
         deals = bot.gateway.get_historical_deals(days=365)
         output = io.StringIO()
         writer = csv.writer(output)
         
-        # Professional Metadata Headers
         writer.writerow(["System", "TradeCore v51.0 Quant Auditor"])
         writer.writerow(["Generated", datetime.now().strftime("%Y-%m-%d %H:%M")])
         writer.writerow([])
@@ -158,7 +159,6 @@ async def export_report():
         for d in deals:
             writer.writerow([d['time'], d['symbol'], d['type'], d['volume'], d['profit']])
             
-        # Return as a downloadable file stream
         response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv")
         response.headers["Content-Disposition"] = f"attachment; filename=TradeCore_Audit_{datetime.now().strftime('%Y%m%d')}.csv"
         return response
@@ -168,7 +168,6 @@ async def export_report():
 
 @app.get("/system/logs")
 async def get_system_logs():
-    """Returns a plain text report of the latest bot logs for debugging"""
     log_content = "\n".join(bot.logs)
     status = bot.get_status()
     acc = status.get('account') or {'balance': 0, 'equity': 0}
