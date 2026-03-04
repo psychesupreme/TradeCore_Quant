@@ -1,10 +1,6 @@
 import os
 import logging
 import json
-import matplotlib
-matplotlib.use('Agg') 
-import matplotlib.pyplot as plt 
-
 import pandas as pd
 from datetime import datetime, timedelta
 import time
@@ -15,7 +11,6 @@ from models import Candle
 from telegram_client import TelegramNotifier
 from db_manager import DBManager 
 from news_manager import NewsManager  
-from vision_module import VisionEngine 
 import threading
 import math
 
@@ -53,10 +48,15 @@ class TradingBot:
         self.notifier = TelegramNotifier() 
         self.news_manager = NewsManager() 
         
+        # ==========================================
+        # FULLY DIVERSIFIED ASSET MATRIX
+        # ==========================================
         self.vip_assets = [
-            "EURUSD", "GBPUSD", "USDJPY", 
-            "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", 
-            "XAUUSD"
+            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", # USD Majors
+            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",  # Non-USD Crosses (Diversification)
+            "XAUUSD", "XAGUSD",                      # Metals
+            "BTCUSD", "ETHUSD",                      # Crypto
+            "US SP 500", "US Tech 100"               # Broker-Specific Indices
         ]
         
         self.active_symbols = [] 
@@ -71,7 +71,7 @@ class TradingBot:
         self.active_tickets = set()
         self.execution_lock = set() 
         
-        # --- STATE PERSISTENCE: Load Memory on Boot ---
+        # --- STATE PERSISTENCE ---
         self.state_file = "logs/tradecore_state.json"
         self.scaled_positions = self._load_state()
         
@@ -82,9 +82,6 @@ class TradingBot:
         self.current_var = 0.0
         self.market_regime = "CALIBRATING..."
 
-    # ==========================================
-    # PERSISTENT MEMORY MANAGEMENT
-    # ==========================================
     def _load_state(self):
         try:
             if os.path.exists(self.state_file):
@@ -107,25 +104,30 @@ class TradingBot:
         timestamp = datetime.now().strftime("%H:%M:%S")
         entry = f"[{timestamp}] {message}"
         self.logs.insert(0, entry)
-        if len(self.logs) > 100: self.logs.pop()
+        if len(self.logs) > 100: 
+            self.logs.pop()
 
     def log_debug(self, message):
         logger.debug(message)
 
     def async_alert(self, msg):
         def _send():
-            try: self.notifier.send(msg)
-            except: pass
+            try: 
+                self.notifier.send(msg)
+            except: 
+                pass
         threading.Thread(target=_send).start()
 
     def handle_telegram_command(self, command):
         cmd = command.split()[0].lower()
         self.log_info(f"📩 Received Command: {cmd}")
         
-        if cmd == "/status": self._report_status()
+        if cmd == "/status": 
+            self._report_status()
         elif cmd == "/news":
             news_data = self.news_manager.get_upcoming_news()
-            if not news_data: self.async_alert("🌍 **No High Impact News Found.**")
+            if not news_data: 
+                self.async_alert("🌍 **No High Impact News Found.**")
             else:
                 lines = ["📰 **Upcoming News Risks**"]
                 for item in news_data[:5]:
@@ -136,10 +138,12 @@ class TradingBot:
             self.stop_service()
             self.async_alert("🛑 **Bot Stopped by User Command**")
         elif cmd == "/start":
-            if not self.is_running: self.start_service()
+            if not self.is_running: 
+                self.start_service()
         elif cmd == "/balance":
             acc = self.gateway.get_account_info()
-            if acc: self.async_alert(f"💰 **Balance:** ${acc['balance']:.2f}\n**Equity:** ${acc['equity']:.2f}")
+            if acc: 
+                self.async_alert(f"💰 **Balance:** ${acc['balance']:.2f}\n**Equity:** ${acc['equity']:.2f}")
 
     def _report_status(self):
         acc = self.gateway.get_account_info()
@@ -207,10 +211,14 @@ class TradingBot:
         hour = now.hour
         minute = now.minute
 
-        if day == 4 and (hour > 21 or (hour == 21 and minute >= 50)): return False, "Weekend Close Phase"
-        if day == 5: return False, "Weekend Closed"
-        if day == 6 and (hour < 22 or (hour == 22 and minute <= 5)): return False, "Sunday Open Phase"
-        if (hour == 21 and minute >= 50) or (hour == 22 and minute <= 10): return False, "Daily Rollover (Danger Zone)"
+        if day == 4 and (hour > 21 or (hour == 21 and minute >= 50)): 
+            return False, "Weekend Close Phase"
+        if day == 5: 
+            return False, "Weekend Closed"
+        if day == 6 and (hour < 22 or (hour == 22 and minute <= 5)): 
+            return False, "Sunday Open Phase"
+        if (hour == 21 and minute >= 50) or (hour == 22 and minute <= 10): 
+            return False, "Daily Rollover (Danger Zone)"
 
         return True, "Market Open"
 
@@ -218,25 +226,72 @@ class TradingBot:
         for pos in positions:
             self.gateway.close_position(pos['ticket'], pos['symbol'], pos['volume'], pos['type'])
 
+    def evaluate_pending_orders(self):
+        orders = mt5.orders_get()
+        if not orders: 
+            return
+        
+        for ord in orders:
+            symbol = ord.symbol
+            ticket = ord.ticket
+            order_type = ord.type
+            tp = ord.tp
+            sl = ord.sl
+            
+            tick = mt5.symbol_info_tick(symbol)
+            if not tick: 
+                continue
+            
+            cancel = False
+            reason = ""
+            
+            if order_type == mt5.ORDER_TYPE_BUY_LIMIT:
+                if tick.bid >= tp and tp > 0.0:
+                    cancel, reason = True, "Target reached before entry (Stale Trap)"
+                elif tick.bid <= sl and sl > 0.0:
+                    cancel, reason = True, "Structure invalidated before entry"
+            elif order_type == mt5.ORDER_TYPE_SELL_LIMIT:
+                if tick.ask <= tp and tp > 0.0:
+                    cancel, reason = True, "Target reached before entry (Stale Trap)"
+                elif tick.ask >= sl and sl > 0.0:
+                    cancel, reason = True, "Structure invalidated before entry"
+                    
+            if cancel:
+                req = {"action": mt5.TRADE_ACTION_REMOVE, "order": ticket}
+                res = mt5.order_send(req)
+                if res and res.retcode == mt5.TRADE_RETCODE_DONE:
+                    self.log_info(f"🗑️ Stale Trap Avoided: Cancelled {symbol} limit order. ({reason})")
+
     def evaluate_open_positions(self, positions):
         for pos in positions:
             try:
                 symbol = pos['symbol']
                 is_buy = pos['type'] == 'BUY'
                 
+                duration_hours = (time.time() - pos['time']) / 3600.0
+                profit = pos['profit']
+                
+                if duration_hours > 12.0 and profit < 0:
+                    self.log_info(f"⏳ Time Decay Killswitch: {symbol} stuck in dead momentum for >12H. Liquidating.")
+                    self.gateway.close_position(pos['ticket'], symbol, pos['volume'], pos['type'])
+                    self.async_alert(f"⏳ **Dead Momentum Liquidated:** {symbol}\nTrade closed early to free up margin.")
+                    self.symbol_cooldowns[symbol] = datetime.now()
+                    continue
+
                 df = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
-                if df.empty: continue
+                if df.empty: 
+                    continue
                 
                 candles = [Candle(**row) for row in df.to_dict('records') if hasattr(row['time'], 'year')]
                 req = AnalysisRequest(symbol=symbol, candles=candles, daily_trend="NEUTRAL")
-                analysis = analyze_market_structure(req, None)
+                
+                analysis = analyze_market_structure(req, None, self.market_regime)
                 
                 if analysis.signal != "NEUTRAL" and analysis.confidence >= 0.90:
                     if (is_buy and "SELL" in analysis.signal) or (not is_buy and "BUY" in analysis.signal):
                         self.log_info(f"🔄 DYNAMIC INVALIDATION: Market reversed on {symbol}. Closing early to protect margin.")
                         self.gateway.close_position(pos['ticket'], symbol, pos['volume'], pos['type'])
                         self.async_alert(f"🔄 **Trade Scratched Early:** {symbol} structure collapsed. Capital reclaimed.")
-                        
                         self.symbol_cooldowns[symbol] = datetime.now()
             except Exception:
                 pass
@@ -258,7 +313,7 @@ class TradingBot:
             elif vol_pct > 0.003: 
                 regime = "NORMAL (TRENDING)"
             else: 
-                regime = "LOW VOLATILITY (CHOP)"
+                regime = "DEAD MARKET"
 
             acc = self.gateway.get_account_info()
             balance = acc['balance'] if acc else 10000.0
@@ -273,10 +328,12 @@ class TradingBot:
             return "UNKNOWN", 0.0
 
     def run_cycle(self):
-        if not self.is_running: return
+        if not self.is_running: 
+            return
         
         acc = self.gateway.get_account_info()
-        if not acc: return
+        if not acc: 
+            return
         
         DBManager.log_snapshot(acc['balance'], acc['equity'], acc['margin_level'], acc['free_margin'])
         current_positions = self.gateway.get_open_positions()
@@ -305,7 +362,7 @@ class TradingBot:
             
             if current_dd_usd >= self.current_var: 
                 self.log_info(f"🛑 KILL SWITCH: 99% VaR Limit Breached! (Drawdown: ${current_dd_usd:.2f} | Limit: ${self.current_var:.2f})")
-                self.async_alert(f"🛑 **CRITICAL: VALUE AT RISK (VaR) BREACHED**\nAccount hit the dynamic volatility limit (${self.current_var:.2f}). Liquidating {len(current_positions)} positions and locking system until midnight.")
+                self.async_alert(f"🛑 **CRITICAL: VALUE AT RISK (VaR) BREACHED**\nAccount hit the dynamic volatility limit (${self.current_var:.2f}). Liquidating {len(current_positions)} positions.")
                 self.close_all_positions(current_positions)
                 self.kill_switch_active = True
                 return
@@ -317,12 +374,17 @@ class TradingBot:
             return 
 
         self.apply_trailing_stop(current_positions)
+        self.evaluate_pending_orders() 
         self.evaluate_open_positions(current_positions) 
         self.active_tickets = {p['symbol'] for p in current_positions}
 
-        gold_trades = len([p for p in current_positions if "XAU" in p['symbol']])
+        gold_trades = len([p for p in current_positions if "XAU" in p['symbol'] or "XAG" in p['symbol']])
         current_count = len(current_positions) + len(self.execution_lock) 
         
+        raw_orders = mt5.orders_get()
+        pending_list = list(raw_orders) if raw_orders else []
+        usd_exposure_base = len([p for p in current_positions if "USD" in p['symbol']]) + len([o for o in pending_list if "USD" in o.symbol])
+
         if current_count >= (self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS):
             if datetime.now().second < 5: 
                 self.log_info(f"⏸️ Absolute Capacity Full ({current_count}/{self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS}). System maxed out.")
@@ -339,12 +401,19 @@ class TradingBot:
                 time_since_close = datetime.now() - self.symbol_cooldowns[symbol]
                 if time_since_close < timedelta(minutes=60):
                     continue 
+            
+            # Dynamic USD Exposure Lock
+            current_usd_locks = len([s for s in self.execution_lock if "USD" in s])
+            if "USD" in symbol and (usd_exposure_base + current_usd_locks) >= 2:
+                continue
 
             symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
 
-            if "XAU" in symbol:
-                if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1): continue 
-                elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES: continue 
+            if "XAU" in symbol or "XAG" in symbol:
+                if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1): 
+                    continue 
+                elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES: 
+                    continue 
             
             if is_sniper_mode and symbol_trades >= 3: 
                 continue 
@@ -358,10 +427,14 @@ class TradingBot:
             try:
                 symbol = pos['symbol']
                 ticket = pos['ticket']
-                if 'open_price' not in pos: continue
+                magic = pos.get('magic', 510000)
+                
+                if 'open_price' not in pos: 
+                    continue
 
                 tick = mt5.symbol_info_tick(symbol)
-                if not tick: continue
+                if not tick: 
+                    continue
                 
                 props = self.gateway.get_symbol_properties(symbol)
                 min_stop_dist = (props.get('stops_level', 0) * props['point']) if props else 0.0
@@ -379,15 +452,17 @@ class TradingBot:
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
                 
-                # ==========================================
-                # NEW: INSTITUTIONAL SCALE-OUT LOGIC (1:1 RR)
-                # ==========================================
                 scale_key = f"{symbol}_{open_price}_{pos['type']}"
                 is_ready_to_scale = False
                 
-                if "XAU" in symbol and profit_dist > 2.0: is_ready_to_scale = True
-                elif "JPY" in symbol and profit_dist > 0.200: is_ready_to_scale = True
-                elif "XAU" not in symbol and "JPY" not in symbol and profit_dist > 0.0020: is_ready_to_scale = True
+                if ("XAU" in symbol or "XAG" in symbol) and profit_dist > 2.0: 
+                    is_ready_to_scale = True
+                elif "JPY" in symbol and profit_dist > 0.200: 
+                    is_ready_to_scale = True
+                elif ("BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol) and profit_dist > 50.0: 
+                    is_ready_to_scale = True
+                elif "XAU" not in symbol and "XAG" not in symbol and "JPY" not in symbol and "BTC" not in symbol and "ETH" not in symbol and "US SP 500" not in symbol and "US Tech 100" not in symbol and profit_dist > 0.0020: 
+                    is_ready_to_scale = True
 
                 if is_ready_to_scale and scale_key not in self.scaled_positions:
                     half_vol = current_vol / 2.0
@@ -398,71 +473,93 @@ class TradingBot:
                         success = self.gateway.close_position(ticket, symbol, close_vol, pos['type'])
                         
                         if success:
-                            # SAVE STATE TO DISK
                             self.scaled_positions.add(scale_key)
                             self._save_state()
-                            
                             self.async_alert(f"⚖️ **Partial Take Profit:** {symbol}\nSecured 50% Volume. Moving SL to Breakeven.")
-                            
                             breakeven_buffer = props['point'] * 5 
                             lock_price = open_price + breakeven_buffer if is_buy else open_price - breakeven_buffer
                     else:
                         self.scaled_positions.add(scale_key)
                         self._save_state()
 
-                # ==========================================
-                # STANDARD TRAILING LOGIC FOR THE RUNNER
-                # ==========================================
-                if "XAU" in symbol:
-                    if profit_dist > 5.0:       
-                        secured_dist = profit_dist * 0.70 
+                # TIER 3: NANO TRAILING STOP (MAGIC 510001)
+                if magic == 510001:
+                    nano_trigger = 0.030 if "JPY" in symbol else 0.00030 
+                    if profit_dist > nano_trigger:
+                        secured_dist = profit_dist * 0.80
                         target = open_price + secured_dist if is_buy else open_price - secured_dist
                         lock_price = target if lock_price == 0 else target
-                    elif profit_dist > 2.0:     
-                        secured_dist = profit_dist * 0.50 
-                        target = open_price + secured_dist if is_buy else open_price - secured_dist
-                        lock_price = target if lock_price == 0 else target
-                    
-                elif "JPY" in symbol:
-                    if profit_dist > 0.400:    
-                        secured_dist = profit_dist * 0.75 
-                        target = open_price + secured_dist if is_buy else open_price - secured_dist
-                        lock_price = target if lock_price == 0 else target
-                    elif profit_dist > 0.200:  
-                        secured_dist = profit_dist * 0.50 
-                        target = open_price + secured_dist if is_buy else open_price - secured_dist
-                        lock_price = target if lock_price == 0 else target
-                    
-                else: 
-                    if profit_dist > 0.0040:    
-                        secured_dist = profit_dist * 0.80 
-                        target = open_price + secured_dist if is_buy else open_price - secured_dist
-                        lock_price = target if lock_price == 0 else target
-                    elif profit_dist > 0.0020:  
-                        secured_dist = profit_dist * 0.50 
-                        target = open_price + secured_dist if is_buy else open_price - secured_dist
-                        lock_price = target if lock_price == 0 else target
+                        
+                # TIER 1 & 2: MACRO/MICRO TRAILING STOP
+                else:
+                    if "XAU" in symbol or "XAG" in symbol:
+                        if profit_dist > 5.0:       
+                            secured_dist = profit_dist * 0.70 
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
+                        elif profit_dist > 2.0:     
+                            secured_dist = profit_dist * 0.50 
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
+                            
+                    elif "BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol:
+                        if profit_dist > 100.0:
+                            secured_dist = profit_dist * 0.80
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
+                        elif profit_dist > 50.0:
+                            secured_dist = profit_dist * 0.50
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
+                        
+                    elif "JPY" in symbol:
+                        if profit_dist > 0.400:    
+                            secured_dist = profit_dist * 0.75 
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
+                        elif profit_dist > 0.200:  
+                            secured_dist = profit_dist * 0.50 
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
+                        
+                    else: 
+                        if profit_dist > 0.0040:    
+                            secured_dist = profit_dist * 0.80 
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
+                        elif profit_dist > 0.0020:  
+                            secured_dist = profit_dist * 0.50 
+                            target = open_price + secured_dist if is_buy else open_price - secured_dist
+                            lock_price = target if lock_price == 0 else target
                 
-                if lock_price == 0: continue
+                if lock_price == 0: 
+                    continue
                 
                 if is_buy:
                     max_allowed_sl = price_current - min_stop_dist
-                    if lock_price > max_allowed_sl: lock_price = max_allowed_sl
+                    if lock_price > max_allowed_sl: 
+                        lock_price = max_allowed_sl
                 else:
                     min_allowed_sl = price_current + min_stop_dist
-                    if lock_price < min_allowed_sl: lock_price = min_allowed_sl
+                    if lock_price < min_allowed_sl: 
+                        lock_price = min_allowed_sl
 
                 should_modify = False
-                if current_sl == 0: should_modify = True
-                elif is_buy and lock_price > current_sl: should_modify = True
-                elif not is_buy and lock_price < current_sl: should_modify = True
+                if current_sl == 0: 
+                    should_modify = True
+                elif is_buy and lock_price > current_sl: 
+                    should_modify = True
+                elif not is_buy and lock_price < current_sl: 
+                    should_modify = True
                     
                 if should_modify:
                     lock_price = self.gateway.normalize_price(symbol, lock_price) 
                     
                     req = {
-                        "action": mt5.TRADE_ACTION_SLTP, "position": ticket,
-                        "sl": lock_price, "tp": pos.get('tp', 0.0)
+                        "action": mt5.TRADE_ACTION_SLTP, 
+                        "position": ticket,
+                        "sl": lock_price, 
+                        "tp": pos.get('tp', 0.0)
                     }
                     res = mt5.order_send(req)
                     if res and res.retcode == mt5.TRADE_RETCODE_DONE:
@@ -472,7 +569,8 @@ class TradingBot:
 
     def process_symbol(self, symbol, is_sniper_mode=False, upcoming_news=None):
         now = datetime.now()
-        if upcoming_news is None: upcoming_news = []
+        if upcoming_news is None: 
+            upcoming_news = []
         
         for event in upcoming_news:
             if event.get('impact') == 'High':
@@ -483,16 +581,29 @@ class TradingBot:
                         if datetime.now().second < 5:
                             self.log_info(f"📰 News Guard Active: Blocking {symbol} due to High Impact Event.")
                         return
-                except ValueError: pass 
+                except ValueError: 
+                    pass 
 
-        if symbol in self.active_tickets or symbol in self.execution_lock: return 
+        if symbol in self.active_tickets or symbol in self.execution_lock: 
+            return 
 
         props = self.gateway.get_symbol_properties(symbol)
-        if not props: return
+        if not props: 
+            return
         
         spread = (props['ask'] - props['bid']) / props['point']
-        limit = 1000 if "XAU" in symbol else 60
-        if spread > limit: return 
+        
+        if "BTC" in symbol or "ETH" in symbol:
+            limit = 50000
+        elif "US SP 500" in symbol or "US Tech 100" in symbol:
+            limit = 5000
+        elif "XAU" in symbol or "XAG" in symbol:
+            limit = 1000
+        else:
+            limit = 60
+            
+        if spread > limit: 
+            return 
         
         pending_orders = mt5.orders_get(symbol=symbol)
         if pending_orders and len(pending_orders) > 0:
@@ -501,13 +612,14 @@ class TradingBot:
         df_micro = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
         df_macro = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_H4)
         
-        if df_micro.empty or df_macro.empty: return
+        if df_micro.empty or df_macro.empty: 
+            return
 
         try:
             candles_micro = [Candle(**row) for row in df_micro.to_dict('records') if hasattr(row['time'], 'year')]
             req = AnalysisRequest(symbol=symbol, candles=candles_micro, daily_trend="NEUTRAL")
             
-            analysis = analyze_market_structure(req, df_macro=df_macro)
+            analysis = analyze_market_structure(req, df_macro=df_macro, market_regime=self.market_regime)
             
             result_status = "SKIPPED"
             required_conf = 0.92 if is_sniper_mode else 0.88
@@ -527,7 +639,6 @@ class TradingBot:
             else:
                  self.log_debug(f"[{symbol}] {analysis.reason}")
                  
-            # Safely extract the reason without calling the removed 'trend' attribute
             safe_reason = getattr(analysis, 'reason', 'No reason provided')
             indicators = {"trend": "MTF_Managed", "reason": safe_reason}
             
@@ -536,39 +647,69 @@ class TradingBot:
             self.log_debug(f"Process Error on {symbol}: {e}")
 
     def execute_signal(self, symbol, analysis, df):
-        if symbol in self.execution_lock: return
+        if symbol in self.execution_lock: 
+            return
+        
         self.execution_lock.add(symbol)
         
         def _async_execute():
             try:
+                is_nano = "NANO" in analysis.signal
                 is_buy = "BUY" in analysis.signal
                 
+                if is_nano and any(x in symbol for x in ["XAU", "XAG", "BTC", "ETH", "US SP 500", "US Tech 100"]):
+                    self.log_debug(f"NANO LOCK: Skipped {symbol} (Spread drag too high for 5-pip targets).")
+                    return
+                
                 tick = mt5.symbol_info_tick(symbol)
-                if not tick: return
+                if not tick: 
+                    return
                     
-                live_ask = tick.ask
-                live_bid = tick.bid
-                
-                c1 = df.iloc[-3]
-                c3 = df.iloc[-1]
-                
-                recent_data = df.tail(15)
-                local_high = recent_data['high'].max()
-                local_low = recent_data['low'].min()
+                local_high = df.tail(15)['high'].max()
+                local_low = df.tail(15)['low'].min()
                 structure_range = local_high - local_low
-                min_buffer = 0.50 if "XAU" in symbol else (0.10 if "JPY" in symbol else 0.0010)
+                
+                if "BTC" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol:
+                    min_buffer = 10.0
+                elif "ETH" in symbol:
+                    min_buffer = 2.0
+                elif "XAU" in symbol or "XAG" in symbol:
+                    min_buffer = 0.50
+                elif "JPY" in symbol:
+                    min_buffer = 0.10
+                else:
+                    min_buffer = 0.0010
+                    
                 volatility_buffer = max(structure_range, min_buffer)
 
+                magic_number = 510001 if is_nano else 510000
+
                 if is_buy:
-                    action = "BUY_LIMIT"
-                    raw_price = c3['low']
-                    sl_price = c1['low'] - (volatility_buffer * 0.1) 
-                    tp_price = local_high + (volatility_buffer * 0.2) 
+                    if is_nano:
+                        action = "BUY_MARKET"
+                        raw_price = tick.ask
+                        nano_sl_dist = 0.050 if "JPY" in symbol else 0.00050 
+                        nano_tp_dist = 0.070 if "JPY" in symbol else 0.00070 
+                        sl_price = tick.bid - nano_sl_dist
+                        tp_price = tick.ask + nano_tp_dist
+                    else:
+                        action = "BUY_LIMIT"
+                        raw_price = df.iloc[-1]['low']
+                        sl_price = df.iloc[-3]['low'] - (volatility_buffer * 0.1)
+                        tp_price = local_high + (volatility_buffer * 0.2)
                 else:
-                    action = "SELL_LIMIT"
-                    raw_price = c3['high']
-                    sl_price = c1['high'] + (volatility_buffer * 0.1)
-                    tp_price = local_low - (volatility_buffer * 0.2)
+                    if is_nano:
+                        action = "SELL_MARKET"
+                        raw_price = tick.bid
+                        nano_sl_dist = 0.050 if "JPY" in symbol else 0.00050
+                        nano_tp_dist = 0.070 if "JPY" in symbol else 0.00070
+                        sl_price = tick.ask + nano_sl_dist
+                        tp_price = tick.bid - nano_tp_dist
+                    else:
+                        action = "SELL_LIMIT"
+                        raw_price = df.iloc[-1]['high']
+                        sl_price = df.iloc[-3]['high'] + (volatility_buffer * 0.1)
+                        tp_price = local_low - (volatility_buffer * 0.2)
                     
                 price = self.gateway.normalize_price(symbol, raw_price)
                 sl = self.gateway.normalize_price(symbol, sl_price) 
@@ -591,7 +732,7 @@ class TradingBot:
                 
                 risk_multiplier = 0.5 if (margin_level > 0.0 and margin_level < 500.0) else 1.0 
 
-                if "XAU" in symbol:
+                if "XAU" in symbol or "XAG" in symbol:
                     risk_capital = (balance * 0.01) * risk_multiplier
                     capital_per_lot = sl_distance * 100
                     min_lot = 0.20
@@ -607,70 +748,38 @@ class TradingBot:
                 calculated_lot = round(risk_capital / capital_per_lot, 2)
                 lot = max(min_lot, calculated_lot)
                 
-                expiration_time = int(time.time()) + (4 * 3600)
-                
                 request = {
-                    "action": mt5.TRADE_ACTION_PENDING,
+                    "action": mt5.TRADE_ACTION_DEAL if is_nano else mt5.TRADE_ACTION_PENDING,
                     "symbol": symbol,
                     "volume": float(lot),
                     "price": float(price),
                     "sl": float(sl),
                     "tp": float(tp),
                     "deviation": 10,
-                    "magic": 510000,
-                    "comment": "SMC_Limit",
-                    "type_time": mt5.ORDER_TIME_SPECIFIED,
-                    "expiration": expiration_time,
+                    "magic": magic_number,
+                    "comment": "SMC_Nano" if is_nano else "SMC_Limit",
+                    "type_time": mt5.ORDER_TIME_GTC if is_nano else mt5.ORDER_TIME_SPECIFIED,
                     "type_filling": mt5.ORDER_FILLING_IOC,
                 }
 
-                if is_buy:
-                    if live_ask <= price:
-                        request["action"] = mt5.TRADE_ACTION_DEAL
-                        request["type"] = mt5.ORDER_TYPE_BUY
-                        request["price"] = live_ask
-                        del request["expiration"]
-                        request["type_time"] = mt5.ORDER_TIME_GTC
-                        action = "BUY"
-                    else:
-                        request["type"] = mt5.ORDER_TYPE_BUY_LIMIT
-                else:
-                    if live_bid >= price:
-                        request["action"] = mt5.TRADE_ACTION_DEAL
-                        request["type"] = mt5.ORDER_TYPE_SELL
-                        request["price"] = live_bid
-                        del request["expiration"]
-                        request["type_time"] = mt5.ORDER_TIME_GTC
-                        action = "SELL"
-                    else:
-                        request["type"] = mt5.ORDER_TYPE_SELL_LIMIT
+                if not is_nano: 
+                    request["expiration"] = int(time.time()) + (4 * 3600)
+                
+                if is_buy: 
+                    request["type"] = mt5.ORDER_TYPE_BUY if is_nano else mt5.ORDER_TYPE_BUY_LIMIT
+                else: 
+                    request["type"] = mt5.ORDER_TYPE_SELL if is_nano else mt5.ORDER_TYPE_SELL_LIMIT
 
                 result = mt5.order_send(request)
                 
                 safe_action = action.replace("_", " ")
 
                 if result and result.retcode == mt5.TRADE_RETCODE_DONE:
-                    self.log_info(f"🕸️ SMC TRAP SET: {symbol} {action} | Limit: {price} | Lot: {lot}")
-                    self.async_alert(f"🕸️ **SMC Limit Trap Set**: {symbol} {safe_action}\nTarget Entry: {price}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
-                    
-                    try:
-                        photo_path = VisionEngine.generate_trade_snapshot(df, symbol, action, price, sl, tp, analysis.confidence)
-                        if photo_path:
-                            caption = f"🎯 **SMC Snapshot:** {symbol} {safe_action}\nPending Entry: {price}\nSL: {sl} | TP: {tp}"
-                            self.notifier.send_photo(photo_path, caption)
-                            
-                            def _delayed_cleanup(p):
-                                time.sleep(5)
-                                try: VisionEngine.cleanup_snapshot(p)
-                                except: pass
-                            threading.Thread(target=_delayed_cleanup, args=(photo_path,)).start()
-                            
-                    except Exception as e:
-                        self.log_debug(f"⚠️ Vision Module failed to generate chart: {e}")
-                        
+                    self.log_info(f"⚡ {'MARKET EXECUTION' if is_nano else 'TRAP SET'}: {symbol} {action} | Entry: {price} | Lot: {lot}")
+                    self.async_alert(f"⚡ **SMC {safe_action}**: {symbol}\nTarget Entry: {price}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
-                    self.log_info(f"❌ MT5 REJECTED PENDING {symbol}: {err_msg}")
+                    self.log_info(f"❌ MT5 REJECTED {symbol}: {err_msg}")
 
             except Exception as e:
                 self.log_info(f"⚠️ Thread Execution Error on {symbol}: {e}")

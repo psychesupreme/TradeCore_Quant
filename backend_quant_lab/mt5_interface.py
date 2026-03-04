@@ -38,16 +38,35 @@ class MT5Gateway:
         if not symbols: return
         
         print("⚡ Optimizing Asset Indexing for Fast Boot...")
-        vip_bases = ["EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", "XAUUSD"]
+        
+        # ==========================================
+        # UPGRADED FAST-BOOT WHITELIST (17 Assets)
+        # ==========================================
+        vip_bases = [
+            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", # Majors
+            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",                               # Crosses
+            "XAUUSD", "XAGUSD",                                                   # Metals
+            "BTCUSD", "ETHUSD",                                                   # Crypto
+            "US SP 500", "US Tech 100"                                            # Indices
+        ]
+        
         count = 0
         
         for s in symbols:
+            # Check if any of our VIP base names exist anywhere inside the broker's asset name
             if any(vip in s.name for vip in vip_bases):
                 self.symbol_map[s.name] = s.name
+                
+                # Create a clean version without broker suffixes (e.g., EURUSD.m -> EURUSD)
                 clean = s.name.split('.')[0].split('_')[0]
-                if clean not in self.symbol_map: self.symbol_map[clean] = s.name
+                if clean not in self.symbol_map: 
+                    self.symbol_map[clean] = s.name
+                    
+                # Create a hyper-simplified version with no spaces/symbols for aggressive matching
                 simple = re.sub(r'[^a-zA-Z0-9]', '', s.name)
-                if simple not in self.symbol_map: self.symbol_map[simple] = s.name
+                if simple not in self.symbol_map: 
+                    self.symbol_map[simple] = s.name
+                    
                 count += 1
                 
         print(f"✅ Fast Boot: Indexed {count} VIP Assets instead of {len(symbols)}.")
@@ -183,7 +202,8 @@ class MT5Gateway:
             "type": "BUY" if p.type==0 else "SELL",
             "open_price": p.price_open,
             "sl": p.sl,
-            "tp": p.tp
+            "tp": p.tp,
+            "magic": p.magic  # ADDED: Crucial for the new NANO Trailing Stop to read the 510001 magic number!
         } for p in pos]
 
     def get_historical_deals(self, days=365):

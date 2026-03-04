@@ -30,24 +30,6 @@ class TelegramNotifier:
                     time.sleep(5)
         threading.Thread(target=_send_async).start()
 
-    def send_photo(self, photo_path, caption=""):
-        def _send_photo_async():
-            for attempt in range(5):
-                try:
-                    with open(photo_path, 'rb') as photo:
-                        self.bot.send_photo(
-                            self.chat_id, 
-                            photo, 
-                            caption=caption, 
-                            parse_mode="Markdown", 
-                            timeout=60
-                        )
-                    break 
-                except Exception as e:
-                    print(f"⚠️ Telegram Image Upload Latency: {e}. Retry {attempt+1}/5...")
-                    time.sleep(10)
-        threading.Thread(target=_send_photo_async).start()
-
     def start_listening(self, command_callback):
         self.is_listening = True
         
