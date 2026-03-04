@@ -527,7 +527,10 @@ class TradingBot:
             else:
                  self.log_debug(f"[{symbol}] {analysis.reason}")
                  
-            indicators = {"trend": analysis.trend, "reason": analysis.reason}
+            # Safely extract the reason without calling the removed 'trend' attribute
+            safe_reason = getattr(analysis, 'reason', 'No reason provided')
+            indicators = {"trend": "MTF_Managed", "reason": safe_reason}
+            
             DBManager.log_signal(symbol, analysis.signal, analysis.confidence, indicators, result_status)
         except Exception as e: 
             self.log_debug(f"Process Error on {symbol}: {e}")
