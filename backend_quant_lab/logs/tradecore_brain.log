@@ -16562,3 +16562,141 @@
 2026-03-05 00:40:01 [DEBUG] [BTCUSD] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
 2026-03-05 00:40:02 [DEBUG] [US SP 500] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
 2026-03-05 00:40:03 [DEBUG] [US Tech 100] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:40:47 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:47 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:48 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:48 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:49 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:49 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:49 [DEBUG] [NZDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:49 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:49 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:49 [DEBUG] [EURGBP] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:49 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:50 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:50 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:40:50 [DEBUG] [BTCUSD] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:40:50 [DEBUG] [US SP 500] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:40:50 [DEBUG] [US Tech 100] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:41:47 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:47 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:48 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:48 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:48 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:48 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:48 [DEBUG] [NZDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:48 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:48 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:49 [DEBUG] [EURGBP] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:49 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:49 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:49 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:41:49 [DEBUG] [BTCUSD] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:41:49 [DEBUG] [US SP 500] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:41:50 [DEBUG] [US Tech 100] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:42:48 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:49 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:49 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:50 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:50 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:51 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:51 [DEBUG] [NZDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:52 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:53 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:54 [DEBUG] [EURGBP] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:55 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:55 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:56 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:42:56 [DEBUG] [BTCUSD] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:42:57 [DEBUG] [US SP 500] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:42:57 [DEBUG] [US Tech 100] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:43:47 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:48 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:49 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:49 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:50 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:51 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:52 [DEBUG] [NZDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:52 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:53 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:53 [DEBUG] [EURGBP] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:54 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:54 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:55 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:43:55 [DEBUG] [BTCUSD] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:43:56 [DEBUG] [US SP 500] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:43:57 [DEBUG] [US Tech 100] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:44:47 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:48 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:49 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:49 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:50 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:50 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:51 [DEBUG] [NZDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:51 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:52 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:52 [DEBUG] [EURGBP] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:53 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:55 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:55 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:44:55 [DEBUG] [BTCUSD] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:44:56 [DEBUG] [US SP 500] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:44:57 [DEBUG] [US Tech 100] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:45:48 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:49 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:49 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:50 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:51 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:52 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:52 [DEBUG] [NZDUSD] SMC Tracker [NANO]: Bearish FVG blocked (Low Volume Fakeout / Vacuum).
+2026-03-05 00:45:53 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:56 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:56 [DEBUG] [EURGBP] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:45:57 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:58 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:45:58 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:01 [DEBUG] [BTCUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:11 [DEBUG] [US SP 500] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:12 [DEBUG] [US Tech 100] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:48 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:48 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:49 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:51 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:52 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:52 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:53 [DEBUG] [NZDUSD] SMC Tracker [NANO]: Bearish FVG blocked (Low Volume Fakeout / Vacuum).
+2026-03-05 00:46:53 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:54 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:55 [DEBUG] [EURGBP] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:46:55 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:56 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:57 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:58 [DEBUG] [BTCUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:58 [DEBUG] [US SP 500] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:46:59 [DEBUG] [US Tech 100] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:49 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:49 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:50 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:50 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:50 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:50 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:51 [DEBUG] [NZDUSD] SMC Tracker [NANO]: Bearish FVG blocked (Low Volume Fakeout / Vacuum).
+2026-03-05 00:47:51 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:51 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:51 [DEBUG] [EURGBP] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-05 00:47:51 [DEBUG] [AUDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:51 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:52 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:52 [DEBUG] [BTCUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:53 [DEBUG] [US SP 500] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:47:53 [DEBUG] [US Tech 100] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:47 [DEBUG] [EURUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:48 [DEBUG] [GBPUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:48 [DEBUG] [USDJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:49 [DEBUG] [USDCAD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:49 [DEBUG] [USDCHF] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:50 [DEBUG] [AUDUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:50 [DEBUG] [NZDUSD] SMC Tracker [NANO]: Bearish FVG blocked (Low Volume Fakeout / Vacuum).
+2026-03-05 00:48:51 [DEBUG] [EURJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:52 [DEBUG] [GBPJPY] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-05 00:48:52 [DEBUG] [EURGBP] SMC Tracker [NANO]: Bullish Liquidity Swept. Waiting for volume injection.
