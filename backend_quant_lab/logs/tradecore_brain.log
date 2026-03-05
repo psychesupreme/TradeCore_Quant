@@ -36110,3 +36110,9 @@
 2026-03-06 01:33:03 [DEBUG] [BTCUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
 2026-03-06 01:33:03 [DEBUG] [US SP 500] SMC Tracker: Price ranging inside structure. No sweeps detected.
 2026-03-06 01:33:03 [DEBUG] [US Tech 100] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-06 01:34:04 [DEBUG] VaR inputs: FX 0.347% | GOLD 0.754% → blended 0.500%
+2026-03-06 01:34:04 [DEBUG] [XAUUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-06 01:34:04 [DEBUG] [XAGUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-06 01:34:07 [DEBUG] [BTCUSD] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-06 01:34:08 [DEBUG] [US SP 500] SMC Tracker: Price ranging inside structure. No sweeps detected.
+2026-03-06 01:34:08 [DEBUG] [US Tech 100] SMC Tracker: Price ranging inside structure. No sweeps detected.
