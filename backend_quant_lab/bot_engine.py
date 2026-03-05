@@ -625,6 +625,12 @@ class TradingBot:
             required_conf = 0.92 if is_sniper_mode else 0.88
 
             if analysis.signal != "NEUTRAL":
+                 # NANO SPREAD LOCK: Moved here to prevent UI spam and logic loops
+                 is_nano = "NANO" in analysis.signal
+                 if is_nano and any(x in symbol for x in ["XAU", "XAG", "BTC", "ETH", "US SP 500", "US Tech 100"]):
+                     self.log_debug(f"[{symbol}] NANO LOCK: Skipped (Spread drag too high).")
+                     return
+
                  if analysis.confidence >= required_conf:
                      if is_sniper_mode:
                          self.log_info(f"🎯 GLOBAL SNIPER OVERRIDE: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
@@ -632,7 +638,7 @@ class TradingBot:
                          self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
                      
                      result_status = "EXECUTED"
-                     self.execute_signal(symbol, analysis, df_micro)
+                     self.execute_signal(symbol, analysis, df_micro, props) # Passing properties to evaluate Filling Modes
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
                      self.log_debug(f"[{symbol}] {analysis.reason}")
@@ -646,7 +652,7 @@ class TradingBot:
         except Exception as e: 
             self.log_debug(f"Process Error on {symbol}: {e}")
 
-    def execute_signal(self, symbol, analysis, df):
+    def execute_signal(self, symbol, analysis, df, props):
         if symbol in self.execution_lock: 
             return
         
@@ -656,10 +662,6 @@ class TradingBot:
             try:
                 is_nano = "NANO" in analysis.signal
                 is_buy = "BUY" in analysis.signal
-                
-                if is_nano and any(x in symbol for x in ["XAU", "XAG", "BTC", "ETH", "US SP 500", "US Tech 100"]):
-                    self.log_debug(f"NANO LOCK: Skipped {symbol} (Spread drag too high for 5-pip targets).")
-                    return
                 
                 tick = mt5.symbol_info_tick(symbol)
                 if not tick: 
@@ -748,6 +750,17 @@ class TradingBot:
                 calculated_lot = round(risk_capital / capital_per_lot, 2)
                 lot = max(min_lot, calculated_lot)
                 
+                # ==========================================
+                # DYNAMIC FILLING MODE RESOLUTION
+                # ==========================================
+                filling_mode_code = props.get('filling_mode', 0)
+                if filling_mode_code & 1:
+                    type_filling = mt5.ORDER_FILLING_FOK
+                elif filling_mode_code & 2:
+                    type_filling = mt5.ORDER_FILLING_IOC
+                else:
+                    type_filling = mt5.ORDER_FILLING_RETURN # Fallback
+
                 request = {
                     "action": mt5.TRADE_ACTION_DEAL if is_nano else mt5.TRADE_ACTION_PENDING,
                     "symbol": symbol,
@@ -759,7 +772,7 @@ class TradingBot:
                     "magic": magic_number,
                     "comment": "SMC_Nano" if is_nano else "SMC_Limit",
                     "type_time": mt5.ORDER_TIME_GTC if is_nano else mt5.ORDER_TIME_SPECIFIED,
-                    "type_filling": mt5.ORDER_FILLING_IOC,
+                    "type_filling": type_filling,
                 }
 
                 if not is_nano: 
