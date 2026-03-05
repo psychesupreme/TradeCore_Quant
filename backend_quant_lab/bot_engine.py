@@ -52,17 +52,18 @@ class TradingBot:
         # FULLY DIVERSIFIED ASSET MATRIX
         # ==========================================
         self.vip_assets = [
-            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", # USD Majors
-            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",  # Non-USD Crosses (Diversification)
-            "XAUUSD", "XAGUSD",                      # Metals
-            "BTCUSD", "ETHUSD",                      # Crypto
-            "US SP 500", "US Tech 100"               # Broker-Specific Indices
+            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", 
+            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",  
+            "XAUUSD", "XAGUSD",                      
+            "BTCUSD", "ETHUSD",                      
+            "US SP 500", "US Tech 100"               
         ]
         
         self.active_symbols = [] 
         self.symbol_cooldowns = {} 
         
-        self.MAX_OPEN_TRADES = 7       
+        # Expanded absolute capacity limits
+        self.MAX_OPEN_TRADES = 12       
         self.MAX_SNIPER_SLOTS = 5      
         self.MAX_GOLD_TRADES = 3       
         
@@ -271,6 +272,8 @@ class TradingBot:
                 duration_hours = (time.time() - pos['time']) / 3600.0
                 profit = pos['profit']
                 
+                # RESTORED: Stable 12-Hour Time Decay. 
+                # Prevents the AI from panicking and exiting valid setups early.
                 if duration_hours > 12.0 and profit < 0:
                     self.log_info(f"⏳ Time Decay Killswitch: {symbol} stuck in dead momentum for >12H. Liquidating.")
                     self.gateway.close_position(pos['ticket'], symbol, pos['volume'], pos['type'])
@@ -278,21 +281,6 @@ class TradingBot:
                     self.symbol_cooldowns[symbol] = datetime.now()
                     continue
 
-                df = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
-                if df.empty: 
-                    continue
-                
-                candles = [Candle(**row) for row in df.to_dict('records') if hasattr(row['time'], 'year')]
-                req = AnalysisRequest(symbol=symbol, candles=candles, daily_trend="NEUTRAL")
-                
-                analysis = analyze_market_structure(req, None, self.market_regime)
-                
-                if analysis.signal != "NEUTRAL" and analysis.confidence >= 0.90:
-                    if (is_buy and "SELL" in analysis.signal) or (not is_buy and "BUY" in analysis.signal):
-                        self.log_info(f"🔄 DYNAMIC INVALIDATION: Market reversed on {symbol}. Closing early to protect margin.")
-                        self.gateway.close_position(pos['ticket'], symbol, pos['volume'], pos['type'])
-                        self.async_alert(f"🔄 **Trade Scratched Early:** {symbol} structure collapsed. Capital reclaimed.")
-                        self.symbol_cooldowns[symbol] = datetime.now()
             except Exception:
                 pass
 
@@ -318,8 +306,9 @@ class TradingBot:
             acc = self.gateway.get_account_info()
             balance = acc['balance'] if acc else 10000.0
             
-            raw_var = balance * 0.10 * 2.326 * (vol_pct * 100)
-            daily_var_usd = max(balance * 0.03, min(raw_var, balance * 0.12))
+            # UPGRADED VaR: Expanded to 25% max to support 12 trades
+            raw_var = balance * 0.15 * 2.326 * (vol_pct * 100)
+            daily_var_usd = max(balance * 0.05, min(raw_var, balance * 0.25))
             
             return regime, round(daily_var_usd, 2)
 
@@ -408,6 +397,10 @@ class TradingBot:
                 continue
 
             symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
+            
+            nano_trades = len([p for p in current_positions if p['symbol'] == symbol and p.get('magic', 510000) == 510001])
+            if "DEAD MARKET" in self.market_regime and nano_trades >= 1:
+                continue 
 
             if "XAU" in symbol or "XAG" in symbol:
                 if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1): 
@@ -482,55 +475,36 @@ class TradingBot:
                         self.scaled_positions.add(scale_key)
                         self._save_state()
 
-                # TIER 3: NANO TRAILING STOP (MAGIC 510001)
                 if magic == 510001:
                     nano_trigger = 0.030 if "JPY" in symbol else 0.00030 
                     if profit_dist > nano_trigger:
                         secured_dist = profit_dist * 0.80
-                        target = open_price + secured_dist if is_buy else open_price - secured_dist
-                        lock_price = target if lock_price == 0 else target
+                        lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                         
-                # TIER 1 & 2: MACRO/MICRO TRAILING STOP
                 else:
                     if "XAU" in symbol or "XAG" in symbol:
                         if profit_dist > 5.0:       
-                            secured_dist = profit_dist * 0.70 
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.70) if is_buy else open_price - (profit_dist * 0.70)
                         elif profit_dist > 2.0:     
-                            secured_dist = profit_dist * 0.50 
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                             
                     elif "BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol:
                         if profit_dist > 100.0:
-                            secured_dist = profit_dist * 0.80
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
                         elif profit_dist > 50.0:
-                            secured_dist = profit_dist * 0.50
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                         
                     elif "JPY" in symbol:
                         if profit_dist > 0.400:    
-                            secured_dist = profit_dist * 0.75 
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.75) if is_buy else open_price - (profit_dist * 0.75)
                         elif profit_dist > 0.200:  
-                            secured_dist = profit_dist * 0.50 
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                         
                     else: 
                         if profit_dist > 0.0040:    
-                            secured_dist = profit_dist * 0.80 
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
                         elif profit_dist > 0.0020:  
-                            secured_dist = profit_dist * 0.50 
-                            target = open_price + secured_dist if is_buy else open_price - secured_dist
-                            lock_price = target if lock_price == 0 else target
+                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                 
                 if lock_price == 0: 
                     continue
@@ -625,7 +599,6 @@ class TradingBot:
             required_conf = 0.92 if is_sniper_mode else 0.88
 
             if analysis.signal != "NEUTRAL":
-                 # NANO SPREAD LOCK: Moved here to prevent UI spam and logic loops
                  is_nano = "NANO" in analysis.signal
                  if is_nano and any(x in symbol for x in ["XAU", "XAG", "BTC", "ETH", "US SP 500", "US Tech 100"]):
                      self.log_debug(f"[{symbol}] NANO LOCK: Skipped (Spread drag too high).")
@@ -638,7 +611,7 @@ class TradingBot:
                          self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
                      
                      result_status = "EXECUTED"
-                     self.execute_signal(symbol, analysis, df_micro, props) # Passing properties to evaluate Filling Modes
+                     self.execute_signal(symbol, analysis, df_micro, props) 
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
                      self.log_debug(f"[{symbol}] {analysis.reason}")
@@ -671,29 +644,27 @@ class TradingBot:
                 local_low = df.tail(15)['low'].min()
                 structure_range = local_high - local_low
                 
-                if "BTC" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol:
-                    min_buffer = 10.0
-                elif "ETH" in symbol:
-                    min_buffer = 2.0
-                elif "XAU" in symbol or "XAG" in symbol:
-                    min_buffer = 0.50
-                elif "JPY" in symbol:
-                    min_buffer = 0.10
-                else:
-                    min_buffer = 0.0010
-                    
+                min_buffer = 10.0 if "BTC" in symbol else 2.0 if "ETH" in symbol else 0.50 if "XAU" in symbol else 0.10 if "JPY" in symbol else 0.0010
                 volatility_buffer = max(structure_range, min_buffer)
 
                 magic_number = 510001 if is_nano else 510000
+
+                # ==========================================
+                # BOUNDED DYNAMIC NANO STOP LOSS
+                # ==========================================
+                base_nano_sl = volatility_buffer * 0.4
+                floor_sl = 0.060 if "JPY" in symbol else 0.00060  
+                ceil_sl = 0.150 if "JPY" in symbol else 0.00150   
+                
+                dynamic_nano_sl = max(floor_sl, min(base_nano_sl, ceil_sl))
+                dynamic_nano_tp = dynamic_nano_sl * 1.5 
 
                 if is_buy:
                     if is_nano:
                         action = "BUY_MARKET"
                         raw_price = tick.ask
-                        nano_sl_dist = 0.050 if "JPY" in symbol else 0.00050 
-                        nano_tp_dist = 0.070 if "JPY" in symbol else 0.00070 
-                        sl_price = tick.bid - nano_sl_dist
-                        tp_price = tick.ask + nano_tp_dist
+                        sl_price = tick.bid - dynamic_nano_sl
+                        tp_price = tick.ask + dynamic_nano_tp
                     else:
                         action = "BUY_LIMIT"
                         raw_price = df.iloc[-1]['low']
@@ -703,10 +674,8 @@ class TradingBot:
                     if is_nano:
                         action = "SELL_MARKET"
                         raw_price = tick.bid
-                        nano_sl_dist = 0.050 if "JPY" in symbol else 0.00050
-                        nano_tp_dist = 0.070 if "JPY" in symbol else 0.00070
-                        sl_price = tick.ask + nano_sl_dist
-                        tp_price = tick.bid - nano_tp_dist
+                        sl_price = tick.ask + dynamic_nano_sl
+                        tp_price = tick.bid - dynamic_nano_tp
                     else:
                         action = "SELL_LIMIT"
                         raw_price = df.iloc[-1]['high']
@@ -733,6 +702,8 @@ class TradingBot:
                     return
                 
                 risk_multiplier = 0.5 if (margin_level > 0.0 and margin_level < 500.0) else 1.0 
+                if is_nano:
+                    risk_multiplier = risk_multiplier * 0.25 
 
                 if "XAU" in symbol or "XAG" in symbol:
                     risk_capital = (balance * 0.01) * risk_multiplier
@@ -750,16 +721,13 @@ class TradingBot:
                 calculated_lot = round(risk_capital / capital_per_lot, 2)
                 lot = max(min_lot, calculated_lot)
                 
-                # ==========================================
-                # DYNAMIC FILLING MODE RESOLUTION
-                # ==========================================
                 filling_mode_code = props.get('filling_mode', 0)
                 if filling_mode_code & 1:
                     type_filling = mt5.ORDER_FILLING_FOK
                 elif filling_mode_code & 2:
                     type_filling = mt5.ORDER_FILLING_IOC
                 else:
-                    type_filling = mt5.ORDER_FILLING_RETURN # Fallback
+                    type_filling = mt5.ORDER_FILLING_RETURN 
 
                 request = {
                     "action": mt5.TRADE_ACTION_DEAL if is_nano else mt5.TRADE_ACTION_PENDING,
@@ -801,6 +769,9 @@ class TradingBot:
                 
         threading.Thread(target=_async_execute).start()
             
+    # ==========================================
+    # FULLY RESTORED DASHBOARD API TELEMETRY
+    # ==========================================
     def get_status(self):
         acc = self.gateway.get_account_info()
         raw_pos = self.gateway.get_open_positions()
