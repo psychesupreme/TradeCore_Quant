@@ -1,104 +1,135 @@
+# ============================================================
+# TradeCore v51.0 — mt5_interface.py
+# SPRINT 2 FIXES APPLIED:
+#   [BUG-09] get_open_positions() now includes 'open_time' key
+#            (epoch seconds). Fixes 12-hour dead trade liquidation
+#            which was crashing silently with KeyError every cycle.
+#   [BUG-15] get_historical_deals() now respects the 'days'
+#            parameter instead of hardcoding datetime(2020,1,1).
+#   [QUALITY] Reconnect logic improved in get_account_info().
+#   [QUALITY] close_position() now tries RETURN mode as final
+#             fallback in addition to FOK/IOC.
+# ============================================================
+
 import MetaTrader5 as mt5
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import re
 import math
 
+
 class MT5Gateway:
     def __init__(self):
         self.connected = False
-        self.symbol_map = {} 
+        self.symbol_map = {}
 
+    # ----------------------------------------------------------
+    # CONNECTION
+    # ----------------------------------------------------------
     def start(self, login=None, password=None, server=None):
         if login and password and server:
             init_res = mt5.initialize(login=int(login), password=password, server=server)
         else:
             init_res = mt5.initialize()
-            
+
         if init_res:
             self.connected = True
             self._build_symbol_cache()
             return True
-            
+
+        # Fallback: try explicit terminal path (Windows)
         try:
             if mt5.initialize(path=r"C:\Program Files\MetaTrader 5\terminal64.exe"):
                 self.connected = True
                 self._build_symbol_cache()
                 return True
-        except: pass
-        
+        except Exception:
+            pass
+
         self.connected = False
-        print("❌ CRITICAL: MT5 Initialization Failed")
+        print("❌ CRITICAL: MT5 Initialization Failed. Check terminal is running.")
         return False
 
+    # ----------------------------------------------------------
+    # SYMBOL CACHE
+    # ----------------------------------------------------------
     def _build_symbol_cache(self):
-        if self.symbol_map: return 
+        """Indexes only VIP assets for fast symbol lookups at runtime."""
+        if self.symbol_map:
+            return
+
         symbols = mt5.symbols_get()
-        if not symbols: return
-        
+        if not symbols:
+            return
+
         print("⚡ Optimizing Asset Indexing for Fast Boot...")
-        
-        # ==========================================
-        # UPGRADED FAST-BOOT WHITELIST (17 Assets)
-        # ==========================================
+
         vip_bases = [
-            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", # Majors
-            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",                               # Crosses
-            "XAUUSD", "XAGUSD",                                                   # Metals
-            "BTCUSD", "ETHUSD",                                                   # Crypto
-            "US SP 500", "US Tech 100"                                            # Indices
+            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD",
+            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",
+            "XAUUSD", "XAGUSD",
+            "BTCUSD", "ETHUSD",
+            "US SP 500", "US Tech 100"
         ]
-        
+
         count = 0
-        
         for s in symbols:
-            # Check if any of our VIP base names exist anywhere inside the broker's asset name
             if any(vip in s.name for vip in vip_bases):
                 self.symbol_map[s.name] = s.name
-                
-                # Create a clean version without broker suffixes (e.g., EURUSD.m -> EURUSD)
+
                 clean = s.name.split('.')[0].split('_')[0]
-                if clean not in self.symbol_map: 
+                if clean not in self.symbol_map:
                     self.symbol_map[clean] = s.name
-                    
-                # Create a hyper-simplified version with no spaces/symbols for aggressive matching
+
                 simple = re.sub(r'[^a-zA-Z0-9]', '', s.name)
-                if simple not in self.symbol_map: 
+                if simple not in self.symbol_map:
                     self.symbol_map[simple] = s.name
-                    
+
                 count += 1
-                
+
         print(f"✅ Fast Boot: Indexed {count} VIP Assets instead of {len(symbols)}.")
 
-    def find_symbol(self, target):
-        if not self.symbol_map: self._build_symbol_cache()
-        if target in self.symbol_map: return self.symbol_map[target]
+    def find_symbol(self, target: str) -> str | None:
+        if not self.symbol_map:
+            self._build_symbol_cache()
+        if target in self.symbol_map:
+            return self.symbol_map[target]
         for k, v in self.symbol_map.items():
-            if k in target or target in k: return v
+            if k in target or target in k:
+                return v
         return None
 
-    def normalize_price(self, symbol, price):
-        if not self.connected: self.start()
+    # ----------------------------------------------------------
+    # PRICE NORMALIZATION
+    # ----------------------------------------------------------
+    def normalize_price(self, symbol: str, price: float) -> float:
+        if not self.connected:
+            self.start()
         real_symbol = self.find_symbol(symbol)
-        if not real_symbol: return price
-        
+        if not real_symbol:
+            return price
         info = mt5.symbol_info(real_symbol)
-        if not info: return price
-        
+        if not info:
+            return price
         tick_size = info.trade_tick_size
-        digits = info.digits
-        
-        if tick_size == 0: return round(price, digits)
-        
-        snapped_price = math.floor(price / tick_size) * tick_size
-        return round(snapped_price, digits)
+        digits    = info.digits
+        if tick_size == 0:
+            return round(price, digits)
+        snapped = math.floor(price / tick_size) * tick_size
+        return round(snapped, digits)
 
-    def get_market_data(self, symbol, timeframe=mt5.TIMEFRAME_M15, n_candles=100):
-        if not self.connected: self.start()
+    # ----------------------------------------------------------
+    # MARKET DATA
+    # ----------------------------------------------------------
+    def get_market_data(self, symbol: str, timeframe=mt5.TIMEFRAME_M15, n_candles: int = 100) -> pd.DataFrame:
+        if not self.connected:
+            self.start()
         real_symbol = self.find_symbol(symbol)
-        if not real_symbol: return pd.DataFrame() 
-        if not mt5.symbol_select(real_symbol, True): return pd.DataFrame()
+        if not real_symbol:
+            return pd.DataFrame()
+        if not mt5.symbol_select(real_symbol, True):
+            return pd.DataFrame()
 
         for _ in range(3):
             rates = mt5.copy_rates_from_pos(real_symbol, timeframe, 0, n_candles)
@@ -110,118 +141,193 @@ class MT5Gateway:
             time.sleep(0.2)
         return pd.DataFrame()
 
-    def get_symbol_properties(self, symbol):
-        if not self.connected: self.start()
+    # ----------------------------------------------------------
+    # SYMBOL PROPERTIES
+    # ----------------------------------------------------------
+    def get_symbol_properties(self, symbol: str) -> dict | None:
+        if not self.connected:
+            self.start()
         real_symbol = self.find_symbol(symbol)
-        if not real_symbol: return None
+        if not real_symbol:
+            return None
         i = mt5.symbol_info(real_symbol)
-        if not i: return None
+        if not i:
+            return None
         stops_level = getattr(i, 'stops_level', 0)
         return {
-            "name": i.name, "point": i.point, "trade_contract_size": i.trade_contract_size,
-            "min_lot": i.volume_min, "max_lot": i.volume_max, "volume_step": i.volume_step,
-            "ask": i.ask, "bid": i.bid, "filling_mode": i.filling_mode, "stops_level": stops_level
+            "name":                i.name,
+            "point":               i.point,
+            "trade_contract_size": i.trade_contract_size,
+            "min_lot":             i.volume_min,
+            "max_lot":             i.volume_max,
+            "volume_step":         i.volume_step,
+            "ask":                 i.ask,
+            "bid":                 i.bid,
+            "filling_mode":        i.filling_mode,
+            "stops_level":         stops_level,
         }
 
-    def execute_trade(self, symbol, action, lot, sl, tp):
-        if not self.connected: self.start()
+    # ----------------------------------------------------------
+    # EXECUTE TRADE (used by legacy/manual paths)
+    # ----------------------------------------------------------
+    def execute_trade(self, symbol: str, action: str, lot: float, sl: float, tp: float) -> dict:
+        if not self.connected:
+            self.start()
         real_symbol = self.find_symbol(symbol)
-        if not real_symbol: return {"success": False, "message": "Symbol Not Found"}
-        
-        i = mt5.symbol_info(real_symbol)
-        if i is None: return {"success": False, "message": "Symbol Info Failed"}
+        if not real_symbol:
+            return {"success": False, "message": "Symbol Not Found"}
 
-        fill = mt5.ORDER_FILLING_FOK if (i.filling_mode & 1) else mt5.ORDER_FILLING_IOC
+        i = mt5.symbol_info(real_symbol)
+        if i is None:
+            return {"success": False, "message": "Symbol Info Failed"}
+
+        fill    = mt5.ORDER_FILLING_FOK if (i.filling_mode & 1) else mt5.ORDER_FILLING_IOC
         type_op = mt5.ORDER_TYPE_BUY if action == "BUY" else mt5.ORDER_TYPE_SELL
-        price = i.ask if action == "BUY" else i.bid
+        price   = i.ask if action == "BUY" else i.bid
 
         req = {
-            "action": mt5.TRADE_ACTION_DEAL, "symbol": real_symbol,
-            "volume": float(lot), "type": type_op, "price": price,
-            "sl": float(sl), "tp": float(tp), "magic": 27000,
-            "comment": "TradeCore v51", "type_time": mt5.ORDER_TIME_GTC, "type_filling": fill
+            "action":       mt5.TRADE_ACTION_DEAL,
+            "symbol":       real_symbol,
+            "volume":       float(lot),
+            "type":         type_op,
+            "price":        price,
+            "sl":           float(sl),
+            "tp":           float(tp),
+            "magic":        27000,
+            "comment":      "TradeCore v51",
+            "type_time":    mt5.ORDER_TIME_GTC,
+            "type_filling": fill,
         }
-        
+
         for attempt in range(5):
             res = mt5.order_send(req)
             if res is None:
                 time.sleep(2)
                 continue
-                
             if res.retcode == mt5.TRADE_RETCODE_DONE:
                 return {"success": True, "message": f"Opened {real_symbol}", "ticket": res.order}
-            elif res.retcode in [10012, 10031]: 
-                print(f"⚠️ Broker Network Drop ({res.retcode}). Blocking Cascade & Retrying {attempt+1}/5...")
-                time.sleep(3) 
+            elif res.retcode in [10012, 10031]:
+                print(f"⚠️  Broker Network Drop ({res.retcode}). Retry {attempt + 1}/5...")
+                time.sleep(3)
                 continue
-            elif res.retcode == 10018: return {"success": False, "message": "Market Closed"}
-            elif res.retcode == 10013: return {"success": False, "message": "Invalid Request"}
-            else: return {"success": False, "message": f"MT5 Error: {res.comment} ({res.retcode})"}
-            
+            elif res.retcode == 10018:
+                return {"success": False, "message": "Market Closed"}
+            elif res.retcode == 10013:
+                return {"success": False, "message": "Invalid Request"}
+            else:
+                return {"success": False, "message": f"MT5 Error: {res.comment} ({res.retcode})"}
+
         return {"success": False, "message": "Failed after 5 network retries."}
 
-    def close_position(self, ticket, symbol, volume, type_op):
-        if not self.connected: self.start()
+    # ----------------------------------------------------------
+    # CLOSE POSITION
+    # ----------------------------------------------------------
+    def close_position(self, ticket: int, symbol: str, volume: float, type_op) -> bool:
+        if not self.connected:
+            self.start()
         real_symbol = self.find_symbol(symbol) or symbol
-        is_buy = (type_op == "BUY" or type_op == 0)
-        close_type = mt5.ORDER_TYPE_SELL if is_buy else mt5.ORDER_TYPE_BUY
-        tick = mt5.symbol_info_tick(real_symbol)
-        if not tick: return False
+        is_buy      = (type_op == "BUY" or type_op == 0)
+        close_type  = mt5.ORDER_TYPE_SELL if is_buy else mt5.ORDER_TYPE_BUY
+        tick        = mt5.symbol_info_tick(real_symbol)
+        if not tick:
+            return False
         price = tick.bid if is_buy else tick.ask
-        
-        for mode in [mt5.ORDER_FILLING_FOK, mt5.ORDER_FILLING_IOC]:
+
+        # Try all three fill modes — same retry logic as execute_signal
+        for mode in [mt5.ORDER_FILLING_FOK, mt5.ORDER_FILLING_IOC, mt5.ORDER_FILLING_RETURN]:
             req = {
-                "action": mt5.TRADE_ACTION_DEAL, "position": ticket, "symbol": real_symbol,
-                "volume": float(volume), "type": close_type, "price": price, "magic": 27000, "type_filling": mode
+                "action":       mt5.TRADE_ACTION_DEAL,
+                "position":     ticket,
+                "symbol":       real_symbol,
+                "volume":       float(volume),
+                "type":         close_type,
+                "price":        price,
+                "magic":        27000,
+                "type_filling": mode,
             }
             res = mt5.order_send(req)
-            if res and res.retcode == mt5.TRADE_RETCODE_DONE: return True
+            if res and res.retcode == mt5.TRADE_RETCODE_DONE:
+                return True
+            if res and res.retcode != 10030:
+                break  # Non-fill error — stop retrying
         return False
 
-    def get_account_info(self):
-        if not self.connected: self.start()
-        
+    # ----------------------------------------------------------
+    # ACCOUNT INFO
+    # ----------------------------------------------------------
+    def get_account_info(self) -> dict | None:
+        if not self.connected:
+            self.start()
+
         i = mt5.account_info()
-        
+
         if i is None:
-            print("⚠️ MT5 Broker Connection Lost. Attempting Auto-Reconnect...")
-            self.connected = False 
-            if self.start(): 
-                i = mt5.account_info() 
-            
-        return {"balance": i.balance, "equity": i.equity, "profit": i.profit, "margin_level": i.margin_level, "free_margin": i.margin_free} if i else None
-    
-    def get_open_positions(self):
-        if not self.connected: self.start()
+            print("⚠️  MT5 Broker Connection Lost. Attempting Auto-Reconnect...")
+            self.connected = False
+            if self.start():
+                i = mt5.account_info()
+
+        if i is None:
+            print("❌ MT5 Reconnect Failed. Account info unavailable.")
+            return None
+
+        return {
+            "balance":      i.balance,
+            "equity":       i.equity,
+            "profit":       i.profit,
+            "margin_level": i.margin_level,
+            "free_margin":  i.margin_free,
+        }
+
+    # ----------------------------------------------------------
+    # OPEN POSITIONS
+    # [BUG-09 FIX] Added 'open_time' field (epoch seconds).
+    # evaluate_open_positions() in bot_engine uses this to
+    # calculate trade duration for the 12-hour decay killswitch.
+    # ----------------------------------------------------------
+    def get_open_positions(self) -> list:
+        if not self.connected:
+            self.start()
         pos = mt5.positions_get() or []
         return [{
-            "ticket": p.ticket, 
-            "symbol": p.symbol, 
-            "profit": p.profit, 
-            "volume": p.volume, 
-            "type": "BUY" if p.type==0 else "SELL",
+            "ticket":     p.ticket,
+            "symbol":     p.symbol,
+            "profit":     p.profit,
+            "volume":     p.volume,
+            "type":       "BUY" if p.type == 0 else "SELL",
             "open_price": p.price_open,
-            "sl": p.sl,
-            "tp": p.tp,
-            "magic": p.magic  # ADDED: Crucial for the new NANO Trailing Stop to read the 510001 magic number!
+            "open_time":  p.time,        # [BUG-09 FIX] epoch seconds — was missing
+            "sl":         p.sl,
+            "tp":         p.tp,
+            "magic":      p.magic,
         } for p in pos]
 
-    def get_historical_deals(self, days=365):
-        if not self.connected: self.start()
-        from_date = datetime(2020, 1, 1)
-        to_date = datetime(2030, 1, 1)
-        
+    # ----------------------------------------------------------
+    # HISTORICAL DEALS
+    # [BUG-15 FIX] Now respects the 'days' parameter.
+    # Was hardcoded to datetime(2020, 1, 1) — always fetched
+    # the entire account history regardless of the argument.
+    # ----------------------------------------------------------
+    def get_historical_deals(self, days: int = 365) -> list:
+        if not self.connected:
+            self.start()
+
+        from_date = datetime.now() - timedelta(days=days)  # [BUG-15 FIX]
+        to_date   = datetime.now()
+
         deals = mt5.history_deals_get(from_date, to_date)
-        if deals is None or len(deals) == 0: return []
-            
+        if deals is None or len(deals) == 0:
+            return []
+
         clean_deals = []
         for d in deals:
-            if d.entry in [1, 2] or d.profit != 0:
+            # entry: 1 = position close, 2 = reverse. Also include non-zero profit.
+            if d.entry in (1, 2) or d.profit != 0:
                 clean_deals.append({
-                    "symbol": d.symbol, 
-                    "type": "BUY" if d.type==0 else "SELL", 
-                    "volume": d.volume, 
-                    "profit": d.profit, 
-                    "time": datetime.fromtimestamp(d.time).strftime('%Y-%m-%d %H:%M')
+                    "symbol": d.symbol,
+                    "type":   "BUY" if d.type == 0 else "SELL",
+                    "volume": d.volume,
+                    "profit": d.profit,
+                    "time":   datetime.fromtimestamp(d.time).strftime('%Y-%m-%d %H:%M'),
                 })
         return clean_deals

@@ -2,9 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+// ==========================================================
+// ENVIRONMENT CONSTANTS (Set via --dart-define)
+// ==========================================================
+const String apiUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://127.0.0.1:8000',
+);
+const String apiKey = String.fromEnvironment(
+  'API_KEY',
+  defaultValue: 'dev-paper',
+);
 
 void main() {
   runApp(const TradeCoreApp());
@@ -28,772 +38,584 @@ class TradeCoreApp extends StatelessWidget {
           surface: Color(0xFF161B22),
         ),
       ),
-      home: const MainScreen(),
+      home: const MainDashboard(),
     );
   }
 }
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class MainDashboard extends StatefulWidget {
+  const MainDashboard({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MainDashboard> createState() => _MainDashboardState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 1; // Default to Quant Dash
+class _MainDashboardState extends State<MainDashboard> {
+  int _currentIndex = 0;
+  Map<String, dynamic> statusData = {};
+  Map<String, dynamic> perfData = {};
+  List<dynamic> newsData = [];
   Timer? _pollingTimer;
-  final String baseUrl = 'http://127.0.0.1:8000';
-
-  // Live MT5 State
-  bool isBackendOnline = false;
-  double balance = 0.0;
-  double equity = 0.0;
-  double marginLevel = 0.0;
-  double freeMargin = 0.0;
-  double totalPnl = 0.0;
-  List<dynamic> activePositions = [];
-  List<dynamic> newsEvents = [];
-
-  // Institutional Risk State
-  String marketRegime = "CALIBRATING...";
-  double dailyVaR = 0.0;
-
-  // Performance State
-  double totalRealized = 0.0;
-  double monthlyRealized = 0.0;
-  double winRate = 0.0;
-  double profitFactor = 0.0;
-  int totalTrades = 0;
-  List<FlSpot> equitySpots = [];
-  List<String> equityDates = [];
-
-  final NumberFormat usdFormat = NumberFormat.currency(
-    symbol: '\$ ',
-    decimalDigits: 2,
-  );
-  final NumberFormat compactUsdFormat = NumberFormat.compactCurrency(
-    symbol: '\$',
-    decimalDigits: 2,
-  );
-
-  // Expanded Calculator State
-  final TextEditingController _calcBalanceController = TextEditingController();
-  final TextEditingController _calcRiskController = TextEditingController(
-    text: "1.0",
-  );
-  final TextEditingController _calcSlController = TextEditingController(
-    text: "5.0",
-  );
-  String _calcLotResult = "0.00";
-  String _calcExposureResult = "\$0.00";
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
-    _pollingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      _fetchData();
-    });
+    _fetchAllData();
+    // Poll the cache-enabled backend every 5 seconds
+    _pollingTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _fetchAllData(),
+    );
   }
 
   @override
   void dispose() {
     _pollingTimer?.cancel();
-    _calcBalanceController.dispose();
-    _calcRiskController.dispose();
-    _calcSlController.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchData() async {
+  // ==========================================================
+  // SECURE API COMMUNICATION
+  // ==========================================================
+  Future<http.Response> _secureGet(String endpoint) {
+    return http.get(
+      Uri.parse('$apiUrl$endpoint'),
+      headers: {"api-key": apiKey}, // Injected security header
+    );
+  }
+
+  Future<void> _fetchAllData() async {
     try {
-      final statusResponse = await http
-          .get(Uri.parse('$baseUrl/bot/status'))
-          .timeout(const Duration(seconds: 2));
-      if (statusResponse.statusCode == 200) {
-        final data = json.decode(statusResponse.body);
-        setState(() {
-          isBackendOnline = data['is_running'] ?? false;
-          balance = (data['account']?['balance'] ?? 0).toDouble();
-          equity = (data['account']?['equity'] ?? 0).toDouble();
-          marginLevel = (data['account']?['margin_level'] ?? 0).toDouble();
-          freeMargin = (data['account']?['free_margin'] ?? 0).toDouble();
-          totalPnl = (data['total_pnl'] ?? 0).toDouble();
-          activePositions = data['positions'] ?? [];
-
-          marketRegime = data['market_regime'] ?? "CALIBRATING...";
-          dailyVaR = (data['daily_var'] ?? 0).toDouble();
-
-          if (_calcBalanceController.text.isEmpty && balance > 0) {
-            _calcBalanceController.text = balance.toStringAsFixed(2);
-            _calculatePositionSize();
-          }
-        });
+      final statusRes = await _secureGet('/bot/status');
+      if (statusRes.statusCode == 200) {
+        setState(() => statusData = json.decode(statusRes.body));
       }
 
-      if (_currentIndex == 1) {
-        final perfResponse = await http
-            .get(Uri.parse('$baseUrl/bot/performance'))
-            .timeout(const Duration(seconds: 2));
-        if (perfResponse.statusCode == 200) {
-          final perfData = json.decode(perfResponse.body);
-          setState(() {
-            totalRealized = (perfData['total_realized'] ?? 0).toDouble();
-            monthlyRealized = (perfData['monthly_realized'] ?? 0).toDouble();
-            winRate = (perfData['win_rate'] ?? 0).toDouble();
-            profitFactor = (perfData['profit_factor'] ?? 0).toDouble();
-            totalTrades = perfData['total_trades'] ?? 0;
-
-            final List<dynamic> curveData = perfData['curve'] ?? [];
-            equitySpots.clear();
-            equityDates.clear();
-
-            for (int i = 0; i < curveData.length; i++) {
-              equitySpots.add(
-                FlSpot(i.toDouble(), (curveData[i]['profit'] ?? 0).toDouble()),
-              );
-              equityDates.add(curveData[i]['date'] ?? '');
-            }
-          });
-        }
+      final perfRes = await _secureGet('/bot/performance');
+      if (perfRes.statusCode == 200) {
+        setState(() => perfData = json.decode(perfRes.body));
       }
 
-      if (_currentIndex == 2) {
-        final newsResponse = await http
-            .get(Uri.parse('$baseUrl/bot/news'))
-            .timeout(const Duration(seconds: 2));
-        if (newsResponse.statusCode == 200) {
-          setState(() {
-            newsEvents = json.decode(newsResponse.body);
-          });
-        }
+      final newsRes = await _secureGet('/bot/news');
+      if (newsRes.statusCode == 200) {
+        setState(() => newsData = json.decode(newsRes.body));
       }
     } catch (e) {
-      setState(() => isBackendOnline = false);
+      debugPrint("API Connection Error: $e");
     }
   }
 
-  void _calculatePositionSize() {
-    double bal = double.tryParse(_calcBalanceController.text) ?? 0.0;
-    double riskPct = double.tryParse(_calcRiskController.text) ?? 1.0;
-    double slDist = double.tryParse(_calcSlController.text) ?? 5.0;
-
-    if (bal > 0 && slDist > 0) {
-      double riskCapital = bal * (riskPct / 100);
-      double capitalPerLot = slDist * 100;
-      double lots = riskCapital / capitalPerLot;
-
-      double finalLots = lots < 0.20 ? 0.20 : lots;
-      double finalExposure = finalLots * capitalPerLot;
-
-      setState(() {
-        _calcLotResult = finalLots.toStringAsFixed(2);
-        _calcExposureResult = compactUsdFormat.format(finalExposure);
-      });
-    }
-  }
-
-  Future<void> _downloadAuditReport() async {
-    final Uri url = Uri.parse('$baseUrl/quant/export_report');
-    if (!await launchUrl(url)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not trigger report download.')),
-        );
-      }
+  Widget _buildBody() {
+    switch (_currentIndex) {
+      case 0:
+        return _buildStatusTab();
+      case 1:
+        return _buildPerformanceTab();
+      case 2:
+        return _buildNewsTab();
+      case 3:
+        return const RiskCalculatorTab();
+      default:
+        return _buildStatusTab();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      _buildLiveTerminal(),
-      _buildQuantDashboard(),
-      _buildNewsGuard(),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'TradeCore v51.0',
+          'TradeCore v51.0 Master',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF161B22),
         elevation: 0,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
                 Icon(
-                  Icons.circle,
-                  size: 12,
-                  color: isBackendOnline
-                      ? const Color(0xFF00C853)
+                  statusData['is_running'] == true
+                      ? Icons.circle
+                      : Icons.circle_outlined,
+                  color: statusData['is_running'] == true
+                      ? Colors.greenAccent
                       : Colors.redAccent,
+                  size: 12,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  isBackendOnline ? "ONLINE" : "OFFLINE",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                Text(statusData['is_running'] == true ? "ONLINE" : "OFFLINE"),
               ],
             ),
           ),
         ],
       ),
-      body: pages[_currentIndex],
+      body: _buildBody(),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
         backgroundColor: const Color(0xFF161B22),
         selectedItemColor: const Color(0xFF00C853),
         unselectedItemColor: Colors.grey,
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        type: BottomNavigationBarType.fixed,
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Status'),
+          BottomNavigationBarItem(icon: Icon(Icons.show_chart), label: 'Quant'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.monitor_heart),
-            label: 'Terminal',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'Quant Dash',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.public),
+            icon: Icon(Icons.newspaper),
             label: 'News Guard',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calculate),
+            label: 'Risk Calc',
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildLiveTerminal() {
-    return RefreshIndicator(
-      onRefresh: _fetchData,
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: const Color(0xFF161B22),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Column(
-              children: [
-                const Text(
-                  "LIVE FLOATING PnL",
-                  style: TextStyle(color: Colors.grey, letterSpacing: 1.2),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  usdFormat.format(totalPnl),
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: totalPnl >= 0
-                        ? const Color(0xFF00C853)
-                        : Colors.redAccent,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Divider(color: Colors.white24),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatCol("Balance", usdFormat.format(balance)),
-                    _buildStatCol("Equity", usdFormat.format(equity)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatCol("Free Margin", usdFormat.format(freeMargin)),
-                    _buildStatCol(
-                      "Margin Level",
-                      "${marginLevel.toStringAsFixed(1)}%",
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            "ACTIVE TRADES",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-          const SizedBox(height: 12),
-          if (activePositions.isEmpty)
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.all(32.0),
-                child: Text(
-                  "Scanning markets...",
-                  style: TextStyle(color: Colors.white54),
-                ),
-              ),
-            )
-          else
-            ...activePositions.map((pos) {
-              bool isBuy = pos['type'] == 'BUY';
-              double profit = (pos['profit'] ?? 0).toDouble();
-              return Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: isBuy
-                        ? const Color(0xFF00C853).withOpacity(0.2)
-                        : Colors.redAccent.withOpacity(0.2),
-                    child: Icon(
-                      isBuy ? Icons.arrow_upward : Icons.arrow_downward,
-                      color: isBuy ? const Color(0xFF00C853) : Colors.redAccent,
-                    ),
-                  ),
-                  title: Text(
-                    "${pos['symbol']}  •  ${pos['volume']} Lots",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    "Open: ${pos['open_price']}  |  SL: ${pos['sl']}",
-                  ),
-                  trailing: Text(
-                    usdFormat.format(profit),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: profit >= 0
-                          ? const Color(0xFF00C853)
-                          : Colors.redAccent,
-                    ),
-                  ),
-                ),
-              );
-            }),
-        ],
-      ),
-    );
-  }
+  // ==========================================================
+  // TAB 1: STATUS & PORTFOLIO
+  // ==========================================================
+  Widget _buildStatusTab() {
+    final acc = statusData['account'] ?? {};
+    final balance = acc['balance'] ?? 0.0;
+    final equity = acc['equity'] ?? 0.0;
+    final marginLvl = acc['margin_level'] ?? 0.0;
+    final pnl = statusData['total_pnl'] ?? 0.0;
+    final activeTrades = (statusData['positions'] as List?)?.length ?? 0;
 
-  Widget _buildStatCol(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
+      padding: const EdgeInsets.all(16),
       children: [
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        _buildMetricCard(
+          "Account Balance",
+          "\$${balance.toStringAsFixed(2)}",
+          Icons.account_balance_wallet,
+          Colors.blueAccent,
+        ),
+        _buildMetricCard(
+          "Live Equity",
+          "\$${equity.toStringAsFixed(2)}",
+          Icons.timeline,
+          pnl >= 0 ? Colors.greenAccent : Colors.redAccent,
+        ),
+        _buildMetricCard(
+          "Floating P&L",
+          "\$${pnl.toStringAsFixed(2)}",
+          Icons.attach_money,
+          pnl >= 0 ? Colors.greenAccent : Colors.redAccent,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: _buildMetricCard(
+                "Margin Level",
+                "${marginLvl.toStringAsFixed(2)}%",
+                Icons.shield,
+                Colors.orangeAccent,
+              ),
+            ),
+            Expanded(
+              child: _buildMetricCard(
+                "Active Trades",
+                "$activeTrades / 12",
+                Icons.swap_horiz,
+                Colors.purpleAccent,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "System Telemetry",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF161B22),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Market Regime: ${statusData['market_regime'] ?? 'CALIBRATING...'}",
+                style: const TextStyle(color: Colors.cyanAccent, fontSize: 16),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "25% Dynamic VaR Limit: \$${(statusData['daily_var'] ?? 0.0).toStringAsFixed(2)}",
+                style: const TextStyle(color: Colors.orangeAccent),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildQuantDashboard() {
-    // Dynamic Monthly Target: 5% of Current Balance
-    double dynamicTarget = balance > 0 ? (balance * 0.05) : 500.0;
-    double progressPct = dynamicTarget > 0
-        ? (monthlyRealized / dynamicTarget).clamp(0.0, 1.0)
-        : 0.0;
+  // ==========================================================
+  // TAB 2: QUANTITATIVE PERFORMANCE
+  // ==========================================================
+  Widget _buildPerformanceTab() {
+    final winRate = perfData['win_rate'] ?? 0.0;
+    final profitFactor = perfData['profit_factor'] ?? 0.0;
+    final totalRealized = perfData['total_realized'] ?? 0.0;
 
-    return RefreshIndicator(
-      onRefresh: _fetchData,
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // PROJECTIONS
-          const Text(
-            "DYNAMIC MONTHLY TARGET (5%)",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFF161B22),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white10),
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _buildMetricCard(
+                "Win Rate",
+                "$winRate%",
+                Icons.pie_chart,
+                winRate > 40 ? Colors.greenAccent : Colors.orangeAccent,
+              ),
             ),
+            Expanded(
+              child: _buildMetricCard(
+                "Profit Factor",
+                "$profitFactor",
+                Icons.trending_up,
+                profitFactor > 1.5 ? Colors.greenAccent : Colors.redAccent,
+              ),
+            ),
+          ],
+        ),
+        _buildMetricCard(
+          "Net Realized Profit",
+          "\$${totalRealized.toStringAsFixed(2)}",
+          Icons.account_balance,
+          totalRealized >= 0 ? Colors.greenAccent : Colors.redAccent,
+        ),
+        const SizedBox(height: 24),
+        const Text(
+          "Equity Curve (All Time)",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          height: 300,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF161B22),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child:
+              perfData['curve'] != null &&
+                  (perfData['curve'] as List).isNotEmpty
+              ? _buildChart(perfData['curve'])
+              : const Center(child: Text("Waiting for historical sync...")),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChart(List<dynamic> curveData) {
+    List<FlSpot> spots = [];
+    for (int i = 0; i < curveData.length; i++) {
+      spots.add(
+        FlSpot(i.toDouble(), (curveData[i]['profit'] as num).toDouble()),
+      );
+    }
+
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          getDrawingHorizontalLine: (value) =>
+              FlLine(color: Colors.white10, strokeWidth: 1),
+        ),
+        titlesData: FlTitlesData(show: false),
+        borderData: FlBorderData(show: false),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: Colors.greenAccent,
+            barWidth: 3,
+            isStrokeCapRound: true,
+            dotData: FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              color: Colors.greenAccent.withOpacity(0.1),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ==========================================================
+  // TAB 3: NEWS GUARD (Now with CEO Insights)
+  // ==========================================================
+  Widget _buildNewsTab() {
+    if (newsData.isEmpty) {
+      return const Center(
+        child: Text(
+          "No High Impact News Found.",
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: newsData.length,
+      itemBuilder: (context, index) {
+        final event = newsData[index];
+        final isHigh = event['impact'] == 'High';
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Achieved",
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                        Text(
-                          usdFormat.format(monthlyRealized),
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: monthlyRealized >= 0
-                                ? const Color(0xFF00C853)
-                                : Colors.redAccent,
-                          ),
-                        ),
-                      ],
+                    Icon(
+                      isHigh ? Icons.warning : Icons.info_outline,
+                      color: isHigh ? Colors.redAccent : Colors.orangeAccent,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text(
-                          "Target",
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                        Text(
-                          usdFormat.format(dynamicTarget),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(width: 8),
+                    Text(
+                      "${event['country']} - ${event['time']}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                LinearProgressIndicator(
-                  value: progressPct,
-                  backgroundColor: Colors.white10,
-                  color: const Color(0xFF2962FF),
-                  minHeight: 6,
-                  borderRadius: BorderRadius.circular(4),
+                const SizedBox(height: 8),
+                Text(
+                  event['title'],
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // INJECTED SPRINT 1 FEATURE: The CEO Insight
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.lightbulb_outline,
+                        size: 16,
+                        color: Colors.cyanAccent,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          event['insight'] ?? 'Volatility expected.',
+                          style: const TextStyle(
+                            color: Colors.cyanAccent,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
+        );
+      },
+    );
+  }
 
-          // ALGORITHMIC AUDIT (NEW)
-          const SizedBox(height: 24),
-          const Text(
-            "ALGORITHMIC AUDIT",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+  Widget _buildMetricCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 28),
+            ),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ==========================================================
+// TAB 4: RISK CALCULATOR (Asset Multiplier Engine)
+// ==========================================================
+class RiskCalculatorTab extends StatefulWidget {
+  const RiskCalculatorTab({super.key});
+  @override
+  State<RiskCalculatorTab> createState() => _RiskCalculatorTabState();
+}
+
+class _RiskCalculatorTabState extends State<RiskCalculatorTab> {
+  final TextEditingController balanceCtrl = TextEditingController();
+  final TextEditingController riskPctCtrl = TextEditingController(text: "2.0");
+  final TextEditingController slPipsCtrl = TextEditingController();
+
+  String selectedAssetType = "Standard Forex (EURUSD)";
+  double calculatedLot = 0.0;
+
+  final Map<String, double> assetMultipliers = {
+    "Standard Forex (EURUSD)": 100000.0,
+    "Yen Crosses (USDJPY)": 1000.0,
+    "Metals (XAUUSD)": 100.0,
+    "Crypto (BTCUSD)": 1.0,
+  };
+
+  void _calculateLot() {
+    double balance = double.tryParse(balanceCtrl.text) ?? 0.0;
+    double riskPct = double.tryParse(riskPctCtrl.text) ?? 0.0;
+    double slPips = double.tryParse(slPipsCtrl.text) ?? 0.0;
+
+    if (balance > 0 && riskPct > 0 && slPips > 0) {
+      double riskCapital = balance * (riskPct / 100);
+      double multiplier = assetMultipliers[selectedAssetType]!;
+      // SL Distance conversion based on standard pip formatting
+      double slDistance =
+          slPips *
+          (selectedAssetType.contains("Yen")
+              ? 0.01
+              : selectedAssetType.contains("Metals")
+              ? 0.1
+              : 0.0001);
+      if (selectedAssetType.contains("Crypto"))
+        slDistance = slPips; // Crypto maps 1:1
+
+      double lot = riskCapital / (slDistance * multiplier);
+      setState(() => calculatedLot = lot);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text(
+          "Institutional Lot Sizer",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          value: selectedAssetType,
+          isExpanded: true,
+          dropdownColor: const Color(0xFF161B22),
+          items: assetMultipliers.keys.map((String key) {
+            return DropdownMenuItem<String>(value: key, child: Text(key));
+          }).toList(),
+          onChanged: (val) => setState(() => selectedAssetType = val!),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: balanceCtrl,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(labelText: "Account Balance (\$)"),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: riskPctCtrl,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(labelText: "Risk Percentage (%)"),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: slPipsCtrl,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(labelText: "Stop Loss (Pips)"),
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          onPressed: _calculateLot,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF00C853),
+            padding: const EdgeInsets.all(16),
           ),
-          const SizedBox(height: 12),
-          Row(
+          child: const Text(
+            "CALCULATE EXPOSURE",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF161B22),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.blueAccent),
+          ),
+          child: Column(
             children: [
-              Expanded(
-                child: _buildMetricTile(
-                  "Win Rate",
-                  "${winRate.toStringAsFixed(1)}%",
-                  color: winRate > 50 ? const Color(0xFF00C853) : Colors.orange,
-                ),
+              const Text(
+                "Required Lot Size",
+                style: TextStyle(color: Colors.grey),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildMetricTile(
-                  "Profit Factor",
-                  profitFactor.toStringAsFixed(2),
-                  color: profitFactor >= 1.5
-                      ? const Color(0xFF2962FF)
-                      : Colors.white,
+              const SizedBox(height: 8),
+              Text(
+                calculatedLot.toStringAsFixed(2),
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildMetricTile("Executions", totalTrades.toString()),
               ),
             ],
           ),
-
-          // RISK METRICS
-          const SizedBox(height: 24),
-          const Text(
-            "INSTITUTIONAL RISK",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF161B22),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildStatCol("GARCH Regime", marketRegime),
-                _buildStatCol(
-                  "Daily VaR",
-                  dailyVaR == 0 ? "..." : usdFormat.format(dailyVaR),
-                ),
-              ],
-            ),
-          ),
-
-          // EQUITY CURVE
-          const SizedBox(height: 24),
-          const Text(
-            "EQUITY CURVE",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            height: 200,
-            padding: const EdgeInsets.only(
-              right: 20,
-              left: 10,
-              top: 24,
-              bottom: 10,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFF161B22),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: equitySpots.length < 2
-                ? const Center(
-                    child: Text(
-                      "Awaiting trade data...",
-                      style: TextStyle(color: Colors.white54),
-                    ),
-                  )
-                : LineChart(
-                    LineChartData(
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        getDrawingHorizontalLine: (value) =>
-                            const FlLine(color: Colors.white10, strokeWidth: 1),
-                      ),
-                      titlesData: FlTitlesData(
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        bottomTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 40,
-                            getTitlesWidget: (v, m) => Text(
-                              '\$${v.toInt()}',
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 9,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      borderData: FlBorderData(show: false),
-                      minX: 0,
-                      maxX: (equitySpots.length - 1).toDouble(),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: equitySpots,
-                          isCurved: true,
-                          color: const Color(0xFF2962FF),
-                          barWidth: 2,
-                          dotData: const FlDotData(show: false),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            color: const Color(0xFF2962FF).withOpacity(0.15),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-          ),
-
-          // COMPACT RISK CALCULATOR
-          const SizedBox(height: 24),
-          const Text(
-            "RISK CALCULATOR & AUDIT",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: const Color(0xFF161B22),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _calcBalanceController,
-                        decoration: const InputDecoration(
-                          labelText: "Bal (\$)",
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (_) => _calculatePositionSize(),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: _calcRiskController,
-                        decoration: const InputDecoration(
-                          labelText: "Risk (%)",
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (_) => _calculatePositionSize(),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: _calcSlController,
-                        decoration: const InputDecoration(labelText: "SL (\$)"),
-                        keyboardType: TextInputType.number,
-                        onChanged: (_) => _calculatePositionSize(),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Vol: $_calcLotResult",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2962FF),
-                      ),
-                    ),
-                    Text(
-                      "Risk: $_calcExposureResult",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: _downloadAuditReport,
-                      icon: const Icon(Icons.download, size: 16),
-                      label: const Text("CSV"),
-                      style: TextButton.styleFrom(
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMetricTile(
-    String label,
-    String value, {
-    Color color = Colors.white,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF161B22),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: const TextStyle(color: Colors.grey, fontSize: 11),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNewsGuard() {
-    return RefreshIndicator(
-      onRefresh: _fetchData,
-      child: newsEvents.isEmpty
-          ? const Center(
-              child: Text(
-                "No High-Impact News Detected.",
-                style: TextStyle(color: Colors.white54),
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: newsEvents.length,
-              itemBuilder: (context, index) {
-                final event = newsEvents[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.warning_amber_rounded,
-                              color: Colors.orangeAccent,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "${event['country']} - ${event['impact']}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orangeAccent,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          event['title'],
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          event['time'],
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+        ),
+      ],
     );
   }
 }
