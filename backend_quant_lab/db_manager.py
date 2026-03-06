@@ -87,3 +87,34 @@ class DBManager:
             conn.commit()
         except Exception as e:
             print(f"⚠️ DB Error (Trade): {e}")
+
+    @staticmethod
+    def update_signal_result(symbol, signal_type, new_result):
+        """
+        [BUG-33 FIX] Updates the most recent ATTEMPTED signal for a symbol
+        to its actual MT5 outcome: FILLED or REJECTED:<reason>.
+        
+        Called from execute_signal's async callback once MT5 responds,
+        so the signals table accurately reflects what the broker accepted
+        rather than just what was submitted.  Scoped to last 2 minutes to
+        avoid touching historical records under concurrent load.
+        """
+        conn = _get_conn()
+        try:
+            conn.execute(
+                '''UPDATE signals
+                   SET result = ?
+                   WHERE id = (
+                       SELECT id FROM signals
+                       WHERE symbol      = ?
+                         AND signal_type = ?
+                         AND result      = 'ATTEMPTED'
+                         AND timestamp  >= datetime('now', '-2 minutes')
+                       ORDER BY timestamp DESC
+                       LIMIT 1
+                   )''',
+                (new_result, symbol, signal_type)
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"⚠️ DB Error (Signal Update): {e}")

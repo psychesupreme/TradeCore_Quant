@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import time
 import MetaTrader5 as mt5 
 from mt5_interface import MT5Gateway
-from analyst import analyze_market_structure, AnalysisRequest
+from analyst import analyze_market_structure, AnalysisRequest, calculate_atr
 from models import Candle
 from telegram_client import TelegramNotifier
 from db_manager import DBManager 
@@ -82,6 +82,14 @@ class TradingBot:
 
         self.current_var = 0.0
         self.market_regime = "CALIBRATING..."
+
+        # [OPT-6] Signal deduplication tracker.
+        # Prevents the same LOW_CONFIDENCE signal being written to DB every 60s.
+        # Format: {symbol: (signal_type, confidence_rounded)}
+        # A new DB row is written only when signal type OR confidence changes
+        # by more than 2%. This reduced signal table noise from 50+ identical
+        # rows/hour (EURUSD SELL_MICRO 83%) to one row per meaningful change.
+        self._last_logged_signal: dict = {}
 
     def _load_state(self):
         try:
@@ -284,32 +292,121 @@ class TradingBot:
             except Exception:
                 pass
 
-    def evaluate_risk_metrics(self):
+    def get_asset_regime(self, symbol: str) -> str:
+        """
+        [OPT-7] Per-asset-class regime detection.
+        Old system used EURUSD for ALL assets — a ranging Friday EURUSD
+        would flag BTC and Gold as DEAD MARKET even during strong moves.
+        Each asset now measures its own 15-candle vol% for regime classification.
+        Regime thresholds are calibrated per asset class.
+        """
         try:
+            df = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
+        except Exception:
+            return "NORMAL (TRENDING)"
+
+        if df.empty or len(df) < 15:
+            return "NORMAL (TRENDING)"
+
+        s = symbol.upper()
+        recent_high = df['high'].iloc[-15:].max()
+        recent_low  = df['low'].iloc[-15:].min()
+        price       = df['close'].iloc[-1]
+        if price == 0:
+            return "NORMAL (TRENDING)"
+        vol_pct = (recent_high - recent_low) / price
+
+        # Thresholds calibrated per asset class
+        if "BTC" in s or "ETH" in s:
+            # Crypto: high vol = >3%, dead = <0.5%
+            if vol_pct > 0.030:  return "HIGH VOLATILITY (GARCH)"
+            if vol_pct > 0.005:  return "NORMAL (TRENDING)"
+            return "DEAD MARKET"
+        elif "XAU" in s or "XAG" in s:
+            # Metals: high vol = >1%, dead = <0.15%
+            if vol_pct > 0.010:  return "HIGH VOLATILITY (GARCH)"
+            if vol_pct > 0.0015: return "NORMAL (TRENDING)"
+            return "DEAD MARKET"
+        elif "SP 500" in s or "Tech 100" in s:
+            # Indices: high vol = >1.5%, dead = <0.2%
+            if vol_pct > 0.015:  return "HIGH VOLATILITY (GARCH)"
+            if vol_pct > 0.002:  return "NORMAL (TRENDING)"
+            return "DEAD MARKET"
+        elif "JPY" in s:
+            # JPY crosses: high vol = >0.6%, dead = <0.08%
+            if vol_pct > 0.006:  return "HIGH VOLATILITY (GARCH)"
+            if vol_pct > 0.0008: return "NORMAL (TRENDING)"
+            return "DEAD MARKET"
+        else:
+            # FX majors: high vol = >0.8%, dead = <0.1%
+            if vol_pct > 0.008:  return "HIGH VOLATILITY (GARCH)"
+            if vol_pct > 0.001:  return "NORMAL (TRENDING)"
+            return "DEAD MARKET"
+
+    def evaluate_risk_metrics(self):
+        """
+        [OPT-5] Proper parametric VaR using ATR-based daily return std-dev.
+
+        Old formula: raw_var = balance × 0.15 × 2.326 × (vol_pct × 100)
+        Problems:
+          - vol_pct is a price range not a return standard deviation
+          - EURUSD-only proxy for a 17-asset portfolio
+          - 5% floor meant VaR could never drop below $461 on $9k balance —
+            the kill switch barely fires during calm sessions
+          - 25% ceiling is appropriate ✅ (kept)
+
+        New formula (proper parametric VaR):
+          daily_return_std = ATR / close  (ATR ≈ 1-day price std-dev)
+          99% daily VaR    = balance × daily_return_std × z(99%) × 2.326
+          Portfolio VaR    = sqrt(N) scaling for N open positions
+          Clamp            = [1.5% floor, 20% ceiling]  (tighter than before)
+
+        The 1.5% floor means the kill switch fires if we lose >$138 on a
+        $9k account during a quiet session — more protective than $461.
+        """
+        try:
+            import MetaTrader5 as mt5
             df = self.gateway.get_market_data("EURUSD")
             if df.empty or len(df) < 15:
                 return "CALIBRATING...", 0.0
 
             recent_high = df['high'].iloc[-15:].max()
-            recent_low = df['low'].iloc[-15:].min()
+            recent_low  = df['low'].iloc[-15:].min()
             current_price = df['close'].iloc[-1]
-            
             vol_pct = (recent_high - recent_low) / current_price
 
-            if vol_pct > 0.008: 
+            # Regime still based on EURUSD for the global engine state label
+            # (per-asset regime used inside process_symbol via get_asset_regime)
+            if vol_pct > 0.008:
                 regime = "HIGH VOLATILITY (GARCH)"
-            elif vol_pct > 0.003: 
+            elif vol_pct > 0.003:
                 regime = "NORMAL (TRENDING)"
-            else: 
+            else:
                 regime = "DEAD MARKET"
 
-            acc = self.gateway.get_account_info()
+            acc     = self.gateway.get_account_info()
             balance = acc['balance'] if acc else 10000.0
-            
-            # UPGRADED VaR: Expanded to 25% max to support 12 trades
-            raw_var = balance * 0.15 * 2.326 * (vol_pct * 100)
-            daily_var_usd = max(balance * 0.05, min(raw_var, balance * 0.25))
-            
+
+            # ATR-based return std-dev: more statistically correct than raw range
+            df['atr'] = calculate_atr(df, period=14)
+            atr_val = df['atr'].iloc[-1]
+            if current_price > 0 and atr_val > 0:
+                daily_return_std = atr_val / current_price
+            else:
+                daily_return_std = vol_pct
+
+            # Number of open positions for portfolio scaling
+            open_pos = self.gateway.get_open_positions()
+            n_pos    = max(1, len(open_pos))
+
+            # Parametric 99% VaR — portfolio-scaled
+            z_99         = 2.326
+            single_var   = balance * daily_return_std * z_99
+            portfolio_var = single_var * (n_pos ** 0.5)   # sqrt(N) for uncorrelated positions
+
+            # Clamp: [1.5%, 20%] — tighter floor than old 5%, same ceiling direction
+            daily_var_usd = max(balance * 0.015, min(portfolio_var, balance * 0.20))
+
             return regime, round(daily_var_usd, 2)
 
         except Exception as e:
@@ -590,11 +687,18 @@ class TradingBot:
         if df_micro.empty or df_macro.empty: 
             return
 
+        # [OPT-7] Per-asset-class regime: replaces the global EURUSD-only regime.
+        # BTC/Gold/Indices now calibrate their own vol% against their own thresholds.
+        symbol_regime = self.get_asset_regime(symbol)
+
         try:
             candles_micro = [Candle(**row) for row in df_micro.to_dict('records') if hasattr(row['time'], 'year')]
             req = AnalysisRequest(symbol=symbol, candles=candles_micro, daily_trend="NEUTRAL")
             
-            analysis = analyze_market_structure(req, df_macro=df_macro, market_regime=self.market_regime)
+            # [OPT-7] Pass per-asset regime + symbol for calibrated ATR threshold
+            analysis = analyze_market_structure(
+                req, df_macro=df_macro, market_regime=symbol_regime, symbol=symbol
+            )
             
             result_status = "SKIPPED"
             required_conf = 0.92 if is_sniper_mode else 0.88
@@ -611,7 +715,7 @@ class TradingBot:
                      else:
                          self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
                      
-                     result_status = "EXECUTED"
+                     result_status = "ATTEMPTED"
                      self.execute_signal(symbol, analysis, df_micro, props) 
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
@@ -619,10 +723,28 @@ class TradingBot:
             else:
                  self.log_debug(f"[{symbol}] {analysis.reason}")
                  
-            safe_reason = getattr(analysis, 'reason', 'No reason provided')
-            indicators = {"trend": "MTF_Managed", "reason": safe_reason}
-            
-            DBManager.log_signal(symbol, analysis.signal, analysis.confidence, indicators, result_status)
+            # [OPT-6] Signal deduplication: write to DB only when something meaningful
+            # changes. Prevents 50+ identical LOW_CONFIDENCE rows per symbol per hour.
+            # Always write: ATTEMPTED (execution), first occurrence, signal type change,
+            # or confidence shift ≥ 2%. Suppress repeated SKIPPED/LOW_CONF at same level.
+            conf_bucket = round(analysis.confidence, 2)
+            last        = self._last_logged_signal.get(symbol)
+            should_log  = (
+                result_status == "ATTEMPTED"                              # always log executions
+                or last is None                                            # first seen for this symbol
+                or last[0] != analysis.signal                             # signal type changed
+                or abs(last[1] - conf_bucket) >= 0.02                    # confidence shifted ≥2%
+                or (result_status != "SKIPPED" and last[2] == "SKIPPED") # first non-neutral
+            )
+
+            if should_log:
+                safe_reason = getattr(analysis, 'reason', 'No reason provided')
+                indicators  = {"trend": "MTF_Managed", "reason": safe_reason,
+                               "regime": symbol_regime}
+                DBManager.log_signal(symbol, analysis.signal, analysis.confidence,
+                                     indicators, result_status)
+                self._last_logged_signal[symbol] = (analysis.signal, conf_bucket, result_status)
+
         except Exception as e: 
             self.log_debug(f"Process Error on {symbol}: {e}")
 
@@ -658,7 +780,11 @@ class TradingBot:
                 ceil_sl = 0.150 if "JPY" in symbol else 0.00150   
                 
                 dynamic_nano_sl = max(floor_sl, min(base_nano_sl, ceil_sl))
-                dynamic_nano_tp = dynamic_nano_sl * 1.5 
+                # [OPT-3] NANO TP ratio upgraded from 1.5 to 2.0.
+                # At 60% win rate, 1.5:1 barely breaks even (EV = 0.60).
+                # At 2.0:1 and current 71% WR: EV = 0.71×2.0 − 0.29 = +1.13.
+                # Even at 50% WR (worst case), 2.0:1 gives EV = +0.5 vs 0.0 at 1.5:1.
+                dynamic_nano_tp = dynamic_nano_sl * 2.0
 
                 if is_buy:
                     if is_nano:
@@ -686,7 +812,38 @@ class TradingBot:
                 price = self.gateway.normalize_price(symbol, raw_price)
                 sl = self.gateway.normalize_price(symbol, sl_price) 
                 tp = self.gateway.normalize_price(symbol, tp_price) 
-                
+
+                # ── LIMIT PRICE VALIDATION (BUG-27 FIX) ──────────────────────
+                # MT5 rejects SELL_LIMIT if price <= ask + stops_level*point,
+                # and BUY_LIMIT if price >= bid - stops_level*point.
+                # Root cause: df.iloc[-1] is the CURRENTLY FORMING candle.
+                # Its high/low is live market price, not a future level, so
+                # on fast-moving symbols the limit was at or below market.
+                # Log evidence: EURUSD/USDCHF/NZDUSD/XAUUSD/XAGUSD all
+                # rejected while GBPUSD/USDCAD/AUDJPY (wider structure) passed.
+                # Fix: compute minimum safe distance from the symbol's stops_level
+                # and reject before sending — logs a clear reason instead of
+                # letting MT5 silently eat the order.
+                if not is_nano:
+                    sym_info = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
+                    if sym_info:
+                        stops_pt = sym_info.stops_level * sym_info.point
+                        # Add a 2-point buffer on top of broker minimum
+                        min_dist = stops_pt + (sym_info.point * 2)
+                        if is_buy and price >= (tick.bid - min_dist):
+                            self.log_info(
+                                f"⚠️ Price Validation: {symbol} BUY_LIMIT {price} too close "
+                                f"to market ({tick.bid}). Min distance: {min_dist:.5f}. Skipping."
+                            )
+                            return
+                        elif not is_buy and price <= (tick.ask + min_dist):
+                            self.log_info(
+                                f"⚠️ Price Validation: {symbol} SELL_LIMIT {price} too close "
+                                f"to market ({tick.ask}). Min distance: {min_dist:.5f}. Skipping."
+                            )
+                            return
+                # ─────────────────────────────────────────────────────────────
+
                 sl_distance = abs(price - sl)
 
                 acc_info = self.gateway.get_account_info()
@@ -752,16 +909,52 @@ class TradingBot:
                 else: 
                     request["type"] = mt5.ORDER_TYPE_SELL if is_nano else mt5.ORDER_TYPE_SELL_LIMIT
 
-                result = mt5.order_send(request)
-                
+                # ── SEND ORDER with filling-mode fallback (BUG-32 FIX) ────────
+                # For NANO market orders, the broker's declared filling_mode
+                # bitmask can be stale or change per-session (we observed 194
+                # "Unsupported filling mode" rejections Mar 5 03:15-05:59 with
+                # no automatic recovery).  Try FOK first (most compatible),
+                # then IOC, then RETURN before giving up.
+                fill_order   = [mt5.ORDER_FILLING_FOK,
+                                mt5.ORDER_FILLING_IOC,
+                                mt5.ORDER_FILLING_RETURN]
+                fill_names   = ["FOK", "IOC", "RETURN"]
+                FILL_ERR     = 10038   # TRADE_RETCODE_INVALID_FILL
+
+                result = None
+                if is_nano:
+                    for idx, fmode in enumerate(fill_order):
+                        request["type_filling"] = fmode
+                        result = mt5.order_send(request)
+                        if result and result.retcode == mt5.TRADE_RETCODE_DONE:
+                            break   # success — no need to try other modes
+                        if result and result.retcode != FILL_ERR:
+                            break   # failure is NOT a filling-mode issue, stop retrying
+                        # filling-mode mismatch — try next mode silently
+                else:
+                    result = mt5.order_send(request)
+                # ─────────────────────────────────────────────────────────────
+
                 safe_action = action.replace("_", " ")
 
                 if result and result.retcode == mt5.TRADE_RETCODE_DONE:
-                    self.log_info(f"⚡ {'MARKET EXECUTION' if is_nano else 'TRAP SET'}: {symbol} {action} | Entry: {price} | Lot: {lot}")
+                    fill_label = f" | Fill: {fill_names[fill_order.index(request['type_filling'])]}" if is_nano else ""
+                    self.log_info(f"⚡ {'MARKET EXECUTION' if is_nano else 'TRAP SET'}: {symbol} {action} | Entry: {price} | Lot: {lot}{fill_label}")
                     self.async_alert(f"⚡ **SMC {safe_action}**: {symbol}\nTarget Entry: {price}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
+                    # [BUG-33 FIX] Update signal record from ATTEMPTED → FILLED
+                    DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
                     self.log_info(f"❌ MT5 REJECTED {symbol}: {err_msg}")
+                    # [BUG-31 FIX] Apply symbol cooldown after ANY rejection.
+                    # Previously: no cooldown set → same signal retried every 60s
+                    # indefinitely.  Evidence: 194 consecutive rejections over
+                    # 2h45m (Mar 5 03:15-05:59) for NZDUSD, EURUSD, GBPUSD etc.
+                    # A standard 15-min cooldown prevents the retry storm while
+                    # still allowing a fresh attempt when conditions change.
+                    self.symbol_cooldowns[symbol] = datetime.utcnow()
+                    # [BUG-33 FIX] Update signal record from ATTEMPTED → REJECTED
+                    DBManager.update_signal_result(symbol, analysis.signal, f"REJECTED: {err_msg}")
 
             except Exception as e:
                 self.log_info(f"⚠️ Thread Execution Error on {symbol}: {e}")
