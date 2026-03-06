@@ -9,6 +9,7 @@
 # ============================================================
 
 import requests
+import threading
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 
@@ -107,6 +108,11 @@ class NewsManager:
         self.events = []
         self.last_fetch = None
         self.cache_duration = timedelta(hours=1)
+        # [HF-E] Prevents multiple scheduler/API threads from fetching
+        # simultaneously. Without this lock, 4 threads can all pass the
+        # `last_fetch is None` check before any one sets it — causing the
+        # consecutive duplicate fetches observed in the session logs.
+        self._fetch_lock = threading.Lock()
 
     # ----------------------------------------------------------
     # CEO-LEVEL INSIGHT GENERATOR
@@ -139,12 +145,26 @@ class NewsManager:
     # ----------------------------------------------------------
     # CALENDAR FETCH
     # ----------------------------------------------------------
-    def fetch_calendar(self):
-        """Fetches and parses the ForexFactory XML calendar. Cached for 1 hour."""
-        if self.last_fetch and (datetime.now() - self.last_fetch) < self.cache_duration:
-            return  # Cache is still fresh
+    def fetch_calendar(self, force: bool = False):
+        """
+        Fetches and parses the ForexFactory XML calendar. Cached for 1 hour.
+        [HF-E] Lock prevents concurrent threads from all passing the
+        'last_fetch is None' check simultaneously and triggering duplicate
+        network fetches (the consecutive cluster fetches seen in session logs).
+        """
+        # Fast path — no lock overhead when cache is fresh
+        if not force and self.last_fetch and (datetime.now() - self.last_fetch) < self.cache_duration:
+            return
+
+        # Only one thread may fetch at a time
+        if not self._fetch_lock.acquire(blocking=False):
+            return  # Another thread is already fetching; skip silently
 
         try:
+            # Double-check inside lock — another thread may have just completed
+            if not force and self.last_fetch and (datetime.now() - self.last_fetch) < self.cache_duration:
+                return
+
             print("🌍 Fetching ForexFactory Calendar...")
             headers = {'User-Agent': 'Mozilla/5.0 (compatible; TradeCore/51.0)'}
             resp = requests.get(self.url, headers=headers, timeout=10)
@@ -165,41 +185,37 @@ class NewsManager:
                 if impact not in ('High', 'Medium'):
                     continue
 
-                # Extract fields safely
-                country   = (event.find('country') or ET.Element('x')).text or "??"
-                title     = (event.find('title')   or ET.Element('x')).text or "Unknown Event"
-                date_str  = (event.find('date')    or ET.Element('x')).text or ""
-                time_str  = (event.find('time')    or ET.Element('x')).text or ""
+                country  = (event.find('country') or ET.Element('x')).text or "??"
+                title    = (event.find('title')   or ET.Element('x')).text or "Unknown Event"
+                date_str = (event.find('date')    or ET.Element('x')).text or ""
+                time_str = (event.find('time')    or ET.Element('x')).text or ""
 
-                # [BUG-04 FIX] Parse datetime during fetch so bot_engine
-                # never has to deal with raw string comparison.
                 event_dt = _parse_event_dt(date_str, time_str)
-
-                # Classify event tier for guard duration logic
-                tier    = _classify_tier(title)
-                insight = self.get_impact_analysis(title, country)
+                tier     = _classify_tier(title)
+                insight  = self.get_impact_analysis(title, country)
 
                 new_events.append({
                     "country":   country,
                     "title":     title,
                     "impact":    impact,
-                    "tier":      tier,           # 1 = 4h guard, 2 = 15min guard
-                    "time":      f"{date_str} {time_str}".strip(),  # display string
-                    "event_dt":  event_dt,       # datetime | None — for guard comparison
+                    "tier":      tier,
+                    "time":      f"{date_str} {time_str}".strip(),
+                    "event_dt":  event_dt,
                     "insight":   insight,
                 })
 
-            self.events = new_events
+            self.events     = new_events
             self.last_fetch = datetime.now()
             t1 = sum(1 for e in new_events if e['tier'] == 1)
             t2 = sum(1 for e in new_events if e['tier'] == 2)
-            print(f"✅ Calendar Updated: {len(new_events)} events "
-                  f"({t1} Tier-1 / {t2} Tier-2).")
+            print(f"✅ Calendar Updated: {len(new_events)} events ({t1} Tier-1 / {t2} Tier-2).")
 
         except requests.exceptions.Timeout:
             print("⚠️  News Fetch Timeout — using stale cache.")
         except Exception as e:
             print(f"⚠️  News Fetch Failed: {e}")
+        finally:
+            self._fetch_lock.release()
 
     # ----------------------------------------------------------
     # PUBLIC ACCESSORS

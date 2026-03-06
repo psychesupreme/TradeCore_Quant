@@ -905,6 +905,27 @@ class TradingBot:
                 tp          = self.gateway.normalize_price(symbol, tp_price)
                 sl_distance = abs(price - sl)
 
+                # ── LIMIT PRICE VALIDATION ────────────────────
+                # [HF-B] retcode 10015 "Invalid price" fired on every non-NANO
+                # order because market moved past the limit price between candle
+                # close and order submission. Broker rejects SELL_LIMIT below
+                # current ask and BUY_LIMIT above current bid.
+                # Guard: add a 3-point buffer so we only reject truly crossed prices.
+                if not is_nano:
+                    buf = props.get("point", 0.00001) * 3
+                    if is_buy and price >= (tick.bid - buf):
+                        self.log_debug(
+                            f"[{symbol}] BUY_LIMIT skipped: "
+                            f"entry {price} >= bid {tick.bid:.5f} (price already above entry)"
+                        )
+                        return
+                    if not is_buy and price <= (tick.ask + buf):
+                        self.log_debug(
+                            f"[{symbol}] SELL_LIMIT skipped: "
+                            f"entry {price} <= ask {tick.ask:.5f} (price already below entry)"
+                        )
+                        return
+
                 # ── MARGIN ARMOR ──────────────────────────────
                 acc_info     = self.gateway.get_account_info()
                 balance      = acc_info["balance"]      if acc_info else 10000.0
@@ -995,10 +1016,12 @@ class TradingBot:
                 safe_action = action.replace("_", " ")
 
                 if result and result.retcode == mt5.TRADE_RETCODE_DONE:
+                    _fill_names = {0: "FOK", 1: "IOC", 2: "RETURN"}
+                    _fill_label  = _fill_names.get(request["type_filling"], str(request["type_filling"]))
                     entry_log = (
                         f"⚡ {'MARKET EXECUTION' if is_nano else 'TRAP SET'}: "
                         f"{symbol} {action} | Entry: {price} | Lot: {lot} | "
-                        f"Fill: {request['type_filling']}"
+                        f"Fill: {_fill_label}"
                     )
                     self.log_info(entry_log)
 
@@ -1027,18 +1050,27 @@ class TradingBot:
                         f"Conf: {analysis.confidence * 100:.0f}%"
                     )
 
-                    # [BUG-16 FIX] Send chart snapshot via Telegram.
-                    # VisionEngine was fully implemented but never imported or called.
+                    # [BUG-16] VisionEngine chart snapshot via Telegram.
+                    # [HF-D] Cleanup now happens via on_complete callback that
+                    # fires AFTER the file handle is fully closed by send_photo().
+                    # Previously cleanup_snapshot() was called immediately after
+                    # send_photo() returned, while Telegram's upload thread still
+                    # had the file open → WinError 32 on Windows.
                     try:
                         snapshot = VisionEngine.generate_trade_snapshot(
                             df, symbol, action, price, sl, tp, analysis.confidence
                         )
                         if snapshot:
+                            def _cleanup(path=snapshot):
+                                try:
+                                    VisionEngine.cleanup_snapshot(path)
+                                except Exception:
+                                    pass  # Already logged by VisionEngine
                             self.notifier.send_photo(
                                 snapshot,
-                                caption=f"📊 {symbol} {safe_action} | Conf: {analysis.confidence * 100:.0f}%"
+                                caption=f"📊 {symbol} {safe_action} | Conf: {analysis.confidence * 100:.0f}%",
+                                on_complete=_cleanup,
                             )
-                            VisionEngine.cleanup_snapshot(snapshot)
                     except Exception as ve:
                         self.log_debug(f"VisionEngine non-critical error: {ve}")
 
