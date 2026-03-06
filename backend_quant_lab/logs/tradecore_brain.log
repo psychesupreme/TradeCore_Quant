@@ -45344,3 +45344,978 @@
 2026-03-06 10:56:04 [DEBUG] [US SP 500] SMC Tracker: Price ranging inside structure. No sweeps detected.
 2026-03-06 10:56:04 [DEBUG] [US Tech 100] SMC Tracker: Price ranging inside structure. No sweeps detected.
 2026-03-06 10:56:26 [INFO] Engine stopped.
+2026-03-06 11:37:36 [INFO] ✅ TradeCore v51.0: Engine Active. Monitoring 17 Assets.
+2026-03-06 11:38:40 [DEBUG] VaR inputs: FX 0.168% | GOLD 0.589% → blended 0.326%
+2026-03-06 11:38:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:40 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:38:41 [DEBUG] [USDCHF] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:38:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:41 [DEBUG] [NZDUSD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:38:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:41 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:41 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:41 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:42 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:42 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:42 [DEBUG] [US SP 500] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:38:42 [DEBUG] [US Tech 100] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.589% → blended 0.309%
+2026-03-06 11:39:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:41 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:41 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:39:42 [DEBUG] [USDCHF] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:39:42 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:42 [DEBUG] [NZDUSD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:39:42 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:42 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:42 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:42 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:42 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:42 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:42 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:43 [DEBUG] [US SP 500] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:39:43 [DEBUG] [US Tech 100] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:40:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:40:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:40:40 [DEBUG] [USDCHF] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:40:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:41 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:40:41 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:40:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:40:41 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:41 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:41 [DEBUG] [XAGUSD] SMC [MICRO]: Bearish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:40:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:40:42 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:40:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:41:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:41:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:41:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:41:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:41:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:41:41 [DEBUG] [USDCHF] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:41:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:41:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:41:41 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:41:41 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:41:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:41:41 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:41:41 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:41:41 [DEBUG] [XAGUSD] SMC [MICRO]: Bearish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:41:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:41:42 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:41:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:42:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:42:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:42:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:42:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:42:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:42:40 [DEBUG] [USDCHF] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:42:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:42:40 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:42:41 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:42:41 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:42:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:42:41 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:42:41 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:42:41 [DEBUG] [XAGUSD] SMC [MICRO]: Bearish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:42:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:42:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:42:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:43:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:43:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:43:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:43:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:43:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:43:40 [DEBUG] [USDCHF] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:43:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:43:40 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:43:40 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:43:40 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:43:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:43:41 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:43:41 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:43:41 [DEBUG] [XAGUSD] SMC [MICRO]: Bearish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:43:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:43:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:43:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:44:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:44:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:44:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:44:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:44:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:44:40 [DEBUG] [USDCHF] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:44:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:44:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:44:41 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:44:41 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:44:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:44:41 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:44:41 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:44:41 [DEBUG] [XAGUSD] SMC [MICRO]: Bearish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:44:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:44:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:44:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:45:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:45:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:45:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:45:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:45:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:45:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:45:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:45:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:45:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:46:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:46:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:46:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:46:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:40 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:46:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:46:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:46:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:46:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:46:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:47:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.659% → blended 0.336%
+2026-03-06 11:47:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:47:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:47:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:40 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:47:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:47:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:47:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:47:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:47:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:48:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.659% → blended 0.336%
+2026-03-06 11:48:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:48:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:48:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:40 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:48:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:48:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:48:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:48:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:48:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:49:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:49:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:49:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:49:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:49:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:49:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:49:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:49:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:49:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:50:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:50:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:41 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:50:41 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:50:41 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:50:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:50:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:50:42 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:42 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:50:42 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:50:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:51:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:51:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:51:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:51:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:51:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:51:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:51:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:51:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:51:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:52:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:52:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:52:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:52:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:40 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:52:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:52:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:52:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:52:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:52:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:53:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:53:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:41 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:41 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:53:41 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:53:41 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:53:42 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:53:42 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:53:42 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:42 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:53:42 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:53:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:54:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:54:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:54:41 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:54:41 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:41 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:41 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:54:42 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:54:42 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:54:42 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:42 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:54:42 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:54:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:55:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:55:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:41 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:41 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:55:41 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:55:42 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:42 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:43 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:43 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:44 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:44 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:55:45 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:55:45 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:55:46 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:46 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:55:47 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:55:47 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:56:40 [DEBUG] VaR inputs: FX 0.141% | GOLD 0.660% → blended 0.336%
+2026-03-06 11:56:40 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:40 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:40 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:56:40 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:56:40 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:40 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:40 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:41 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:41 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:41 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:56:41 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:56:41 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:56:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:56:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:56:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:57:41 [DEBUG] VaR inputs: FX 0.143% | GOLD 0.660% → blended 0.337%
+2026-03-06 11:57:41 [DEBUG] [EURUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:44 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:45 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:57:45 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:57:46 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:47 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:47 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:49 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:50 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:51 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 11:57:51 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:57:52 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 11:57:53 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:53 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 11:57:54 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:57:55 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 11:58:00 [INFO] Engine stopped.
+2026-03-06 12:27:19 [INFO] ✅ TradeCore v51.0: Engine Active. Monitoring 17 Assets.
+2026-03-06 12:28:31 [DEBUG] VaR inputs: FX 0.143% | GOLD 0.660% → blended 0.337%
+2026-03-06 12:28:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:28:31 [DEBUG] [GBPUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:31 [DEBUG] [USDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:28:32 [DEBUG] [USDCAD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:28:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:32 [DEBUG] [AUDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:32 [DEBUG] [NZDUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:32 [DEBUG] [EURGBP] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:28:33 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish FVG blocked (Low Volume Fakeout).
+2026-03-06 12:28:33 [DEBUG] [XAUUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:33 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:33 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:28:33 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 12:28:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Sweep + Volume. Waiting for FVG gap.
+2026-03-06 12:28:44 [INFO] Engine stopped.
+2026-03-06 12:29:28 [INFO] ✅ TradeCore v51.0: Engine Active. Monitoring 17 Assets.
+2026-03-06 12:30:31 [DEBUG] VaR inputs: FX 0.310% | GOLD 0.614% → blended 0.424%
+2026-03-06 12:30:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:30:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:30:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:30:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:30:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:30:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:30:33 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:30:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:31:31 [DEBUG] VaR inputs: FX 0.310% | GOLD 0.614% → blended 0.424%
+2026-03-06 12:31:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:31:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:31:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:32 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:31:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:31:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:33 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:33 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:31:33 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:33 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:31:33 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:31:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:32:31 [DEBUG] VaR inputs: FX 0.317% | GOLD 0.614% → blended 0.428%
+2026-03-06 12:32:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:32:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:32:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:32:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:32:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:33 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:32:33 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:33 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:32:33 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:32:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:33:31 [DEBUG] VaR inputs: FX 0.317% | GOLD 0.614% → blended 0.428%
+2026-03-06 12:33:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:33:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:33:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:33:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:33:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:33:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:33 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:33:33 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:33:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:34:31 [DEBUG] VaR inputs: FX 0.327% | GOLD 0.614% → blended 0.435%
+2026-03-06 12:34:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:34:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:34:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:34:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:34:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:34:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:34:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:34:32 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:35:31 [DEBUG] VaR inputs: FX 0.343% | GOLD 0.614% → blended 0.445%
+2026-03-06 12:35:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:35:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:35:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:35:31 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:35:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:35:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:35:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:35:32 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:36:31 [DEBUG] VaR inputs: FX 0.353% | GOLD 0.690% → blended 0.479%
+2026-03-06 12:36:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:36:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:36:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:36:31 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:36:31 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:31 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:36:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:36:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:36:32 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:37:31 [DEBUG] VaR inputs: FX 0.361% | GOLD 0.690% → blended 0.484%
+2026-03-06 12:37:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:37:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:37:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:32 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:37:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:37:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:37:33 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:33 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:37:33 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:37:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:38:31 [DEBUG] VaR inputs: FX 0.362% | GOLD 0.689% → blended 0.485%
+2026-03-06 12:38:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:38:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:38:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:38:31 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:38:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:38:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:38:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:38:32 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:39:31 [DEBUG] VaR inputs: FX 0.362% | GOLD 0.689% → blended 0.485%
+2026-03-06 12:39:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:39:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:39:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:39:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:39:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:39:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:39:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:39:32 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:40:31 [DEBUG] VaR inputs: FX 0.362% | GOLD 0.689% → blended 0.485%
+2026-03-06 12:40:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:40:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:40:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:40:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:40:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:40:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:40:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:40:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:41:31 [DEBUG] VaR inputs: FX 0.362% | GOLD 0.689% → blended 0.485%
+2026-03-06 12:41:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:41:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:41:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:41:31 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:41:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:41:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:41:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:41:32 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:42:31 [DEBUG] VaR inputs: FX 0.362% | GOLD 0.689% → blended 0.485%
+2026-03-06 12:42:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:42:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:42:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:42:31 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:42:31 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:31 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:42:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:42:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:42:32 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:43:31 [DEBUG] VaR inputs: FX 0.369% | GOLD 0.689% → blended 0.489%
+2026-03-06 12:43:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:43:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:43:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:31 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:43:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:43:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:32 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:32 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:43:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:33 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:43:33 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:43:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:44:31 [DEBUG] VaR inputs: FX 0.369% | GOLD 0.689% → blended 0.489%
+2026-03-06 12:44:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:44:32 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:44:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:32 [DEBUG] [USDCAD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:33 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:44:33 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:44:33 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:33 [DEBUG] [GBPJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:33 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:33 [DEBUG] [AUDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:33 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:44:34 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:34 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:44:35 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:44:35 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:31 [DEBUG] VaR inputs: FX 0.369% | GOLD 0.689% → blended 0.489%
+2026-03-06 12:45:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:32 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:33 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:45:33 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:34 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:45:34 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:35 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:35 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:45:36 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:37 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:45:37 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:38 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:38 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:45:39 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:45:39 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:45:40 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:31 [DEBUG] VaR inputs: FX 0.372% | GOLD 0.689% → blended 0.491%
+2026-03-06 12:46:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:32 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:46:32 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:33 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:46:33 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:33 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:33 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:46:33 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:33 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:46:34 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:34 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:34 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:46:34 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:46:35 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:46:35 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:31 [DEBUG] VaR inputs: FX 0.377% | GOLD 0.689% → blended 0.494%
+2026-03-06 12:47:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:47:33 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:34 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:47:34 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:35 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:35 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:47:36 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:37 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:47:37 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:38 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:38 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:47:39 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:47:40 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:47:40 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:31 [DEBUG] VaR inputs: FX 0.377% | GOLD 0.696% → blended 0.496%
+2026-03-06 12:48:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:48:31 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:48:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:33 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:33 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:48:34 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:35 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:48:35 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:36 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:36 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:48:37 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:48:38 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:48:38 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:31 [DEBUG] VaR inputs: FX 0.377% | GOLD 0.696% → blended 0.496%
+2026-03-06 12:49:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:49:31 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:49:33 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:35 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:36 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:49:37 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:38 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:49:38 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:39 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:39 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:49:40 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:49:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:49:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:31 [DEBUG] VaR inputs: FX 0.377% | GOLD 0.696% → blended 0.496%
+2026-03-06 12:50:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:32 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:33 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:50:34 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:35 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:50:35 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:37 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:38 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:50:38 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:39 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:50:39 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:40 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:50:42 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:50:42 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:50:43 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:31 [DEBUG] VaR inputs: FX 0.389% | GOLD 0.712% → blended 0.510%
+2026-03-06 12:51:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:32 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:51:32 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:33 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:51:33 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:33 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:34 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:51:34 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:35 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:51:35 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:36 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:36 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:51:37 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:51:37 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:51:38 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:31 [DEBUG] VaR inputs: FX 0.401% | GOLD 0.731% → blended 0.525%
+2026-03-06 12:52:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:52:33 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:34 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:52:34 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:34 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:35 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:52:35 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:36 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:52:37 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:37 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:38 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:52:38 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:52:39 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:52:40 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.756% → blended 0.535%
+2026-03-06 12:53:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:53:32 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:53:33 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:33 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:34 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:53:35 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:35 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:53:36 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:36 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:37 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:53:37 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:53:38 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:53:38 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.756% → blended 0.534%
+2026-03-06 12:54:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:54:32 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:54:33 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:34 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:34 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:54:34 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:34 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:54:34 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:35 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:35 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:54:36 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:54:36 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:54:37 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.756% → blended 0.534%
+2026-03-06 12:55:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:55:32 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:55:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:33 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:34 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:55:34 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:35 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:55:35 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:36 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:37 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:55:37 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:55:38 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:55:38 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.755% → blended 0.534%
+2026-03-06 12:56:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:56:31 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:31 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:56:31 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:32 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:56:32 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:32 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:56:32 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:32 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:32 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:56:32 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:56:32 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:56:33 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.756% → blended 0.535%
+2026-03-06 12:57:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:57:32 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:32 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:57:33 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:33 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:34 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:57:35 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:36 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:57:37 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:37 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:38 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:57:40 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:57:40 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:57:41 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.785% → blended 0.545%
+2026-03-06 12:58:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:58:32 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:33 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:58:35 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:35 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:35 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:58:36 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:37 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:58:37 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:37 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:38 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:58:38 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:58:39 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:58:39 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.784% → blended 0.545%
+2026-03-06 12:59:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:33 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:59:34 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:34 [DEBUG] [USDCHF] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:59:35 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:36 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:37 [DEBUG] [EURJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:59:37 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:38 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:59:38 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:40 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:41 [DEBUG] [XAGUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:59:41 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 12:59:41 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 12:59:42 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.784% → blended 0.545%
+2026-03-06 13:00:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:32 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:33 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:00:33 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:34 [DEBUG] [USDCHF] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:34 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:34 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:35 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:35 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:35 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:00:35 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:36 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:36 [DEBUG] [XAGUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:37 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:00:37 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:00:37 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.812% → blended 0.556%
+2026-03-06 13:01:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:31 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:01:31 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:31 [DEBUG] [USDCHF] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:32 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:32 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:33 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:33 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:33 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:01:33 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:34 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:34 [DEBUG] [XAGUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:34 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:01:34 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:01:34 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.863% → blended 0.575%
+2026-03-06 13:02:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:02:33 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:33 [DEBUG] [USDCHF] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:34 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:34 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:35 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:35 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:36 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:02:37 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:37 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:38 [DEBUG] [XAGUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:38 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:02:39 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:02:40 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.863% → blended 0.575%
+2026-03-06 13:03:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:31 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:03:33 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:33 [DEBUG] [USDCHF] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:34 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:34 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:35 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:36 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:36 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:03:37 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:37 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:38 [DEBUG] [XAGUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:38 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:03:39 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:03:40 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:31 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.864% → blended 0.575%
+2026-03-06 13:04:31 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:32 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:32 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:04:33 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:33 [DEBUG] [USDCHF] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:34 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:34 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:34 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:34 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:35 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:04:35 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:35 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:36 [DEBUG] [XAGUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:36 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:04:36 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:04:37 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:36 [DEBUG] VaR inputs: FX 0.402% | GOLD 0.882% → blended 0.582%
+2026-03-06 13:05:36 [DEBUG] [EURUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:37 [DEBUG] [GBPUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:38 [DEBUG] [USDJPY] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:05:38 [INFO] Engine stopped.
+2026-03-06 13:05:38 [DEBUG] [USDCAD] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:39 [DEBUG] [USDCHF] SMC [MICRO]: Bearish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:40 [DEBUG] [AUDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:40 [DEBUG] [NZDUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:41 [DEBUG] [EURJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:41 [DEBUG] [GBPJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:44 [DEBUG] [EURGBP] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:05:44 [DEBUG] [AUDJPY] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:45 [DEBUG] [XAUUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:45 [DEBUG] [XAGUSD] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:46 [DEBUG] [BTCUSD] SMC: Price ranging inside structure. No sweeps detected.
+2026-03-06 13:05:46 [DEBUG] [US SP 500] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
+2026-03-06 13:05:47 [DEBUG] [US Tech 100] SMC [MICRO]: Bullish Liquidity Swept. Waiting for volume injection.
