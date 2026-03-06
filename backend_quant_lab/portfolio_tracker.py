@@ -9,18 +9,32 @@ import os
 warnings.filterwarnings("ignore", category=UserWarning)
 
 def analyze_forward_test():
-    # 1. Connect to the TradeCore Ledger
+    # [BUG-28 FIX] Was connecting to 'tradecore_ledger.db' with table
+    # 'forward_test_ledger' — both are old names from an earlier prototype.
+    # The live system uses 'tradecore.db' with the 'trades' table.
+    # Also updated column names to match the live schema.
     try:
-        conn = sqlite3.connect('tradecore_ledger.db')
-        df = pd.read_sql_query("SELECT * FROM forward_test_ledger", conn)
+        conn = sqlite3.connect('tradecore.db')
+        df = pd.read_sql_query(
+            "SELECT * FROM trades WHERE close_time IS NOT NULL AND profit IS NOT NULL",
+            conn
+        )
         conn.close()
     except Exception as e:
         print(f"Error accessing database: {e}")
         return
 
-    # 2. THE ASSET FILTER: Strictly isolate XAUUSD trades
+    # Map live schema columns to the expected analysis shape
+    # live trades: symbol, type, volume, open_price, open_time, close_price, close_time, profit
     if not df.empty:
-        df = df[df['ticker'] == 'XAUUSD'].copy()
+        df = df[df['symbol'].str.contains('XAU', na=False)].copy()
+        # Rename to match VectorBT expectations
+        df = df.rename(columns={
+            'open_time':   'timestamp',
+            'open_price':  'price',
+            'type':        'action',
+        })
+        df['action'] = df['action'].str.lower()  # 'BUY' → 'buy'
 
     if df.empty or len(df) < 2:
         print("Waiting for more XAUUSD TradingView signals to generate a plot...")

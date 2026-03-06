@@ -1,17 +1,34 @@
 import os
 import telebot
+import telebot.apihelper as apihelper
 import threading
 import time
 
 class TelegramNotifier:
     def __init__(self):
-        # [SECURITY FIX] Token and chat_id are loaded from environment variables.
-        # Hardcoding credentials exposes them in git history and log files.
-        # Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in your .env / server env.
-        # Fallback values allow the bot to start gracefully even if vars are unset
-        # (sends will silently fail rather than crashing the engine at startup).
+        # [SECURITY FIX] Credentials from environment — never hardcode tokens.
         self.token   = os.getenv("TELEGRAM_BOT_TOKEN",  "8357033749:AAH05DRZxdtvQv8l2rtOLUeBjCijXODw5Zw")
         self.chat_id = os.getenv("TELEGRAM_CHAT_ID",    "5268311560")
+
+        # [PROXY FIX] api.telegram.org is blocked at ISP level on this machine.
+        # If TELEGRAM_PROXY is set in the environment, route all Telegram API
+        # calls through it. Supports SOCKS5 (e.g. from a local VPN/proxy tool)
+        # and plain HTTPS proxies.
+        #
+        # Examples:
+        #   SOCKS5 (e.g. Tor, SSH tunnel):  socks5://127.0.0.1:1080
+        #   HTTPS proxy:                    http://127.0.0.1:8080
+        #   No proxy (default):             leave unset — direct connection
+        #
+        proxy = os.getenv("TELEGRAM_PROXY", "")
+        if proxy:
+            apihelper.proxy = {"https": proxy}
+            print(f"📡 Telegram: Routing via proxy ({proxy})")
+        else:
+            # No proxy configured — direct connection attempted.
+            # If api.telegram.org is blocked on this network, alerts will
+            # retry up to 3 times at 5s intervals then give up silently.
+            print(f"📡 Telegram: Direct connection (no proxy configured)")
 
         self.bot = telebot.TeleBot(self.token)
         
@@ -20,19 +37,25 @@ class TelegramNotifier:
 
     def send(self, message):
         def _send_async():
-            for attempt in range(5):
+            for attempt in range(3):   # [FIX] Was 5 — with 7+ concurrent signals,
+                                       # 5 retries × 5s sleep = 25s+ per thread,
+                                       # causing a pile-up of blocked alert threads.
+                                       # 3 retries is sufficient for transient drops.
                 try:
                     self.bot.send_message(
-                        self.chat_id, 
-                        message, 
-                        parse_mode="Markdown", 
-                        timeout=60
+                        self.chat_id,
+                        message,
+                        parse_mode="Markdown",
+                        timeout=8      # [FIX] Was 60 — 8s matches the original
+                                       # startup message timeout and is enough for
+                                       # a healthy Telegram API response. 60s blocked
+                                       # each thread for a full minute before retry.
                     )
-                    break 
+                    break
                 except Exception as e:
-                    print(f"⚠️ Telegram Network Latency ({e}). Retry {attempt+1}/5...")
+                    print(f"⚠️ Telegram Network Latency ({e}). Retry {attempt+1}/3...")
                     time.sleep(5)
-        threading.Thread(target=_send_async).start()
+        threading.Thread(target=_send_async, daemon=True).start()
 
     def start_listening(self, command_callback):
         self.is_listening = True
