@@ -26,118 +26,130 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
     return tr.rolling(period).mean()
 
 
-def detect_institutional_footprint(
-    df: pd.DataFrame,
-    macro_trend: str = "NEUTRAL",
-    market_regime: str = "NORMAL",
-) -> tuple[str, float, str]:
-    """
-    Core SMC detection engine.
-
-    Candle reference frame:
-        c1 = df.iloc[-3]  — the sweep candle
-        c2 = df.iloc[-2]  — the displacement / reaction candle
-        c3 = df.iloc[-1]  — the confirmation candle
-
-    Volume baseline is always c2's own rolling average window,
-    not c1's. [BUG-20 FIX]
-    """
-    if len(df) < 50:
+def detect_institutional_footprint(df, macro_trend="NEUTRAL", market_regime="NORMAL"):
+    if len(df) < 50: 
         return "NEUTRAL", 0.0, "Gathering Data"
 
-    df['liquidity_low']  = df['low'].rolling(window=15).min().shift(1)
+    df['liquidity_low'] = df['low'].rolling(window=15).min().shift(1)
     df['liquidity_high'] = df['high'].rolling(window=15).max().shift(1)
-    df['avg_volume']     = df['volume'].rolling(window=15).mean()
+    df['avg_volume'] = df['volume'].rolling(window=15).mean()
 
-    c1 = df.iloc[-3]   # sweep candle
-    c2 = df.iloc[-2]   # displacement candle
-    c3 = df.iloc[-1]   # confirmation candle
-
+    c1 = df.iloc[-3] 
+    c2 = df.iloc[-2] 
+    c3 = df.iloc[-1] 
+    
     current_atr = df.iloc[-1]['atr']
-
-    # [BUG-20 FIX] Was df.iloc[-3] (c1's row) — should be df.iloc[-2] (c2's row).
-    # The variable is named avg_vol_c2 and is used exclusively for comparing
-    # against c2's volume. Using c1's average caused a systematic mismatch:
-    # the baseline reflected a 15-bar window ending on c1 rather than c2,
-    # which lagged by one candle and inflated vol_ratio on strong moves.
+    # [BUG-20 FIX] Must read c2's row (-2), not c1's row (-3).
+    # Using -3 was comparing c2's raw volume against c1's rolling mean — one candle
+    # behind. vol_ratio was systematically off, suppressing valid signals.
     avg_vol_c2 = df.iloc[-2]['avg_volume']
 
-    # ── REGIME PARAMETERS ─────────────────────────────────────────────
+    # ==========================================
+    # 3-TIER DYNAMIC REGIME SHIFTING
+    # ==========================================
     if "DEAD MARKET" in market_regime:
-        vol_multiplier = 1.0
+        vol_multiplier = 1.0  
         atr_multiplier = 0.3
-        regime_tag     = "[NANO]"
-        signal_suffix  = "_NANO"
+        regime_tag = "[NANO]"
+        signal_suffix = "_NANO"
+        enforce_macro = False  # DO NOT ask H4 for permission in a dead range
     elif "LOW VOLATILITY" in market_regime or "NORMAL" in market_regime:
-        vol_multiplier = 1.2
+        vol_multiplier = 1.2  
         atr_multiplier = 0.5
-        regime_tag     = "[MICRO]"
-        signal_suffix  = ""
-    else:   # HIGH VOLATILITY
-        vol_multiplier = 1.5
+        regime_tag = "[MICRO]"
+        signal_suffix = "_MICRO"   # [BUG-D FIX] Was empty string — MICRO trades
+                                   # logged as plain BUY/SELL, identical to MACRO.
+                                   # DB now tracks BUY_MICRO / SELL_MICRO separately.
+        enforce_macro = False  # Allow range-bound trading
+    else:
+        vol_multiplier = 1.5  
         atr_multiplier = 0.8
-        regime_tag     = "[MACRO]"
-        signal_suffix  = ""
+        regime_tag = "[MACRO]"
+        signal_suffix = ""
+        enforce_macro = True   # Strict H4 trend alignment required for massive moves
 
     volume_surge = c2['volume'] > (avg_vol_c2 * vol_multiplier)
 
-    # ── DYNAMIC CONFIDENCE SCORING ────────────────────────────────────
     base_conf = 0.85
     vol_ratio = c2['volume'] / avg_vol_c2 if avg_vol_c2 > 0 else 1.0
-
-    if   vol_ratio > 2.5: base_conf += 0.06
+    
+    if vol_ratio > 2.5: base_conf += 0.06
     elif vol_ratio > 1.8: base_conf += 0.04
     elif vol_ratio > 1.2: base_conf += 0.02
 
-    # ── BULLISH SCENARIO ──────────────────────────────────────────────
-    sweep_low        = c1['low'] < c1['liquidity_low']
+    # ==========================================
+    # BULLISH SCENARIO
+    # ==========================================
+    sweep_low = c1['low'] < c1['liquidity_low']
     body_size_c2_bull = abs(c2['close'] - c2['open'])
-    displacement_up  = (c2['close'] > c2['open']) and (body_size_c2_bull > current_atr * atr_multiplier)
-    fvg_bullish      = c3['low'] > c1['high']
+    displacement_up = (c2['close'] > c2['open']) and (body_size_c2_bull > current_atr * atr_multiplier)
+    fvg_bullish = c3['low'] > c1['high']
 
     if sweep_low:
         if displacement_up:
+            # [BUG-B FIX] MICRO no longer hard-blocks on low volume.
+            # NANO never had a volume gate. MICRO now matches — low volume
+            # degrades confidence by 0.05 but does not kill the signal.
+            # Log was showing "Bullish blocked (Low Volatility)" for GBPUSD
+            # and BTCUSD on every tick despite valid sweep + displacement.
             if not volume_surge:
-                return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bullish FVG blocked (Low Volume Fakeout)."
-
+                if regime_tag == "[MACRO]":
+                    return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bullish blocked (Low Volatility)."
+                else:
+                    base_conf -= 0.05  # Softer: allow entry at reduced confidence
+            
             disp_ratio = body_size_c2_bull / (current_atr * atr_multiplier) if (current_atr * atr_multiplier) > 0 else 0
-            if   disp_ratio > 1.5: base_conf += 0.05
+            if disp_ratio > 1.5: base_conf += 0.05
             elif disp_ratio > 1.0: base_conf += 0.03
-
+            
             final_conf = min(0.99, round(base_conf, 2))
 
-            if fvg_bullish or regime_tag == "[NANO]":
-                if macro_trend == "BEARISH":
-                    return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bullish Setup blocked by Bearish H4."
-                return f"BUY{signal_suffix}", final_conf, f"SMC {regime_tag}: Bullish Setup (Vol: {vol_ratio:.1f}x)"
-            return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bullish Sweep + Volume. Waiting for FVG gap."
-        return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bullish Liquidity Swept. Waiting for volume injection."
+            # [BUG-C FIX] MICRO now bypasses the FVG gate same as NANO.
+            # Log showed USDJPY stuck "Waiting for FVG gap" with sweep + volume
+            # on every single tick. FVG only required in MACRO (trend moves).
+            if fvg_bullish or regime_tag in ("[NANO]", "[MICRO]"):
+                # The Noise Fighter Logic: Ignore H4 if enforce_macro is False
+                if enforce_macro and macro_trend == "BEARISH":
+                    return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bullish Setup blocked by Bearish H4."
+                
+                return f"BUY{signal_suffix}", final_conf, f"SMC {regime_tag}: Bullish Sweep (Vol: {vol_ratio:.1f}x)"
+            return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bullish Sweep + Volume. Waiting for FVG gap."
+        return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bullish Liquidity Swept. Waiting for volume injection."
 
-    # ── BEARISH SCENARIO ──────────────────────────────────────────────
-    sweep_high        = c1['high'] > c1['liquidity_high']
+    # ==========================================
+    # BEARISH SCENARIO
+    # ==========================================
+    sweep_high = c1['high'] > c1['liquidity_high']
     body_size_c2_bear = abs(c2['open'] - c2['close'])
     displacement_down = (c2['close'] < c2['open']) and (body_size_c2_bear > current_atr * atr_multiplier)
-    fvg_bearish       = c3['high'] < c1['low']
+    fvg_bearish = c3['high'] < c1['low']
 
     if sweep_high:
         if displacement_down:
+            # [BUG-B FIX] Same as bullish side — MICRO degrades, MACRO hard-blocks.
             if not volume_surge:
-                return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bearish FVG blocked (Low Volume Fakeout)."
-
+                if regime_tag == "[MACRO]":
+                    return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bearish blocked (Low Volatility)."
+                else:
+                    base_conf -= 0.05
+            
             disp_ratio = body_size_c2_bear / (current_atr * atr_multiplier) if (current_atr * atr_multiplier) > 0 else 0
-            if   disp_ratio > 1.5: base_conf += 0.05
+            if disp_ratio > 1.5: base_conf += 0.05
             elif disp_ratio > 1.0: base_conf += 0.03
-
+            
             final_conf = min(0.99, round(base_conf, 2))
 
-            if fvg_bearish or regime_tag == "[NANO]":
-                if macro_trend == "BULLISH":
-                    return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bearish Setup blocked by Bullish H4."
-                return f"SELL{signal_suffix}", final_conf, f"SMC {regime_tag}: Bearish Setup (Vol: {vol_ratio:.1f}x)"
-            return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bearish Sweep + Volume. Waiting for FVG gap."
-        return "NEUTRAL", 0.0, f"SMC {regime_tag}: Bearish Liquidity Swept. Waiting for volume injection."
+            # [BUG-C FIX] Same as bullish — MICRO bypasses FVG requirement.
+            if fvg_bearish or regime_tag in ("[NANO]", "[MICRO]"):
+                # The Noise Fighter Logic: Ignore H4 if enforce_macro is False
+                if enforce_macro and macro_trend == "BULLISH":
+                    return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bearish Setup blocked by Bullish H4."
+                
+                return f"SELL{signal_suffix}", final_conf, f"SMC {regime_tag}: Bearish Sweep (Vol: {vol_ratio:.1f}x)"
+            return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bearish Sweep + Volume. Waiting for FVG gap."
+        return "NEUTRAL", 0.0, f"SMC Tracker {regime_tag}: Bearish Liquidity Swept. Waiting for volume injection."
 
-    return "NEUTRAL", 0.0, "SMC: Price ranging inside structure. No sweeps detected."
+    return "NEUTRAL", 0.0, "SMC Tracker: Price ranging inside structure. No sweeps detected."
 
 
 def analyze_market_structure(

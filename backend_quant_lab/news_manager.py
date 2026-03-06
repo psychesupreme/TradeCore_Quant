@@ -194,14 +194,27 @@ class NewsManager:
                 tier     = _classify_tier(title)
                 insight  = self.get_impact_analysis(title, country)
 
+                # [BUG-F FIX] "Unknown Event" fallback showed literally in Flutter cards.
+                # When ForexFactory XML has an empty title, build a meaningful label
+                # from country + impact data so the frontend always shows readable text.
+                if not title or title == "Unknown Event":
+                    title = f"{country} {impact} Impact Event"
+
+                # [BUG-E FIX] event_dt was a raw datetime object in the dict.
+                # If the /bot/news endpoint uses JSONResponse(content=...) this causes
+                # a TypeError since stdlib json.dumps can't serialize datetime.
+                # Store as ISO string for API consumers; keep _event_dt for is_news_window().
+                event_dt_str = event_dt.isoformat() if event_dt else None
+
                 new_events.append({
-                    "country":   country,
-                    "title":     title,
-                    "impact":    impact,
-                    "tier":      tier,
-                    "time":      f"{date_str} {time_str}".strip(),
-                    "event_dt":  event_dt,
-                    "insight":   insight,
+                    "country":    country,
+                    "title":      title,
+                    "impact":     impact,
+                    "tier":       tier,
+                    "time":       f"{date_str} {time_str}".strip(),
+                    "event_dt":   event_dt_str,   # ISO string — safe for any JSON encoder
+                    "_event_dt":  event_dt,        # Internal datetime — used by is_news_window()
+                    "insight":    insight,
                 })
 
             self.events     = new_events
@@ -236,7 +249,7 @@ class NewsManager:
         for event in self.events:
             if event['impact'] != 'High':
                 continue
-            event_dt = event.get('event_dt')
+            event_dt = event.get('_event_dt')   # Use internal datetime field
             if event_dt is None:
                 continue
             tier = event.get('tier', 2)
