@@ -40,14 +40,15 @@ class MT5Gateway:
         print("⚡ Optimizing Asset Indexing for Fast Boot...")
         
         # ==========================================
-        # UPGRADED FAST-BOOT WHITELIST (17 Assets)
+        # FAST-BOOT WHITELIST (20 Assets) [SPRINT 8]
         # ==========================================
         vip_bases = [
             "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", # Majors
             "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",                               # Crosses
             "XAUUSD", "XAGUSD",                                                   # Metals
+            "US Oil", "NGAS",                                                     # Commodities [SPRINT 8]
             "BTCUSD", "ETHUSD",                                                   # Crypto
-            "US SP 500", "US Tech 100"                                            # Indices
+            "US SP 500", "US Tech 100", "Germany 40",                             # Indices [SPRINT 8]
         ]
         
         count = 0
@@ -70,10 +71,27 @@ class MT5Gateway:
                 count += 1
                 
         print(f"✅ Fast Boot: Indexed {count} VIP Assets instead of {len(symbols)}.")
+        # Warn if any VIP base had zero broker matches (catches symbol name mismatches)
+        for vip in vip_bases:
+            vip_norm = re.sub(r'[^a-zA-Z0-9]', '', vip).lower()
+            matched = any(re.sub(r'[^a-zA-Z0-9]', '', k).lower().startswith(vip_norm[:6])
+                         for k in self.symbol_map)
+            if not matched:
+                print(f"⚠️  Fast Boot: '{vip}' not found in broker symbol list.")
 
     def find_symbol(self, target):
         if not self.symbol_map: self._build_symbol_cache()
+        # Pass 1: exact match
         if target in self.symbol_map: return self.symbol_map[target]
+        # Pass 2: case-insensitive exact
+        tl = target.lower()
+        for k, v in self.symbol_map.items():
+            if k.lower() == tl: return v
+        # Pass 3: normalised (strip spaces/dots/dashes)
+        tn = re.sub(r'[^a-zA-Z0-9]', '', target).lower()
+        for k, v in self.symbol_map.items():
+            if re.sub(r'[^a-zA-Z0-9]', '', k).lower() == tn: return v
+        # Pass 4: substring fallback
         for k, v in self.symbol_map.items():
             if k in target or target in k: return v
         return None
@@ -178,6 +196,12 @@ class MT5Gateway:
             if res and res.retcode == mt5.TRADE_RETCODE_DONE: return True
         return False
 
+    def get_account_id(self):
+        """Return MT5 account number as string. Used to bind state/DB records to account."""
+        if not self.connected: self.start()
+        i = mt5.account_info()
+        return str(i.login) if i else None
+
     def get_account_info(self):
         if not self.connected: self.start()
         
@@ -185,11 +209,20 @@ class MT5Gateway:
         
         if i is None:
             print("⚠️ MT5 Broker Connection Lost. Attempting Auto-Reconnect...")
-            self.connected = False 
-            if self.start(): 
-                i = mt5.account_info() 
-            
-        return {"balance": i.balance, "equity": i.equity, "profit": i.profit, "margin_level": i.margin_level, "free_margin": i.margin_free} if i else None
+            self.connected = False
+            if self.start():
+                i = mt5.account_info()
+
+        if i is None: return None
+        return {
+            "balance":      i.balance,
+            "equity":       i.equity,
+            "profit":       i.profit,
+            "margin_level": i.margin_level,
+            "free_margin":  i.margin_free,
+            "account_id":   str(i.login),
+            "account_type": i.trade_mode,   # 0=real, 1=demo
+        }
     
     def get_open_positions(self):
         if not self.connected: self.start()
@@ -203,12 +236,7 @@ class MT5Gateway:
             "open_price": p.price_open,
             "sl": p.sl,
             "tp": p.tp,
-            "magic": p.magic,
-            # [BUG-23 FIX] p.time is the Unix timestamp of when the position opened.
-            # evaluate_open_positions() reads pos['time'] for the 12-hour dead-momentum
-            # duration check. The key was missing, so every access raised a KeyError
-            # caught silently — the 12-hour kill switch never fired for any position.
-            "time": p.time
+            "magic": p.magic  # ADDED: Crucial for the new NANO Trailing Stop to read the 510001 magic number!
         } for p in pos]
 
     def get_historical_deals(self, days=365):

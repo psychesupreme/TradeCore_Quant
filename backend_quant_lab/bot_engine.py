@@ -9,7 +9,8 @@ from mt5_interface import MT5Gateway
 from analyst import analyze_market_structure, AnalysisRequest, calculate_atr
 from models import Candle
 from telegram_client import TelegramNotifier
-from db_manager import DBManager 
+from db_manager import DBManager
+from quant_analyzer import QuantEngine 
 from news_manager import NewsManager  
 import threading
 import math
@@ -49,14 +50,23 @@ class TradingBot:
         self.news_manager = NewsManager() 
         
         # ==========================================
-        # FULLY DIVERSIFIED ASSET MATRIX
+        # FULLY DIVERSIFIED ASSET MATRIX (target: 20 assets)
         # ==========================================
+        # [SPRINT 8] 20-asset matrix: confirmed broker symbols.
+        # US Oil = "US Oil" (Deriv), NGAS = Natural Gas, Germany 40 = DAX.
+        # Routing checks use: 'Oil' in symbol, 'NGAS' in symbol, 'Germany' in symbol.
         self.vip_assets = [
-            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", 
-            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",  
-            "XAUUSD", "XAGUSD",                      
-            "BTCUSD", "ETHUSD",                      
-            "US SP 500", "US Tech 100"               
+            # Forex (11)
+            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD",
+            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",
+            # Metals (2)
+            "XAUUSD", "XAGUSD",
+            # Commodities (2) [SPRINT 8]
+            "US Oil", "NGAS",
+            # Crypto (2)
+            "BTCUSD", "ETHUSD",
+            # Indices (3) [SPRINT 8]
+            "US SP 500", "US Tech 100", "Germany 40",
         ]
         
         self.active_symbols = [] 
@@ -65,7 +75,7 @@ class TradingBot:
         # Expanded absolute capacity limits
         self.MAX_OPEN_TRADES = 12       
         self.MAX_SNIPER_SLOTS = 5      
-        self.MAX_GOLD_TRADES = 3       
+        self.MAX_GOLD_TRADES = 3       # Reused as MAX_COMMODITY_TRADES (gold, silver, oil, ngas)       
         
         self.logs = []
         self.is_running = False
@@ -74,37 +84,80 @@ class TradingBot:
         
         # --- STATE PERSISTENCE ---
         self.state_file = "logs/tradecore_state.json"
-        self.scaled_positions = self._load_state()
+        self.scaled_positions = set()  # populated in start_service() once MT5 is connected
         
         self.daily_start_balance = 0.0
         self.last_trade_day = -1
         self.kill_switch_active = False
+        self.kill_switch_time   = None    # [S9] tracks when KS last fired for 8h cooldown
 
         self.current_var = 0.0
         self.market_regime = "CALIBRATING..."
 
         # [OPT-6] Signal deduplication tracker.
-        # Prevents the same LOW_CONFIDENCE signal being written to DB every 60s.
-        # Format: {symbol: (signal_type, confidence_rounded)}
-        # A new DB row is written only when signal type OR confidence changes
-        # by more than 2%. This reduced signal table noise from 50+ identical
-        # rows/hour (EURUSD SELL_MICRO 83%) to one row per meaningful change.
         self._last_logged_signal: dict = {}
 
+        # [SPRINT 9] Pending LIMIT fill tracker.
+        # When a LIMIT order is placed successfully, we store its info here
+        # keyed by MT5 order ticket.  run_cycle() detects when it fills
+        # (appears in open positions) and calls save_trade() immediately.
+        self._pending_order_info: dict = {}
+
+        # [SPRINT 7] Quantitative analytics engine.
+        # Cached for 5 min. Provides: risk_pct, var_limit, cvar_limit,
+        # kelly_fraction, regime_gate, regime_multiplier.
+        self.quant_engine = QuantEngine()
+        # [SPRINT 7] Risk reduction flag — set by VaR warning, cleared when safe
+        self._risk_reduction_mode = False
+
+    def _get_current_account_id(self):
+        """Safely fetch account ID from gateway — returns None if not connected yet."""
+        try:
+            return self.gateway.get_account_id()
+        except Exception:
+            return None
+
     def _load_state(self):
+        """
+        Load scaled_positions and _last_logged_signal from disk.
+        If the saved account_id does not match the current MT5 account,
+        the state is discarded and a clean set is returned.
+        """
         try:
             if os.path.exists(self.state_file):
                 with open(self.state_file, "r") as f:
                     data = json.load(f)
-                    return set(data.get("scaled_positions", []))
+                saved_account   = data.get("account_id")
+                current_account = self._get_current_account_id()
+                if saved_account and current_account and saved_account != current_account:
+                    self.log_info(
+                        f"⚠️  Account switch detected: saved={saved_account} "
+                        f"current={current_account}. State cleared for new account."
+                    )
+                    self._save_state()
+                    return set()
+                # [S9] Restore signal dedup tracker — prevents first-cycle log flood
+                raw_dedup = data.get("last_logged_signal", {})
+                self._last_logged_signal = {k: tuple(v) for k, v in raw_dedup.items()}
+                return set(data.get("scaled_positions", []))
         except Exception as e:
             self.log_debug(f"State Load Error: {e}")
         return set()
 
     def _save_state(self):
+        """Save scaled_positions + signal dedup dict with current account_id."""
         try:
+            account_id = self._get_current_account_id()
+            # Serialize tuples as lists (JSON-safe)
+            dedup_serializable = {
+                k: list(v) for k, v in self._last_logged_signal.items()
+            }
             with open(self.state_file, "w") as f:
-                json.dump({"scaled_positions": list(self.scaled_positions)}, f)
+                json.dump({
+                    "account_id":          account_id,
+                    "scaled_positions":    list(self.scaled_positions),
+                    "last_logged_signal":  dedup_serializable,
+                }, f, indent=2)
         except Exception as e:
             self.log_debug(f"State Save Error: {e}")
 
@@ -168,7 +221,7 @@ class TradingBot:
         total_profit = sum(p['profit'] for p in positions)
         
         msg = (
-            f"📊 **TradeCore v51.0 Status**\n"
+            f"📊 **TradeCore v53.0 Status**\n"
             f"-------------------------\n"
             f"💰 Balance: ${balance:,.2f}\n"
             f"📈 Equity: ${equity:,.2f}\n"
@@ -202,11 +255,15 @@ class TradingBot:
 
         self.is_running = True
         self.execution_lock.clear()
-        self.log_info(f"✅ TradeCore v51.0: Engine Active. Monitoring {len(self.active_symbols)} Assets.")
+        self.account_id = self._get_current_account_id()  # cache for this session
+        # Load state NOW — MT5 is connected so account_id comparison works correctly.
+        # Stale entries from a different account are discarded automatically here.
+        self.scaled_positions = self._load_state()
+        self.log_info(f"✅ TradeCore v53.0: Engine Active. Monitoring {len(self.active_symbols)} Assets.")
         
         self.news_manager.fetch_calendar()
         self.notifier.start_listening(self.handle_telegram_command)
-        self.async_alert("🚀 **TradeCore v51.0 Master Online**\nDynamic Structural Targets Armed.")
+        self.async_alert("🚀 **TradeCore v53.0 Master Online**\nDynamic Structural Targets Armed.")
         return True
 
     def stop_service(self):
@@ -282,6 +339,19 @@ class TradingBot:
                 
                 # RESTORED: Stable 12-Hour Time Decay. 
                 # Prevents the AI from panicking and exiting valid setups early.
+                # [SPRINT 7] MAE/MFE tick tracking — called every cycle
+                tick = mt5.symbol_info_tick(symbol)
+                if tick:
+                    open_price = pos.get('open_price', 0.0)
+                    is_buy     = pos['type'] == 'BUY'
+                    if is_buy:
+                        adverse   = max(0.0, open_price - tick.bid)
+                        favorable = max(0.0, tick.bid - open_price)
+                    else:
+                        adverse   = max(0.0, tick.ask - open_price)
+                        favorable = max(0.0, open_price - tick.ask)
+                    DBManager.update_mae_mfe(pos['ticket'], adverse, favorable)
+
                 if duration_hours > 12.0 and profit < 0:
                     self.log_info(f"⏳ Time Decay Killswitch: {symbol} stuck in dead momentum for >12H. Liquidating.")
                     self.gateway.close_position(pos['ticket'], symbol, pos['volume'], pos['type'])
@@ -327,7 +397,13 @@ class TradingBot:
             if vol_pct > 0.010:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.0015: return "NORMAL (TRENDING)"
             return "DEAD MARKET"
-        elif "SP 500" in s or "Tech 100" in s:
+        elif "Oil" in s or "NGAS" in s:
+            # Commodities (WTI Crude / Natural Gas): highly volatile
+            # NGAS is more volatile than Oil — unified threshold is conservative
+            if vol_pct > 0.020:  return "HIGH VOLATILITY (GARCH)"
+            if vol_pct > 0.003:  return "NORMAL (TRENDING)"
+            return "DEAD MARKET"
+        elif "SP 500" in s or "Tech 100" in s or "Germany" in s:
             # Indices: high vol = >1.5%, dead = <0.2%
             if vol_pct > 0.015:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.002:  return "NORMAL (TRENDING)"
@@ -343,26 +419,11 @@ class TradingBot:
             if vol_pct > 0.001:  return "NORMAL (TRENDING)"
             return "DEAD MARKET"
 
-    def evaluate_risk_metrics(self):
+    def evaluate_risk_metrics(self, current_positions=None):
         """
         [OPT-5] Proper parametric VaR using ATR-based daily return std-dev.
-
-        Old formula: raw_var = balance × 0.15 × 2.326 × (vol_pct × 100)
-        Problems:
-          - vol_pct is a price range not a return standard deviation
-          - EURUSD-only proxy for a 17-asset portfolio
-          - 5% floor meant VaR could never drop below $461 on $9k balance —
-            the kill switch barely fires during calm sessions
-          - 25% ceiling is appropriate ✅ (kept)
-
-        New formula (proper parametric VaR):
-          daily_return_std = ATR / close  (ATR ≈ 1-day price std-dev)
-          99% daily VaR    = balance × daily_return_std × z(99%) × 2.326
-          Portfolio VaR    = sqrt(N) scaling for N open positions
-          Clamp            = [1.5% floor, 20% ceiling]  (tighter than before)
-
-        The 1.5% floor means the kill switch fires if we lose >$138 on a
-        $9k account during a quiet session — more protective than $461.
+        [SPRINT 9] Multi-asset VaR: uses max ATR% across all open positions,
+        not EURUSD-only. A BTC or Gold spike now correctly elevates VaR.
         """
         try:
             import MetaTrader5 as mt5
@@ -370,41 +431,50 @@ class TradingBot:
             if df.empty or len(df) < 15:
                 return "CALIBRATING...", 0.0
 
-            recent_high = df['high'].iloc[-15:].max()
-            recent_low  = df['low'].iloc[-15:].min()
+            recent_high   = df['high'].iloc[-15:].max()
+            recent_low    = df['low'].iloc[-15:].min()
             current_price = df['close'].iloc[-1]
-            vol_pct = (recent_high - recent_low) / current_price
+            vol_pct       = (recent_high - recent_low) / current_price
 
-            # Regime still based on EURUSD for the global engine state label
-            # (per-asset regime used inside process_symbol via get_asset_regime)
-            if vol_pct > 0.008:
-                regime = "HIGH VOLATILITY (GARCH)"
-            elif vol_pct > 0.003:
-                regime = "NORMAL (TRENDING)"
-            else:
-                regime = "DEAD MARKET"
+            if vol_pct > 0.008:    regime = "HIGH VOLATILITY (GARCH)"
+            elif vol_pct > 0.003:  regime = "NORMAL (TRENDING)"
+            else:                  regime = "DEAD MARKET"
 
             acc     = self.gateway.get_account_info()
             balance = acc['balance'] if acc else 10000.0
 
-            # ATR-based return std-dev: more statistically correct than raw range
-            df['atr'] = calculate_atr(df, period=14)
-            atr_val = df['atr'].iloc[-1]
-            if current_price > 0 and atr_val > 0:
-                daily_return_std = atr_val / current_price
-            else:
-                daily_return_std = vol_pct
+            df['atr']   = calculate_atr(df, period=14)
+            atr_eurusd  = df['atr'].iloc[-1]
+            base_std    = (atr_eurusd / current_price) if current_price > 0 and atr_eurusd > 0 else vol_pct
 
-            # Number of open positions for portfolio scaling
-            open_pos = self.gateway.get_open_positions()
-            n_pos    = max(1, len(open_pos))
+            # [S9] Multi-asset: compute ATR% for each open position symbol
+            # and use the maximum as the portfolio vol driver. This means
+            # a BTCUSD or XAUUSD spike correctly elevates the portfolio VaR
+            # even if EURUSD is calm.
+            max_asset_std = base_std
+            if current_positions:
+                seen = set()
+                for pos in current_positions:
+                    sym = pos.get('symbol', '')
+                    if sym in seen or not sym:
+                        continue
+                    seen.add(sym)
+                    try:
+                        df_pos = self.gateway.get_market_data(sym)
+                        if not df_pos.empty and len(df_pos) >= 14:
+                            df_pos['atr'] = calculate_atr(df_pos, period=14)
+                            atr_pos   = df_pos['atr'].iloc[-1]
+                            price_pos = df_pos['close'].iloc[-1]
+                            if price_pos > 0 and atr_pos > 0:
+                                max_asset_std = max(max_asset_std, atr_pos / price_pos)
+                    except Exception:
+                        pass
 
-            # Parametric 99% VaR — portfolio-scaled
-            z_99         = 2.326
-            single_var   = balance * daily_return_std * z_99
-            portfolio_var = single_var * (n_pos ** 0.5)   # sqrt(N) for uncorrelated positions
-
-            # Clamp: [1.5%, 20%] — tighter floor than old 5%, same ceiling direction
+            open_pos      = current_positions if current_positions else self.gateway.get_open_positions()
+            n_pos         = max(1, len(open_pos))
+            z_99          = 2.326
+            single_var    = balance * max_asset_std * z_99
+            portfolio_var = single_var * (n_pos ** 0.5)
             daily_var_usd = max(balance * 0.015, min(portfolio_var, balance * 0.20))
 
             return regime, round(daily_var_usd, 2)
@@ -421,37 +491,109 @@ class TradingBot:
         if not acc: 
             return
         
-        DBManager.log_snapshot(acc['balance'], acc['equity'], acc['margin_level'], acc['free_margin'])
+        DBManager.log_snapshot(acc['balance'], acc['equity'], acc['margin_level'], acc['free_margin'],
+                               account_id=acc.get('account_id'))
         current_positions = self.gateway.get_open_positions()
+
+        # [S9] LIMIT FILL DETECTION ─────────────────────────────────────
+        # When a LIMIT order fills, execute_signal stores its info in
+        # _pending_order_info keyed by order ticket. Here we detect
+        # when it appears in the open positions list and call save_trade()
+        # immediately so model_type/account_id are properly recorded.
+        if self._pending_order_info:
+            db_open = DBManager.get_open_trade_tickets()
+            for pos in current_positions:
+                ticket = pos.get('ticket')
+                if ticket in self._pending_order_info and ticket not in db_open:
+                    info = self._pending_order_info.pop(ticket)
+                    try:
+                        open_time = datetime.utcfromtimestamp(
+                            pos.get('time', 0)
+                        ).strftime('%Y-%m-%d %H:%M:%S')
+                        DBManager.save_trade(
+                            ticket     = ticket,
+                            symbol     = pos['symbol'],
+                            type_op    = pos['type'],
+                            vol        = pos.get('volume', 0.0),
+                            open_price = pos.get('open_price', 0.0),
+                            sl         = pos.get('sl', 0.0),
+                            tp         = pos.get('tp', 0.0),
+                            time       = open_time,
+                            regime     = info.get('regime'),
+                            account_id = info.get('account_id'),
+                            model_type = info.get('model_type'),
+                            model_sizing = info.get('model_sizing'),
+                        )
+                        self.log_debug(f"[{pos['symbol']}] Trade recorded: "
+                                       f"ticket={ticket} model={info.get('model_type')}")
+                    except Exception as e:
+                        self.log_debug(f"Fill Record Error ({ticket}): {e}")
+        # ────────────────────────────────────────────────────────────────
         
         current_day = datetime.utcnow().day
         
         if self.kill_switch_active:
-            if current_day != self.last_trade_day:
-                self.log_info("🌅 Midnight UTC Reached. Resetting Daily Kill-Switch.")
+            now_utc         = datetime.utcnow()
+            new_trading_day = (current_day != self.last_trade_day)
+            hours_since_ks  = (
+                (now_utc - self.kill_switch_time).total_seconds() / 3600.0
+                if self.kill_switch_time else 99.0
+            )
+            # [S9] Require BOTH midnight crossing AND 8h elapsed since KS fired.
+            # Prevents a 23:58 breach resetting at 00:00 (only 2 min later).
+            if new_trading_day and hours_since_ks >= 8.0:
+                self.log_info("🌅 Kill Switch Reset: New trading day + 8h cooldown passed.")
                 self.kill_switch_active = False
+                self.kill_switch_time   = None
                 self.daily_start_balance = acc['balance']
-                self.last_trade_day = current_day
+                self.last_trade_day      = current_day
             else:
-                if datetime.now().minute % 30 == 0 and datetime.now().second < 5:
-                    self.log_info("🛑 Kill Switch Active. Waiting for Midnight UTC to resume.")
-                return 
+                if now_utc.minute % 30 == 0 and now_utc.second < 5:
+                    hrs_remaining = max(0.0, 8.0 - hours_since_ks)
+                    self.log_info(f"🛑 Kill Switch Active. "
+                                  f"{hrs_remaining:.1f}h remaining before reset eligible.")
+                return
 
         if current_day != self.last_trade_day:
             self.daily_start_balance = acc['balance']
             self.last_trade_day = current_day
 
-        self.market_regime, self.current_var = self.evaluate_risk_metrics()
+        self.market_regime, self.current_var = self.evaluate_risk_metrics(current_positions)
 
         if self.daily_start_balance > 0 and self.current_var > 0:
             current_dd_usd = self.daily_start_balance - acc['equity']
             
-            if current_dd_usd >= self.current_var: 
-                self.log_info(f"🛑 KILL SWITCH: 99% VaR Limit Breached! (Drawdown: ${current_dd_usd:.2f} | Limit: ${self.current_var:.2f})")
-                self.async_alert(f"🛑 **CRITICAL: VALUE AT RISK (VaR) BREACHED**\nAccount hit the dynamic volatility limit (${self.current_var:.2f}). Liquidating {len(current_positions)} positions.")
+            # [SPRINT 7] Two-stage kill switch: VaR warning → CVaR halt
+            # CVaR (Expected Shortfall) fires first — it's the average loss
+            # in the worst 1% of sessions. More conservative than VaR alone.
+            quant_params = self.quant_engine.get_live_risk_params()
+            cvar_limit   = quant_params.get('cvar_limit', self.current_var * 1.29)
+            var_limit    = quant_params.get('var_limit',  self.current_var)
+
+            if current_dd_usd >= cvar_limit:
+                self.log_info(f"🛑 KILL SWITCH [CVaR]: Tail-risk limit breached! (DD: ${current_dd_usd:.2f} | CVaR: ${cvar_limit:.2f})")
+                self.async_alert(f"🛑 **CRITICAL: CVaR BREACHED**\nExpected Shortfall limit hit (${cvar_limit:.2f}). Liquidating {len(current_positions)} positions.")
                 self.close_all_positions(current_positions)
                 self.kill_switch_active = True
+                self.kill_switch_time   = datetime.utcnow()   # [S9] start 8h cooldown clock
                 return
+            elif current_dd_usd >= var_limit:
+                self.log_info(f"⚠️ VaR WARNING: Drawdown ${current_dd_usd:.2f} hit VaR limit ${var_limit:.2f}. Halving position sizes.")
+                self._risk_reduction_mode = True
+            else:
+                self._risk_reduction_mode = False
+
+        # [SPRINT 7] Markov Regime Gate — check regime transition probabilities
+        # If P(HIGH_VOL) > 50% or P(BEAR) > 65% → halt new positions
+        markov = self.quant_engine.markov_regime()
+        if markov.get('trading_gate') == 'HALT':
+            if datetime.utcnow().second < 5:
+                p_bear = markov.get('p_bear_next', 0)
+                p_hv   = markov.get('p_high_vol_next', 0)
+                self.log_info(f"🔴 Markov Gate HALT: P(BEAR)={p_bear:.0%} P(HIGH_VOL)={p_hv:.0%}. No new positions.")
+            return
+        elif markov.get('trading_gate') == 'REDUCE':
+            self._risk_reduction_mode = True
 
         is_open, market_status = self.check_market_schedule()
         if not is_open:
@@ -470,6 +612,20 @@ class TradingBot:
         raw_orders = mt5.orders_get()
         pending_list = list(raw_orders) if raw_orders else []
         usd_exposure_base = len([p for p in current_positions if "USD" in p['symbol']]) + len([o for o in pending_list if "USD" in o.symbol])
+
+        # [S9] BASE CURRENCY CORRELATION GUARD ──────────────────────────
+        # Tracks how many open/pending positions share the same 3-char base.
+        # Prevents silent EUR/GBP/AUD double-exposure (e.g. EURUSD + EURJPY).
+        # The existing USD lock above handles USD-specific exposure.
+        # Cap: max 2 positions with the same base currency simultaneously.
+        base_exposure: dict = {}
+        for p in current_positions:
+            b = p['symbol'][:3]
+            base_exposure[b] = base_exposure.get(b, 0) + 1
+        for o in pending_list:
+            b = o.symbol[:3]
+            base_exposure[b] = base_exposure.get(b, 0) + 1
+        # ────────────────────────────────────────────────────────────────
 
         if current_count >= (self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS):
             if datetime.now().second < 5: 
@@ -493,13 +649,19 @@ class TradingBot:
             if "USD" in symbol and (usd_exposure_base + current_usd_locks) >= 2:
                 continue
 
+            # [S9] Base-currency correlation guard (EUR, GBP, AUD, NZD, etc.)
+            sym_base = symbol[:3]
+            live_base_count = base_exposure.get(sym_base, 0) + (1 if symbol in self.execution_lock else 0)
+            if live_base_count >= 2:
+                continue
+
             symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
             
             nano_trades = len([p for p in current_positions if p['symbol'] == symbol and p.get('magic', 510000) == 510001])
             if "DEAD MARKET" in self.market_regime and nano_trades >= 1:
                 continue 
 
-            if "XAU" in symbol or "XAG" in symbol:
+            if "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
                 if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1): 
                     continue 
                 elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES: 
@@ -542,16 +704,16 @@ class TradingBot:
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
                 
-                scale_key = f"{symbol}_{open_price}_{pos['type']}"
+                scale_key = f"{symbol}_{open_price}_{pos['type']}_{ticket}"
                 is_ready_to_scale = False
                 
-                if ("XAU" in symbol or "XAG" in symbol) and profit_dist > 2.0: 
+                if ("XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol) and profit_dist > 2.0: 
                     is_ready_to_scale = True
                 elif "JPY" in symbol and profit_dist > 0.200: 
                     is_ready_to_scale = True
-                elif ("BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol) and profit_dist > 50.0: 
+                elif ("BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol or "Germany" in symbol) and profit_dist > 50.0: 
                     is_ready_to_scale = True
-                elif "XAU" not in symbol and "XAG" not in symbol and "JPY" not in symbol and "BTC" not in symbol and "ETH" not in symbol and "US SP 500" not in symbol and "US Tech 100" not in symbol and profit_dist > 0.0020: 
+                elif "XAU" not in symbol and "XAG" not in symbol and "Oil" not in symbol and "NGAS" not in symbol and "JPY" not in symbol and "BTC" not in symbol and "ETH" not in symbol and "US SP 500" not in symbol and "US Tech 100" not in symbol and "Germany" not in symbol and profit_dist > 0.0020: 
                     is_ready_to_scale = True
 
                 if is_ready_to_scale and scale_key not in self.scaled_positions:
@@ -579,13 +741,13 @@ class TradingBot:
                         lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                         
                 else:
-                    if "XAU" in symbol or "XAG" in symbol:
+                    if "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
                         if profit_dist > 5.0:       
                             lock_price = open_price + (profit_dist * 0.70) if is_buy else open_price - (profit_dist * 0.70)
                         elif profit_dist > 2.0:     
                             lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                             
-                    elif "BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol:
+                    elif "BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol or "Germany" in symbol:
                         if profit_dist > 100.0:
                             lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
                         elif profit_dist > 50.0:
@@ -667,9 +829,9 @@ class TradingBot:
         
         if "BTC" in symbol or "ETH" in symbol:
             limit = 50000
-        elif "US SP 500" in symbol or "US Tech 100" in symbol:
+        elif "US SP 500" in symbol or "US Tech 100" in symbol or "Germany" in symbol:
             limit = 5000
-        elif "XAU" in symbol or "XAG" in symbol:
+        elif "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
             limit = 1000
         else:
             limit = 60
@@ -705,7 +867,7 @@ class TradingBot:
 
             if analysis.signal != "NEUTRAL":
                  is_nano = "NANO" in analysis.signal
-                 if is_nano and any(x in symbol for x in ["XAU", "XAG", "BTC", "ETH", "US SP 500", "US Tech 100"]):
+                 if is_nano and any(x in symbol for x in ["XAU", "XAG", "Oil", "NGAS", "BTC", "ETH", "US SP 500", "US Tech 100", "Germany"]):
                      self.log_debug(f"[{symbol}] NANO LOCK: Skipped (Spread drag too high).")
                      return
 
@@ -716,7 +878,7 @@ class TradingBot:
                          self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
                      
                      result_status = "ATTEMPTED"
-                     self.execute_signal(symbol, analysis, df_micro, props) 
+                     self.execute_signal(symbol, analysis, df_micro, props, regime=symbol_regime)
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
                      self.log_debug(f"[{symbol}] {analysis.reason}")
@@ -738,17 +900,26 @@ class TradingBot:
             )
 
             if should_log:
-                safe_reason = getattr(analysis, 'reason', 'No reason provided')
-                indicators  = {"trend": "MTF_Managed", "reason": safe_reason,
-                               "regime": symbol_regime}
+                safe_reason    = getattr(analysis, 'reason', 'No reason provided')
+                ict_conditions = getattr(analysis, 'ict_conditions', None)
+                kill_zone      = getattr(analysis, 'kill_zone', None)
+                ict_score      = getattr(analysis, 'ict_score', None)
+                indicators     = {"trend": "MTF_Managed", "reason": safe_reason,
+                                  "regime": symbol_regime}
                 DBManager.log_signal(symbol, analysis.signal, analysis.confidence,
-                                     indicators, result_status)
+                                     indicators, result_status,
+                                     ict_score=ict_score,
+                                     kill_zone=kill_zone,
+                                     ict_conditions=ict_conditions,
+                                     model_type="ICT_STANDARD",
+                                     model_sizing="STANDARD",
+                                     account_id=self._get_current_account_id())
                 self._last_logged_signal[symbol] = (analysis.signal, conf_bucket, result_status)
 
         except Exception as e: 
             self.log_debug(f"Process Error on {symbol}: {e}")
 
-    def execute_signal(self, symbol, analysis, df, props):
+    def execute_signal(self, symbol, analysis, df, props, regime="NORMAL"):
         if symbol in self.execution_lock: 
             return
         
@@ -767,7 +938,7 @@ class TradingBot:
                 local_low = df.tail(15)['low'].min()
                 structure_range = local_high - local_low
                 
-                min_buffer = 10.0 if "BTC" in symbol else 2.0 if "ETH" in symbol else 0.50 if "XAU" in symbol else 0.10 if "JPY" in symbol else 0.0010
+                min_buffer = 10.0 if "BTC" in symbol else 2.0 if "ETH" in symbol else 0.50 if ("XAU" in symbol or "Oil" in symbol or "NGAS" in symbol) else 0.10 if "JPY" in symbol else 0.0010
                 volatility_buffer = max(structure_range, min_buffer)
 
                 magic_number = 510001 if is_nano else 510000
@@ -827,7 +998,10 @@ class TradingBot:
                 if not is_nano:
                     sym_info = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
                     if sym_info:
-                        stops_pt = sym_info.stops_level * sym_info.point
+                        # [HOTFIX] Some brokers don't expose stops_level on SymbolInfo directly.
+                        # Use getattr() with safe default — same pattern as get_symbol_properties().
+                        # Without this, USDCAD/GBPJPY crashed: 'SymbolInfo' has no 'stops_level'.
+                        stops_pt = getattr(sym_info, 'stops_level', 0) * sym_info.point
                         # Add a 2-point buffer on top of broker minimum
                         min_dist = stops_pt + (sym_info.point * 2)
                         if is_buy and price >= (tick.bid - min_dist):
@@ -846,6 +1020,34 @@ class TradingBot:
 
                 sl_distance = abs(price - sl)
 
+                # [BUG-35 FIX] Minimum SL distance guard
+                # If SL is too tight, the lot formula produces dangerously large lots.
+                # A tight SL is also almost certain to be stopped out immediately.
+                # Per-asset minimums based on typical 1-minute ATR floors.
+                if not is_nano:
+                    if "BTC" in symbol:
+                        min_sl_guard = 100.0       # 100 pts on BTC
+                    elif "ETH" in symbol:
+                        min_sl_guard = 5.0
+                    elif "XAU" in symbol:
+                        min_sl_guard = 1.5         # 150 pips Gold
+                    elif "XAG" in symbol:
+                        min_sl_guard = 0.10
+                    elif "Oil" in symbol or "NGAS" in symbol:
+                        min_sl_guard = 0.15
+                    elif any(x in symbol for x in ["SP 500", "Tech 100", "Germany"]):
+                        min_sl_guard = 5.0
+                    elif "JPY" in symbol:
+                        min_sl_guard = 0.10        # 10 pips JPY pairs
+                    else:
+                        min_sl_guard = 0.0005      # 5 pips standard FX
+                    if sl_distance < min_sl_guard:
+                        self.log_info(
+                            f"⚠️ SL Guard: {symbol} SL distance {sl_distance:.5f} "
+                            f"below minimum {min_sl_guard}. Skipping."
+                        )
+                        return
+
                 acc_info = self.gateway.get_account_info()
                 balance = acc_info['balance'] if acc_info else 10000.0
                 free_margin = acc_info['free_margin'] if acc_info else 10000.0
@@ -859,25 +1061,99 @@ class TradingBot:
                     self.log_info(f"⚠️ Margin Alert: Cannot open {symbol}. Free Margin too low (${free_margin:.2f})")
                     return
                 
-                risk_multiplier = 0.5 if (margin_level > 0.0 and margin_level < 500.0) else 1.0 
+                # [SPRINT 7] Kelly-informed dynamic risk scaling
+                # Uses quarter-Kelly when N>=30, fixed 2% below that.
+                # Confidence scaling: higher ICT score → proportionally more risk.
+                quant_params    = self.quant_engine.get_live_risk_params()
+                kelly_risk      = quant_params.get('risk_pct', 0.02)
+                regime_mult_q   = quant_params.get('regime_multiplier', 1.0)
+
+                # Margin guard still overrides Kelly
+                margin_mult     = 0.5 if (margin_level > 0.0 and margin_level < 500.0) else 1.0
+                reduction_mult  = 0.5 if self._risk_reduction_mode else 1.0
+
+                # ICT confidence scaling: 88% = base, 99% = +25% more risk
+                conf_scale      = (analysis.confidence - 0.88) / (0.99 - 0.88)
+                conf_scale      = max(0.0, min(1.0, conf_scale))
+                base_risk_pct   = kelly_risk * (1.0 + 0.25 * conf_scale)
+
+                is_micro = "MICRO" in analysis.signal
+                risk_multiplier = margin_mult * reduction_mult * regime_mult_q
                 if is_nano:
-                    risk_multiplier = risk_multiplier * 0.25 
+                    risk_multiplier = risk_multiplier * 0.25   # NANO = quarter size
+                elif is_micro:
+                    risk_multiplier = risk_multiplier * 0.50   # MICRO = half size 
 
                 if "XAU" in symbol or "XAG" in symbol:
-                    risk_capital = (balance * 0.01) * risk_multiplier
+                    # Gold/Silver: 1 lot = 100 oz. $1/oz SL = $100/lot risk.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 100
-                    min_lot = 0.20
+                    min_lot = 0.10
+                elif "BTC" in symbol:
+                    # BTC CFD (Deriv): 1 lot ≈ 1 BTC. $1 price move = $1/lot.
+                    # VERIFY: confirm 1:1 multiplier in Deriv contract specs.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 1
+                    min_lot = 0.01
+                elif "ETH" in symbol:
+                    # ETH CFD (Deriv): 1 lot ≈ 1 ETH. $1 price move = $1/lot.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 1
+                    min_lot = 0.01
+                elif "Oil" in symbol:
+                    # US Oil (WTI CFD): ~100 barrels/lot. $0.01/bbl move = $1/lot.
+                    # VERIFY: confirm 100 barrel multiplier with Deriv.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 100
+                    min_lot = 0.10
+                elif "NGAS" in symbol:
+                    # Natural Gas CFD: 1000 MMBtu/lot (estimate — VERIFY with Deriv).
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 1000
+                    min_lot = 0.10
+                elif any(x in symbol for x in ["SP 500", "Tech 100", "Germany"]):
+                    # Index CFDs (Deriv): estimate $10/point/lot.
+                    # VERIFY: check Deriv contract spec for each index.
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
+                    capital_per_lot = sl_distance * 10
+                    min_lot = 0.10
                 elif "JPY" in symbol:
-                    risk_capital = (balance * 0.02) * risk_multiplier 
-                    capital_per_lot = sl_distance * 1000 
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
+                    capital_per_lot = sl_distance * 1000
                     min_lot = 0.30
                 else:
-                    risk_capital = (balance * 0.02) * risk_multiplier 
+                    # Standard FX: 1 lot = 100,000 units; pip = 0.0001
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100000
                     min_lot = 0.30
                     
                 calculated_lot = round(risk_capital / capital_per_lot, 2)
                 lot = max(min_lot, calculated_lot)
+
+                # [BUG-35 FIX] Hard maximum lot cap — prevents outsized positions
+                # from tight SL / high-confidence combinations.
+                # Caps are expressed as balance-fraction so they scale with account growth.
+                if "BTC" in symbol or "ETH" in symbol:
+                    max_lot = max(0.5, round(balance / 20000, 2))  # scales: ~0.5@$9k, ~2.5@$50k
+                elif "XAU" in symbol or "XAG" in symbol:
+                    max_lot = 2.0
+                elif any(x in symbol for x in ["SP 500", "Tech 100", "Germany"]):
+                    max_lot = 2.0
+                elif "Oil" in symbol or "NGAS" in symbol:
+                    max_lot = 5.0
+                elif is_nano:
+                    max_lot = 0.10
+                elif is_micro:
+                    max_lot = max(0.5, round(balance / 20000, 2))   # ~0.5 at $9k, scales up
+                else:
+                    max_lot = max(1.0, round(balance / 5000, 2))    # ~1.85 at $9k, scales up
+
+                if lot > max_lot:
+                    self.log_info(
+                        f"⚠️ Lot Cap: {symbol} calculated {lot} lots → capped at {max_lot} "
+                        f"({'MICRO' if is_micro else 'NANO' if is_nano else 'STANDARD'})"
+                    )
+                    lot = max_lot
                 
                 filling_mode_code = props.get('filling_mode', 0)
                 if filling_mode_code & 1:
@@ -943,6 +1219,35 @@ class TradingBot:
                     self.async_alert(f"⚡ **SMC {safe_action}**: {symbol}\nTarget Entry: {price}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
                     # [BUG-33 FIX] Update signal record from ATTEMPTED → FILLED
                     DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
+
+                    # [S9] TRADE RECORDING ──────────────────────────────
+                    acc_id = self._get_current_account_id()
+                    if is_nano:
+                        # Market orders fill instantly — record now
+                        DBManager.save_trade(
+                            ticket      = result.order,
+                            symbol      = symbol,
+                            type_op     = 'BUY' if is_buy else 'SELL',
+                            vol         = float(lot),
+                            open_price  = float(price),
+                            sl          = float(sl),
+                            tp          = float(tp),
+                            time        = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                            regime      = regime,
+                            account_id  = acc_id,
+                            model_type  = 'ICT_STANDARD',
+                            model_sizing= 'STANDARD',
+                        )
+                    else:
+                        # LIMIT order — pending until filled.  run_cycle() will
+                        # detect the fill and call save_trade() at that point.
+                        self._pending_order_info[result.order] = {
+                            'regime':       regime,
+                            'account_id':   acc_id,
+                            'model_type':   'ICT_STANDARD',
+                            'model_sizing': 'STANDARD',
+                        }
+                    # ────────────────────────────────────────────────────
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
                     self.log_info(f"❌ MT5 REJECTED {symbol}: {err_msg}")
@@ -958,6 +1263,12 @@ class TradingBot:
 
             except Exception as e:
                 self.log_info(f"⚠️ Thread Execution Error on {symbol}: {e}")
+                # [HOTFIX] Apply cooldown on ANY exception, not just clean rejections.
+                # Without this: exception path skips BUG-31 protection entirely.
+                # Evidence: USDCAD/GBPJPY retried every 60s despite crashing each time.
+                # The stops_level AttributeError above is fixed, but this guard ensures
+                # future unknown exceptions also don't produce infinite retry cascades.
+                self.symbol_cooldowns[symbol] = datetime.utcnow()
             finally:
                 self.execution_lock.discard(symbol)
                 

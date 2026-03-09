@@ -11,15 +11,20 @@
 import requests
 import threading
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # dateutil handles all ForexFactory time format variations robustly.
 # Install: pip install python-dateutil
 try:
     from dateutil import parser as _dateparser
+    from dateutil import tz as _tz
     _DATEUTIL_AVAILABLE = True
+    _ET_TZ  = _tz.gettz('America/New_York')   # ForexFactory publishes in Eastern Time
+    _UTC_TZ = _tz.UTC
 except ImportError:
     _DATEUTIL_AVAILABLE = False
+    _ET_TZ  = None
+    _UTC_TZ = None
     print("⚠️  WARNING: python-dateutil not installed.")
     print("   News guard time comparison will be disabled.")
     print("   Run: pip install python-dateutil")
@@ -59,35 +64,46 @@ def _classify_tier(title: str) -> int:
 
 def _parse_event_dt(date_str: str, time_str: str) -> datetime | None:
     """
-    Robustly parses ForexFactory date and time strings into a datetime.
+    Robustly parses ForexFactory date and time strings into a NAIVE UTC datetime.
+
+    ForexFactory XML publishes in Eastern Time (EST/EDT — America/New_York).
+    All datetimes are converted to UTC before storage so is_news_window()
+    comparisons work correctly regardless of server local timezone.
 
     ForexFactory XML formats observed in the wild:
       date_str : "03-03-2026"  /  "Mar 3, 2026"
       time_str : "2:30pm"  /  "2:30 pm"  /  "All Day"  /  ""  /  None
 
-    Returns None if parsing fails (e.g. "All Day" events).
+    Returns naive UTC datetime, or None if parsing fails (e.g. "All Day" events).
     """
     if not date_str:
         return None
 
-    # Handle "All Day" or empty time — return noon of that day
+    # Handle "All Day" or empty time — return noon ET of that day, converted to UTC
     if not time_str or time_str.strip().lower() in ("all day", "tentative", ""):
         try:
-            if _DATEUTIL_AVAILABLE:
-                return _dateparser.parse(date_str).replace(hour=12, minute=0, second=0)
+            if _DATEUTIL_AVAILABLE and _ET_TZ:
+                dt_et = _dateparser.parse(date_str).replace(hour=12, minute=0, second=0,
+                                                             tzinfo=_ET_TZ)
+                return dt_et.astimezone(_UTC_TZ).replace(tzinfo=None)
         except Exception:
             return None
         return None
 
     full_str = f"{date_str} {time_str}".strip()
 
-    if _DATEUTIL_AVAILABLE:
+    if _DATEUTIL_AVAILABLE and _ET_TZ:
         try:
-            return _dateparser.parse(full_str)
+            # Parse as Eastern Time then convert to naive UTC
+            dt_et = _dateparser.parse(full_str)
+            if dt_et is not None:
+                # Attach ET timezone (handles DST automatically via America/New_York)
+                dt_et = dt_et.replace(tzinfo=_ET_TZ)
+                return dt_et.astimezone(_UTC_TZ).replace(tzinfo=None)
         except Exception:
             pass
 
-    # Manual fallback: try common formats
+    # Manual fallback — parse then apply fixed EDT offset (UTC-4, valid Mar–Nov)
     for fmt in [
         "%m-%d-%Y %I:%M%p",
         "%m-%d-%Y %I:%M %p",
@@ -95,7 +111,9 @@ def _parse_event_dt(date_str: str, time_str: str) -> datetime | None:
         "%b %d, %Y %I:%M %p",
     ]:
         try:
-            return datetime.strptime(full_str.lower(), fmt.lower())
+            dt_local = datetime.strptime(full_str.lower(), fmt.lower())
+            # Apply EDT offset (UTC-4) as fallback — close enough for news guard purposes
+            return dt_local + timedelta(hours=4)
         except ValueError:
             continue
 
@@ -240,21 +258,22 @@ class NewsManager:
 
     def is_news_window(self, now: datetime = None) -> tuple[bool, str]:
         """
-        Convenience method: returns (True, reason) if we are currently
-        inside any news guard window. Used by bot_engine before processing
-        any symbol during broad market-wide events (e.g. FOMC day).
+        Returns (True, reason) if we are inside any news guard window.
+
+        All comparisons are in NAIVE UTC:
+          - event_dt stored as UTC (converted at parse time from Eastern Time)
+          - now defaults to datetime.utcnow()
+          - Callers should always pass datetime.utcnow() explicitly
         """
         if now is None:
-            now = datetime.now()
+            now = datetime.utcnow()   # always UTC — never local time
         for event in self.events:
             if event['impact'] != 'High':
                 continue
-            event_dt = event.get('_event_dt')   # Use internal datetime field
+            event_dt = event.get('_event_dt')   # naive UTC datetime
             if event_dt is None:
                 continue
             tier = event.get('tier', 2)
-            # Tier 1: 4h pre-event + 30min post-event
-            # Tier 2: 15min pre-event + 15min post-event
             pre_guard  = timedelta(hours=4)  if tier == 1 else timedelta(minutes=15)
             post_guard = timedelta(minutes=30) if tier == 1 else timedelta(minutes=15)
             if (event_dt - pre_guard) <= now <= (event_dt + post_guard):
