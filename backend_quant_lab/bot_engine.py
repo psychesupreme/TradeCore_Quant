@@ -241,6 +241,93 @@ class TradingBot:
                 
         self.async_alert(msg)
 
+    def send_daily_summary(self):
+        """
+        [S9] Daily Telegram summary — fires at 23:50 UTC via scheduler.
+        Provides a full-day accountability report so the operator can review
+        performance from their phone without accessing the terminal.
+        Covers: balance, day P&L, signal funnel, upcoming news, kill-switch status.
+        """
+        try:
+            acc = self.gateway.get_account_info()
+            balance  = acc['balance']  if acc else 0.0
+            equity   = acc['equity']   if acc else 0.0
+            day_pnl  = balance - self.daily_start_balance
+
+            positions = self.gateway.get_open_positions()
+            floating  = sum(p['profit'] for p in positions)
+
+            # Signal funnel from DB: today only
+            today_str = datetime.utcnow().strftime('%Y-%m-%d')
+            try:
+                import sqlite3 as _sl
+                con = _sl.connect("logs/tradecore.db")
+                rows = con.execute("""
+                    SELECT result, COUNT(*) FROM signals
+                    WHERE timestamp >= ? GROUP BY result
+                """, (today_str,)).fetchall()
+                con.close()
+                funnel = {r[0]: r[1] for r in rows}
+            except Exception:
+                funnel = {}
+
+            filled    = funnel.get('FILLED', 0)
+            attempted = funnel.get('ATTEMPTED', 0)
+            rejected  = sum(v for k, v in funnel.items() if 'REJECTED' in k)
+            low_conf  = sum(v for k, v in funnel.items() if 'LOW_CONFIDENCE' in k)
+            skipped   = funnel.get('SKIPPED', 0)
+
+            # Upcoming high-impact news (next 12 hours)
+            news_lines = []
+            now = datetime.utcnow()
+            for ev in self.news_manager.events:
+                edt = ev.get('_event_dt')
+                if edt and ev['impact'] == 'High':
+                    hrs = (edt - now).total_seconds() / 3600
+                    if 0 < hrs < 12:
+                        icon = "🔴" if ev.get('tier') == 1 else "🟠"
+                        news_lines.append(
+                            f"{icon} {ev['country']} {ev['title']} (in {hrs:.1f}h)"
+                        )
+
+            ks_status  = "🛑 ACTIVE — bot halted" if self.kill_switch_active else "✅ Clear"
+            regime_ico = "🟢" if "NORMAL" in self.market_regime else ("🟡" if "HIGH" in self.market_regime else "⚪")
+
+            msg = (
+                f"📋 **TradeCore v53.0 — Daily Summary**\n"
+                f"🕐 UTC {now.strftime('%Y-%m-%d %H:%M')}\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"💰 Balance:   ${balance:,.2f}\n"
+                f"📈 Equity:    ${equity:,.2f}\n"
+                f"📊 Day P&L:   ${day_pnl:+.2f}  (float: ${floating:+.2f})\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"📡 Signal Funnel (today)\n"
+                f"   Fills:       {filled}\n"
+                f"   Attempted:   {attempted}\n"
+                f"   Rejected:    {rejected}\n"
+                f"   Low Conf:    {low_conf}\n"
+                f"   Skipped:     {skipped}\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"{regime_ico} Regime: {self.market_regime}\n"
+                f"🔒 Kill Switch: {ks_status}\n"
+            )
+
+            if news_lines:
+                msg += "━━━━━━━━━━━━━━━━━━━━\n📰 Upcoming News (12h)\n"
+                msg += "\n".join(news_lines[:5])
+
+            if positions:
+                msg += "\n━━━━━━━━━━━━━━━━━━━━\n🎯 Open Positions\n"
+                for p in positions:
+                    icon = "🟢" if p['profit'] >= 0 else "🔴"
+                    msg += f"{icon} {p['symbol']} {p['type']}: ${p['profit']:+.2f}\n"
+
+            self.async_alert(msg)
+            self.log_info("📋 Daily summary dispatched via Telegram.")
+
+        except Exception as e:
+            self.log_debug(f"Daily Summary Error: {e}")
+
     def start_service(self):
         if not self.gateway.start():
             self.log_info("CRITICAL: MT5 Connection Failed")
@@ -641,7 +728,10 @@ class TradingBot:
         for symbol in self.active_symbols:
             if symbol in self.symbol_cooldowns:
                 time_since_close = datetime.utcnow() - self.symbol_cooldowns[symbol]  # [UTC FIX]
-                if time_since_close < timedelta(minutes=60):
+                # [S9-FIX] Restore 15-min cooldown. 60-min was too aggressive:
+                # a spread rejection at market open locked the symbol for a full hour.
+                # 15 min prevents retry storms while keeping signal capture responsive.
+                if time_since_close < timedelta(minutes=15):
                     continue 
             
             # Dynamic USD Exposure Lock
@@ -1022,25 +1112,36 @@ class TradingBot:
 
                 # [BUG-35 FIX] Minimum SL distance guard
                 # If SL is too tight, the lot formula produces dangerously large lots.
-                # A tight SL is also almost certain to be stopped out immediately.
-                # Per-asset minimums based on typical 1-minute ATR floors.
+                # SL MINIMUM GUARD — prevents execution when SL is too tight to
+                # survive spread + slippage, and avoids runaway lot sizes.
+                # Minimums derived from Deriv asset spec: stops_level × tick_size,
+                # with a 2× safety buffer on top of the absolute broker minimum.
+                # Source: Assets_specification.xlsx — "Stops level" row.
                 if not is_nano:
                     if "BTC" in symbol:
-                        min_sl_guard = 100.0       # 100 pts on BTC
+                        min_sl_guard = 100.0      # 100 pts on BTC
                     elif "ETH" in symbol:
                         min_sl_guard = 5.0
                     elif "XAU" in symbol:
-                        min_sl_guard = 1.5         # 150 pips Gold
+                        min_sl_guard = 1.5        # 150 pips on Gold
                     elif "XAG" in symbol:
                         min_sl_guard = 0.10
-                    elif "Oil" in symbol or "NGAS" in symbol:
-                        min_sl_guard = 0.15
-                    elif any(x in symbol for x in ["SP 500", "Tech 100", "Germany"]):
-                        min_sl_guard = 5.0
+                    elif "Oil" in symbol:
+                        # spec stops_level=50, tick=0.001 → broker min=0.05; use 0.10
+                        min_sl_guard = 0.10
+                    elif "NGAS" in symbol:
+                        # spec stops_level=5, tick=0.001 → broker min=0.005; use 0.01
+                        min_sl_guard = 0.01
+                    elif "SP 500" in symbol:
+                        # spec stops_level=50, tick=0.01 → broker min=0.50; use 1.0
+                        min_sl_guard = 1.0
+                    elif "Tech 100" in symbol or "Germany" in symbol:
+                        # spec stops_level=150, tick=0.01 → broker min=1.50; use 2.0
+                        min_sl_guard = 2.0
                     elif "JPY" in symbol:
-                        min_sl_guard = 0.10        # 10 pips JPY pairs
+                        min_sl_guard = 0.10       # 10 pips JPY pairs
                     else:
-                        min_sl_guard = 0.0005      # 5 pips standard FX
+                        min_sl_guard = 0.0005     # 5 pips standard FX
                     if sl_distance < min_sl_guard:
                         self.log_info(
                             f"⚠️ SL Guard: {symbol} SL distance {sl_distance:.5f} "
@@ -1085,68 +1186,115 @@ class TradingBot:
                     risk_multiplier = risk_multiplier * 0.50   # MICRO = half size 
 
                 if "XAU" in symbol or "XAG" in symbol:
-                    # Gold/Silver: 1 lot = 100 oz. $1/oz SL = $100/lot risk.
+                    # Gold: 1 lot = 100 oz. Tick size=0.01, tick value=$0.01/oz/lot
+                    # → $1 price move = $100/lot (100oz × $1). Capital/lot = sl × 100.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 100
-                    min_lot = 0.10
+                    min_lot  = 0.10
+                    vol_step = 0.01
                 elif "BTC" in symbol:
-                    # BTC CFD (Deriv): 1 lot ≈ 1 BTC. $1 price move = $1/lot.
-                    # VERIFY: confirm 1:1 multiplier in Deriv contract specs.
+                    # BTC CFD (Deriv): contract_size=1. Tick_size=1, tick_value=$1.
+                    # $1 price move = $1/lot → capital_per_lot = sl_distance × 1.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 1
-                    min_lot = 0.01
+                    min_lot  = 0.01
+                    vol_step = 0.01
                 elif "ETH" in symbol:
-                    # ETH CFD (Deriv): 1 lot ≈ 1 ETH. $1 price move = $1/lot.
+                    # ETH CFD (Deriv): same 1:1 structure as BTC.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 1
-                    min_lot = 0.01
+                    min_lot  = 0.01
+                    vol_step = 0.01
                 elif "Oil" in symbol:
-                    # US Oil (WTI CFD): ~100 barrels/lot. $0.01/bbl move = $1/lot.
-                    # VERIFY: confirm 100 barrel multiplier with Deriv.
+                    # US Oil (Deriv): contract_size=1, tick_size=0.001, tick_value=$0.001.
+                    # Tick_value/tick_size = 1.0 → capital_per_lot = sl_distance × 1.
+                    # Verified: Assets_specification.xlsx, "US Oil" column.
+                    # min_volume=1 (must be integer lot), vol_step=1.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 100
-                    min_lot = 0.10
+                    capital_per_lot = sl_distance * 1.0
+                    min_lot  = 1.0     # spec: minimal volume = 1 (not 0.1!)
+                    vol_step = 1.0     # spec: volume step = 1 (integer lots only)
                 elif "NGAS" in symbol:
-                    # Natural Gas CFD: 1000 MMBtu/lot (estimate — VERIFY with Deriv).
+                    # NGAS (Deriv): contract_size=10000, tick_size=0.001, tick_value=$0.001.
+                    # tick_value/tick_size = 1.0 → capital_per_lot = sl_distance × 1.
+                    # Verified: Assets_specification.xlsx, "NGAS" column.
+                    # HARD max: spec maximal volume = 5 lots (binding constraint).
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 1000
-                    min_lot = 0.10
-                elif any(x in symbol for x in ["SP 500", "Tech 100", "Germany"]):
-                    # Index CFDs (Deriv): estimate $10/point/lot.
-                    # VERIFY: check Deriv contract spec for each index.
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
-                    capital_per_lot = sl_distance * 10
-                    min_lot = 0.10
+                    capital_per_lot = sl_distance * 1.0
+                    min_lot  = 0.1
+                    vol_step = 0.1
+                elif "SP 500" in symbol:
+                    # US SP 500 (Deriv): contract_size=1, tick_size=0.01, tick_value=$0.01.
+                    # tick_value/tick_size = 1.0 → capital_per_lot = sl_distance × 1.
+                    # Example: 10pt SL → $10 risk/lot → $179 risk ÷ $10 = 17.9 lots.
+                    # Verified: Assets_specification.xlsx, "US SP 500" column.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 1.0
+                    min_lot  = 0.1
+                    vol_step = 0.1
+                elif "Tech 100" in symbol:
+                    # US Tech 100 (Deriv): same 1:1 structure as SP 500.
+                    # stops_level=150 (larger than SP500's 50) → wider minimum SL.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 1.0
+                    min_lot  = 0.1
+                    vol_step = 0.1
+                elif "Germany" in symbol:
+                    # Germany 40 DAX (Deriv): contract_size=1, tick=0.01, tv=$0.01.
+                    # Profit currency = EUR — note this for P&L display only;
+                    # risk formula is identical to SP500/Tech100.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 1.0
+                    min_lot  = 0.1
+                    vol_step = 0.1
                 elif "JPY" in symbol:
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1000
-                    min_lot = 0.30
+                    min_lot  = 0.30
+                    vol_step = 0.01
                 else:
                     # Standard FX: 1 lot = 100,000 units; pip = 0.0001
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100000
-                    min_lot = 0.30
-                    
-                calculated_lot = round(risk_capital / capital_per_lot, 2)
+                    min_lot  = 0.30
+                    vol_step = 0.01
+
+                raw_lot        = risk_capital / capital_per_lot
+                # Round DOWN to volume step (broker rejects if not aligned to step)
+                import math as _math
+                step_inv       = round(1.0 / vol_step)
+                calculated_lot = _math.floor(raw_lot * step_inv) / step_inv
                 lot = max(min_lot, calculated_lot)
 
-                # [BUG-35 FIX] Hard maximum lot cap — prevents outsized positions
-                # from tight SL / high-confidence combinations.
-                # Caps are expressed as balance-fraction so they scale with account growth.
+                # HARD MAXIMUM LOT CAP — spec-verified per asset.
+                # Internal safe caps are well below the broker's spec maximum
+                # to prevent outsized positions from tight SLs or edge cases.
+                # Source: Assets_specification.xlsx "Maximal volume" column.
                 if "BTC" in symbol or "ETH" in symbol:
-                    max_lot = max(0.5, round(balance / 20000, 2))  # scales: ~0.5@$9k, ~2.5@$50k
+                    # scales with account: ~0.5@$9k, ~2.5@$50k (spec max not provided)
+                    max_lot = max(0.5, round(balance / 20000, 2))
                 elif "XAU" in symbol or "XAG" in symbol:
                     max_lot = 2.0
-                elif any(x in symbol for x in ["SP 500", "Tech 100", "Germany"]):
-                    max_lot = 2.0
-                elif "Oil" in symbol or "NGAS" in symbol:
-                    max_lot = 5.0
+                elif "Oil" in symbol:
+                    # spec max=1000; internal safe cap scales with account
+                    max_lot = max(1.0, min(100, round(balance / 100, 0)))  # ~89 at $9k
+                elif "NGAS" in symbol:
+                    max_lot = 5.0    # HARD limit from spec: maximal volume = 5
+                elif "SP 500" in symbol:
+                    # spec max=150; safe internal cap
+                    max_lot = max(0.1, min(30, round(balance / 500, 1)))   # ~17 at $9k
+                elif "Tech 100" in symbol:
+                    # spec max=100; safe internal cap
+                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   # ~17 at $9k
+                elif "Germany" in symbol:
+                    # spec max=100; same structure as Tech 100
+                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   # ~17 at $9k
                 elif is_nano:
                     max_lot = 0.10
                 elif is_micro:
-                    max_lot = max(0.5, round(balance / 20000, 2))   # ~0.5 at $9k, scales up
+                    max_lot = max(0.5, round(balance / 20000, 2))   # ~0.5 at $9k
                 else:
-                    max_lot = max(1.0, round(balance / 5000, 2))    # ~1.85 at $9k, scales up
+                    max_lot = max(1.0, round(balance / 5000, 2))    # ~1.8 at $9k
 
                 if lot > max_lot:
                     self.log_info(

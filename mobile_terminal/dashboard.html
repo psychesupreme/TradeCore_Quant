@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeCore v53.0 — Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #080c12;
+    --surface:   #0d1320;
+    --border:    #1a2540;
+    --border-hi: #243356;
+    --accent:    #00e5ff;
+    --accent2:   #7b61ff;
+    --green:     #00ff9d;
+    --red:       #ff3b5c;
+    --yellow:    #ffd600;
+    --text:      #c8d8f0;
+    --muted:     #4a5e80;
+    --mono:      'Space Mono', monospace;
+    --display:   'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* grid noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* scan line */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scan 4s ease-in-out infinite;
+    z-index: 100;
+    opacity: 0.6;
+  }
+  @keyframes scan { 0%,100%{top:0;opacity:0} 50%{top:100%;opacity:.4} }
+
+  .wrapper {
+    position: relative; z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 24px 40px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .logo {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .logo span { color: var(--accent); }
+  .version {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .clock {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+  .clock-label { font-size: 10px; color: var(--muted); text-align: center; letter-spacing: 1px; }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border: 1px solid;
+    transition: all 0.3s;
+  }
+  .status-pill.online { background: rgba(0,255,157,.08); border-color: var(--green); color: var(--green); }
+  .status-pill.offline { background: rgba(255,59,92,.08); border-color: var(--red); color: var(--red); }
+  .status-pill.connecting { background: rgba(255,214,0,.08); border-color: var(--yellow); color: var(--yellow); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+
+  /* ── KILL SWITCH BANNER ── */
+  .kill-banner {
+    display: none;
+    background: rgba(255,59,92,.12);
+    border: 1px solid var(--red);
+    border-left: 4px solid var(--red);
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    color: var(--red);
+    font-size: 13px;
+    letter-spacing: 1px;
+    animation: blink-border 1s step-end infinite;
+  }
+  @keyframes blink-border { 50%{border-left-color:transparent} }
+  .kill-banner.show { display: block; }
+
+  /* ── GRID LAYOUT ── */
+  .grid-top    { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
+  .grid-middle { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ── PANEL ── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .panel:hover { border-color: var(--border-hi); }
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .panel:hover::before { opacity: 0.5; }
+
+  .panel-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-value {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .stat-value.positive { color: var(--green); }
+  .stat-value.negative { color: var(--red); }
+  .stat-value.accent { color: var(--accent); }
+  .stat-sub {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .stat-delta {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+  .stat-delta.pos { background: rgba(0,255,157,.1); color: var(--green); }
+  .stat-delta.neg { background: rgba(255,59,92,.1); color: var(--red); }
+
+  /* ── P&L CHART (SVG sparkline) ── */
+  .chart-wrap { position: relative; width: 100%; height: 120px; margin-top: 8px; }
+  .chart-wrap svg { width: 100%; height: 100%; overflow: visible; }
+  .chart-wrap .zero-line { stroke: var(--border); stroke-width: 1; stroke-dasharray: 4,4; }
+  .chart-path-fill { fill: url(#grad); opacity: 0.15; }
+  .chart-path-line { fill: none; stroke: var(--accent); stroke-width: 2; }
+  .chart-path-line.negative-line { stroke: var(--red); }
+  .chart-label { font-size: 9px; fill: var(--muted); font-family: monospace; }
+
+  /* ── POSITIONS TABLE ── */
+  .pos-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .pos-table th {
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    padding: 0 8px 8px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .pos-table td {
+    padding: 8px 8px;
+    font-size: 11px;
+    border-bottom: 1px solid rgba(26,37,64,.6);
+  }
+  .pos-table tr:last-child td { border-bottom: none; }
+  .pos-table .buy  { color: var(--green); }
+  .pos-table .sell { color: var(--red); }
+  .pos-table .profit.pos { color: var(--green); }
+  .pos-table .profit.neg { color: var(--red); }
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  /* ── NEWS ── */
+  .news-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .news-item:last-child { border-bottom: none; }
+  .news-time { color: var(--accent); min-width: 54px; font-size: 10px; }
+  .news-country {
+    min-width: 28px;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-align: center;
+  }
+  .news-title { color: var(--text); flex: 1; line-height: 1.4; }
+  .news-impact {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  .news-impact.High { background: rgba(255,59,92,.15); color: var(--red); border: 1px solid rgba(255,59,92,.3); }
+  .news-impact.Medium { background: rgba(255,214,0,.1); color: var(--yellow); border: 1px solid rgba(255,214,0,.2); }
+
+  /* ── LOG FEED ── */
+  .log-feed {
+    max-height: 220px;
+    overflow-y: auto;
+    font-size: 10px;
+    line-height: 1.8;
+  }
+  .log-feed::-webkit-scrollbar { width: 3px; }
+  .log-feed::-webkit-scrollbar-track { background: transparent; }
+  .log-feed::-webkit-scrollbar-thumb { background: var(--border-hi); }
+  .log-line { color: var(--muted); display: flex; gap: 8px; }
+  .log-line .log-ts { color: var(--border-hi); min-width: 50px; font-size: 9px; }
+  .log-line .log-msg { flex: 1; }
+  .log-line.info  .log-msg { color: var(--text); }
+  .log-line.warn  .log-msg { color: var(--yellow); }
+  .log-line.error .log-msg { color: var(--red); }
+  .log-line.trade .log-msg { color: var(--green); font-weight: 700; }
+
+  /* ── REGIME BADGE ── */
+  .regime-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border: 1px solid;
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+  .regime-badge.HIGH { border-color: var(--red); color: var(--red); background: rgba(255,59,92,.08); }
+  .regime-badge.NORMAL { border-color: var(--green); color: var(--green); background: rgba(0,255,157,.05); }
+  .regime-badge.DEAD { border-color: var(--muted); color: var(--muted); background: transparent; }
+
+  /* ── PERF STATS ── */
+  .perf-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .perf-row:last-child { border-bottom: none; }
+  .perf-key { color: var(--muted); }
+  .perf-val { font-weight: 700; color: #fff; font-family: var(--display); }
+  .perf-val.green { color: var(--green); }
+  .perf-val.red { color: var(--red); }
+
+  /* ── SIGNAL HISTORY ── */
+  .sig-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(26,37,64,.5);
+    font-size: 10px;
+  }
+  .sig-item:last-child { border-bottom: none; }
+  .sig-sym { color: #fff; font-weight: 700; min-width: 70px; font-size: 11px; }
+  .sig-type { font-size: 9px; color: var(--accent); letter-spacing: 1px; }
+  .sig-conf { margin-left: auto; }
+  .conf-bar { width: 60px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .conf-fill { height: 100%; background: var(--accent); transition: width 0.5s; }
+  .sig-result { font-size: 9px; padding: 1px 6px; border-radius: 2px; }
+  .sig-result.FILLED { background: rgba(0,255,157,.15); color: var(--green); }
+  .sig-result.ATTEMPTED { background: rgba(0,229,255,.1); color: var(--accent); }
+  .sig-result.LOW { background: rgba(74,94,128,.1); color: var(--muted); }
+  .sig-result.SKIPPED { color: var(--muted); }
+
+  /* ── REFRESH INDICATOR ── */
+  .refresh-row {
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    padding-top: 12px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .refresh-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: none;
+  }
+  .refresh-dot.spinning { animation: pulse 0.6s ease infinite; }
+
+  /* ── VAR GAUGE ── */
+  .gauge-row { display: flex; gap: 12px; align-items: center; margin-top: 6px; }
+  .gauge-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .gauge-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--yellow), var(--red));
+    border-radius: 3px;
+    transition: width 0.8s ease;
+  }
+  .gauge-pct { font-size: 11px; color: var(--text); font-weight: 700; min-width: 36px; text-align: right; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div>
+      <div class="logo">Trade<span>Core</span></div>
+      <div class="version">v53.0 · Sprint 9 · Command Center</div>
+    </div>
+    <div class="header-right">
+      <div style="text-align:center">
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="clock-label">UTC</div>
+      </div>
+      <div class="status-pill connecting" id="statusPill">
+        <div class="dot"></div>
+        <span id="statusText">CONNECTING</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- KILL SWITCH BANNER -->
+  <div class="kill-banner" id="killBanner">
+    ⛔ KILL SWITCH ACTIVE — All trading halted. 8-hour cooldown in progress. CVaR limit breached.
+  </div>
+
+  <!-- ROW 1: KEY STATS -->
+  <div class="grid-top">
+    <div class="panel">
+      <div class="panel-label">Balance</div>
+      <div class="stat-value" id="balance">—</div>
+      <div class="stat-sub">USD · Live Account</div>
+    </div>
+    <div class="panel">
+      <div class="panel-label">Equity</div>
+      <div class="stat-value accent" id="equity">—</div>
+      <div class="stat-sub">Open P&amp;L: <span id="openPnl">—</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-label">Floating P&L (Open)</div>
+      <div class="stat-value" id="floatPnl">$0.00</div>
+      <div class="stat-sub"><span id="posCount">0</span> open position(s)</div>
+    </div>
+    <div class="panel">
+      <div class="panel-label">Portfolio VaR (99%)</div>
+      <div class="stat-value" id="varValue">—</div>
+      <div class="gauge-row">
+        <div class="gauge-track"><div class="gauge-fill" id="varFill" style="width:0%"></div></div>
+        <div class="gauge-pct" id="varPct">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: POSITIONS + NEWS -->
+  <div class="grid-middle">
+    <div class="panel">
+      <div class="panel-label">Open Positions</div>
+      <div id="positionsWrap">
+        <div class="empty-state">NO OPEN POSITIONS</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-label">Upcoming High-Impact News</div>
+      <div id="newsWrap">
+        <div class="empty-state">LOADING CALENDAR...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: PERFORMANCE + SIGNALS + LOG -->
+  <div class="grid-bottom">
+    <div class="panel">
+      <div class="panel-label">Performance (MT5 Deals)</div>
+      <div id="regimeBadge" class="regime-badge NORMAL" style="display:none"><span>●</span><span id="regimeText">NORMAL</span></div>
+      <div id="perfStats">
+        <div class="perf-row"><span class="perf-key">Total Realized</span><span class="perf-val green" id="totalPnl">—</span></div>
+        <div class="perf-row"><span class="perf-key">This Month</span><span class="perf-val" id="monthPnl">—</span></div>
+        <div class="perf-row"><span class="perf-key">Win Rate</span><span class="perf-val" id="winRate">—</span></div>
+        <div class="perf-row"><span class="perf-key">Profit Factor</span><span class="perf-val" id="pfactor">—</span></div>
+        <div class="perf-row"><span class="perf-key">Total Trades</span><span class="perf-val" id="totalTrades">—</span></div>
+        <div class="perf-row"><span class="perf-key">Watched Assets</span><span class="perf-val accent" id="watchedCount">—</span></div>
+      </div>
+      <div class="chart-wrap" style="margin-top:14px">
+        <svg id="sparkSvg" viewBox="0 0 300 80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line class="zero-line" x1="0" y1="60" x2="300" y2="60"/>
+          <path class="chart-path-fill" id="sparkFill" d="M0,60 L300,60 Z"/>
+          <path class="chart-path-line" id="sparkLine" d="M0,60"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">Recent Signals</div>
+      <div id="signalWrap">
+        <div class="empty-state">LOADING...</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">System Log Feed</div>
+      <div class="log-feed" id="logFeed">
+        <div class="log-line"><span class="log-ts">--:--:--</span><span class="log-msg">Connecting to TradeCore...</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="refresh-row">
+    <div class="refresh-dot" id="refreshDot"></div>
+    <span id="lastUpdate">Last update: —</span>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+const BASE = window.location.origin.includes('localhost') || window.location.protocol === 'file:'
+  ? 'http://localhost:8000'   // running locally
+  : window.location.origin;  // served from FastAPI
+
+const REFRESH_MS = 15000;  // 15-second polling
+
+// ── UTC CLOCK ────────────────────────────────────────────────
+function tickClock() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+}
+setInterval(tickClock, 1000);
+tickClock();
+
+// ── HELPERS ──────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fmt = (n, dp=2) => n == null ? '—' : (n >= 0 ? '+' : '') + n.toFixed(dp);
+const fmtUSD = n => n == null ? '—' : '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+function setStatus(state) {
+  const pill = $('statusPill');
+  const txt  = $('statusText');
+  pill.className = 'status-pill ' + state;
+  const labels = { online:'ONLINE', offline:'OFFLINE', connecting:'CONNECTING' };
+  txt.textContent = labels[state] || state.toUpperCase();
+}
+
+function flash(el) {
+  el.style.opacity = '0.3';
+  setTimeout(() => { el.style.opacity = '1'; }, 300);
+}
+
+// ── SPARKLINE ────────────────────────────────────────────────
+function buildSparkline(curveData) {
+  if (!curveData || curveData.length < 2) return;
+  const profits = curveData.map(d => d.profit);
+  const minV = Math.min(...profits);
+  const maxV = Math.max(...profits, 0);
+  const range = maxV - minV || 1;
+  const W = 300, H = 80, PAD = 6;
+  const iw = W - PAD*2, ih = H - PAD*2;
+
+  const toX = i => PAD + (i / (profits.length-1)) * iw;
+  const toY = v => PAD + (1 - (v - minV)/range) * ih;
+
+  const pts = profits.map((v,i) => `${toX(i)},${toY(v)}`);
+  const linePath = 'M' + pts.join(' L');
+  const fillPath = linePath + ` L${toX(profits.length-1)},${H} L${toX(0)},${H} Z`;
+
+  const zeroY = toY(0);
+  const isNeg = profits[profits.length-1] < 0;
+  $('sparkLine').setAttribute('d', linePath);
+  $('sparkLine').className = isNeg ? 'chart-path-line negative-line' : 'chart-path-line';
+  $('sparkFill').setAttribute('d', fillPath);
+
+  const svgZero = $('sparkSvg').querySelector('.zero-line');
+  svgZero.setAttribute('y1', zeroY);
+  svgZero.setAttribute('y2', zeroY);
+}
+
+// ── POSITIONS ────────────────────────────────────────────────
+function renderPositions(positions) {
+  const wrap = $('positionsWrap');
+  if (!positions || positions.length === 0) {
+    wrap.innerHTML = '<div class="empty-state">NO OPEN POSITIONS</div>';
+    $('posCount').textContent = '0';
+    $('floatPnl').textContent = '$0.00';
+    $('floatPnl').className = 'stat-value';
+    return;
+  }
+  const totalFloat = positions.reduce((s,p) => s+(p.profit||0), 0);
+  $('posCount').textContent = positions.length;
+  $('floatPnl').textContent = (totalFloat >= 0 ? '+' : '') + fmtUSD(totalFloat).replace('$','$');
+  $('floatPnl').className = 'stat-value ' + (totalFloat >= 0 ? 'positive' : 'negative');
+
+  let rows = positions.map(p => {
+    const dir = (p.type||'').toUpperCase().includes('BUY') ? 'BUY' : 'SELL';
+    const pnl = (p.profit||0);
+    return `<tr>
+      <td><b>${p.symbol||'—'}</b></td>
+      <td class="${dir.toLowerCase()}">${dir}</td>
+      <td>${(p.volume||0).toFixed(2)}</td>
+      <td>${(p.open_price||0).toFixed(p.symbol?.includes('JPY')||p.symbol?.includes('SP')||p.symbol?.includes('Tech')||p.symbol?.includes('Germany')||p.symbol?.includes('BTC')?2:5)}</td>
+      <td class="profit ${pnl>=0?'pos':'neg'}">${pnl>=0?'+':''}${fmtUSD(pnl)}</td>
+    </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `<table class="pos-table">
+    <thead><tr><th>Symbol</th><th>Dir</th><th>Lots</th><th>Entry</th><th>P&L</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ── NEWS ─────────────────────────────────────────────────────
+function renderNews(events) {
+  const wrap = $('newsWrap');
+  const highMed = (events || []).filter(e => e.impact === 'High' || e.impact === 'Medium').slice(0, 8);
+  if (highMed.length === 0) {
+    wrap.innerHTML = '<div class="empty-state">NO HIGH-IMPACT EVENTS TODAY</div>';
+    return;
+  }
+  wrap.innerHTML = highMed.map(e => {
+    const rawTime = e.time || '';
+    return `<div class="news-item">
+      <span class="news-time">${rawTime || '—'}</span>
+      <span class="news-country">${(e.country||'').substring(0,3).toUpperCase()}</span>
+      <span class="news-title">${e.title||''}</span>
+      <span class="news-impact ${e.impact}">${e.impact||''}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── SIGNALS ──────────────────────────────────────────────────
+const signalHistory = [];
+function ingestSignals(logs) {
+  (logs || []).forEach(line => {
+    if (!line.includes('ICT') && !line.includes('TRAP') && !line.includes('MARKET EXECUTION')) return;
+    const ts = line.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
+    const sym = line.match(/\[([A-Z ]+\d*)\]/)?.[1] || '';
+    const score = parseFloat(line.match(/Score:([\d.]+)/)?.[1] || '0');
+    const isFilled = line.includes('MARKET EXECUTION') || line.includes('TRAP SET');
+    if (!sym) return;
+    const key = ts + sym;
+    if (signalHistory.find(s => s.key === key)) return;
+    signalHistory.unshift({
+      key, ts, sym,
+      type: line.includes('Bearish') ? 'SELL_SIGNAL' : 'BUY_SIGNAL',
+      conf: score,
+      result: isFilled ? 'FILLED' : 'ATTEMPTED',
+      raw: line,
+    });
+  });
+  while (signalHistory.length > 20) signalHistory.pop();
+
+  const wrap = $('signalWrap');
+  if (signalHistory.length === 0) {
+    wrap.innerHTML = '<div class="empty-state">NO SIGNALS YET</div>';
+    return;
+  }
+  wrap.innerHTML = signalHistory.slice(0, 10).map(s => {
+    const confPct = Math.round(s.conf * 100);
+    const resClass = s.result === 'FILLED' ? 'FILLED' : s.result === 'ATTEMPTED' ? 'ATTEMPTED' : 'LOW';
+    return `<div class="sig-item">
+      <span class="sig-sym">${s.sym}</span>
+      <span class="sig-type">${s.type.replace('_SIGNAL','')}</span>
+      <span class="sig-conf">
+        <div class="conf-bar"><div class="conf-fill" style="width:${confPct}%"></div></div>
+        <div style="font-size:9px;color:var(--muted);text-align:right;margin-top:2px">${confPct}%</div>
+      </span>
+      <span class="sig-result ${resClass}">${s.result}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── LOG FEED ─────────────────────────────────────────────────
+function renderLogs(logs) {
+  const feed = $('logFeed');
+  if (!logs || logs.length === 0) return;
+  const recent = [...logs].reverse().slice(0, 50);
+  feed.innerHTML = recent.map(line => {
+    const ts = line.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '—';
+    const msg = line.replace(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \[(INFO|DEBUG|WARN|ERROR)\] /, '');
+    let cls = '';
+    if (line.includes('⚡') || line.includes('TRAP') || line.includes('FILLED')) cls = 'trade';
+    else if (line.includes('[INFO]')) cls = 'info';
+    else if (line.includes('⚠️') || line.includes('Kill') || line.includes('WARN')) cls = 'warn';
+    else if (line.includes('❌') || line.includes('[ERROR]')) cls = 'error';
+    return `<div class="log-line ${cls}"><span class="log-ts">${ts}</span><span class="log-msg">${msg}</span></div>`;
+  }).join('');
+  feed.scrollTop = 0;
+}
+
+// ── REGIME ───────────────────────────────────────────────────
+function renderRegime(regime) {
+  const badge = $('regimeBadge');
+  const txt = $('regimeText');
+  if (!regime) { badge.style.display = 'none'; return; }
+  badge.style.display = 'inline-flex';
+  badge.className = 'regime-badge ' + (regime.includes('HIGH') ? 'HIGH' : regime.includes('DEAD') ? 'DEAD' : 'NORMAL');
+  txt.textContent = regime.replace(' (GARCH)','').replace('(TRENDING)','');
+}
+
+// ── VaR GAUGE ────────────────────────────────────────────────
+function renderVaR(varUSD, balance) {
+  if (!varUSD || !balance) return;
+  const pct = Math.min(100, (varUSD / balance) * 100);
+  $('varValue').textContent = fmtUSD(varUSD).replace('+','');
+  $('varFill').style.width = pct + '%';
+  $('varPct').textContent = pct.toFixed(1) + '%';
+}
+
+// ── MAIN FETCH LOOP ──────────────────────────────────────────
+async function fetchAll() {
+  const dot = $('refreshDot');
+  dot.classList.add('spinning');
+
+  try {
+    // Status
+    const sRes = await fetch(`${BASE}/bot/status`, {signal: AbortSignal.timeout(8000)});
+    if (!sRes.ok) throw new Error('status ' + sRes.status);
+    const s = await sRes.json();
+
+    setStatus(s.is_running ? 'online' : 'offline');
+    $('killBanner').classList.toggle('show', !!s.kill_switch);
+
+    const acc = s.account || {};
+    const bal = acc.balance ?? null;
+    const eq  = acc.equity  ?? null;
+
+    if (bal != null) { $('balance').textContent = fmtUSD(bal); flash($('balance')); }
+    if (eq  != null) { $('equity').textContent  = fmtUSD(eq);  }
+
+    const openPnl = (eq != null && bal != null) ? (eq - bal) : null;
+    $('openPnl').textContent = openPnl != null ? (openPnl >= 0 ? '+' : '') + fmtUSD(openPnl) : '—';
+    $('openPnl').style.color = openPnl >= 0 ? 'var(--green)' : 'var(--red)';
+
+    renderPositions(s.positions || []);
+    renderRegime(s.market_regime);
+    renderVaR(s.daily_var, bal);
+    ingestSignals(s.recent_logs || []);
+    renderLogs(s.recent_logs || []);
+
+    $('watchedCount').textContent = (s.watched_symbols || []).length;
+
+    // Performance
+    const pRes = await fetch(`${BASE}/bot/performance`, {signal: AbortSignal.timeout(10000)});
+    if (pRes.ok) {
+      const p = await pRes.json();
+      const tr = p.total_realized ?? 0;
+      const mr = p.monthly_realized ?? 0;
+      $('totalPnl').textContent = (tr >= 0 ? '+' : '') + fmtUSD(tr);
+      $('totalPnl').className = 'perf-val ' + (tr >= 0 ? 'green' : 'red');
+      $('monthPnl').textContent = (mr >= 0 ? '+' : '') + fmtUSD(mr);
+      $('monthPnl').className = 'perf-val ' + (mr >= 0 ? 'green' : 'red');
+      $('winRate').textContent = (p.win_rate ?? '—') + (p.win_rate != null ? '%' : '');
+      $('pfactor').textContent = p.profit_factor ?? '—';
+      $('totalTrades').textContent = p.total_trades ?? '—';
+      buildSparkline(p.curve || []);
+    }
+
+    // News (less frequent — only on every 4th refresh)
+    if (!fetchAll._nCount) fetchAll._nCount = 0;
+    fetchAll._nCount++;
+    if (fetchAll._nCount % 4 === 1) {
+      try {
+        const nRes = await fetch(`${BASE}/bot/news`, {signal: AbortSignal.timeout(15000)});
+        if (nRes.ok) renderNews(await nRes.json());
+      } catch (e) {}
+    }
+
+    $('lastUpdate').textContent = 'Last update: ' + new Date().toUTCString().split('T')[0] + ' ' + new Date().toTimeString().substring(0,8) + ' local';
+
+  } catch (err) {
+    setStatus('offline');
+    console.warn('Fetch error:', err.message);
+    // Demo mode when server is unreachable
+    if (!fetchAll._demoed) {
+      fetchAll._demoed = true;
+      $('balance').textContent = '$8,971.34';
+      $('equity').textContent = '$8,971.34';
+      $('openPnl').textContent = '$0.00';
+      $('positionsWrap').innerHTML = '<div class="empty-state">SERVER UNREACHABLE — DEMO MODE</div>';
+    }
+  } finally {
+    dot.classList.remove('spinning');
+  }
+}
+
+// kick off
+fetchAll();
+setInterval(fetchAll, REFRESH_MS);
+</script>
+</body>
+</html>

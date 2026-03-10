@@ -31,8 +31,15 @@ async def lifespan(app: FastAPI):
         if not scheduler.get_jobs():
             scheduler.add_job(bot.run_cycle, 'interval', seconds=60, id='trade_loop')
             scheduler.add_job(sync_database, 'interval', minutes=5, id='db_cleaner')
+            # [S9] Daily Telegram summary at 23:50 UTC — operator accountability report.
+            # Fires once per day so autopilot can be monitored from a phone.
+            scheduler.add_job(
+                bot.send_daily_summary,
+                'cron', hour=23, minute=50,
+                id='daily_summary', timezone='UTC'
+            )
             scheduler.start()
-            print("✅ Scheduler Active: Trading Loop & DB Sync Online.")
+            print("✅ Scheduler Active: Trading Loop, DB Sync & Daily Summary Online.")
             
     except Exception as e:
         print(f"❌ CRITICAL STARTUP ERROR: {e}")
@@ -151,7 +158,7 @@ async def export_report():
         output = io.StringIO()
         writer = csv.writer(output)
         
-        writer.writerow(["System", "TradeCore v51.0 Quant Auditor"])
+        writer.writerow(["System", "TradeCore v53.0 Quant Auditor"])
         writer.writerow(["Generated", datetime.now().strftime("%Y-%m-%d %H:%M")])
         writer.writerow([])
         writer.writerow(["Close Time", "Symbol", "Action", "Volume", "Profit ($)"])
