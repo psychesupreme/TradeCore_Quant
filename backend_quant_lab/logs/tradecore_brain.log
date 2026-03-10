@@ -25756,3 +25756,557 @@
 2026-03-10 06:25:05 [DEBUG] [US Tech 100] No sweep or displacement detected.
 2026-03-10 06:25:05 [DEBUG] [Germany 40] No sweep or displacement detected.
 2026-03-10 06:25:45 [INFO] Stopped.
+2026-03-10 07:21:37 [INFO] ✅ TradeCore v53.0: Engine Active. Monitoring 20 Assets.
+2026-03-10 07:22:36 [INFO] 📩 Received Command: /status
+2026-03-10 07:23:25 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:23:28 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:23:29 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:23:29 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:23:30 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:23:31 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:23:31 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:23:31 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:23:31 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:23:32 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:23:32 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:23:33 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:23:33 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:23:33 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:23:33 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:23:34 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:23:34 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:23:34 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:23:34 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:24:08 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:24:09 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:25:02 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:25:02 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:25:02 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:25:02 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:25:02 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:25:02 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:25:03 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:26:00 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:28:01 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:29:26 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:30:04 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:30:05 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:31:04 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:32:58 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:33:59 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:35:20 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:35:59 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:36:00 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:38:00 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:39:00 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:39:01 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:40:29 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:41:02 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:41:03 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:41:03 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:41:03 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:41:03 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:43:04 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:44:00 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:44:59 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:46:20 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:48:03 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:49:02 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:50:03 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:51:26 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:51:27 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:51:27 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:51:27 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:53:01 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:53:02 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:53:02 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:53:02 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:54:03 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:54:59 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:56:37 [DEBUG] [Germany 40] No sweep or displacement detected.
+2026-03-10 07:57:55 [INFO] Stopped.
+2026-03-10 07:58:15 [DEBUG] [EURUSD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [GBPUSD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [USDJPY] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [USDCAD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [USDCHF] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [AUDUSD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [NZDUSD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [EURJPY] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [GBPJPY] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [EURGBP] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [AUDJPY] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [XAUUSD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [XAGUSD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [US Oil] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [NGAS] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [BTCUSD] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [US SP 500] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [US Tech 100] No sweep or displacement detected.
+2026-03-10 07:58:15 [DEBUG] [Germany 40] No sweep or displacement detected.
