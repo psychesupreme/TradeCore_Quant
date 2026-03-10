@@ -1,38 +1,54 @@
 # ============================================================
-# TradeCore v52.0 — analyst.py  [SPRINT 7 ICT REBUILD]
+# TradeCore v53.0 — analyst.py  [SPRINT 9 AMD + ICT ENGINE]
 #
-# SPRINT 6 PRESERVED:
-#   [OPT-1] Per-asset ATR dead-market thresholds
-#   [OPT-2] EMA-20 × EMA-50 dual-confirmation macro trend
-#   [OPT-3] NANO TP ratio 2.0:1
-#   [OPT-4] symbol param for per-asset calibration
+# SPRINT 9 ADDITIONS — AMD PHASE AWARENESS:
+#   [AMD-1] detect_amd_phase() — maps UTC hour to market cycle phase
+#            ACCUMULATION | MANIPULATION | NY_MANIPULATION | DISTRIBUTION | AVOID
+#   [AMD-2] detect_asian_range() — computes today's Asian High/Low (00:00-03:00 UTC)
+#            AH and AL are the structural reference levels for the Judas Swing
+#   [AMD-3] detect_judas_swing() — confirms sweep specifically targets AH or AL
+#            Judas Swing is the highest-probability ICT daily setup
+#   [AMD-4] detect_london_range() — tracks London session High/Low for NY Judas Swing
+#   [AMD-5] Phase-gated scoring in compute_ict_confluence():
+#            ACCUMULATION   → NEUTRAL always. Engine maps range, does not trade.
+#            MANIPULATION   → Full sweep+displacement scoring + Judas Swing bonus
+#            NY_MANIPULATION→ Same but targets London range (LH/LL) instead of AH/AL
+#            DISTRIBUTION   → Continuation scoring: OB/FVG retest in direction of
+#                             manipulation move. Sweep gate relaxed (CHoCH valid).
+#            AVOID          → NEUTRAL (NY Lunch equivalent)
 #
-# SPRINT 7 ICT ADDITIONS:
-#   [ICT-1] Order Block (OB) detection
-#            Last bearish candle before bullish impulse / vice versa
-#   [ICT-2] Market Structure (BOS + CHoCH)
-#            Break of Structure and Change of Character
-#   [ICT-3] Premium / Discount zone (50% equilibrium)
-#   [ICT-4] ICT Kill Zone session weighting
-#   [ICT-5] Optimal Trade Entry (OTE) Fibonacci 61.8–79%
-#   [ICT-6] Equal Highs/Lows (engineered liquidity)
-#   [ICT-7] Additive ICT Confluence Score
-#            Replaces hardcoded base_conf = 0.85 with merit-based
-#            weighted scoring. Each condition must be EARNED.
+# SPRINT 9 PRECISION FIXES (retained):
+#   [S9-FIX-1] Sweep: hybrid tier (structural pivot → rolling fallback)
+#   [S9-FIX-2] Displacement: 0.6 ATR body + 70% close quality (M15-calibrated)
+#   [S9-FIX-3] Volume: 1.3x threshold (empirically calibrated from live data)
+#   [S9-FIX-4] OB: body >= 0.5 ATR, freshness guard (< 15 bars), in-zone retest
+#   [S9-FIX-5] FVG: 10-bar scan, >= 0.3 ATR gap, unfilled validation
+#   [S9-FIX-6] BOS: 3-swing confirmation
+#   [S9-FIX-7] P/D: 100-bar lookback, deep zone scoring, H4 conflict check
 #
 # SCORE ARCHITECTURE:
-#   Liquidity Sweep     +0.20  (non-negotiable gate — both directions)
-#   Displacement        +0.15  (non-negotiable gate)
-#   ICT Kill Zone       +0.15  (London=full, NY=0.9x, other=0.5x)
-#   Order Block hit     +0.15  (price returned to last OB zone)
-#   FVG present         +0.10  (unfilled gap)
-#   Premium/Discount    +0.10  (correct side of equilibrium)
-#   BOS confirmed H4    +0.08  (structure aligned)
-#   OTE zone entry      +0.07  (optimal Fibonacci retracement)
-#   Volume surge ×1.10        (multiplier on final score, cap 0.99)
+#   MANIPULATION MODE (primary):
+#     Sweep           +0.20  (mandatory gate)
+#     Displacement    +0.15  (mandatory gate)
+#     Kill Zone       +0.15 × session_weight
+#     Order Block     +0.15
+#     FVG             +0.10
+#     Premium/Discount+0.10 (deep) / +0.05 (shallow)
+#     BOS aligned     +0.08
+#     OTE zone        +0.07
+#     Judas Swing     +0.12  (bonus: sweep targets AH/AL or LH/LL specifically)
+#     Volume surge    ×1.10  (multiplier, capped 0.99)
 #
-#   Max raw score = 1.00  →  after vol × = 1.00 (capped)
-#   Execution threshold = 0.88 standard / 0.92 sniper
+#   DISTRIBUTION MODE (continuation):
+#     OB retest       +0.30  (primary signal — price returns to manipulation OB)
+#     FVG retest      +0.20  (imbalance fill in trend direction)
+#     BOS confirmed   +0.15  (structure confirms continuation)
+#     Kill Zone       +0.15 × session_weight
+#     OTE zone        +0.10  (optimal pullback depth)
+#     Volume surge    ×1.10  (multiplier)
+#     NOTE: Sweep not required. Entry is on RETRACEMENT, not new sweep.
+#
+#   Execution threshold = 0.80 standard / 0.90 sniper (bot_engine.py)
 # ============================================================
 
 import pandas as pd
@@ -64,7 +80,521 @@ def _dead_market_atr_threshold(symbol: str) -> float:
     return 0.0003
 
 
-# ── ICT-1: ORDER BLOCK DETECTION ─────────────────────────────────────────────
+
+# ── AMD-1: MARKET CYCLE PHASE DETECTION ──────────────────────────────────────
+
+def _session_amd_prior(utc_hour: int, utc_minute: int) -> dict:
+    """
+    Returns session-context probability weights for each AMD phase.
+
+    The clock is a PRIOR, not a gate. It biases the structural detector
+    toward the phase most likely to occur at that hour, but does not
+    override structural evidence. The structural conditions always decide.
+
+    Returns dict of {phase: weight_multiplier} for use in detect_amd_phase().
+    """
+    t = utc_hour * 60 + utc_minute
+
+    # NY Lunch is the only hard gate — liquidity genuinely absent
+    if 16*60 <= t < 17*60+30:
+        return {'AVOID': 1.0}
+
+    # Asian (00-03 UTC): accumulation strongly favoured; manipulation possible
+    if 0 <= t < 3*60:
+        return {'ACCUMULATION': 1.4, 'MANIPULATION': 1.0, 'DISTRIBUTION': 0.7}
+
+    # Pre-London (03-07 UTC): late accumulation; distribution from Asian cycle possible
+    if 3*60 <= t < 7*60:
+        return {'ACCUMULATION': 1.1, 'MANIPULATION': 1.0, 'DISTRIBUTION': 1.1}
+
+    # London Open (07-09 UTC): manipulation strongly favoured (Judas Swing prime time)
+    if 7*60 <= t < 9*60:
+        return {'MANIPULATION': 1.6, 'DISTRIBUTION': 0.9, 'ACCUMULATION': 0.6}
+
+    # London PM (09-12 UTC): distribution favoured; secondary manipulation possible
+    if 9*60 <= t < 12*60:
+        return {'DISTRIBUTION': 1.3, 'MANIPULATION': 1.1, 'ACCUMULATION': 0.8}
+
+    # London/NY (12-16 UTC): distribution peak; NY Open manipulation at 13:30
+    if 12*60 <= t < 13*60+30:
+        return {'DISTRIBUTION': 1.3, 'MANIPULATION': 1.0, 'ACCUMULATION': 0.7}
+
+    # NY Open (13:30-14:30 UTC): secondary Judas Swing window
+    if 13*60+30 <= t < 14*60+30:
+        return {'MANIPULATION': 1.4, 'DISTRIBUTION': 1.1, 'ACCUMULATION': 0.6}
+
+    # NY PM (14:30-16:00 UTC): NY distribution
+    return {'DISTRIBUTION': 1.2, 'MANIPULATION': 0.9, 'ACCUMULATION': 0.8}
+
+
+def detect_accumulation_structure(df: pd.DataFrame, atr: float,
+                                   lookback: int = 20) -> dict:
+    """
+    Detects whether price is in an ACCUMULATION (ranging/consolidation) phase.
+
+    Accumulation = smart money building inventory inside a controlled range.
+    Price behaviour during accumulation:
+      - Range is compressed relative to ATR (no trending momentum)
+      - Candle bodies are small (indecision — neither side is dominant)
+      - Volume is declining or flat (no institutional commitment yet)
+      - Equal highs and equal lows form (engineered stop clusters being built)
+
+    All four conditions are scored 0–1 and combined. A score above 0.60
+    indicates a genuine accumulation structure.
+
+    Returns:
+      is_accumulating: bool  (score >= 0.60)
+      confidence:      float 0–1
+      range_high:      float — top of accumulation range
+      range_low:       float — bottom of accumulation range
+      range_atr:       float — range size in ATR multiples
+    """
+    empty = {'is_accumulating': False, 'confidence': 0.0,
+             'range_high': None, 'range_low': None, 'range_atr': 0.0}
+    if len(df) < lookback or atr <= 0:
+        return empty
+
+    window = df.tail(lookback)
+
+    # 1. Range compression: high-low range < 1.5× ATR over lookback
+    r_high = window['high'].max()
+    r_low  = window['low'].min()
+    range_size = r_high - r_low
+    range_score = max(0.0, 1.0 - (range_size / (atr * 1.5)))  # 1.0 = fully compressed
+
+    # 2. Body size: avg candle body < 0.3 ATR (indecision candles dominate)
+    bodies = (window['close'] - window['open']).abs()
+    avg_body = bodies.mean()
+    body_score = max(0.0, 1.0 - (avg_body / (atr * 0.3)))
+
+    # 3. Volume trend: recent 10-bar avg volume <= prior 10-bar avg (declining/flat)
+    if len(window) >= 20:
+        recent_vol = window['volume'].tail(10).mean()
+        prior_vol  = window['volume'].head(10).mean()
+        vol_score  = 1.0 if recent_vol <= prior_vol * 1.05 else max(0.0, 1.0 - (recent_vol / prior_vol - 1.0))
+    else:
+        vol_score = 0.5  # neutral if insufficient data
+
+    # 4. Equal highs/lows: repeated tests of same level (stop cluster formation)
+    tol = atr * 0.3
+    highs = window['high'].values
+    lows  = window['low'].values
+    eq_high_count = sum(1 for i in range(len(highs))
+                        for j in range(i+1, len(highs)) if abs(highs[i]-highs[j]) <= tol)
+    eq_low_count  = sum(1 for i in range(len(lows))
+                        for j in range(i+1, len(lows)) if abs(lows[i]-lows[j]) <= tol)
+    eq_score = min(1.0, (eq_high_count + eq_low_count) / 6.0)
+
+    confidence = (range_score * 0.40 + body_score * 0.25 +
+                  vol_score  * 0.20 + eq_score   * 0.15)
+
+    return {
+        'is_accumulating': confidence >= 0.55,
+        'confidence':      round(confidence, 3),
+        'range_high':      round(float(r_high), 5),
+        'range_low':       round(float(r_low), 5),
+        'range_atr':       round(range_size / atr, 2),
+    }
+
+
+def detect_manipulation_spike(df: pd.DataFrame, atr: float,
+                                accum_high: float, accum_low: float) -> dict:
+    """
+    Detects a MANIPULATION event: the Judas Swing / stop hunt.
+
+    Manipulation = smart money breaks the accumulation range boundary with
+    volume to collect clustered stops, then immediately reverses. The breach
+    is the FAKE move; the close-back is the signal.
+
+    Structural fingerprint:
+      1. ATR expansion: the spike candle's range > 1.5× the 20-bar avg ATR
+         (sudden volatility means institutional force, not retail drift)
+      2. Range boundary breach: c1 moves BEYOND accum_high or accum_low
+         (the stop hunt targets the exact levels retail placed orders at)
+      3. Close-back within 3 candles: price closes BACK INSIDE the accum range
+         (the breach failed — institutions got their fill and reversed)
+      4. Volume on the spike > 1.3× average (institutional participation)
+
+    When all four conditions align, this is the Judas Swing confirmation.
+
+    Returns:
+      is_manipulation: bool
+      direction:       'BULL' (swept low, expect up) | 'BEAR' (swept high, expect down)
+      swept_level:     the exact price level that was swept
+      spike_atr_mult:  how large the spike was in ATR multiples
+      confidence:      0.0–1.0
+    """
+    empty = {'is_manipulation': False, 'direction': None,
+             'swept_level': None, 'spike_atr_mult': 0.0, 'confidence': 0.0}
+
+    if len(df) < 5 or atr <= 0:
+        return empty
+    if accum_high is None or accum_low is None:
+        return empty
+
+    avg_vol  = df['volume'].rolling(20).mean().iloc[-1]
+    avg_atr  = df['atr'].rolling(20).mean().iloc[-1] if 'atr' in df.columns else atr
+
+    # Check last 3 candles for a manipulation spike (it's fast — 1-3 bars)
+    for offset in range(1, 4):
+        if len(df) < offset + 2:
+            break
+        spike = df.iloc[-(offset + 1)]  # the spike candle
+        after = df.iloc[-offset:]       # candles that followed
+
+        spike_range = spike['high'] - spike['low']
+        spike_vol   = spike['volume'] / avg_vol if avg_vol > 0 else 1.0
+        atr_mult    = spike_range / avg_atr if avg_atr > 0 else 1.0
+
+        # BULLISH manipulation: swept BELOW accum_low, closed back above
+        if (spike['low'] < accum_low and
+                spike_range >= avg_atr * 1.3 and
+                spike_vol >= 1.3 and
+                after['close'].iloc[-1] > accum_low):
+            depth = (accum_low - spike['low']) / atr
+            conf  = min(1.0, (atr_mult / 2.0) * 0.4 +
+                             min(spike_vol / 2.0, 1.0) * 0.4 +
+                             min(depth / 1.0, 1.0) * 0.2)
+            return {'is_manipulation': True, 'direction': 'BULL',
+                    'swept_level': round(float(accum_low), 5),
+                    'spike_atr_mult': round(atr_mult, 2),
+                    'confidence': round(conf, 3)}
+
+        # BEARISH manipulation: swept ABOVE accum_high, closed back below
+        if (spike['high'] > accum_high and
+                spike_range >= avg_atr * 1.3 and
+                spike_vol >= 1.3 and
+                after['close'].iloc[-1] < accum_high):
+            depth = (spike['high'] - accum_high) / atr
+            conf  = min(1.0, (atr_mult / 2.0) * 0.4 +
+                             min(spike_vol / 2.0, 1.0) * 0.4 +
+                             min(depth / 1.0, 1.0) * 0.2)
+            return {'is_manipulation': True, 'direction': 'BEAR',
+                    'swept_level': round(float(accum_high), 5),
+                    'spike_atr_mult': round(atr_mult, 2),
+                    'confidence': round(conf, 3)}
+
+    return empty
+
+
+def detect_distribution_trend(df: pd.DataFrame, structure: dict,
+                                atr: float) -> dict:
+    """
+    Detects whether price is in a DISTRIBUTION (trending delivery) phase.
+
+    Distribution = smart money delivering price to the target liquidity pool
+    after the manipulation sweep. Price trends with consistent swing structure.
+
+    Structural fingerprint:
+      - Consecutive HH/HL (bullish) or LL/LH (bearish) over last 5+ bars
+      - ATR normalising after the manipulation spike (not still expanding)
+      - BOS confirmed in the distribution direction
+      - OBs and FVGs visible in the lookback (left during manipulation)
+
+    Returns:
+      is_distributing: bool
+      direction:       'BULL' | 'BEAR' | None
+      confidence:      0.0–1.0
+      atr_normalised:  bool — True if ATR has returned toward baseline
+    """
+    empty = {'is_distributing': False, 'direction': None,
+             'confidence': 0.0, 'atr_normalised': False}
+    if len(df) < 10 or atr <= 0:
+        return empty
+
+    trend     = structure.get('trend', 'NEUTRAL')
+    swing_highs = structure.get('swing_highs', [])
+    swing_lows  = structure.get('swing_lows', [])
+
+    # Need at least 3 confirmed swing points for trend
+    if len(swing_highs) < 2 or len(swing_lows) < 2:
+        return empty
+
+    is_bull_trend = (trend == 'BULLISH' and len(swing_highs) >= 3 and
+                     all(swing_highs[i][1] < swing_highs[i+1][1]
+                         for i in range(len(swing_highs)-2, len(swing_highs)-1)))
+    is_bear_trend = (trend == 'BEARISH' and len(swing_lows) >= 3 and
+                     all(swing_lows[i][1] > swing_lows[i+1][1]
+                         for i in range(len(swing_lows)-2, len(swing_lows)-1)))
+
+    if not is_bull_trend and not is_bear_trend:
+        return empty
+
+    # ATR normalisation: current ATR should be <= 1.3× 20-bar average
+    avg_atr = df['atr'].rolling(20).mean().iloc[-1] if 'atr' in df.columns else atr
+    atr_ratio = atr / avg_atr if avg_atr > 0 else 1.0
+    atr_normalised = atr_ratio <= 1.3
+
+    # BOS alignment
+    bos_score = 1.0 if (is_bull_trend and trend == 'BULLISH') or \
+                       (is_bear_trend and trend == 'BEARISH') else 0.5
+
+    # Swing count depth (more confirmed swings = higher confidence)
+    swing_count = len(swing_highs) + len(swing_lows)
+    swing_score = min(1.0, swing_count / 8.0)
+
+    confidence = bos_score * 0.5 + swing_score * 0.3 + (0.2 if atr_normalised else 0.0)
+
+    return {
+        'is_distributing': confidence >= 0.55,
+        'direction':       'BULL' if is_bull_trend else 'BEAR',
+        'confidence':      round(confidence, 3),
+        'atr_normalised':  atr_normalised,
+    }
+
+
+def detect_amd_phase(df: pd.DataFrame, atr: float,
+                     utc_hour: int, utc_minute: int,
+                     accum_high: float = None, accum_low: float = None,
+                     structure: dict = None) -> dict:
+    """
+    [AMD-STRUCTURAL] Determines the current AMD market cycle phase from
+    price structure, with session clock as a probability prior — not a gate.
+
+    The log analysis from March 10 proved that a fixed UTC clock is wrong:
+      - MANIPULATION fired at 01:31 UTC (clock said ACCUMULATION)
+      - DISTRIBUTION ran 03:00–05:59 UTC (clock said ACCUMULATION)
+      - A second MANIPULATION fired at 11:15 UTC (clock said DISTRIBUTION)
+      - London Open 07–09 had ZERO manipulation (clock said MANIPULATION)
+
+    AMD is a STRUCTURAL SEQUENCE, not a timetable. This function detects each
+    phase from price behaviour and uses the clock only to weight probabilities.
+
+    Detection priority (in order):
+      1. AVOID  — hard gate (NY Lunch). Liquidity genuinely absent.
+      2. MANIPULATION — strongest structural signal. Overrides clock.
+      3. DISTRIBUTION — trend structure confirmed.
+      4. ACCUMULATION — compression detected (fallback).
+
+    Returns dict:
+      phase:         'ACCUMULATION' | 'MANIPULATION' | 'DISTRIBUTION' | 'AVOID'
+      direction:     'BULL' | 'BEAR' | None (for MANIP and DIST)
+      confidence:    float 0–1 (structural detection confidence)
+      clock_label:   descriptive session label for logging
+      manip_data:    manipulation event data (if phase == MANIPULATION)
+      accum_data:    accumulation structure data (always computed)
+      dist_data:     distribution structure data (always computed)
+      session_prior: the clock weights dict used
+    """
+    if structure is None:
+        structure = {}
+
+    prior = _session_amd_prior(utc_hour, utc_minute)
+
+    # Hard AVOID gate
+    if 'AVOID' in prior:
+        return {'phase': 'AVOID', 'direction': None, 'confidence': 1.0,
+                'clock_label': 'NY_Lunch', 'manip_data': {}, 'accum_data': {},
+                'dist_data': {}, 'session_prior': prior}
+
+    # Clock label for logging
+    t = utc_hour * 60 + utc_minute
+    if   t < 3*60:          clock_label = 'Asian'
+    elif t < 7*60:          clock_label = 'PreLondon'
+    elif t < 9*60:          clock_label = 'London'
+    elif t < 12*60:         clock_label = 'London_PM'
+    elif t < 13*60+30:      clock_label = 'London_NY'
+    elif t < 14*60+30:      clock_label = 'NY_Open'
+    else:                   clock_label = 'NY_PM'
+
+    # ── Structural detections ────────────────────────────────────
+    accum_data = detect_accumulation_structure(df, atr)
+    dist_data  = detect_distribution_trend(df, structure, atr)
+
+    # Manipulation requires known accumulation boundaries
+    _ah = accum_high or accum_data.get('range_high')
+    _al = accum_low  or accum_data.get('range_low')
+    manip_data = detect_manipulation_spike(df, atr, _ah, _al)
+
+    # ── Phase decision with prior weighting ──────────────────────
+    # MANIPULATION: structural signal weighted by session prior
+    if manip_data['is_manipulation']:
+        m_conf = manip_data['confidence'] * prior.get('MANIPULATION', 1.0)
+        if m_conf >= 0.40:  # threshold for structural overriding clock
+            direction = manip_data['direction']
+            return {'phase': 'MANIPULATION', 'direction': direction,
+                    'confidence': round(m_conf, 3), 'clock_label': clock_label,
+                    'manip_data': manip_data, 'accum_data': accum_data,
+                    'dist_data': dist_data, 'session_prior': prior}
+
+    # DISTRIBUTION: trend confirmed
+    if dist_data['is_distributing']:
+        d_conf = dist_data['confidence'] * prior.get('DISTRIBUTION', 1.0)
+        if d_conf >= 0.45:
+            return {'phase': 'DISTRIBUTION', 'direction': dist_data['direction'],
+                    'confidence': round(d_conf, 3), 'clock_label': clock_label,
+                    'manip_data': manip_data, 'accum_data': accum_data,
+                    'dist_data': dist_data, 'session_prior': prior}
+
+    # ACCUMULATION: compression detected or default fallback
+    a_conf = accum_data['confidence'] * prior.get('ACCUMULATION', 1.0)
+    return {'phase': 'ACCUMULATION', 'direction': None,
+            'confidence': round(a_conf, 3), 'clock_label': clock_label,
+            'manip_data': manip_data, 'accum_data': accum_data,
+            'dist_data': dist_data, 'session_prior': prior}
+
+
+# ── AMD-2: ASIAN RANGE DETECTION ─────────────────────────────────────────────
+
+def detect_asian_range(df: pd.DataFrame, utc_now: datetime) -> dict:
+    """
+    Identifies today's Asian session range: 00:00–03:00 UTC.
+
+    The Asian High (AH) and Asian Low (AL) are the structural reference
+    levels for the London Open Judas Swing. When London sweeps BELOW AL,
+    the setup is bullish. When London sweeps ABOVE AH, the setup is bearish.
+
+    Requires 'timestamp' or datetime index in df to filter by session time.
+    Falls back gracefully if no timestamp column — uses rolling approximation.
+
+    Returns dict with:
+      asian_high:      highest high during 00:00–03:00 UTC today
+      asian_low:       lowest low during 00:00–03:00 UTC today
+      asian_midpoint:  (AH + AL) / 2
+      asian_range_atr: range size relative to current ATR (range quality measure)
+      valid:           True if Asian range was detected with >= 3 candles
+    """
+    empty = {'asian_high': None, 'asian_low': None,
+             'asian_midpoint': None, 'asian_range_atr': None, 'valid': False}
+
+    if df is None or len(df) < 10:
+        return empty
+
+    today = utc_now.date()
+    atr   = df['atr'].iloc[-1] if 'atr' in df.columns else 0.001
+
+    # Try to filter by timestamp column (preferred)
+    if 'timestamp' in df.columns:
+        try:
+            df_ts = df.copy()
+            df_ts['_dt'] = pd.to_datetime(df_ts['timestamp'], utc=True)
+            asian = df_ts[
+                (df_ts['_dt'].dt.date == today) &
+                (df_ts['_dt'].dt.hour >= 0) &
+                (df_ts['_dt'].dt.hour < 3)
+            ]
+            if len(asian) >= 3:
+                ah = asian['high'].max()
+                al = asian['low'].min()
+                return {
+                    'asian_high':     round(float(ah), 5),
+                    'asian_low':      round(float(al), 5),
+                    'asian_midpoint': round(float((ah + al) / 2), 5),
+                    'asian_range_atr': round(float((ah - al) / atr), 2),
+                    'valid': True,
+                }
+        except Exception:
+            pass
+
+    # Fallback: estimate from candle count (M15 = 4 candles/hour × 3h = 12 candles)
+    # Look back 12–24 candles to approximate the Asian window
+    asian_window = df.tail(24).head(12)
+    if len(asian_window) < 3:
+        return empty
+
+    ah = asian_window['high'].max()
+    al = asian_window['low'].min()
+    return {
+        'asian_high':     round(float(ah), 5),
+        'asian_low':      round(float(al), 5),
+        'asian_midpoint': round(float((ah + al) / 2), 5),
+        'asian_range_atr': round(float((ah - al) / atr), 2),
+        'valid': True,
+    }
+
+
+# ── AMD-3: LONDON SESSION RANGE (for NY Judas Swing reference) ───────────────
+
+def detect_london_range(df: pd.DataFrame, utc_now: datetime) -> dict:
+    """
+    Identifies today's London session High and Low (07:00–12:00 UTC).
+
+    Used by NY_MANIPULATION phase to detect the NY Open Judas Swing:
+    when NY sweeps the London session Low or High before the true NY move.
+
+    Same timestamp-then-fallback approach as detect_asian_range().
+    """
+    empty = {'london_high': None, 'london_low': None, 'valid': False}
+    if df is None or len(df) < 10:
+        return empty
+
+    today = utc_now.date()
+
+    if 'timestamp' in df.columns:
+        try:
+            df_ts = df.copy()
+            df_ts['_dt'] = pd.to_datetime(df_ts['timestamp'], utc=True)
+            london = df_ts[
+                (df_ts['_dt'].dt.date == today) &
+                (df_ts['_dt'].dt.hour >= 7) &
+                (df_ts['_dt'].dt.hour < 12)
+            ]
+            if len(london) >= 3:
+                return {
+                    'london_high': round(float(london['high'].max()), 5),
+                    'london_low':  round(float(london['low'].min()), 5),
+                    'valid': True,
+                }
+        except Exception:
+            pass
+
+    # Fallback: London ~20 bars back from 13:30 entry (M15: 20 bars = 5 hours)
+    window = df.iloc[-44:-24] if len(df) >= 44 else df.head(20)
+    if len(window) < 3:
+        return empty
+    return {
+        'london_high': round(float(window['high'].max()), 5),
+        'london_low':  round(float(window['low'].min()), 5),
+        'valid': True,
+    }
+
+
+# ── AMD-4: JUDAS SWING DETECTION ─────────────────────────────────────────────
+
+def detect_judas_swing(c1_low: float, c1_high: float,
+                       ref_high: float, ref_low: float,
+                       atr: float) -> dict:
+    """
+    Determines whether the current sweep candle (c1) specifically targets
+    the session range boundary (AH/AL for London, LH/LL for NY).
+
+    A Judas Swing is NOT just any sweep. It is the deliberate sweep of a
+    known stop-order cluster at the boundary of the accumulation range.
+    This makes it structurally higher probability than a generic structural sweep.
+
+    Detection criteria:
+      Bullish Judas Swing: c1 sweeps BELOW ref_low within 1.0 ATR of that level.
+        The sweep must be meaningful (>= 0.2 ATR below ref_low) but not so deep
+        that it implies a real breakdown rather than a stop hunt (< 3.0 ATR below).
+      Bearish Judas Swing: c1 sweeps ABOVE ref_high within 1.0 ATR of that level.
+
+    Returns:
+      judas_bull:  True if bullish Judas Swing detected
+      judas_bear:  True if bearish Judas Swing detected
+      depth_bull:  how far below ref_low the sweep went (in ATR multiples)
+      depth_bear:  how far above ref_high the sweep went (in ATR multiples)
+    """
+    bull_depth = (ref_low - c1_low) / atr if atr > 0 else 0
+    bear_depth = (c1_high - ref_high) / atr if atr > 0 else 0
+
+    # Swept below AL: between 0.2 and 3.0 ATR below the level = stop hunt, not breakdown
+    judas_bull = (ref_low is not None and
+                  c1_low < ref_low and
+                  0.2 <= bull_depth <= 3.0)
+
+    # Swept above AH: between 0.2 and 3.0 ATR above the level
+    judas_bear = (ref_high is not None and
+                  c1_high > ref_high and
+                  0.2 <= bear_depth <= 3.0)
+
+    return {
+        'judas_bull':  judas_bull,
+        'judas_bear':  judas_bear,
+        'depth_bull':  round(bull_depth, 2),
+        'depth_bear':  round(bear_depth, 2),
+    }
+
+
 
 def detect_order_blocks(df: pd.DataFrame, lookback: int = 20) -> dict:
     """
@@ -327,6 +857,7 @@ def get_ict_session_weight(utc_hour: int, utc_minute: int) -> tuple:
     London PM:      09:00–12:00 UTC  → weight 0.70  (mid-session)
     Asian Range:    00:00–03:00 UTC  → weight 0.80  (JPY primary session)
     NY Lunch (real):16:00–17:30 UTC  → weight 0.00  (EDT 12:00–13:30 — avoid)
+    NY PM2:         17:30–21:00 UTC  → weight 0.80  (EDT 13:30–17:00 — full NY afternoon)
     Other:          all else         → weight 0.50
 
     [S9-CALIBRATION] Asian raised 0.60→0.80. The weight was penalising
@@ -338,6 +869,15 @@ def get_ict_session_weight(utc_hour: int, utc_minute: int) -> tuple:
     Non-JPY pairs rarely produce genuine Asian sweeps so false-positive
     risk is self-limiting.
 
+    [S11-SESSION] Added NY_PM2 (17:30–21:00 UTC = 13:30–17:00 EDT).
+    This is the full NY afternoon post-lunch session — the most active
+    institutional period for order flow completion, stop hunts, and
+    end-of-day position squaring. Previously lumped into "Other" (0.50),
+    which was causing high-quality JUDAS+AMD:MANIPULATION setups to fall
+    below the 0.80 threshold. Now correctly weighted at 0.80.
+    Signals at 20:46 UTC (EURUSD, NZDUSD, AUDUSD) that were missed due
+    to this miscategorisation will now qualify for execution.
+
     Returns (weight, zone_name)
     """
     t = utc_hour * 60 + utc_minute
@@ -346,11 +886,12 @@ def get_ict_session_weight(utc_hour: int, utc_minute: int) -> tuple:
     # Previously ny_lunch was (12*60, 13*60+30) — that is London/NY Overlap,
     # the highest-volume window of the day. Real NY Lunch = EDT 12:00–13:30
     # = 16:00–17:30 UTC (UTC-4 during EDT / March–November).
-    london_open  = (7*60,   9*60)       # 07:00–09:00 UTC
-    london_pm    = (9*60,  12*60)       # 09:00–12:00 UTC
-    london_ny    = (12*60, 16*60)       # 12:00–16:00 UTC  ← was being skipped
-    ny_lunch     = (16*60, 17*60+30)    # 16:00–17:30 UTC  ← real thin window
-    asian_range  = (0,      3*60)       # 00:00–03:00 UTC
+    london_open  = (7*60,    9*60)        # 07:00–09:00 UTC
+    london_pm    = (9*60,   12*60)        # 09:00–12:00 UTC
+    london_ny    = (12*60,  16*60)        # 12:00–16:00 UTC  ← was being skipped
+    ny_lunch     = (16*60,  17*60+30)     # 16:00–17:30 UTC  ← real thin window
+    ny_pm2       = (17*60+30, 21*60)      # 17:30–21:00 UTC  ← [S11] NY afternoon post-lunch
+    asian_range  = (0,       3*60)        # 00:00–03:00 UTC
 
     if london_open[0] <= t < london_open[1]:
         return 1.00, 'London'
@@ -362,6 +903,8 @@ def get_ict_session_weight(utc_hour: int, utc_minute: int) -> tuple:
         return 0.80, 'Asian'
     if ny_lunch[0] <= t < ny_lunch[1]:
         return 0.00, 'NY_Lunch'
+    if ny_pm2[0] <= t < ny_pm2[1]:
+        return 0.80, 'NY_PM2'   # [S11] Full NY afternoon — prime institutional window
     return 0.50, 'Other'
 
 
@@ -499,53 +1042,421 @@ def _derive_macro_trend(df_macro: pd.DataFrame) -> str:
     return "NEUTRAL"
 
 
+
+# ── AMD-5: DISTRIBUTION MODE SCORER ──────────────────────────────────────────
+
+def _score_distribution(df: pd.DataFrame, structure: dict, obs: dict,
+                         pd_zone: dict, session_wt: float, kill_zone: str,
+                         current_atr: float, vol_ratio: float,
+                         macro_trend: str, c3) -> tuple:
+    """
+    Distribution mode scoring — entered during DISTRIBUTION and NY_DISTRIBUTION.
+
+    In distribution, price is trending after the Manipulation sweep.
+    Entry model: OB or FVG retest in the direction of the trend.
+    Sweep+displacement is NOT required — we enter the pullback.
+
+    Score architecture:
+      OB retest in trend direction  +0.30
+      FVG retest in trend direction +0.20
+      BOS confirmed (trend)         +0.15
+      Kill zone session quality     +0.15 × weight
+      OTE pullback depth            +0.10
+      Volume surge                  ×1.10
+
+    Returns (signal, score, reason, conditions) or None if no setup.
+    """
+    if macro_trend not in ('BULLISH', 'BEARISH'):
+        return None
+
+    is_bull = macro_trend == 'BULLISH'
+    score   = 0.0
+    cond    = {'mode': 'DISTRIBUTION'}
+
+    cond['kill_zone'] = kill_zone
+    score += 0.15 * session_wt
+
+    ob_key = 'bullish' if is_bull else 'bearish'
+    ob     = obs.get(ob_key)
+    ob_hit = bool(ob and ob.get('retested'))
+    cond['order_block'] = ob_hit
+    if ob_hit: score += 0.30
+
+    fvg_dir = 'BUY' if is_bull else 'SELL'
+    fvg_hit = detect_fvg(df, fvg_dir, current_atr)
+    cond['fvg'] = fvg_hit
+    if fvg_hit: score += 0.20
+
+    bos = structure.get('trend') == macro_trend
+    cond['bos_aligned'] = bos
+    if bos: score += 0.15
+
+    swing_lows  = structure.get('swing_lows', [])
+    swing_highs = structure.get('swing_highs', [])
+    ote_hit = False
+    if is_bull and len(swing_lows) >= 2 and len(swing_highs) >= 2:
+        ote_lo, ote_hi = get_ote_zone(swing_highs[-1][1], swing_lows[-1][1], 'BUY')
+        ote_hit = ote_lo > 0 and ote_lo <= c3['close'] <= ote_hi
+    elif not is_bull and len(swing_highs) >= 2 and len(swing_lows) >= 2:
+        ote_lo, ote_hi = get_ote_zone(swing_highs[-1][1], swing_lows[-1][1], 'SELL')
+        ote_hit = ote_lo > 0 and ote_lo <= c3['close'] <= ote_hi
+    cond['ote'] = ote_hit
+    if ote_hit: score += 0.10
+
+    vol_surge = vol_ratio >= 1.3
+    cond['volume_surge'] = vol_surge
+    cond['vol_ratio'] = round(vol_ratio, 2)
+    if vol_surge:
+        score = min(0.99, score * 1.10)
+
+    if not ob_hit and not fvg_hit:
+        return None
+    if score < 0.40:
+        return None
+
+    direction = 'BUY_MICRO' if is_bull else 'SELL_MICRO'
+    reason = (f"DISTRIBUTION [{kill_zone}] | Score:{score:.2f} | "
+              f"OB:{ob_hit} FVG:{fvg_hit} BOS:{bos} OTE:{ote_hit} "
+              f"Vol:{vol_ratio:.1f}x | Trend:{macro_trend}")
+    return direction, round(score, 3), reason, cond
+
+
 # ── CORE ICT CONFLUENCE SCORER ────────────────────────────────────────────────
 
 def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                             symbol: str, market_regime: str,
                             utc_now: datetime = None) -> tuple:
     """
-    [S9-PRECISION] Full ICT confluence scorer — all 7 conditions rebuilt.
+    [AMD] Phase-aware ICT confluence scorer.
 
-    The principle: every point in the score must be EARNED by a detection that
-    is geometrically correct, not merely plausible. A score of 0.60 should
-    mean the setup is genuinely 60% of the way to a confirmed ICT entry, and
-    when it fires at 0.88+ the underlying conditions are verified with enough
-    rigour that the trade has a structurally sound basis to reach TP.
-
-    Precision changes applied to each condition:
-
-    SWEEP: Uses swing structure lows/highs (detect_market_structure points)
-           instead of rolling 15-bar min/max. Also requires wick penetration
-           depth >= 0.5 ATR — a micro-wick below the level is not a sweep.
-           Additionally checks equal-highs/lows clusters as priority targets.
-
-    DISPLACEMENT: Body threshold raised from 0.5 ATR → 1.0 ATR (normal).
-                  ALSO requires the candle to close in the top 25% of its own
-                  range (bullish) or bottom 25% (bearish). A large body that
-                  closes mid-range is indecision, not displacement.
-
-    OTE: Measured from sweep candle low → displacement candle high (BUY) or
-         sweep candle high → displacement candle low (SELL). This is the actual
-         impulse leg the retracement is measured against, not a generic 20-bar H/L.
-
-    FVG: Uses detect_fvg() which scans 10 bars, requires gap >= 0.3 ATR,
-         and confirms the gap has not been filled by subsequent price action.
-
-    VOLUME: Threshold raised from 1.2x → 1.5x. Checks BOTH the sweep candle
-            (c1) and the displacement candle (c2) — institutional activity
-            shows on both bars, not just one.
-
-    PREMIUM/DISCOUNT: Lookback extended to 100 bars. Deep zones (<25% or >75%)
-                      score the full 0.10. Shallow zones (25-50% or 50-75%)
-                      score 0.05 — price in shallow discount is still valid but
-                      less confident than deep discount. H4 conflict penalises.
-
-    BOS: Now requires 3 consecutive HH/HL (bullish) or LL/LH (bearish) — not 2.
-         Two points can be noise; three is confirmed structure.
+    Routes each cycle through the correct scoring logic based on AMD phase:
+    ACCUMULATION → NEUTRAL (map range, log AH/AL, no execution)
+    MANIPULATION → Full sweep+displacement + Judas Swing bonus
+    DISTRIBUTION → Continuation: OB/FVG retest in trend direction
+    NY_MANIPULATION → Sweep of London range (LH/LL)
+    NY_DISTRIBUTION → Same as DISTRIBUTION
+    AVOID → NEUTRAL
 
     Returns: (signal, score, reason_str, conditions_dict, kill_zone)
     """
+    if utc_now is None:
+        utc_now = datetime.utcnow()
+
+    if len(df) < 50:
+        return "NEUTRAL", 0.0, "Gathering Data", {}, "N/A"
+
+    df = df.copy()
+    df['atr']        = calculate_atr(df)
+    df['avg_volume'] = df['volume'].rolling(20).mean()
+
+    c1 = df.iloc[-3]
+    c2 = df.iloc[-2]
+    c3 = df.iloc[-1]
+
+    current_atr = max(df['atr'].iloc[-1], 1e-8)
+    avg_vol     = df['avg_volume'].iloc[-1]
+    vol_ratio   = max(c1['volume'] / avg_vol if avg_vol > 0 else 1.0,
+                      c2['volume'] / avg_vol if avg_vol > 0 else 1.0)
+
+    # ── Shared structural computations ─────────────────────────────
+    # These are computed first so detect_amd_phase can use structure data
+    structure   = detect_market_structure(df)
+    macro_trend = _derive_macro_trend(df_macro)
+    obs         = detect_order_blocks(df)
+    pd_zone     = detect_premium_discount(df, df_macro=df_macro, lookback=100)
+    eq_levels   = detect_equal_highs_lows(df)
+
+    # ── AMD Phase — STRUCTURAL detection (not clock-based) ─────────
+    # The Asian range boundaries feed the manipulation detector as reference.
+    # London range used for NY_MANIPULATION context.
+    asian  = detect_asian_range(df, utc_now)
+    london = detect_london_range(df, utc_now)
+
+    # Use Asian range as primary accumulation reference if available,
+    # otherwise fall back to structural accumulation range
+    accum_ref_high = asian.get('asian_high') if asian.get('valid') else None
+    accum_ref_low  = asian.get('asian_low')  if asian.get('valid') else None
+
+    amd = detect_amd_phase(
+        df, current_atr,
+        utc_now.hour, utc_now.minute,
+        accum_high=accum_ref_high,
+        accum_low=accum_ref_low,
+        structure=structure,
+    )
+    amd_phase    = amd['phase']
+    amd_dir      = amd.get('direction')        # 'BULL' | 'BEAR' | None
+    amd_conf     = amd.get('confidence', 0.0)
+    clock_label  = amd.get('clock_label', 'Unknown')
+    manip_data   = amd.get('manip_data', {})
+    accum_data   = amd.get('accum_data', {})
+
+    # ── ACCUMULATION — map range, do not trade ─────────────────────
+    if amd_phase == 'ACCUMULATION':
+        cond = {
+            'mode': 'ACCUMULATION', 'amd_phase': amd_phase,
+            'amd_confidence': amd_conf, 'clock_label': clock_label,
+            'asian_high':  asian.get('asian_high'),
+            'asian_low':   asian.get('asian_low'),
+            'range_high':  accum_data.get('range_high'),
+            'range_low':   accum_data.get('range_low'),
+            'range_atr':   accum_data.get('range_atr'),
+        }
+        reason = (f"ACCUMULATION [{clock_label}] | conf:{amd_conf:.2f} | "
+                  f"Mapping range | AH:{asian.get('asian_high')} "
+                  f"AL:{asian.get('asian_low')}")
+        return "NEUTRAL", 0.0, reason, cond, clock_label
+
+    # ── AVOID ──────────────────────────────────────────────────────
+    if amd_phase == 'AVOID':
+        return "NEUTRAL", 0.0, "NY Lunch: Reaccumulation. Skipped.", {}, "NY_Lunch"
+
+    # ── Session weight (kill zone quality) ─────────────────────────
+    session_wt, kill_zone = get_ict_session_weight(utc_now.hour, utc_now.minute)
+    if kill_zone == 'NY_Lunch':
+        return "NEUTRAL", 0.0, "NY Lunch: Low-quality session. Skipped.", {}, kill_zone
+
+    if "DEAD MARKET" in market_regime:
+        disp_atr_mult = 0.3;  enforce_macro = False
+    elif "HIGH VOLATILITY" in market_regime:
+        disp_atr_mult = 0.8;  enforce_macro = True
+    else:
+        disp_atr_mult = 0.6;  enforce_macro = False
+
+    # ── DISTRIBUTION PATH ──────────────────────────────────────────
+    if amd_phase == 'DISTRIBUTION':
+        result = _score_distribution(
+            df, structure, obs, pd_zone, session_wt, kill_zone,
+            current_atr, vol_ratio, macro_trend, c3)
+        if result:
+            signal, score, reason, cond = result
+            cond['amd_phase']      = amd_phase
+            cond['amd_confidence'] = amd_conf
+            cond['clock_label']    = clock_label
+            if "DEAD MARKET" in market_regime:
+                signal = "BUY_NANO" if "BUY" in signal else "SELL_NANO"
+            return signal, score, reason, cond, kill_zone
+        return "NEUTRAL", 0.0, (f"DISTRIBUTION [{clock_label}]: No OB/FVG retest "
+                                f"in {macro_trend} direction."), {}, kill_zone
+
+    # ── MANIPULATION PATH ──────────────────────────────────────────
+    # Determine the reference range that was swept (session-context aware)
+    t = utc_now.hour * 60 + utc_now.minute
+    if t >= 13*60+30 and london.get('valid'):
+        # NY Open window — London range is the sweep reference
+        ref_high  = london.get('london_high')
+        ref_low   = london.get('london_low')
+        ref_valid = True
+        ref_label = 'LH/LL'
+    elif asian.get('valid'):
+        # London Open / Pre-London — Asian range is the sweep reference
+        ref_high  = asian.get('asian_high')
+        ref_low   = asian.get('asian_low')
+        ref_valid = True
+        ref_label = 'AH/AL'
+    else:
+        # Structural manipulation detected without clean session range
+        # Use the accumulation range boundaries as reference
+        ref_high  = accum_data.get('range_high')
+        ref_low   = accum_data.get('range_low')
+        ref_valid = ref_high is not None and ref_low is not None
+        ref_label = 'Struct'
+
+    if ref_valid and ref_high and ref_low:
+        judas = detect_judas_swing(c1['low'], c1['high'],
+                                    ref_high, ref_low, current_atr)
+    else:
+        judas = {'judas_bull': False, 'judas_bear': False,
+                 'depth_bull': 0.0,  'depth_bear': 0.0}
+
+    # ── Sweep (hybrid tier) ────────────────────────────────────────
+    swing_lows  = structure.get('swing_lows', [])
+    swing_highs = structure.get('swing_highs', [])
+
+    if len(swing_lows) >= 2:
+        last_swing_low   = swing_lows[-1][1]
+        sweep_low        = (c1['low'] < last_swing_low and
+                            (last_swing_low - c1['low']) >= current_atr * 0.3)
+    else:
+        last_swing_low   = df['low'].rolling(20).min().shift(1).iloc[-1]
+        sweep_low        = (c1['low'] < last_swing_low and
+                            (last_swing_low - c1['low']) >= current_atr * 0.5)
+
+    if len(swing_highs) >= 2:
+        last_swing_high  = swing_highs[-1][1]
+        sweep_high       = (c1['high'] > last_swing_high and
+                            (c1['high'] - last_swing_high) >= current_atr * 0.3)
+    else:
+        last_swing_high  = df['high'].rolling(20).max().shift(1).iloc[-1]
+        sweep_high       = (c1['high'] > last_swing_high and
+                            (c1['high'] - last_swing_high) >= current_atr * 0.5)
+
+    eq_low_sweep  = sweep_low  and any(abs(last_swing_low  - lvl) < current_atr * 0.3
+                                       for lvl in eq_levels.get('equal_lows', []))
+    eq_high_sweep = sweep_high and any(abs(last_swing_high - lvl) < current_atr * 0.3
+                                       for lvl in eq_levels.get('equal_highs', []))
+
+    # ── Displacement ───────────────────────────────────────────────
+    c2_range = c2['high'] - c2['low']
+    close_q_bull = ((c2['close'] - c2['low']) / c2_range) if c2_range > 0 else 0
+    close_q_bear = ((c2['high'] - c2['close']) / c2_range) if c2_range > 0 else 0
+
+    disp_up   = (c2['close'] > c2['open'] and
+                 abs(c2['close'] - c2['open']) >= current_atr * disp_atr_mult and
+                 close_q_bull >= 0.70)
+    disp_down = (c2['close'] < c2['open'] and
+                 abs(c2['open'] - c2['close']) >= current_atr * disp_atr_mult and
+                 close_q_bear >= 0.70)
+
+    # ── BULLISH MANIPULATION ───────────────────────────────────────
+    if sweep_low and disp_up:
+        score = 0.0
+        cond  = {'mode': 'MANIPULATION', 'amd_phase': amd_phase}
+
+        cond['sweep']        = True;  score += 0.20
+        cond['displacement'] = True;  score += 0.15
+        cond['kill_zone']    = kill_zone
+        score += 0.15 * session_wt
+
+        is_judas = judas['judas_bull']
+        cond['judas_swing'] = is_judas
+        cond['ref_label']   = ref_label
+        cond['judas_depth'] = judas['depth_bull']
+        if is_judas: score += 0.12
+
+        bull_ob = obs.get('bullish')
+        ob_hit  = bool(bull_ob and bull_ob.get('retested'))
+        cond['order_block'] = ob_hit
+        if ob_hit: score += 0.15
+
+        fvg_bull = detect_fvg(df, 'BUY', current_atr)
+        cond['fvg'] = fvg_bull
+        if fvg_bull: score += 0.10
+
+        in_discount = pd_zone.get('in_discount', False)
+        deep_pd     = pd_zone.get('deep', False) and in_discount
+        h4_conflict = pd_zone.get('h4_conflict', False)
+        cond['discount_zone'] = in_discount
+        cond['deep_discount'] = deep_pd
+        if deep_pd and not h4_conflict:        score += 0.10
+        elif in_discount and not h4_conflict:  score += 0.05
+
+        bos_aligned = structure['trend'] == 'BULLISH'
+        cond['bos_aligned'] = bos_aligned
+        if bos_aligned: score += 0.08
+
+        ote_lo, ote_hi = get_ote_zone(c2['high'], c1['low'], 'BUY')
+        ote_hit = (ote_lo > 0 and ote_lo <= c3['close'] <= ote_hi)
+        cond['ote'] = ote_hit
+        if ote_hit: score += 0.07
+
+        vol_surge = vol_ratio >= 1.3
+        cond['volume_surge'] = vol_surge
+        cond['vol_ratio']    = round(vol_ratio, 2)
+        if vol_surge: score = min(0.99, score * 1.10)
+
+        cond['eq_lows_sweep'] = eq_low_sweep
+
+        # [S11-AMD-JUDAS] Institutional confirmation bonus.
+        # When the structural AMD engine has confirmed a MANIPULATION phase
+        # AND a Judas swing (stop-hunt) is present, this is the highest-
+        # probability ICT setup: smart money clearing sell-side liquidity
+        # before the real upside expansion. The session weight may penalise
+        # this valid setup (e.g. NY_PM2 or Other outside prime hours), and
+        # H4 conflicts can suppress the PD zone bonus even when direction
+        # is confirmed by institutional flow. This bonus compensates for
+        # those structural penalties on a fundamentally sound setup.
+        if amd_phase == 'MANIPULATION' and is_judas:
+            score = min(0.99, score + 0.10)
+            cond['amd_judas_bonus'] = True
+
+        if enforce_macro and macro_trend == "BEARISH":
+            return "NEUTRAL", 0.0, f"BUY blocked by Bearish H4 (score={score:.2f})", cond, kill_zone
+
+        if "DEAD MARKET" in market_regime:       signal = "BUY_NANO"
+        elif "HIGH VOLATILITY" in market_regime: signal = "BUY"
+        else:                                    signal = "BUY_MICRO"
+
+        tag = f" ⚡JUDAS({ref_label})" if is_judas else ""
+        reason = (f"ICT Bullish [{kill_zone}]{tag} | AMD:{amd_phase} | "
+                  f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bull} "
+                  f"Disc:{in_discount}(deep:{deep_pd}) BOS:{bos_aligned} "
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x")
+        return signal, round(score, 3), reason, cond, kill_zone
+
+    # ── BEARISH MANIPULATION ───────────────────────────────────────
+    if sweep_high and disp_down:
+        score = 0.0
+        cond  = {'mode': 'MANIPULATION', 'amd_phase': amd_phase}
+
+        cond['sweep']        = True;  score += 0.20
+        cond['displacement'] = True;  score += 0.15
+        cond['kill_zone']    = kill_zone
+        score += 0.15 * session_wt
+
+        is_judas = judas['judas_bear']
+        cond['judas_swing'] = is_judas
+        cond['ref_label']   = ref_label
+        cond['judas_depth'] = judas['depth_bear']
+        if is_judas: score += 0.12
+
+        bear_ob = obs.get('bearish')
+        ob_hit  = bool(bear_ob and bear_ob.get('retested'))
+        cond['order_block'] = ob_hit
+        if ob_hit: score += 0.15
+
+        fvg_bear = detect_fvg(df, 'SELL', current_atr)
+        cond['fvg'] = fvg_bear
+        if fvg_bear: score += 0.10
+
+        in_premium = pd_zone.get('in_premium', False)
+        deep_pd    = pd_zone.get('deep', False) and in_premium
+        h4_conflict = pd_zone.get('h4_conflict', False)
+        cond['premium_zone'] = in_premium
+        cond['deep_premium'] = deep_pd
+        if deep_pd and not h4_conflict:       score += 0.10
+        elif in_premium and not h4_conflict:  score += 0.05
+
+        bos_aligned = structure['trend'] == 'BEARISH'
+        cond['bos_aligned'] = bos_aligned
+        if bos_aligned: score += 0.08
+
+        ote_lo, ote_hi = get_ote_zone(c1['high'], c2['low'], 'SELL')
+        ote_hit = (ote_lo > 0 and ote_lo <= c3['close'] <= ote_hi)
+        cond['ote'] = ote_hit
+        if ote_hit: score += 0.07
+
+        vol_surge = vol_ratio >= 1.3
+        cond['volume_surge'] = vol_surge
+        cond['vol_ratio']    = round(vol_ratio, 2)
+        if vol_surge: score = min(0.99, score * 1.10)
+
+        cond['eq_highs_sweep'] = eq_high_sweep
+
+        # [S11-AMD-JUDAS] Institutional confirmation bonus.
+        # Mirror of the bullish branch: AMD MANIPULATION + Judas bear sweep
+        # = smart money clearing buy-side liquidity before the true downside
+        # expansion. Session weight and H4 conflicts may suppress this valid
+        # setup. Bonus of +0.10 compensates for those structural penalties.
+        if amd_phase == 'MANIPULATION' and is_judas:
+            score = min(0.99, score + 0.10)
+            cond['amd_judas_bonus'] = True
+
+        if enforce_macro and macro_trend == "BULLISH":
+            return "NEUTRAL", 0.0, f"SELL blocked by Bullish H4 (score={score:.2f})", cond, kill_zone
+
+        if "DEAD MARKET" in market_regime:       signal = "SELL_NANO"
+        elif "HIGH VOLATILITY" in market_regime: signal = "SELL"
+        else:                                    signal = "SELL_MICRO"
+
+        tag = f" ⚡JUDAS({ref_label})" if is_judas else ""
+        reason = (f"ICT Bearish [{kill_zone}]{tag} | AMD:{amd_phase} | "
+                  f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bear} "
+                  f"Prem:{in_premium}(deep:{deep_pd}) BOS:{bos_aligned} "
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x")
+        return signal, round(score, 3), reason, cond, kill_zone
+
+    return "NEUTRAL", 0.0, f"[{amd_phase}] No sweep or displacement detected.", {}, kill_zone
     if utc_now is None:
         utc_now = datetime.utcnow()
 
@@ -563,11 +1474,14 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
     current_atr = max(df['atr'].iloc[-1], 1e-8)
 
-    # Volume on BOTH sweep and displacement candles
+    # Volume on sweep and displacement candles
     avg_vol     = df['avg_volume'].iloc[-1]
     vol_c1      = c1['volume'] / avg_vol if avg_vol > 0 else 1.0
     vol_c2      = c2['volume'] / avg_vol if avg_vol > 0 else 1.0
-    # [S9-PRECISION] Both candles must show elevated volume; take the max
+    # [S9-FIX] Take max of both candles. Threshold lowered 1.5x → 1.3x.
+    # Diagnosis: GBPJPY/EURJPY best setups of the day (0.850) had vol 1.2–1.3x
+    # and were blocked entirely. 1.3x is the realistic M15 institutional volume
+    # surge threshold — still meaningfully above average, not noise.
     vol_ratio   = max(vol_c1, vol_c2)
 
     # ── Regime multipliers ─────────────────────────────────────────
@@ -578,8 +1492,10 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         disp_atr_mult = 0.8
         enforce_macro = True
     else:
-        # [S9-PRECISION] Normal regime: raised from 0.5 → 1.0 ATR
-        disp_atr_mult = 1.0
+        # [S9-FIX] Normal regime: 1.0 → 0.6 ATR.
+        # 1.0 ATR on M15 = 15–20 pip body — too large for real London setups.
+        # 0.6 ATR ≈ 9–12 pips: genuine institutional displacement on M15.
+        disp_atr_mult = 0.6
         enforce_macro = False
 
     # ── Session weight ─────────────────────────────────────────────
@@ -602,33 +1518,72 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     eq_levels = detect_equal_highs_lows(df)
 
     # ── SWEEP DETECTION ────────────────────────────────────────────
-    # [S9-PRECISION] Use structure swing points rather than rolling window.
-    # Swing lows are where stop orders cluster — sweep = price dips below a
-    # confirmed swing low and closes back above it.
-    # Depth guard: wick below swing must be >= 0.5 ATR to rule out micro-wicks.
+    # [S9-FIX] Hybrid two-tier approach to prevent engine silence.
+    #
+    # Diagnosis: the pure swing-structure gate caused complete silence after
+    # ~5 hours because detect_market_structure() requires 30+ bars with pivot
+    # geometry on both sides of each point. In ranging/trending markets the
+    # swing_lows list becomes empty, the fallback used the current bar's own
+    # rolling min (not a swept level), and the depth guard blocked everything.
+    # London Open produced ZERO signals all day as a result.
+    #
+    # FIX — Tier 1 (structural, preferred): use confirmed swing low/high IF
+    #   >= 2 swing points exist. Depth guard relaxed 0.5 → 0.3 ATR.
+    #   A 0.3 ATR wick below a structural pivot is a meaningful sweep.
+    # FIX — Tier 2 (rolling fallback): if swing points insufficient, use
+    #   rolling 20-bar low/high with depth >= 0.5 ATR. This is stricter on
+    #   depth to compensate for the less precise reference level.
+    # Both tiers still reject micro-wicks and require genuine penetration.
+
     swing_lows  = structure.get('swing_lows', [])
     swing_highs = structure.get('swing_highs', [])
 
-    last_swing_low  = swing_lows[-1][1]  if swing_lows  else df['low'].rolling(20).min().iloc[-2]
-    last_swing_high = swing_highs[-1][1] if swing_highs else df['high'].rolling(20).max().iloc[-2]
+    if len(swing_lows) >= 2:
+        # Tier 1: confirmed structural pivot
+        last_swing_low   = swing_lows[-1][1]
+        sweep_depth_bull = last_swing_low - c1['low']
+        sweep_low        = (c1['low'] < last_swing_low and
+                            sweep_depth_bull >= current_atr * 0.3)
+        sweep_tier       = 'structural'
+    else:
+        # Tier 2: rolling reference with tighter depth guard
+        last_swing_low   = df['low'].rolling(20).min().shift(1).iloc[-1]
+        sweep_depth_bull = last_swing_low - c1['low']
+        sweep_low        = (c1['low'] < last_swing_low and
+                            sweep_depth_bull >= current_atr * 0.5)
+        sweep_tier       = 'rolling'
 
-    sweep_depth_bull = last_swing_low  - c1['low']   # positive = swept below
-    sweep_depth_bear = c1['high'] - last_swing_high  # positive = swept above
+    if len(swing_highs) >= 2:
+        last_swing_high   = swing_highs[-1][1]
+        sweep_depth_bear  = c1['high'] - last_swing_high
+        sweep_high        = (c1['high'] > last_swing_high and
+                             sweep_depth_bear >= current_atr * 0.3)
+    else:
+        last_swing_high   = df['high'].rolling(20).max().shift(1).iloc[-1]
+        sweep_depth_bear  = c1['high'] - last_swing_high
+        sweep_high        = (c1['high'] > last_swing_high and
+                             sweep_depth_bear >= current_atr * 0.5)
 
-    sweep_low  = (c1['low']  < last_swing_low  and
-                  sweep_depth_bull >= current_atr * 0.5)
-    sweep_high = (c1['high'] > last_swing_high and
-                  sweep_depth_bear >= current_atr * 0.5)
-
-    # Equal-lows/highs bonus: sweep targeting a cluster is higher quality
+    # Equal-lows/highs bonus: sweep targeting a liquidity cluster is higher quality
     eq_low_sweep  = sweep_low  and any(abs(last_swing_low  - lvl) < current_atr * 0.3
                                        for lvl in eq_levels.get('equal_lows', []))
     eq_high_sweep = sweep_high and any(abs(last_swing_high - lvl) < current_atr * 0.3
                                        for lvl in eq_levels.get('equal_highs', []))
 
     # ── DISPLACEMENT DETECTION ─────────────────────────────────────
-    # [S9-PRECISION] Body >= disp_atr_mult ATR AND candle closes in top/bottom
-    # 25% of its own range. A large body closing mid-range is indecision.
+    # [S9-FIX] Displacement threshold calibrated to M15 reality.
+    #
+    # Diagnosis: 1.0 ATR body on M15 = 15–20 pip candle on EURUSD.
+    # London Open typically produces 8–12 pip displacement candles — genuine
+    # institutional commitment but below the 1.0 ATR bar. Combined with the
+    # broken sweep gate, zero setups reached displacement check at all.
+    #
+    # FIX — Normal regime: 1.0 → 0.6 ATR body minimum.
+    #   0.6 ATR ≈ 9–12 pips on EURUSD / 6–9 pips on EURGBP.
+    #   This is the empirically correct threshold for M15 institutional moves.
+    # FIX — Close quality: 75% → 70% (candle closes in top/bottom 30% of range).
+    #   Still eliminates doji candles and indecision bars.
+    #   A strong displacement candle closing at 70% of its range is valid.
     body_bull  = abs(c2['close'] - c2['open'])
     body_bear  = abs(c2['open']  - c2['close'])
     c2_range   = c2['high'] - c2['low']
@@ -638,11 +1593,11 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
     disp_up   = (c2['close'] > c2['open'] and
                  body_bull >= current_atr * disp_atr_mult and
-                 close_quality_bull >= 0.75)   # closes in top 25% of range
+                 close_quality_bull >= 0.70)   # closes in top 30% of range
 
     disp_down = (c2['close'] < c2['open'] and
                  body_bear >= current_atr * disp_atr_mult and
-                 close_quality_bear >= 0.75)   # closes in bottom 25% of range
+                 close_quality_bear >= 0.70)   # closes in bottom 30% of range
 
     # ── BULLISH SCORING ────────────────────────────────────────────
     if sweep_low and disp_up:
@@ -693,7 +1648,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         if ote_hit: score += 0.07
 
         # Volume: both sweep and displacement show >= 1.5x average
-        vol_surge = vol_ratio >= 1.5
+        vol_surge = vol_ratio >= 1.3
         cond['volume_surge'] = vol_surge
         cond['vol_ratio']    = round(vol_ratio, 2)
         if vol_surge:
@@ -762,7 +1717,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['ote'] = ote_hit
         if ote_hit: score += 0.07
 
-        vol_surge = vol_ratio >= 1.5
+        vol_surge = vol_ratio >= 1.3
         cond['volume_surge'] = vol_surge
         cond['vol_ratio']    = round(vol_ratio, 2)
         if vol_surge:

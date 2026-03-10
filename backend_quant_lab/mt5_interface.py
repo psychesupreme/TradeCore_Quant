@@ -228,15 +228,16 @@ class MT5Gateway:
         if not self.connected: self.start()
         pos = mt5.positions_get() or []
         return [{
-            "ticket": p.ticket, 
-            "symbol": p.symbol, 
-            "profit": p.profit, 
-            "volume": p.volume, 
-            "type": "BUY" if p.type==0 else "SELL",
+            "ticket":     p.ticket,
+            "symbol":     p.symbol,
+            "profit":     p.profit,
+            "volume":     p.volume,
+            "type":       "BUY" if p.type == 0 else "SELL",
             "open_price": p.price_open,
-            "sl": p.sl,
-            "tp": p.tp,
-            "magic": p.magic  # ADDED: Crucial for the new NANO Trailing Stop to read the 510001 magic number!
+            "sl":         p.sl,
+            "tp":         p.tp,
+            "magic":      p.magic,   # Required for NANO trailing stop (magic 510001)
+            "time":       p.time_msc // 1000  # [BUG-36] Unix timestamp (seconds); enables 12h dead-momentum killer
         } for p in pos]
 
     def get_historical_deals(self, days=365):

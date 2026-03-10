@@ -246,7 +246,10 @@ class TradingBot:
         [S9] Daily Telegram summary — fires at 23:50 UTC via scheduler.
         Provides a full-day accountability report so the operator can review
         performance from their phone without accessing the terminal.
-        Covers: balance, day P&L, signal funnel, upcoming news, kill-switch status.
+        Covers: balance, day P&L, weekly P&L target progress, signal funnel,
+        upcoming news, kill-switch status.
+        [S11] BUG-37 fixed: DB path corrected from "logs/tradecore.db" to "tradecore.db".
+        [S11] Added weekly P&L tracker toward $3,000/week target.
         """
         try:
             acc = self.gateway.get_account_info()
@@ -258,10 +261,11 @@ class TradingBot:
             floating  = sum(p['profit'] for p in positions)
 
             # Signal funnel from DB: today only
+            # [BUG-37 FIX] DB lives at working directory root, NOT in logs/
             today_str = datetime.utcnow().strftime('%Y-%m-%d')
             try:
                 import sqlite3 as _sl
-                con = _sl.connect("logs/tradecore.db")
+                con = _sl.connect("tradecore.db")   # [BUG-37] was: "logs/tradecore.db"
                 rows = con.execute("""
                     SELECT result, COUNT(*) FROM signals
                     WHERE timestamp >= ? GROUP BY result
@@ -276,6 +280,38 @@ class TradingBot:
             rejected  = sum(v for k, v in funnel.items() if 'REJECTED' in k)
             low_conf  = sum(v for k, v in funnel.items() if 'LOW_CONFIDENCE' in k)
             skipped   = funnel.get('SKIPPED', 0)
+
+            # [S11] Weekly P&L tracker toward $3,000/week target
+            WEEKLY_TARGET = 3000.0
+            weekly_pnl = 0.0
+            trades_this_week = 0
+            winners_this_week = 0
+            try:
+                import sqlite3 as _sl
+                from datetime import timedelta
+                now_for_week = datetime.utcnow()
+                week_start = now_for_week - timedelta(days=now_for_week.weekday())
+                week_start_str = week_start.strftime('%Y-%m-%d')
+                con2 = _sl.connect("tradecore.db")
+                week_trades = con2.execute("""
+                    SELECT profit FROM trades
+                    WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0
+                      AND comment NOT LIKE '%ghost%'
+                """, (week_start_str,)).fetchall()
+                con2.close()
+                weekly_pnl = sum(r[0] for r in week_trades)
+                trades_this_week = len(week_trades)
+                winners_this_week = sum(1 for r in week_trades if r[0] > 0)
+            except Exception:
+                pass
+
+            week_progress_pct = (weekly_pnl / WEEKLY_TARGET) * 100 if WEEKLY_TARGET > 0 else 0
+            remaining_to_target = WEEKLY_TARGET - weekly_pnl
+            # Progress bar (10 segments)
+            filled_bars = min(10, int(week_progress_pct / 10))
+            bar = "█" * filled_bars + "░" * (10 - filled_bars)
+            week_icon = "🎯" if weekly_pnl >= WEEKLY_TARGET else ("🟢" if weekly_pnl > 0 else "🔴")
+            week_wr = f"{winners_this_week}/{trades_this_week}" if trades_this_week > 0 else "—"
 
             # Upcoming high-impact news (next 12 hours)
             news_lines = []
@@ -300,6 +336,11 @@ class TradingBot:
                 f"💰 Balance:   ${balance:,.2f}\n"
                 f"📈 Equity:    ${equity:,.2f}\n"
                 f"📊 Day P&L:   ${day_pnl:+.2f}  (float: ${floating:+.2f})\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"{week_icon} **Weekly Target: $3,000**\n"
+                f"   [{bar}] {week_progress_pct:.0f}%\n"
+                f"   Earned: ${weekly_pnl:+.2f}  |  Need: ${remaining_to_target:+.2f}\n"
+                f"   Trades: {week_wr} W/L this week\n"
                 f"━━━━━━━━━━━━━━━━━━━━\n"
                 f"📡 Signal Funnel (today)\n"
                 f"   Fills:       {filled}\n"
