@@ -953,7 +953,14 @@ class TradingBot:
             )
             
             result_status = "SKIPPED"
-            required_conf = 0.92 if is_sniper_mode else 0.88
+            # [S9-PRECISION] Thresholds recalibrated for the new detection engine.
+            # The precision upgrades (1.0 ATR displacement, swing-based sweep, 
+            # in-zone OB retest, 1.5x volume, 100-bar PD) mean scores are earned
+            # more rigorously. A 0.80 under the new engine is equivalent to or
+            # better than 0.88 under the old loose detections.
+            # Standard: 0.80 (requires sweep+disp+OB+PD at minimum)
+            # Sniper:   0.90 (requires near-full confluence)
+            required_conf = 0.90 if is_sniper_mode else 0.80
 
             if analysis.signal != "NEUTRAL":
                  is_nano = "NANO" in analysis.signal
@@ -1173,8 +1180,10 @@ class TradingBot:
                 margin_mult     = 0.5 if (margin_level > 0.0 and margin_level < 500.0) else 1.0
                 reduction_mult  = 0.5 if self._risk_reduction_mode else 1.0
 
-                # ICT confidence scaling: 88% = base, 99% = +25% more risk
-                conf_scale      = (analysis.confidence - 0.88) / (0.99 - 0.88)
+                # Confidence scaling: 80% = base risk, 99% = +25% more risk
+                # Anchored to new standard threshold (0.80) so the full scaling
+                # range applies across genuine signals, not a compressed 0.88-0.99 band
+                conf_scale      = (analysis.confidence - 0.80) / (0.99 - 0.80)
                 conf_scale      = max(0.0, min(1.0, conf_scale))
                 base_risk_pct   = kelly_risk * (1.0 + 0.25 * conf_scale)
 
