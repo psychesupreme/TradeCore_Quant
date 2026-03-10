@@ -835,7 +835,13 @@ class TradingBot:
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
                 
-                scale_key = f"{symbol}_{open_price}_{pos['type']}_{ticket}"
+                # [BUG-39 FIX] scale_key must NOT include the ticket.
+                # After a partial close, MT5 can issue a new ticket to the residual
+                # position. If the key included the ticket, scaled_positions would
+                # miss the new key and scale-out would fire a second time.
+                # symbol + open_price + type uniquely identifies a position intent
+                # and is stable across partial fills and ticket reassignments.
+                scale_key = f"{symbol}_{open_price}_{pos['type']}"
                 is_ready_to_scale = False
                 
                 if ("XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol) and profit_dist > 2.0: 
