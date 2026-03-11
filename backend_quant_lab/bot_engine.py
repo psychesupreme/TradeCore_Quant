@@ -834,7 +834,27 @@ class TradingBot:
                 
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
-                
+
+                # [S12-P1A] Dynamic 1:1 RR trigger — derived from the position's
+                # actual SL distance, not a fixed pip value.
+                # sl_distance = |open_price - sl|. Scale-out fires when
+                # profit_dist ≥ sl_distance (true 1:1 RR), not at an arbitrary
+                # 2-pip / 2pt threshold that may be well below 1R.
+                # If SL is missing/zero (shouldn't happen post-fix but defensive),
+                # fall back to the previous asset-class hard-coded values.
+                sl_dist_dynamic = abs(open_price - current_sl) if current_sl and current_sl != 0.0 else 0.0
+
+                # Fallback hard-coded floors (only used when SL data unavailable)
+                if sl_dist_dynamic <= 0:
+                    if   "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
+                        sl_dist_dynamic = 2.0
+                    elif "BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol or "Germany" in symbol:
+                        sl_dist_dynamic = 50.0
+                    elif "JPY" in symbol:
+                        sl_dist_dynamic = 0.200
+                    else:
+                        sl_dist_dynamic = 0.0050  # 5-pip floor for standard FX
+
                 # [BUG-39 FIX] scale_key must NOT include the ticket.
                 # After a partial close, MT5 can issue a new ticket to the residual
                 # position. If the key included the ticket, scaled_positions would
@@ -842,16 +862,7 @@ class TradingBot:
                 # symbol + open_price + type uniquely identifies a position intent
                 # and is stable across partial fills and ticket reassignments.
                 scale_key = f"{symbol}_{open_price}_{pos['type']}"
-                is_ready_to_scale = False
-                
-                if ("XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol) and profit_dist > 2.0: 
-                    is_ready_to_scale = True
-                elif "JPY" in symbol and profit_dist > 0.200: 
-                    is_ready_to_scale = True
-                elif ("BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol or "Germany" in symbol) and profit_dist > 50.0: 
-                    is_ready_to_scale = True
-                elif "XAU" not in symbol and "XAG" not in symbol and "Oil" not in symbol and "NGAS" not in symbol and "JPY" not in symbol and "BTC" not in symbol and "ETH" not in symbol and "US SP 500" not in symbol and "US Tech 100" not in symbol and "Germany" not in symbol and profit_dist > 0.0020: 
-                    is_ready_to_scale = True
+                is_ready_to_scale = profit_dist >= sl_dist_dynamic  # true 1:1 RR
 
                 if is_ready_to_scale and scale_key not in self.scaled_positions:
                     half_vol = current_vol / 2.0
@@ -878,29 +889,15 @@ class TradingBot:
                         lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                         
                 else:
-                    if "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
-                        if profit_dist > 5.0:       
-                            lock_price = open_price + (profit_dist * 0.70) if is_buy else open_price - (profit_dist * 0.70)
-                        elif profit_dist > 2.0:     
-                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
-                            
-                    elif "BTC" in symbol or "ETH" in symbol or "US SP 500" in symbol or "US Tech 100" in symbol or "Germany" in symbol:
-                        if profit_dist > 100.0:
-                            lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
-                        elif profit_dist > 50.0:
-                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
-                        
-                    elif "JPY" in symbol:
-                        if profit_dist > 0.400:    
-                            lock_price = open_price + (profit_dist * 0.75) if is_buy else open_price - (profit_dist * 0.75)
-                        elif profit_dist > 0.200:  
-                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
-                        
-                    else: 
-                        if profit_dist > 0.0040:    
-                            lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
-                        elif profit_dist > 0.0020:  
-                            lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
+                    # [S12-P1A] Trail triggers also use 1×SL and 2×SL distance,
+                    # not fixed pip values. This makes the trail proportional to
+                    # the original risk: lock 50% profit at 1R, lock 80% at 2R.
+                    one_r  = sl_dist_dynamic
+                    two_r  = sl_dist_dynamic * 2.0
+                    if profit_dist > two_r:
+                        lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
+                    elif profit_dist > one_r:
+                        lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                 
                 if lock_price == 0: 
                     continue
@@ -1085,6 +1082,13 @@ class TradingBot:
                 min_buffer = 10.0 if "BTC" in symbol else 2.0 if "ETH" in symbol else 0.50 if ("XAU" in symbol or "Oil" in symbol or "NGAS" in symbol) else 0.10 if "JPY" in symbol else 0.0010
                 volatility_buffer = max(structure_range, min_buffer)
 
+                # [S12] ATR-based buffer for Gold/Silver — min_buffer(0.50) is too
+                # small: Gold M15 ATR is 5-25pt, so SL from a 0.50 buffer fails the
+                # 1.5pt guard every time. Use 0.5×ATR as Gold's volatility_buffer.
+                if "XAU" in symbol or "XAG" in symbol:
+                    atr_val = df['atr'].iloc[-1] if 'atr' in df.columns else volatility_buffer
+                    volatility_buffer = max(atr_val * 0.5, volatility_buffer)
+
                 magic_number = 510001 if is_nano else 510000
 
                 # ==========================================
@@ -1095,11 +1099,16 @@ class TradingBot:
                 ceil_sl = 0.150 if "JPY" in symbol else 0.00150   
                 
                 dynamic_nano_sl = max(floor_sl, min(base_nano_sl, ceil_sl))
-                # [OPT-3] NANO TP ratio upgraded from 1.5 to 2.0.
-                # At 60% win rate, 1.5:1 barely breaks even (EV = 0.60).
-                # At 2.0:1 and current 71% WR: EV = 0.71×2.0 − 0.29 = +1.13.
-                # Even at 50% WR (worst case), 2.0:1 gives EV = +0.5 vs 0.0 at 1.5:1.
                 dynamic_nano_tp = dynamic_nano_sl * 2.0
+
+                # ── Pull structural price levels from analyst conditions ──
+                ict_cond     = getattr(analysis, 'ict_conditions', {}) or {}
+                ob_entry     = ict_cond.get('ob_entry_price')    # OB body midpoint
+                ob_zone_low  = ict_cond.get('ob_zone_low')       # OB full zone low
+                ob_zone_high = ict_cond.get('ob_zone_high')      # OB full zone high
+                swing_sl_ref = ict_cond.get('swing_sl_ref')      # structural swept level
+                sl_atr_buf   = ict_cond.get('sl_atr_buffer', volatility_buffer * 0.1)
+                tp_target    = ict_cond.get('tp_target_level')   # asian H/L or session target
 
                 if is_buy:
                     if is_nano:
@@ -1109,9 +1118,52 @@ class TradingBot:
                         tp_price = tick.ask + dynamic_nano_tp
                     else:
                         action = "BUY_LIMIT"
-                        raw_price = df.iloc[-1]['low']
-                        sl_price = df.iloc[-3]['low'] - (volatility_buffer * 0.1)
-                        tp_price = local_high + (volatility_buffer * 0.2)
+                        # [S12-P0A] Entry: use OB body_low (institutional value zone).
+                        # If no OB detected, fall back to ob_zone_low, then to
+                        # the forming candle's low as last resort.
+                        raw_price = ob_entry or ob_zone_low or df.iloc[-2]['low']
+
+                        # [S12-P0B] SL: place below the swept swing low + ATR buffer.
+                        # The swept level IS the liquidity that was taken — SL beneath
+                        # it means the trade is invalidated only if that hunt was a fake.
+                        # Fall back to df.iloc[-3]['low'] if no structural reference.
+                        if swing_sl_ref is not None:
+                            sl_price = swing_sl_ref - sl_atr_buf
+                        else:
+                            sl_price = df.iloc[-3]['low'] - (volatility_buffer * 0.1)
+
+                        # [BUG-40 FIX] Enforce minimum SL distance from entry price.
+                        # Root cause: when ob_entry is None, raw_price falls back to
+                        # df.iloc[-2]['low'] which is typically JUST ABOVE swing_sl_ref.
+                        # This makes sl_distance ≈ sl_atr_buf (~1-2 pips) — far below
+                        # the 5-pip SL guard. Fix: expand the SL outward to the asset's
+                        # minimum guard distance from entry, preserving structural
+                        # placement when it's already far enough.
+                        # Evidence: EURGBP sl_dist=0.00023, GBPUSD=0.00003, NZDUSD=0.00019
+                        # 20% buffer above min prevents float precision boundary failure
+                        # (0.86460 - 0.0005 yields 0.000499999... in IEEE 754).
+                        _buy_min_sl_guard = (100.0  if "BTC"     in symbol else
+                                             5.0    if "ETH"     in symbol else
+                                             1.5    if "XAU"     in symbol else
+                                             0.10   if "XAG"     in symbol else
+                                             0.50   if "Oil"     in symbol else  # BUG-43: was 0.10 (too tight for Oil volatility)
+                                             0.05   if "NGAS"    in symbol else
+                                             1.0    if "SP 500"  in symbol else
+                                             2.0    if ("Tech 100" in symbol or "Germany" in symbol) else
+                                             0.10   if "JPY"     in symbol else
+                                             0.0005)
+                        _min_sl_from_entry_buy = raw_price - (_buy_min_sl_guard * 1.20)
+                        if sl_price > _min_sl_from_entry_buy:
+                            sl_price = _min_sl_from_entry_buy
+
+                        # [S12-P1B] TP: target the Asian High (opposite liquidity pool).
+                        # For a bullish manipulation (swept SSL), smart money now
+                        # distributes toward BSL = Asian High. Use 30-bar lookback high
+                        # as backup if Asian range is not available.
+                        if tp_target:
+                            tp_price = tp_target
+                        else:
+                            tp_price = df.tail(30)['high'].max() + (volatility_buffer * 0.1)
                 else:
                     if is_nano:
                         action = "SELL_MARKET"
@@ -1120,9 +1172,38 @@ class TradingBot:
                         tp_price = tick.bid - dynamic_nano_tp
                     else:
                         action = "SELL_LIMIT"
-                        raw_price = df.iloc[-1]['high']
-                        sl_price = df.iloc[-3]['high'] + (volatility_buffer * 0.1)
-                        tp_price = local_low - (volatility_buffer * 0.2)
+                        # [S12-P0A] Entry: use OB body_high for SELL (institutional supply zone).
+                        raw_price = ob_entry or ob_zone_high or df.iloc[-2]['high']
+
+                        # [S12-P0B] SL: place above the swept swing high + ATR buffer.
+                        if swing_sl_ref is not None:
+                            sl_price = swing_sl_ref + sl_atr_buf
+                        else:
+                            sl_price = df.iloc[-3]['high'] + (volatility_buffer * 0.1)
+
+                        # [BUG-40 FIX] Mirror of BUY fix — enforce min SL distance from
+                        # SELL entry. Structural SL (above swing high) can be within
+                        # 1-2 pips of the fallback entry (df.iloc[-2]['high']).
+                        # 20% buffer above min prevents float precision boundary failure.
+                        _sell_min_sl_guard = (100.0  if "BTC"     in symbol else
+                                              5.0    if "ETH"     in symbol else
+                                              1.5    if "XAU"     in symbol else
+                                              0.10   if "XAG"     in symbol else
+                                              0.50   if "Oil"     in symbol else  # BUG-43: was 0.10
+                                              0.05   if "NGAS"    in symbol else
+                                              1.0    if "SP 500"  in symbol else
+                                              2.0    if ("Tech 100" in symbol or "Germany" in symbol) else
+                                              0.10   if "JPY"     in symbol else
+                                              0.0005)
+                        _min_sl_from_entry_sell = raw_price + (_sell_min_sl_guard * 1.20)
+                        if sl_price < _min_sl_from_entry_sell:
+                            sl_price = _min_sl_from_entry_sell
+
+                        # [S12-P1B] TP: target Asian Low (swept BSL → distribute toward SSL).
+                        if tp_target:
+                            tp_price = tp_target
+                        else:
+                            tp_price = df.tail(30)['low'].min() - (volatility_buffer * 0.1)
                     
                 price = self.gateway.normalize_price(symbol, raw_price)
                 sl = self.gateway.normalize_price(symbol, sl_price) 
@@ -1164,6 +1245,41 @@ class TradingBot:
 
                 sl_distance = abs(price - sl)
 
+                # [BUG-41 FIX] SL-to-current-price stops_level guard.
+                # MT5 "Invalid stops" happens when the SL is too close to the
+                # CURRENT market price — not just the limit order price. The
+                # existing guard only checks |entry - sl|. But if the market has
+                # moved toward sl since the signal fired (before order submission),
+                # MT5 rejects with "Invalid stops" even though |entry - sl| passes.
+                # Fix: also enforce |current_price - sl| >= broker stops_minimum.
+                # Evidence: USDJPY 99%, USDCHF 99%, XAUUSD 92% all rejected at 17:00.
+                if not is_nano:
+                    try:
+                        _sym_info_41 = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
+                        if _sym_info_41:
+                            _stops_pt = getattr(_sym_info_41, 'stops_level', 0) * _sym_info_41.point
+                            _min_stop_dist = _stops_pt + (_sym_info_41.point * 3)   # 3pt buffer
+                            if is_buy:
+                                _sl_to_current = abs(tick.bid - sl)
+                            else:
+                                _sl_to_current = abs(tick.ask - sl)
+                            if _sl_to_current < _min_stop_dist and _min_stop_dist > 0:
+                                # SL would be rejected by MT5 — expand it outward
+                                if is_buy:
+                                    sl = self.gateway.normalize_price(
+                                        symbol, tick.bid - _min_stop_dist)
+                                else:
+                                    sl = self.gateway.normalize_price(
+                                        symbol, tick.ask + _min_stop_dist)
+                                sl_distance = abs(price - sl)
+                                self.log_info(
+                                    f"ℹ️ SL expanded [{symbol}]: current-price stops_level "
+                                    f"check. SL adjusted to {sl:.5f} (dist {_sl_to_current:.5f} "
+                                    f"→ {_min_stop_dist:.5f})"
+                                )
+                    except Exception:
+                        pass   # Non-fatal: original SL used if MT5 info unavailable
+
                 # [BUG-35 FIX] Minimum SL distance guard
                 # If SL is too tight, the lot formula produces dangerously large lots.
                 # SL MINIMUM GUARD — prevents execution when SL is too tight to
@@ -1181,8 +1297,11 @@ class TradingBot:
                     elif "XAG" in symbol:
                         min_sl_guard = 0.10
                     elif "Oil" in symbol:
-                        # spec stops_level=50, tick=0.001 → broker min=0.05; use 0.10
-                        min_sl_guard = 0.10
+                        # spec stops_level=50, tick=0.001 → broker min=0.05.
+                        # [BUG-43] Oil min guard raised from 0.10 to 0.50 to ensure
+                        # meaningful SL with corrected ×100 lot formula.
+                        # 0.50 SL × 100 = $50/lot → ~1 lot at $9k account ✓
+                        min_sl_guard = 0.50
                     elif "NGAS" in symbol:
                         # spec stops_level=5, tick=0.001 → broker min=0.005; use 0.01
                         min_sl_guard = 0.01
@@ -1262,21 +1381,24 @@ class TradingBot:
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "Oil" in symbol:
-                    # US Oil (Deriv): contract_size=1, tick_size=0.001, tick_value=$0.001.
-                    # Tick_value/tick_size = 1.0 → capital_per_lot = sl_distance × 1.
+                    # US Oil (Deriv): tick_size=0.001, tick_value=$0.001, contract_size=100.
+                    # A $1 price move on 1 lot = (1/0.001) × $0.001 × 100 = $100 P&L.
+                    # [BUG-43 FIX] capital_per_lot = sl_distance × 100.
+                    # Old formula (* 1.0) produced 860 lots on 2026-03-11 — capped at 91, still fatal.
+                    # Correct: 0.069 × 100 = $6.9/lot → ~8.5 lots at $9k account ✓
                     # Verified: Assets_specification.xlsx, "US Oil" column.
-                    # min_volume=1 (must be integer lot), vol_step=1.
+                    # min_volume=1 (integer lots only), vol_step=1.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 1.0
+                    capital_per_lot = sl_distance * 100.0  # BUG-43 fix: was * 1.0 (860 lots on 2026-03-11)
                     min_lot  = 1.0     # spec: minimal volume = 1 (not 0.1!)
                     vol_step = 1.0     # spec: volume step = 1 (integer lots only)
                 elif "NGAS" in symbol:
                     # NGAS (Deriv): contract_size=10000, tick_size=0.001, tick_value=$0.001.
-                    # tick_value/tick_size = 1.0 → capital_per_lot = sl_distance × 1.
-                    # Verified: Assets_specification.xlsx, "NGAS" column.
+                    # [BUG-42 FIX] capital_per_lot = (sl/tick_size)*tick_value*contract_size
+                    #   = (sl/0.001)*0.001*10000 = sl*10000. Old formula (*1.0) was wrong
                     # HARD max: spec maximal volume = 5 lots (binding constraint).
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 1.0
+                    capital_per_lot = sl_distance * 10000.0  # BUG-42 fix: was * 1.0 (5526 lots on 2026-03-11)
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "SP 500" in symbol:
@@ -1332,8 +1454,11 @@ class TradingBot:
                 elif "XAU" in symbol or "XAG" in symbol:
                     max_lot = 2.0
                 elif "Oil" in symbol:
-                    # spec max=1000; internal safe cap scales with account
-                    max_lot = max(1.0, min(100, round(balance / 100, 0)))  # ~89 at $9k
+                    # [BUG-43 FIX] Previous cap scaled with balance/100 → ~91 lots at $9k.
+                    # With the corrected lot formula (×100 multiplier) 91 lots = ~$750k notional.
+                    # Safe cap: Oil is high-volatility commodity; max 5 lots at current account.
+                    # Scales conservatively: ~1 lot per $1500 balance, hard ceiling at 10.
+                    max_lot = max(1.0, min(10, round(balance / 1500, 0)))   # ~6 at $9k
                 elif "NGAS" in symbol:
                     max_lot = 5.0    # HARD limit from spec: maximal volume = 5
                 elif "SP 500" in symbol:

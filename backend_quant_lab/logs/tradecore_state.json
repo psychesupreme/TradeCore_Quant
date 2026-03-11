@@ -1,5 +1,104 @@
 {
+  "account_id": "32128474",
   "scaled_positions": [
-    "BTCUSD_69219.997_SELL"
-  ]
+    "BTCUSD_69219.997_SELL",
+    "XAUUSD_5175.1_BUY"
+  ],
+  "last_logged_signal": {
+    "EURUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "GBPUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "USDJPY": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "USDCAD": [
+      "SELL_MICRO",
+      0.91,
+      "ATTEMPTED"
+    ],
+    "USDCHF": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "AUDUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "NZDUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "EURJPY": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "GBPJPY": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "EURGBP": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "AUDJPY": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "XAUUSD": [
+      "BUY_MICRO",
+      0.99,
+      "ATTEMPTED"
+    ],
+    "XAGUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "US Oil": [
+      "BUY",
+      0.91,
+      "ATTEMPTED"
+    ],
+    "NGAS": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "BTCUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "US SP 500": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "US Tech 100": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "Germany 40": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ]
+  }
 }

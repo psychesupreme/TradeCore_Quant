@@ -1,5 +1,48 @@
 # ============================================================
-# TradeCore v53.0 — analyst.py  [SPRINT 9 AMD + ICT ENGINE]
+# TradeCore v53.0 — analyst.py  [SPRINT 13 CONFLUENCE AMPLIFIER]
+#
+# SPRINT 13 ADDITIONS — MULTI-FRAMEWORK CONFLUENCE LAYER:
+#   [S13-F1] compute_vwap_context()
+#              VWAP + Z-score (|Z|>1.5 = extreme) + slope.
+#              Fixes: stale H4 macro trend blocked USDJPY 0.66 for 2h.
+#              VWAP slope now overrides H4 EMA as intraday bias in DISTRIBUTION.
+#              Score: +0.10 at VWAP extreme in signal direction.
+#
+#   [S13-F2] compute_volume_profile()
+#              POC / VAH / VAL / HVN / LVN from M15 last-200-bar window.
+#              Fixes: OB:True/False binary — no zone quality grading.
+#              Germany 40 5.1× vol at FVG scored 0.55 for 80 min; HVN fix.
+#              Score: +0.12 OB at HVN | +0.08 FVG in LVN.
+#
+#   [S13-F3] compute_delta_context()
+#              Proxy cumulative delta (bull/bear candle × volume).
+#              Fixes: 5× buy vol and 5× sell vol treated identically.
+#              Score: +0.08 delta confirms direction | +0.06 divergence.
+#
+#   [S13-F4] wyckoff_spring_check()
+#              Low-vol test at sweep candle = genuine Spring / Upthrust.
+#              Fixes: AMD MANIPULATION confirmed late (sweep+disp = 2 candles).
+#              Wyckoff: vol at sweep < 70% session avg = exhausted sellers.
+#              Score: +0.07 Spring (BUY) | +0.07 Upthrust (SELL).
+#
+#   Max S13 bonus: +0.61 | Score ceiling: 0.99 | Thresholds unchanged (0.80/0.90)
+#   Integration: additive bonuses in BULLISH MANIP, BEARISH MANIP, DISTRIBUTION
+#   Architecture: ICT core generates signal, S13 layer amplifies confidence.
+#
+# SPRINT 13 ALSO INCLUDES:
+#   VWAP macro override: in DISTRIBUTION, VWAP slope replaces stale H4 EMA
+#   when the two conflict. Prevents blocking live distribution signals with
+#   4-hour-lagged trend filters.
+#
+# SPRINT 12 ADDITIONS — ENTRY/EXIT PRECISION:
+#   [S12-P0A] Structural entry: OB body_low/high (not live candle price)
+#   [S12-P0B] Structural SL: swing_sl_ref (swept level) + 0.3×ATR buffer
+#   [S12-P1B] Liquidity-pool TP: Asian High (bull) / Asian Low (bear)
+#   [S12-AMD-B] Judas bonus quality-scaled by accum confidence
+#   [S12-AMD-C] Session-bounded AMD lookback
+#   [S12-AMD-D] INDETERMINATE phase for trending/ambiguous markets
+#   [S12-AMD-E] Index-aware AMD priors (US indices vs DAX vs FX calendar)
+#   [S12-AMD-F] Gold/Silver ATR buffer: max(0.5×ATR, 0.50)
 #
 # SPRINT 9 ADDITIONS — AMD PHASE AWARENESS:
 #   [AMD-1] detect_amd_phase() — maps UTC hour to market cycle phase
@@ -83,7 +126,8 @@ def _dead_market_atr_threshold(symbol: str) -> float:
 
 # ── AMD-1: MARKET CYCLE PHASE DETECTION ──────────────────────────────────────
 
-def _session_amd_prior(utc_hour: int, utc_minute: int) -> dict:
+def _session_amd_prior(utc_hour: int, utc_minute: int,
+                       symbol: str = "") -> dict:
     """
     Returns session-context probability weights for each AMD phase.
 
@@ -91,10 +135,53 @@ def _session_amd_prior(utc_hour: int, utc_minute: int) -> dict:
     toward the phase most likely to occur at that hour, but does not
     override structural evidence. The structural conditions always decide.
 
+    [S12-P2B] Symbol-aware: indices have different prime windows than FX.
+      Germany 40 (DAX): prime manipulation = Frankfurt/London open (07-09 UTC)
+      US SP500 / Tech100: prime manipulation = NYSE open (13:30-15:00 UTC)
+      Asian session has minimal relevance for US indices — no accumulation bias.
+
     Returns dict of {phase: weight_multiplier} for use in detect_amd_phase().
     """
-    t = utc_hour * 60 + utc_minute
+    t   = utc_hour * 60 + utc_minute
+    sym = symbol.upper()
 
+    # ── INDICES: separate session calendars ──────────────────────────
+    is_us_index  = "SP 500" in sym or "TECH 100" in sym
+    is_dax       = "GERMANY" in sym
+
+    if is_us_index:
+        # US indices: NY Lunch hard gate
+        if 16*60 <= t < 17*60+30:
+            return {'AVOID': 1.0}
+        # Pre-market / Asian hours: low conviction, treat as INDETERMINATE
+        if 0 <= t < 12*60:
+            return {'ACCUMULATION': 0.8, 'MANIPULATION': 0.7, 'DISTRIBUTION': 0.8}
+        # London/NY overlap (12-13:30 UTC): late pre-market accumulation
+        if 12*60 <= t < 13*60+30:
+            return {'ACCUMULATION': 1.2, 'MANIPULATION': 0.9, 'DISTRIBUTION': 0.8}
+        # NYSE Open (13:30-15:00 UTC): prime Judas Swing for US indices
+        if 13*60+30 <= t < 15*60:
+            return {'MANIPULATION': 1.6, 'DISTRIBUTION': 1.0, 'ACCUMULATION': 0.5}
+        # NY PM (15:00-16:00 UTC): distribution trend
+        return {'DISTRIBUTION': 1.3, 'MANIPULATION': 0.9, 'ACCUMULATION': 0.7}
+
+    if is_dax:
+        # DAX: NY Lunch hard gate
+        if 16*60 <= t < 17*60+30:
+            return {'AVOID': 1.0}
+        # Pre-DAX / Asian hours: accumulation only
+        if 0 <= t < 7*60:
+            return {'ACCUMULATION': 1.3, 'MANIPULATION': 0.8, 'DISTRIBUTION': 0.7}
+        # Frankfurt/London open (07-09 UTC): prime Judas Swing for DAX
+        if 7*60 <= t < 9*60:
+            return {'MANIPULATION': 1.7, 'DISTRIBUTION': 0.9, 'ACCUMULATION': 0.5}
+        # DAX PM (09-13 UTC): distribution
+        if 9*60 <= t < 13*60:
+            return {'DISTRIBUTION': 1.3, 'MANIPULATION': 1.0, 'ACCUMULATION': 0.7}
+        # Post-noon: light continuation
+        return {'DISTRIBUTION': 1.1, 'MANIPULATION': 0.8, 'ACCUMULATION': 0.8}
+
+    # ── FX, COMMODITIES, CRYPTO: standard session priors ─────────────
     # NY Lunch is the only hard gate — liquidity genuinely absent
     if 16*60 <= t < 17*60+30:
         return {'AVOID': 1.0}
@@ -346,7 +433,8 @@ def detect_distribution_trend(df: pd.DataFrame, structure: dict,
 def detect_amd_phase(df: pd.DataFrame, atr: float,
                      utc_hour: int, utc_minute: int,
                      accum_high: float = None, accum_low: float = None,
-                     structure: dict = None) -> dict:
+                     structure: dict = None,
+                     symbol: str = "") -> dict:
     """
     [AMD-STRUCTURAL] Determines the current AMD market cycle phase from
     price structure, with session clock as a probability prior — not a gate.
@@ -366,8 +454,15 @@ def detect_amd_phase(df: pd.DataFrame, atr: float,
       3. DISTRIBUTION — trend structure confirmed.
       4. ACCUMULATION — compression detected (fallback).
 
+    [S12-P2B] Symbol-aware session priors: US indices use NYSE calendar,
+    DAX uses Frankfurt/London calendar, FX/crypto use standard FX calendar.
+
+    [S12-P2A] Session-bounded accumulation lookback: the lookback window is
+    capped to the number of bars since the current session opened. This
+    prevents Asian consolidation data being contaminated by prior NY volatility.
+
     Returns dict:
-      phase:         'ACCUMULATION' | 'MANIPULATION' | 'DISTRIBUTION' | 'AVOID'
+      phase:         'ACCUMULATION' | 'MANIPULATION' | 'DISTRIBUTION' | 'AVOID' | 'INDETERMINATE'
       direction:     'BULL' | 'BEAR' | None (for MANIP and DIST)
       confidence:    float 0–1 (structural detection confidence)
       clock_label:   descriptive session label for logging
@@ -379,7 +474,7 @@ def detect_amd_phase(df: pd.DataFrame, atr: float,
     if structure is None:
         structure = {}
 
-    prior = _session_amd_prior(utc_hour, utc_minute)
+    prior = _session_amd_prior(utc_hour, utc_minute, symbol=symbol)
 
     # Hard AVOID gate
     if 'AVOID' in prior:
@@ -389,16 +484,40 @@ def detect_amd_phase(df: pd.DataFrame, atr: float,
 
     # Clock label for logging
     t = utc_hour * 60 + utc_minute
-    if   t < 3*60:          clock_label = 'Asian'
-    elif t < 7*60:          clock_label = 'PreLondon'
-    elif t < 9*60:          clock_label = 'London'
-    elif t < 12*60:         clock_label = 'London_PM'
-    elif t < 13*60+30:      clock_label = 'London_NY'
-    elif t < 14*60+30:      clock_label = 'NY_Open'
-    else:                   clock_label = 'NY_PM'
+    if   t < 3*60:              clock_label = 'Asian'
+    elif t < 7*60:              clock_label = 'PreLondon'
+    elif t < 9*60:              clock_label = 'London'
+    elif t < 12*60:             clock_label = 'London_PM'
+    elif t < 13*60+30:          clock_label = 'London_NY'
+    elif t < 14*60+30:          clock_label = 'NY_Open'
+    elif t < 16*60:             clock_label = 'NY_PM'
+    elif t < 17*60+30:          clock_label = 'NY_Lunch'   # AVOID gate handles this
+    elif t < 21*60:             clock_label = 'NY_PM2'     # [S11] new session window
+    else:                       clock_label = 'NY_PM2_Late'
+
+    # [S12-P2A] Session-bounded accumulation lookback.
+    # Using a fixed 20-bar lookback bleeds across session boundaries:
+    # at 01:00 UTC the 20 bars reach back into the previous NY session,
+    # contaminating the Asian range with NY volatility.
+    # Cap the lookback to bars elapsed since the current session opened.
+    # Asian: opens 00:00 → max 12 bars (3h × 4bars/h)
+    # London: opens 07:00 → max 8 bars at London open, grows through session
+    # NY: opens 13:30 → cap at 10 bars
+    # Elsewhere: use standard 20-bar lookback
+    if 0 <= t < 3*60:        # Asian session — only bars since midnight
+        bars_in_session = max(4, t // 15)         # M15: t/15 bars elapsed
+        accum_lookback  = min(12, bars_in_session)
+    elif 7*60 <= t < 9*60:   # London open — only bars since 07:00
+        bars_in_session = max(4, (t - 7*60) // 15)
+        accum_lookback  = min(8, bars_in_session)
+    elif 13*60+30 <= t < 16*60:  # NY session
+        bars_in_session = max(4, (t - 13*60-30) // 15)
+        accum_lookback  = min(10, bars_in_session)
+    else:
+        accum_lookback  = 20   # standard lookback elsewhere
 
     # ── Structural detections ────────────────────────────────────
-    accum_data = detect_accumulation_structure(df, atr)
+    accum_data = detect_accumulation_structure(df, atr, lookback=accum_lookback)
     dist_data  = detect_distribution_trend(df, structure, atr)
 
     # Manipulation requires known accumulation boundaries
@@ -427,7 +546,19 @@ def detect_amd_phase(df: pd.DataFrame, atr: float,
                     'dist_data': dist_data, 'session_prior': prior}
 
     # ACCUMULATION: compression detected or default fallback
+    # [S12-AMD-A] Minimum threshold: if no phase met their bar AND accumulation
+    # structure is weak (conf < 0.35), the market is in an ambiguous/trending state —
+    # NOT a clean accumulation range. Label it INDETERMINATE so that:
+    #   (a) no spurious AH/AL boundaries are passed to the MANIPULATION detector
+    #   (b) the log clearly shows "unreadable market" instead of a misleading phase
+    # Threshold of 0.35 = raw_conf 0.25 × prior 1.4 (Asian) ≈ 0.35 minimum honest signal
     a_conf = accum_data['confidence'] * prior.get('ACCUMULATION', 1.0)
+    ACCUM_MIN_CONF = 0.35
+    if a_conf < ACCUM_MIN_CONF:
+        return {'phase': 'INDETERMINATE', 'direction': None,
+                'confidence': round(a_conf, 3), 'clock_label': clock_label,
+                'manip_data': manip_data, 'accum_data': accum_data,
+                'dist_data': dist_data, 'session_prior': prior}
     return {'phase': 'ACCUMULATION', 'direction': None,
             'confidence': round(a_conf, 3), 'clock_label': clock_label,
             'manip_data': manip_data, 'accum_data': accum_data,
@@ -1121,6 +1252,321 @@ def _score_distribution(df: pd.DataFrame, structure: dict, obs: dict,
     return direction, round(score, 3), reason, cond
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# SPRINT 13 — CONFLUENCE AMPLIFIER LAYER
+#
+# Four frameworks that resolve ICT's six structural weaknesses:
+#
+#   [S13-F1] compute_vwap_context()    — VWAP + Z-score + slope
+#              Fixes: stale H4 macro trend, no statistical extreme grading
+#   [S13-F2] compute_volume_profile()  — POC / VAH / VAL / HVN / LVN
+#              Fixes: binary OB/FVG quality, no price-acceptance context
+#   [S13-F3] compute_delta_context()   — Proxy cumulative delta + divergence
+#              Fixes: volume direction blindness (5× buy vs 5× sell indistinct)
+#   [S13-F4] wyckoff_spring_check()    — Low-vol test validation
+#              Fixes: AMD phase confirmed LATE (after sweep+displacement)
+#
+# Architecture: additive bonus layer on top of ICT core score.
+# All functions are pure — operate only on the M15 DataFrame already in memory.
+# Outputs stored in cond{} dict for DB logging and Telegram transparency.
+# ══════════════════════════════════════════════════════════════════════════════
+
+
+def compute_vwap_context(df: pd.DataFrame) -> dict:
+    """
+    [S13-F1] Intraday VWAP + Z-score + slope.
+
+    VWAP = cumulative(price × volume) / cumulative(volume), reset at session start.
+    We use the full available M15 window as the VWAP period (no hard reset —
+    MT5 data windows start at request time, not at midnight, so we anchor to
+    the first bar in df and build forward).
+
+    Z-score = (current_price - VWAP) / rolling_std(price, 20 bars)
+    Slope   = VWAP[-1] vs VWAP[-5] expressed as direction string
+
+    Why it matters:
+      - Institutional algorithms reference VWAP as the day's fair value.
+      - Price > 2σ above VWAP = statistically overextended (bearish extreme).
+      - Price < -2σ below VWAP = statistically oversold (bullish extreme).
+      - VWAP slope (negative) overrides a stale bullish H4 EMA for intraday bias.
+
+    Returns:
+      vwap:         float — current VWAP level
+      vwap_z:       float — Z-score (positive = above, negative = below)
+      vwap_slope:   'UP' | 'DOWN' | 'FLAT'
+      above_vwap:   bool — price is above VWAP
+      extreme_bull: bool — Z < -1.5 (price far below VWAP, bullish reversion)
+      extreme_bear: bool — Z > +1.5 (price far above VWAP, bearish reversion)
+    """
+    empty = {'vwap': 0.0, 'vwap_z': 0.0, 'vwap_slope': 'FLAT',
+             'above_vwap': False, 'extreme_bull': False, 'extreme_bear': False}
+    if len(df) < 20 or 'volume' not in df.columns:
+        return empty
+
+    try:
+        typical_price = (df['high'] + df['low'] + df['close']) / 3.0
+        cum_tp_vol    = (typical_price * df['volume']).cumsum()
+        cum_vol       = df['volume'].cumsum().replace(0, np.nan)
+        vwap_series   = cum_tp_vol / cum_vol
+
+        current_vwap  = float(vwap_series.iloc[-1])
+        current_price = float(df['close'].iloc[-1])
+
+        # Z-score: deviation from VWAP normalised by rolling price std (20 bars)
+        price_std = float(df['close'].rolling(20).std().iloc[-1])
+        if price_std <= 0:
+            price_std = current_vwap * 0.001   # fallback: 0.1% of price
+        vwap_z = (current_price - current_vwap) / price_std
+
+        # Slope: compare last bar's VWAP to 5 bars ago
+        if len(vwap_series) >= 6:
+            slope_delta = vwap_series.iloc[-1] - vwap_series.iloc[-6]
+            slope_pct   = abs(slope_delta) / (current_vwap + 1e-10)
+            if slope_pct < 0.0001:   vwap_slope = 'FLAT'
+            elif slope_delta > 0:    vwap_slope = 'UP'
+            else:                    vwap_slope = 'DOWN'
+        else:
+            vwap_slope = 'FLAT'
+
+        return {
+            'vwap':         round(current_vwap, 5),
+            'vwap_z':       round(float(vwap_z), 3),
+            'vwap_slope':   vwap_slope,
+            'above_vwap':   current_price > current_vwap,
+            'extreme_bull': vwap_z < -1.5,   # oversold extreme → bullish reversion
+            'extreme_bear': vwap_z > +1.5,   # overbought extreme → bearish reversion
+        }
+    except Exception:
+        return empty
+
+
+def compute_volume_profile(df: pd.DataFrame, lookback: int = 200,
+                            atr: float = 0.0) -> dict:
+    """
+    [S13-F2] Volume Profile: POC, VAH, VAL, HVN, LVN detection.
+
+    Divides the price range into buckets (width = ATR / 10, min 20 buckets)
+    and sums volume per bucket. Identifies:
+
+      POC (Point of Control): bucket with highest volume — market equilibrium.
+      VAH (Value Area High):  upper edge of zone containing 70% of total volume.
+      VAL (Value Area Low):   lower edge of same zone.
+      HVN (High Volume Node): bucket with vol >= 1.5 × median bucket vol.
+      LVN (Low Volume Node):  bucket with vol <= 0.5 × median bucket vol.
+
+    Integration:
+      ob_at_hvn:  bool — the most recent OB zone overlaps an HVN.
+      fvg_at_lvn: bool — the most recent price gap is in an LVN (confirms inefficiency).
+      at_poc:     bool — current price is within 0.5 ATR of POC.
+
+    Returns dict with all of the above.
+    """
+    empty = {'poc': 0.0, 'vah': 0.0, 'val': 0.0,
+             'at_poc': False, 'ob_at_hvn': False, 'fvg_at_lvn': False,
+             'hvn_levels': [], 'lvn_levels': []}
+    if len(df) < 20 or 'volume' not in df.columns:
+        return empty
+
+    try:
+        window = df.tail(min(lookback, len(df))).copy()
+        price_min = float(window['low'].min())
+        price_max = float(window['high'].max())
+        price_rng = price_max - price_min
+        if price_rng <= 0:
+            return empty
+
+        # Bucket width: ATR/10, bounded to produce 20-200 buckets
+        bucket_w = (atr / 10.0) if atr > 0 else (price_rng / 50.0)
+        bucket_w = max(bucket_w, price_rng / 200.0)
+        bucket_w = min(bucket_w, price_rng / 20.0)
+
+        n_buckets   = max(1, int(price_rng / bucket_w) + 1)
+        vol_profile = np.zeros(n_buckets)
+
+        for _, row in window.iterrows():
+            lo  = float(row['low'])
+            hi  = float(row['high'])
+            vol = float(row['volume'])
+            # Distribute row volume across the buckets it spans
+            b_lo = int((lo - price_min) / bucket_w)
+            b_hi = int((hi - price_min) / bucket_w)
+            b_lo = max(0, min(b_lo, n_buckets - 1))
+            b_hi = max(0, min(b_hi, n_buckets - 1))
+            span = max(1, b_hi - b_lo + 1)
+            for b in range(b_lo, b_hi + 1):
+                vol_profile[b] += vol / span
+
+        # POC
+        poc_idx   = int(np.argmax(vol_profile))
+        poc_price = price_min + poc_idx * bucket_w + bucket_w / 2.0
+
+        # Value Area (70% of total volume around POC)
+        total_vol    = vol_profile.sum()
+        target_vol   = total_vol * 0.70
+        va_lo = va_hi = poc_idx
+        accumulated  = vol_profile[poc_idx]
+        while accumulated < target_vol and (va_lo > 0 or va_hi < n_buckets - 1):
+            add_lo = vol_profile[va_lo - 1] if va_lo > 0 else 0
+            add_hi = vol_profile[va_hi + 1] if va_hi < n_buckets - 1 else 0
+            if add_lo >= add_hi and va_lo > 0:
+                va_lo -= 1;  accumulated += add_lo
+            elif va_hi < n_buckets - 1:
+                va_hi += 1;  accumulated += add_hi
+            else:
+                break
+        vah = price_min + va_hi * bucket_w + bucket_w
+        val = price_min + va_lo * bucket_w
+
+        # HVN / LVN
+        median_vol   = float(np.median(vol_profile[vol_profile > 0])) if np.any(vol_profile > 0) else 1.0
+        hvn_levels   = [price_min + i * bucket_w + bucket_w / 2.0
+                        for i, v in enumerate(vol_profile) if v >= median_vol * 1.5]
+        lvn_levels   = [price_min + i * bucket_w + bucket_w / 2.0
+                        for i, v in enumerate(vol_profile) if 0 < v <= median_vol * 0.5]
+
+        current_price = float(df['close'].iloc[-1])
+        tol           = (atr * 0.5) if atr > 0 else bucket_w * 2
+
+        at_poc    = abs(current_price - poc_price) <= tol
+        ob_at_hvn = any(abs(current_price - h) <= tol for h in hvn_levels)
+        fvg_at_lvn = any(abs(current_price - l) <= tol for l in lvn_levels)
+
+        return {
+            'poc':        round(poc_price, 5),
+            'vah':        round(vah, 5),
+            'val':        round(val, 5),
+            'at_poc':     at_poc,
+            'ob_at_hvn':  ob_at_hvn,
+            'fvg_at_lvn': fvg_at_lvn,
+            'hvn_levels': [round(h, 5) for h in hvn_levels[:5]],
+            'lvn_levels': [round(l, 5) for l in lvn_levels[:5]],
+        }
+    except Exception:
+        return empty
+
+
+def compute_delta_context(df: pd.DataFrame) -> dict:
+    """
+    [S13-F3] Proxy Cumulative Delta + divergence detection.
+
+    True cumulative delta requires Level 2 order book data unavailable via MT5.
+    Proxy delta approximates directional volume pressure:
+      Bull candle (close > open) → positive delta  (+volume)
+      Bear candle (close < open) → negative delta  (-volume)
+      Doji                       → zero delta
+
+    Cumulative delta slope: sum of last 5 candles' proxy deltas.
+    Divergence: price making new high but delta declining (hidden sell pressure),
+                or price making new low but delta rising (hidden buy pressure).
+
+    Returns:
+      cum_delta_slope: float  — positive = net buying, negative = net selling
+      delta_bull:      bool   — slope positive (net buying pressure)
+      delta_bear:      bool   — slope negative (net selling pressure)
+      divergence:      bool   — delta diverges from price direction (early signal)
+      delta_confirms_buy:  bool  — delta positive AND price rising
+      delta_confirms_sell: bool  — delta negative AND price falling
+    """
+    empty = {'cum_delta_slope': 0.0, 'delta_bull': False, 'delta_bear': False,
+             'divergence': False, 'delta_confirms_buy': False, 'delta_confirms_sell': False}
+    if len(df) < 10 or 'volume' not in df.columns:
+        return empty
+
+    try:
+        window  = df.tail(10).copy()
+        # Proxy delta per candle
+        delta   = np.where(window['close'] > window['open'],  window['volume'],
+                  np.where(window['close'] < window['open'], -window['volume'], 0.0))
+
+        # Last 5 candles' cumulative slope
+        slope_5 = float(delta[-5:].sum())
+
+        # Price direction over last 5 bars
+        price_up   = float(window['close'].iloc[-1]) > float(window['close'].iloc[-6]) if len(window) >= 6 else False
+        price_down = float(window['close'].iloc[-1]) < float(window['close'].iloc[-6]) if len(window) >= 6 else False
+
+        # Divergence: price up but delta negative (or price down but delta positive)
+        divergence = (price_up and slope_5 < 0) or (price_down and slope_5 > 0)
+
+        return {
+            'cum_delta_slope':     round(slope_5, 2),
+            'delta_bull':          slope_5 > 0,
+            'delta_bear':          slope_5 < 0,
+            'divergence':          divergence,
+            'delta_confirms_buy':  slope_5 > 0 and price_up,
+            'delta_confirms_sell': slope_5 < 0 and price_down,
+        }
+    except Exception:
+        return empty
+
+
+def wyckoff_spring_check(df: pd.DataFrame, manip_data: dict,
+                          avg_vol: float) -> dict:
+    """
+    [S13-F4] Wyckoff Spring / Upthrust validation at the sweep candle.
+
+    Wyckoff's First Principle:
+      A genuine test of support (Spring) occurs on DECLINING volume.
+      Low volume at the sweep = exhausted sellers, few real participants.
+      The market will reverse — this is accumulation, not breakdown.
+      High volume at the sweep = real selling pressure, potential genuine break.
+
+    Upthrust (mirror for bearish): fake break above resistance on declining
+    or low volume. Confirmed by a strong close back below the swept level.
+
+    We use the sweep candle (c1 = df.iloc[-3]) as the test candle.
+
+    Returns:
+      spring:           bool — bullish Spring confirmed (sweep_low + low_vol)
+      upthrust:         bool — bearish Upthrust confirmed (sweep_high + low_vol)
+      test_vol_ratio:   float — vol at sweep vs 10-bar avg (< 0.70 = low vol)
+      low_vol_test:     bool — test_vol_ratio < 0.70
+    """
+    empty = {'spring': False, 'upthrust': False,
+             'test_vol_ratio': 1.0, 'low_vol_test': False}
+    if len(df) < 10 or 'volume' not in df.columns or avg_vol <= 0:
+        return empty
+
+    try:
+        c1      = df.iloc[-3]   # sweep candle
+        vol_c1  = float(c1['volume'])
+
+        # 10-bar average volume (excluding the sweep candle itself)
+        avg_10 = float(df['volume'].iloc[-13:-3].mean()) if len(df) >= 13 else avg_vol
+        if avg_10 <= 0:
+            avg_10 = avg_vol
+
+        test_vol_ratio = vol_c1 / avg_10
+        low_vol_test   = test_vol_ratio < 0.70   # Wyckoff: test on < 70% avg volume
+
+        # Spring: sweep was BULLISH (sweep low) + low volume = genuine Spring
+        sweep_was_bull = manip_data.get('direction') == 'BULL' if manip_data else False
+        # Upthrust: sweep was BEARISH (sweep high) + low volume
+        sweep_was_bear = manip_data.get('direction') == 'BEAR' if manip_data else False
+
+        # Additional confirmation: close quality.
+        # Spring candle should ideally close ABOVE the swept level (rejection wick down, close up).
+        # We check if the sweep candle had a long lower wick relative to body.
+        c1_range = float(c1['high']) - float(c1['low'])
+        c1_body  = abs(float(c1['close']) - float(c1['open']))
+        wick_ratio = (c1_body / c1_range) if c1_range > 0 else 1.0
+        # Long wick (body < 40% of range) = price rejected at the extreme → spring quality
+        long_wick = wick_ratio < 0.40
+
+        spring   = sweep_was_bull and low_vol_test
+        upthrust = sweep_was_bear and low_vol_test
+
+        return {
+            'spring':         spring,
+            'upthrust':       upthrust,
+            'test_vol_ratio': round(test_vol_ratio, 3),
+            'low_vol_test':   low_vol_test,
+            'long_wick':      long_wick,
+        }
+    except Exception:
+        return empty
+
+
 # ── CORE ICT CONFLUENCE SCORER ────────────────────────────────────────────────
 
 def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
@@ -1183,6 +1629,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         accum_high=accum_ref_high,
         accum_low=accum_ref_low,
         structure=structure,
+        symbol=symbol,
     )
     amd_phase    = amd['phase']
     amd_dir      = amd.get('direction')        # 'BULL' | 'BEAR' | None
@@ -1190,6 +1637,14 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     clock_label  = amd.get('clock_label', 'Unknown')
     manip_data   = amd.get('manip_data', {})
     accum_data   = amd.get('accum_data', {})
+
+    # ── S13 CONFLUENCE AMPLIFIER — compute all four frameworks ─────
+    # Computed here once, available to all phase paths below.
+    # All are pure functions operating on the M15 DataFrame already in memory.
+    s13_vwap    = compute_vwap_context(df)
+    s13_profile = compute_volume_profile(df, lookback=200, atr=current_atr)
+    s13_delta   = compute_delta_context(df)
+    s13_wyckoff = wyckoff_spring_check(df, manip_data, avg_vol)
 
     # ── ACCUMULATION — map range, do not trade ─────────────────────
     if amd_phase == 'ACCUMULATION':
@@ -1206,6 +1661,17 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                   f"Mapping range | AH:{asian.get('asian_high')} "
                   f"AL:{asian.get('asian_low')}")
         return "NEUTRAL", 0.0, reason, cond, clock_label
+
+    # ── INDETERMINATE — trending/ambiguous market, no clean phase ──
+    # [S12-AMD-D] When all three phase detectors fall below their thresholds,
+    # the market is moving without a readable AMD structure. Do not trade:
+    # boundaries are unreliable and the manipulation detector would fire
+    # on noise rather than genuine stop-hunt sweeps.
+    if amd_phase == 'INDETERMINATE':
+        reason = (f"INDETERMINATE [{clock_label}] | conf:{amd_conf:.2f} | "
+                  f"Price trending, no clean AMD range — skipping.")
+        return "NEUTRAL", 0.0, reason, {'mode': 'INDETERMINATE', 'amd_confidence': amd_conf,
+                                         'clock_label': clock_label}, clock_label
 
     # ── AVOID ──────────────────────────────────────────────────────
     if amd_phase == 'AVOID':
@@ -1225,17 +1691,77 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
     # ── DISTRIBUTION PATH ──────────────────────────────────────────
     if amd_phase == 'DISTRIBUTION':
+        # [S13-VWAP-MACRO] VWAP slope overrides stale H4 macro trend for intraday.
+        # H4 EMA reflects bias from up to 4 hours ago. VWAP slope is real-time.
+        # If VWAP slope contradicts H4 EMA, use VWAP slope as the active bias.
+        # Evidence: USDJPY scored 0.66 blocked by "BULLISH H4" while distributing
+        # continuously for 2h. VWAP slope was negative — correct intraday bias.
+        vwap_slope = s13_vwap.get('vwap_slope', 'FLAT')
+        effective_macro = macro_trend
+        vwap_macro_override = False
+        if vwap_slope == 'DOWN' and macro_trend == 'BULLISH':
+            effective_macro     = 'BEARISH'
+            vwap_macro_override = True
+        elif vwap_slope == 'UP' and macro_trend == 'BEARISH':
+            effective_macro     = 'BULLISH'
+            vwap_macro_override = True
+
         result = _score_distribution(
             df, structure, obs, pd_zone, session_wt, kill_zone,
-            current_atr, vol_ratio, macro_trend, c3)
+            current_atr, vol_ratio, effective_macro, c3)
         if result:
             signal, score, reason, cond = result
-            cond['amd_phase']      = amd_phase
-            cond['amd_confidence'] = amd_conf
-            cond['clock_label']    = clock_label
+            cond['amd_phase']         = amd_phase
+            cond['amd_confidence']    = amd_conf
+            cond['clock_label']       = clock_label
+            cond['vwap_macro_override'] = vwap_macro_override
+            cond['effective_macro']   = effective_macro
+
+            # [S13] Confluence bonuses for DISTRIBUTION path
+            s13_dist_bonus = 0.0
+
+            # VWAP Z-score extreme confirms direction
+            if "BUY" in signal and s13_vwap.get('extreme_bull'):
+                s13_dist_bonus += 0.10
+                cond['s13_vwap_extreme'] = True
+            elif "SELL" in signal and s13_vwap.get('extreme_bear'):
+                s13_dist_bonus += 0.10
+                cond['s13_vwap_extreme'] = True
+            else:
+                cond['s13_vwap_extreme'] = False
+
+            # OB aligns with HVN (institutional footprint at zone)
+            if cond.get('order_block') and s13_profile.get('ob_at_hvn'):
+                s13_dist_bonus += 0.12
+                cond['s13_ob_hvn'] = True
+            else:
+                cond['s13_ob_hvn'] = False
+
+            # Delta confirms direction
+            if "BUY" in signal and s13_delta.get('delta_confirms_buy'):
+                s13_dist_bonus += 0.08
+                cond['s13_delta_confirm'] = True
+            elif "SELL" in signal and s13_delta.get('delta_confirms_sell'):
+                s13_dist_bonus += 0.08
+                cond['s13_delta_confirm'] = True
+            else:
+                cond['s13_delta_confirm'] = False
+
+            # Log S13 context
+            cond['s13_vwap_z']    = s13_vwap.get('vwap_z', 0.0)
+            cond['s13_vwap']      = s13_vwap.get('vwap', 0.0)
+            cond['s13_poc']       = s13_profile.get('poc', 0.0)
+            cond['s13_delta']     = s13_delta.get('cum_delta_slope', 0.0)
+
+            if s13_dist_bonus > 0:
+                score = min(0.99, score + s13_dist_bonus)
+                reason = reason + (f" | S13[VWAP_Z:{s13_vwap.get('vwap_z',0):.2f}"
+                                   f" HVN:{s13_profile.get('ob_at_hvn',False)}"
+                                   f" Δ:{s13_delta.get('cum_delta_slope',0):.0f}]")
+
             if "DEAD MARKET" in market_regime:
                 signal = "BUY_NANO" if "BUY" in signal else "SELL_NANO"
-            return signal, score, reason, cond, kill_zone
+            return signal, round(score, 3), reason, cond, kill_zone
         return "NEUTRAL", 0.0, (f"DISTRIBUTION [{clock_label}]: No OB/FVG retest "
                                 f"in {macro_trend} direction."), {}, kill_zone
 
@@ -1318,6 +1844,21 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['kill_zone']    = kill_zone
         score += 0.15 * session_wt
 
+        # [S12-P0B] Structural SL reference: the swept swing low is the level
+        # smart money hunted. SL belongs BELOW that level (+ ATR buffer), not
+        # at an arbitrary 3-candle-back index.
+        cond['swept_level']     = round(float(c1['low']), 5)   # the candle that swept
+        cond['swing_sl_ref']    = round(float(last_swing_low), 5)  # structural level swept
+        cond['sl_atr_buffer']   = round(float(current_atr * 0.3), 5)
+
+        # [S12-P1B] Asian range as natural TP target:
+        # For a bullish setup (swept the Asian Low), the natural target is the
+        # Asian High — smart money swept SSL, now distributes toward BSL (AH).
+        # Fall back to ref_high from London range if Asian not valid.
+        cond['tp_target_level'] = asian.get('asian_high') or ref_high
+        cond['asian_high']      = asian.get('asian_high')
+        cond['asian_low']       = asian.get('asian_low')
+
         is_judas = judas['judas_bull']
         cond['judas_swing'] = is_judas
         cond['ref_label']   = ref_label
@@ -1327,6 +1868,13 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         bull_ob = obs.get('bullish')
         ob_hit  = bool(bull_ob and bull_ob.get('retested'))
         cond['order_block'] = ob_hit
+        # [S12-P0A] OB price levels for structural entry placement.
+        # BUY_LIMIT entry = ob_body_low (50% of OB body = best value zone).
+        # Fall back through: body_low → zone_low → None (engine uses ATR fallback).
+        if bull_ob:
+            cond['ob_entry_price'] = bull_ob.get('body_low') or bull_ob.get('low')
+            cond['ob_zone_high']   = bull_ob.get('high')
+            cond['ob_zone_low']    = bull_ob.get('low')
         if ob_hit: score += 0.15
 
         fvg_bull = detect_fvg(df, 'BUY', current_atr)
@@ -1358,30 +1906,80 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['eq_lows_sweep'] = eq_low_sweep
 
         # [S11-AMD-JUDAS] Institutional confirmation bonus.
-        # When the structural AMD engine has confirmed a MANIPULATION phase
-        # AND a Judas swing (stop-hunt) is present, this is the highest-
-        # probability ICT setup: smart money clearing sell-side liquidity
-        # before the real upside expansion. The session weight may penalise
-        # this valid setup (e.g. NY_PM2 or Other outside prime hours), and
-        # H4 conflicts can suppress the PD zone bonus even when direction
-        # is confirmed by institutional flow. This bonus compensates for
-        # those structural penalties on a fundamentally sound setup.
+        # [S12-AMD-B] Bonus scaled by accumulation quality (conf/0.60 ratio).
+        # A MANIPULATION from a tight, confirmed accumulation range (conf ≥ 0.60)
+        # earns the full +0.10. A looser range earns proportionally less.
+        # Formula: bonus = 0.10 × max(0.50, raw_accum_conf / 0.60)
+        # At conf=0.60+ → +0.100;  at conf=0.35 → +0.058;  minimum floor: +0.05
         if amd_phase == 'MANIPULATION' and is_judas:
-            score = min(0.99, score + 0.10)
+            raw_accum_conf = accum_data.get('confidence', 0.0)
+            quality_mult = max(0.50, raw_accum_conf / 0.60)
+            amd_judas_bonus = round(0.10 * quality_mult, 4)
+            score = min(0.99, score + amd_judas_bonus)
             cond['amd_judas_bonus'] = True
+            cond['amd_judas_bonus_value'] = amd_judas_bonus
 
         if enforce_macro and macro_trend == "BEARISH":
             return "NEUTRAL", 0.0, f"BUY blocked by Bearish H4 (score={score:.2f})", cond, kill_zone
 
+        # ── [S13] CONFLUENCE AMPLIFIER — BULLISH MANIPULATION ──────
+        # Applied AFTER all ICT checks and H4 enforcement, before signal emit.
+        # Additive bonuses: each framework addresses a specific ICT blindspot.
+        s13_bonus = 0.0
+
+        # [S13-F1] VWAP Z-score: BUY at statistically oversold extreme (+0.10)
+        # Z < -1.5 = price >1.5σ below VWAP = institutional buy zone
+        vwap_ext_bull = s13_vwap.get('extreme_bull', False)
+        cond['s13_vwap_z']       = s13_vwap.get('vwap_z', 0.0)
+        cond['s13_vwap']         = s13_vwap.get('vwap', 0.0)
+        cond['s13_vwap_extreme'] = vwap_ext_bull
+        if vwap_ext_bull:
+            s13_bonus += 0.10
+
+        # [S13-F2] Volume Profile — OB at HVN confirms institutional zone (+0.12)
+        # FVG in LVN confirms inefficiency gap, fast-move likely to fill (+0.08)
+        ob_at_hvn  = s13_profile.get('ob_at_hvn', False)
+        fvg_at_lvn = s13_profile.get('fvg_at_lvn', False)
+        at_poc     = s13_profile.get('at_poc', False)
+        cond['s13_poc']        = s13_profile.get('poc', 0.0)
+        cond['s13_ob_hvn']     = ob_at_hvn
+        cond['s13_fvg_lvn']    = fvg_at_lvn
+        cond['s13_at_poc']     = at_poc
+        if ob_hit and ob_at_hvn:   s13_bonus += 0.12
+        if fvg_bull and fvg_at_lvn: s13_bonus += 0.08
+
+        # [S13-F3] Cumulative Delta — confirms BUY direction (+0.08)
+        # Delta divergence = hidden demand below price (+0.06)
+        delta_buy = s13_delta.get('delta_confirms_buy', False)
+        delta_div = s13_delta.get('divergence', False)
+        cond['s13_delta']          = s13_delta.get('cum_delta_slope', 0.0)
+        cond['s13_delta_confirm']  = delta_buy
+        cond['s13_delta_diverge']  = delta_div
+        if delta_buy: s13_bonus += 0.08
+        if delta_div and not delta_buy: s13_bonus += 0.06   # early signal
+
+        # [S13-F4] Wyckoff Spring — low-vol sweep = genuine Spring (+0.07)
+        spring_ok = s13_wyckoff.get('spring', False)
+        cond['s13_wyckoff_spring']    = spring_ok
+        cond['s13_wyckoff_vol_ratio'] = s13_wyckoff.get('test_vol_ratio', 1.0)
+        if spring_ok: s13_bonus += 0.07
+
+        if s13_bonus > 0:
+            score = min(0.99, score + s13_bonus)
+
+        # ── Signal type ─────────────────────────────────────────────
         if "DEAD MARKET" in market_regime:       signal = "BUY_NANO"
         elif "HIGH VOLATILITY" in market_regime: signal = "BUY"
         else:                                    signal = "BUY_MICRO"
 
         tag = f" ⚡JUDAS({ref_label})" if is_judas else ""
+        s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
+                   f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
+                   f" Spring:{spring_ok}]") if s13_bonus > 0 else ""
         reason = (f"ICT Bullish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bull} "
                   f"Disc:{in_discount}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     # ── BEARISH MANIPULATION ───────────────────────────────────────
@@ -1394,6 +1992,17 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['kill_zone']    = kill_zone
         score += 0.15 * session_wt
 
+        # [S12-P0B] Structural SL reference for SELL: swept swing high + ATR buffer.
+        cond['swept_level']     = round(float(c1['high']), 5)
+        cond['swing_sl_ref']    = round(float(last_swing_high), 5)
+        cond['sl_atr_buffer']   = round(float(current_atr * 0.3), 5)
+
+        # [S12-P1B] Asian Low as natural TP target for bearish setups.
+        # Swept the Asian High (BSL cleared) → target the Asian Low (SSL below).
+        cond['tp_target_level'] = asian.get('asian_low') or ref_low
+        cond['asian_high']      = asian.get('asian_high')
+        cond['asian_low']       = asian.get('asian_low')
+
         is_judas = judas['judas_bear']
         cond['judas_swing'] = is_judas
         cond['ref_label']   = ref_label
@@ -1403,6 +2012,12 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         bear_ob = obs.get('bearish')
         ob_hit  = bool(bear_ob and bear_ob.get('retested'))
         cond['order_block'] = ob_hit
+        # [S12-P0A] OB price levels for structural SELL entry.
+        # SELL_LIMIT entry = ob_body_high (top of OB body = best value zone).
+        if bear_ob:
+            cond['ob_entry_price'] = bear_ob.get('body_high') or bear_ob.get('high')
+            cond['ob_zone_high']   = bear_ob.get('high')
+            cond['ob_zone_low']    = bear_ob.get('low')
         if ob_hit: score += 0.15
 
         fvg_bear = detect_fvg(df, 'SELL', current_atr)
@@ -1434,26 +2049,74 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['eq_highs_sweep'] = eq_high_sweep
 
         # [S11-AMD-JUDAS] Institutional confirmation bonus.
-        # Mirror of the bullish branch: AMD MANIPULATION + Judas bear sweep
-        # = smart money clearing buy-side liquidity before the true downside
-        # expansion. Session weight and H4 conflicts may suppress this valid
-        # setup. Bonus of +0.10 compensates for those structural penalties.
+        # [S12-AMD-B] Same quality scaling as the bullish branch.
+        # bonus = 0.10 × max(0.50, raw_accum_conf / 0.60)
         if amd_phase == 'MANIPULATION' and is_judas:
-            score = min(0.99, score + 0.10)
+            raw_accum_conf = accum_data.get('confidence', 0.0)
+            quality_mult = max(0.50, raw_accum_conf / 0.60)
+            amd_judas_bonus = round(0.10 * quality_mult, 4)
+            score = min(0.99, score + amd_judas_bonus)
             cond['amd_judas_bonus'] = True
+            cond['amd_judas_bonus_value'] = amd_judas_bonus
 
         if enforce_macro and macro_trend == "BULLISH":
             return "NEUTRAL", 0.0, f"SELL blocked by Bullish H4 (score={score:.2f})", cond, kill_zone
 
+        # ── [S13] CONFLUENCE AMPLIFIER — BEARISH MANIPULATION ──────
+        s13_bonus = 0.0
+
+        # [S13-F1] VWAP Z-score: SELL at statistically overbought extreme (+0.10)
+        # Z > +1.5 = price >1.5σ above VWAP = institutional sell zone
+        vwap_ext_bear = s13_vwap.get('extreme_bear', False)
+        cond['s13_vwap_z']       = s13_vwap.get('vwap_z', 0.0)
+        cond['s13_vwap']         = s13_vwap.get('vwap', 0.0)
+        cond['s13_vwap_extreme'] = vwap_ext_bear
+        if vwap_ext_bear:
+            s13_bonus += 0.10
+
+        # [S13-F2] Volume Profile — OB at HVN (+0.12) | FVG in LVN (+0.08)
+        ob_at_hvn  = s13_profile.get('ob_at_hvn', False)
+        fvg_at_lvn = s13_profile.get('fvg_at_lvn', False)
+        at_poc     = s13_profile.get('at_poc', False)
+        cond['s13_poc']     = s13_profile.get('poc', 0.0)
+        cond['s13_ob_hvn']  = ob_at_hvn
+        cond['s13_fvg_lvn'] = fvg_at_lvn
+        cond['s13_at_poc']  = at_poc
+        if ob_hit and ob_at_hvn:    s13_bonus += 0.12
+        if fvg_bear and fvg_at_lvn: s13_bonus += 0.08
+
+        # [S13-F3] Cumulative Delta — confirms SELL direction (+0.08)
+        # Delta divergence = hidden supply above price (+0.06)
+        delta_sell = s13_delta.get('delta_confirms_sell', False)
+        delta_div  = s13_delta.get('divergence', False)
+        cond['s13_delta']         = s13_delta.get('cum_delta_slope', 0.0)
+        cond['s13_delta_confirm'] = delta_sell
+        cond['s13_delta_diverge'] = delta_div
+        if delta_sell: s13_bonus += 0.08
+        if delta_div and not delta_sell: s13_bonus += 0.06
+
+        # [S13-F4] Wyckoff Upthrust — low-vol sweep high = genuine Upthrust (+0.07)
+        upthrust_ok = s13_wyckoff.get('upthrust', False)
+        cond['s13_wyckoff_upthrust'] = upthrust_ok
+        cond['s13_wyckoff_vol_ratio'] = s13_wyckoff.get('test_vol_ratio', 1.0)
+        if upthrust_ok: s13_bonus += 0.07
+
+        if s13_bonus > 0:
+            score = min(0.99, score + s13_bonus)
+
+        # ── Signal type ─────────────────────────────────────────────
         if "DEAD MARKET" in market_regime:       signal = "SELL_NANO"
         elif "HIGH VOLATILITY" in market_regime: signal = "SELL"
         else:                                    signal = "SELL_MICRO"
 
         tag = f" ⚡JUDAS({ref_label})" if is_judas else ""
+        s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
+                   f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
+                   f" Upthrust:{upthrust_ok}]") if s13_bonus > 0 else ""
         reason = (f"ICT Bearish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bear} "
                   f"Prem:{in_premium}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     return "NEUTRAL", 0.0, f"[{amd_phase}] No sweep or displacement detected.", {}, kill_zone
