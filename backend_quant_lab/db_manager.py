@@ -138,6 +138,11 @@ class DBManager:
     @staticmethod
     def close_trade(ticket, close_price, close_time, profit,
                     commission=0.0, slippage=0.0):
+        """
+        [BUG-51 FIX] Added 'AND close_time IS NULL' guard.
+        If run_cycle and sync_db both detect the same closed trade in the same
+        window, only the first write succeeds; the second is a safe no-op.
+        """
         conn = get_db_connection()
         c = conn.cursor()
         try:
@@ -151,12 +156,61 @@ class DBManager:
                 UPDATE trades
                 SET close_price=?, close_time=?, profit=?,
                     commission=?, slippage=?, return_pct=?
-                WHERE ticket=?
+                WHERE ticket=? AND close_time IS NULL
             ''', (close_price, close_time, profit,
                   commission, slippage, return_pct, ticket))
             conn.commit()
         except Exception as e:
             print(f"⚠️ DB Error (Trade Close): {e}")
+        finally:
+            conn.close()
+
+    @staticmethod
+    def get_open_trades_detail() -> list:
+        """
+        [BUG-44c / BUG-56] Returns list of dicts for truly-open trades:
+        ticket, symbol, type, open_price. Used by close detection loop in
+        run_cycle() to reconstruct scale_key for scaled_positions cleanup
+        and to log meaningful close events without extra round-trips.
+        """
+        conn = get_db_connection()
+        try:
+            rows = conn.execute("""
+                SELECT ticket, symbol, type, open_price
+                FROM trades
+                WHERE close_time IS NULL AND profit IS NULL
+            """).fetchall()
+            return [{"ticket": int(r[0]), "symbol": r[1],
+                     "type": r[2], "open_price": r[3]} for r in rows]
+        except Exception as e:
+            print(f"⚠️ DB Error (get_open_trades_detail): {e}")
+            return []
+        finally:
+            conn.close()
+
+    @staticmethod
+    def update_signal_outcome(symbol: str, outcome: str, pips_result: float):
+        """
+        [BUG-46 FIX] Populates outcome + pips_result on the most recent FILLED
+        signal for this symbol that has not yet been given an outcome.
+        outcome:     'WIN' | 'LOSS' | 'BREAK_EVEN'
+        pips_result: signed price delta × direction (positive = moved in trade direction)
+        """
+        conn = get_db_connection()
+        c = conn.cursor()
+        try:
+            c.execute('''
+                UPDATE signals SET outcome = ?, pips_result = ?
+                WHERE id = (
+                    SELECT id FROM signals
+                    WHERE symbol = ? AND result = 'FILLED'
+                      AND outcome IS NULL
+                    ORDER BY timestamp DESC LIMIT 1
+                )
+            ''', (outcome, pips_result, symbol))
+            conn.commit()
+        except Exception as e:
+            print(f"⚠️ DB Error (Signal Outcome): {e}")
         finally:
             conn.close()
 
@@ -251,13 +305,17 @@ class DBManager:
     @staticmethod
     def get_open_trade_tickets() -> set:
         """
-        Returns the set of tickets currently recorded as open (close_time IS NULL)
-        in the DB. Used by bot_engine to detect MT5 fills that haven't been saved yet.
+        Returns the set of tickets currently recorded as TRULY OPEN in the DB:
+        - close_time IS NULL  (not yet closed)
+        - profit IS NULL      (not a ghost_cleanup entry, which has profit=0.0)
+        [BUG-44d FIX] Previous query (close_time IS NULL only) returned 138
+        ghost_cleanup entries whose profit=0.0 but no close_time, causing the
+        close detection loop to attempt MT5 history lookups on 138 phantom trades.
         """
         conn = get_db_connection()
         try:
             rows = conn.execute(
-                "SELECT ticket FROM trades WHERE close_time IS NULL"
+                "SELECT ticket FROM trades WHERE close_time IS NULL AND profit IS NULL"
             ).fetchall()
             return {int(r[0]) for r in rows}
         except Exception as e:

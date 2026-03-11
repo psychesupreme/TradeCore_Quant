@@ -635,9 +635,16 @@ class TradingBot:
                 if ticket in self._pending_order_info and ticket not in db_open:
                     info = self._pending_order_info.pop(ticket)
                     try:
-                        open_time = datetime.utcfromtimestamp(
-                            pos.get('time', 0)
-                        ).strftime('%Y-%m-%d %H:%M:%S')
+                        # [BUG-45 FIX] Guard against epoch-zero timestamp.
+                        # p.time_msc is 0 on some broker implementations when
+                        # a LIMIT fills instantly at open. Storing that as
+                        # datetime(0) → '1970-01-01' breaks the 12h dead-
+                        # momentum killer and daily P&L date attribution.
+                        # If timestamp is before year 2000, fall back to utcnow.
+                        raw_ts = pos.get('time', 0)
+                        if raw_ts < 946684800:   # < 2000-01-01 00:00:00 UTC
+                            raw_ts = int(time.time())
+                        open_time = datetime.utcfromtimestamp(raw_ts).strftime('%Y-%m-%d %H:%M:%S')
                         DBManager.save_trade(
                             ticket     = ticket,
                             symbol     = pos['symbol'],
@@ -657,7 +664,92 @@ class TradingBot:
                     except Exception as e:
                         self.log_debug(f"Fill Record Error ({ticket}): {e}")
         # ────────────────────────────────────────────────────────────────
-        
+
+        # [BUG-44c] REAL-TIME TRADE CLOSE DETECTION ──────────────────────
+        # Primary mechanism: runs every 60s (vs sync_db's 5-min safety net).
+        # Compares DB open trades against live MT5 positions. Any DB trade
+        # not found in the live position list has been closed (SL, TP, or
+        # manual). We fetch the closing deal immediately and record it.
+        #
+        # Evidence: USDJPY #147 (MAE=109% of SL) and USDCAD #149 (MAE=135%)
+        # were still showing as 'open' in DB after being stopped out because
+        # DBManager.close_trade() was never called from bot_engine. This loop
+        # is the fix.
+        try:
+            mt5_live_tickets = {p['ticket'] for p in current_positions}
+            db_open_detail   = DBManager.get_open_trades_detail()   # [{ticket,symbol,type,open_price}]
+            db_open_map      = {t['ticket']: t for t in db_open_detail}
+
+            for db_ticket, db_trade in db_open_map.items():
+                if db_ticket in mt5_live_tickets:
+                    continue   # still open — nothing to do
+
+                # Position gone from MT5 — find its closing deal
+                deals = mt5.history_deals_get(position=db_ticket)
+                if not deals:
+                    continue   # not in history yet (very recent close) — sync_db will catch it
+
+                close_deal = None
+                for deal in reversed(deals):
+                    if getattr(deal, 'entry', -1) == mt5.DEAL_ENTRY_OUT:
+                        close_deal = deal
+                        break
+                if close_deal is None:
+                    close_deal = deals[-1]   # fallback for brokers that omit entry flag
+                if close_deal is None:
+                    continue
+
+                close_time = datetime.utcfromtimestamp(
+                    close_deal.time
+                ).strftime('%Y-%m-%d %H:%M:%S')
+                net_profit = (
+                    close_deal.profit
+                    + getattr(close_deal, 'swap',       0.0)
+                    + getattr(close_deal, 'commission', 0.0)
+                )
+
+                # [BUG-51] close_trade has AND close_time IS NULL guard —
+                # concurrent calls from sync_db are safely idempotent.
+                DBManager.close_trade(
+                    ticket      = db_ticket,
+                    close_price = close_deal.price,
+                    close_time  = close_time,
+                    profit      = net_profit,
+                    commission  = getattr(close_deal, 'commission', 0.0),
+                )
+
+                outcome = ("WIN" if net_profit > 0
+                           else "BREAK_EVEN" if net_profit == 0 else "LOSS")
+                icon    = "🟢" if net_profit > 0 else "🔴"
+
+                # pips_result: signed price delta in trade direction
+                open_px   = db_trade.get('open_price', 0.0) or close_deal.price
+                direction = 1 if db_trade.get('type') == 'BUY' else -1
+                pips_raw  = (close_deal.price - open_px) * direction
+
+                DBManager.update_signal_outcome(
+                    db_trade['symbol'], outcome, pips_raw
+                )
+
+                # [BUG-56] Remove from scaled_positions so next trade on
+                # same symbol can scale out independently.
+                scale_key = f"{db_trade['symbol']}_{open_px}_{db_trade.get('type','BUY')}"
+                self.scaled_positions.discard(scale_key)
+                self._save_state()
+
+                self.log_info(
+                    f"{icon} Trade Closed: #{db_ticket} {db_trade['symbol']} "
+                    f"{db_trade.get('type','?')} | {outcome} | P&L: ${net_profit:+.2f}"
+                )
+                self.async_alert(
+                    f"{icon} **Trade Closed — {outcome}**\n"
+                    f"{db_trade['symbol']} {db_trade.get('type','?')}\n"
+                    f"P&L: ${net_profit:+.2f}"
+                )
+        except Exception as _ce:
+            self.log_debug(f"Close Detection Error: {_ce}")
+        # ────────────────────────────────────────────────────────────────
+
         current_day = datetime.utcnow().day
         
         if self.kill_switch_active:
@@ -1458,7 +1550,8 @@ class TradingBot:
                     # With the corrected lot formula (×100 multiplier) 91 lots = ~$750k notional.
                     # Safe cap: Oil is high-volatility commodity; max 5 lots at current account.
                     # Scales conservatively: ~1 lot per $1500 balance, hard ceiling at 10.
-                    max_lot = max(1.0, min(10, round(balance / 1500, 0)))   # ~6 at $9k
+                    # [BUG-53 FIX] int() wraps round() — vol_step=1.0 requires integer lot values.
+                    max_lot = max(1.0, min(10, int(round(balance / 1500, 0))))   # ~6 at $9k
                 elif "NGAS" in symbol:
                     max_lot = 5.0    # HARD limit from spec: maximal volume = 5
                 elif "SP 500" in symbol:

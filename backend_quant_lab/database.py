@@ -157,6 +157,22 @@ def init_db():
         except Exception:
             pass
 
+    # ── 4. BUG-55 MIGRATION: Epoch-zero open_time fix ─────────
+    # USDCHF #146 and any future LIMIT fills where p.time_msc=0
+    # from a broker quirk stored open_time='1970-01-01 00:00:00'.
+    # One-time safe UPDATE: only touches open (unclosed) trades
+    # with the exact epoch-zero timestamp; sets them to the current
+    # UTC time so the 12h dead-momentum killer and daily P&L
+    # attribution work correctly from first boot after this patch.
+    fixed = c.execute("""
+        UPDATE trades
+        SET open_time = strftime('%Y-%m-%d %H:%M:%S', 'now')
+        WHERE open_time = '1970-01-01 00:00:00'
+          AND close_time IS NULL
+    """).rowcount
+    if fixed > 0:
+        print(f"  ✅ BUG-55 Migration: Fixed {fixed} epoch-zero open_time record(s).")
+
     conn.commit()
     conn.close()
     print("✅ Database System: Online & Ready.")
