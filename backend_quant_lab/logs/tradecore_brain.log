@@ -4633,3 +4633,23 @@
 2026-03-12 03:39:59 [INFO] Stopped.
 2026-03-12 03:40:01 [INFO] ✅ TradeCore v53.0: Engine Active. Monitoring 20 Assets.
 2026-03-12 03:40:14 [INFO] Stopped.
+2026-03-12 03:40:16 [INFO] ✅ TradeCore v53.0: Engine Active. Monitoring 20 Assets.
+2026-03-12 03:42:29 [DEBUG] [EURUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:29 [DEBUG] [GBPUSD] DISTRIBUTION [Asian] | Score:0.52 | OB:False FVG:True BOS:True OTE:False Vol:2.1x | Trend:BEARISH
+2026-03-12 03:42:30 [DEBUG] [USDJPY] DISTRIBUTION [Asian] | Score:0.52 | OB:False FVG:True BOS:True OTE:False Vol:2.7x | Trend:BULLISH
+2026-03-12 03:42:30 [DEBUG] [USDCAD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:30 [DEBUG] [USDCHF] DISTRIBUTION [Asian] | Score:0.52 | OB:False FVG:True BOS:True OTE:False Vol:1.8x | Trend:BULLISH
+2026-03-12 03:42:31 [DEBUG] [AUDUSD] DISTRIBUTION [Asian]: No OB/FVG retest in BULLISH direction.
+2026-03-12 03:42:31 [DEBUG] [NZDUSD] DISTRIBUTION [Asian]: No OB/FVG retest in BEARISH direction.
+2026-03-12 03:42:32 [DEBUG] [EURJPY] INDETERMINATE [Asian] | conf:0.35 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:32 [DEBUG] [GBPJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-12 03:42:32 [INFO] 🔎 MTF Confluence Locked: AUDJPY BUY_MICRO (Conf: 78%)
+2026-03-12 03:42:32 [INFO] ⚡ TRAP SET: AUDJPY BUY_LIMIT | Entry: 113.415 | Lot: 0.78
+2026-03-12 03:42:32 [DEBUG] [XAUUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:32 [DEBUG] [XAGUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-12 03:42:32 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:32 [DEBUG] [NGAS] INDETERMINATE [Asian] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:32 [DEBUG] [BTCUSD] ACCUMULATION [Asian] | conf:0.62 | Mapping range | AH:70737.673 AL:70331.892
+2026-03-12 03:42:33 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:33 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-12 03:42:33 [DEBUG] [Germany 40] INDETERMINATE [Asian] | conf:0.26 | Price trending, no clean AMD range — skipping.
