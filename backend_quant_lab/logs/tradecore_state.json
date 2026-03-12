@@ -1,6 +1,7 @@
 {
   "account_id": "32128474",
   "scaled_positions": [
+    "XAUUSD_5139.09_BUY",
     "BTCUSD_69219.997_SELL"
   ],
   "last_logged_signal": {
@@ -15,29 +16,29 @@
       "SKIPPED"
     ],
     "USDJPY": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.55,
+      "LOW_CONFIDENCE (55%)"
     ],
     "USDCAD": [
-      "SELL_MICRO",
-      0.91,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "USDCHF": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.55,
+      "LOW_CONFIDENCE (55%)"
     ],
     "AUDUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "SELL_MICRO",
+      0.55,
+      "LOW_CONFIDENCE (55%)"
     ],
     "NZDUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "SELL_MICRO",
+      0.55,
+      "LOW_CONFIDENCE (55%)"
     ],
     "EURJPY": [
       "NEUTRAL",
@@ -50,9 +51,9 @@
       "SKIPPED"
     ],
     "EURGBP": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.99,
+      "ATTEMPTED"
     ],
     "AUDJPY": [
       "NEUTRAL",
@@ -60,9 +61,9 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "BUY_MICRO",
-      0.99,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "XAGUSD": [
       "NEUTRAL",
@@ -70,9 +71,9 @@
       "SKIPPED"
     ],
     "US Oil": [
-      "BUY",
-      0.91,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "NGAS": [
       "NEUTRAL",

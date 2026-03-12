@@ -107,8 +107,21 @@ def sync_database():
             )
 
             # [BUG-46] Update originating signal outcome
-            outcome     = "WIN" if net_profit > 0 else ("BREAK_EVEN" if net_profit == 0 else "LOSS")
-            pips_result = close_deal.price - getattr(close_deal, 'price_open', close_deal.price)
+            outcome = "WIN" if net_profit > 0 else ("BREAK_EVEN" if net_profit == 0 else "LOSS")
+            # [BUG-A FIX] MT5 deal objects have no 'price_open' attribute — the
+            # fallback was close_deal.price making pips_result = 0.0 always.
+            # Correct approach: fetch open_price from the trades table by ticket.
+            try:
+                open_px_row = conn.execute(
+                    "SELECT open_price, type FROM trades WHERE ticket = ?", (ticket,)
+                ).fetchone()
+                if open_px_row and open_px_row[0]:
+                    direction   = 1 if (open_px_row[1] or "BUY") == "BUY" else -1
+                    pips_result = (close_deal.price - open_px_row[0]) * direction
+                else:
+                    pips_result = 0.0
+            except Exception:
+                pips_result = 0.0
             DBManager.update_signal_outcome(symbol, outcome, pips_result)
 
             closed_count   += 1

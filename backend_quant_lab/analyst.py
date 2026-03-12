@@ -210,8 +210,27 @@ def _session_amd_prior(utc_hour: int, utc_minute: int,
     if 13*60+30 <= t < 14*60+30:
         return {'MANIPULATION': 1.4, 'DISTRIBUTION': 1.1, 'ACCUMULATION': 0.6}
 
-    # NY PM (14:30-16:00 UTC): NY distribution
-    return {'DISTRIBUTION': 1.2, 'MANIPULATION': 0.9, 'ACCUMULATION': 0.8}
+    # NY PM (14:30-16:00 UTC): NY distribution continuation
+    if 14*60+30 <= t < 16*60:
+        return {'DISTRIBUTION': 1.2, 'MANIPULATION': 0.9, 'ACCUMULATION': 0.8}
+
+    # NY PM2 (17:30-21:00 UTC): full NY afternoon post-lunch
+    # [S11] Prime institutional window — continuation moves from NY morning.
+    # Manipulation still possible (position squaring into close).
+    if 17*60+30 <= t < 21*60:
+        return {'MANIPULATION': 1.1, 'DISTRIBUTION': 1.2, 'ACCUMULATION': 0.9}
+
+    # [S14-P6] NY_PM2_Late / Pre-Asian (21:00-24:00 UTC = 17:00-20:00 EDT):
+    # Late NY session blending into Asian pre-market. Range formation begins
+    # as institutional desks close for the day and Asian liquidity is seeded.
+    # Previously this window fell through to the NY_PM else (14:30-16:00 UTC
+    # weights) which under-weighted accumulation for this genuinely range-bound
+    # period. Balanced priors allow the structural detector to find valid setups.
+    if 21*60 <= t < 24*60:
+        return {'ACCUMULATION': 1.2, 'MANIPULATION': 0.9, 'DISTRIBUTION': 1.0}
+
+    # Fallback (should not be reached with full 0-24 coverage above)
+    return {'DISTRIBUTION': 1.0, 'MANIPULATION': 1.0, 'ACCUMULATION': 1.0}
 
 
 def detect_accumulation_structure(df: pd.DataFrame, atr: float,

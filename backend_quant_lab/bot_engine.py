@@ -1090,13 +1090,28 @@ class TradingBot:
             
             result_status = "SKIPPED"
             # [S9-PRECISION] Thresholds recalibrated for the new detection engine.
-            # The precision upgrades (1.0 ATR displacement, swing-based sweep, 
-            # in-zone OB retest, 1.5x volume, 100-bar PD) mean scores are earned
-            # more rigorously. A 0.80 under the new engine is equivalent to or
-            # better than 0.88 under the old loose detections.
-            # Standard: 0.80 (requires sweep+disp+OB+PD at minimum)
-            # Sniper:   0.90 (requires near-full confluence)
-            required_conf = 0.90 if is_sniper_mode else 0.80
+            # [S14] TIERED CONFIDENCE THRESHOLDS by signal class.
+            #
+            # STANDARD signals (BUY / SELL — HIGH_VOL regime, full size):
+            #   Standard mode: 0.80  | Sniper mode: 0.90
+            #   (sweep+disp+OB+PD minimum; sniper = near-full confluence)
+            #
+            # MICRO signals (BUY_MICRO / SELL_MICRO — NORMAL regime, half size):
+            #   Standard mode: 0.65  | Sniper mode: 0.75
+            #   Rationale: MICRO already has risk_multiplier × 0.50 — half capital.
+            #   The risk is discounted so the confidence gate should be too.
+            #   This unlocks day-trading and scalping frequency in the dominant
+            #   NORMAL regime without opening the floodgates (conf < 0.65 blocked).
+            #   Evidence: 20 MICRO signals blocked 22:00-00:00 at conf 0.47-0.60;
+            #   conf ≥ 0.65 captures structurally confirmed setups only.
+            #
+            # NANO (BUY_NANO / SELL_NANO — DEAD market, quarter size):
+            #   Uses same gate as parent signal class (unchanged).
+            _is_micro_sig = "MICRO" in analysis.signal
+            if is_sniper_mode:
+                required_conf = 0.75 if _is_micro_sig else 0.90
+            else:
+                required_conf = 0.65 if _is_micro_sig else 0.80
 
             if analysis.signal != "NEUTRAL":
                  is_nano = "NANO" in analysis.signal
@@ -1445,17 +1460,30 @@ class TradingBot:
                 conf_scale      = max(0.0, min(1.0, conf_scale))
                 base_risk_pct   = kelly_risk * (1.0 + 0.25 * conf_scale)
 
+                # [S14-P4] SNIPER GROWTH BONUS — conf >= 0.92 earns +25% capital.
+                # At this confidence level the ICT engine has full sweep+displacement+
+                # OB+FVG+PD+BOS alignment. The additional 25% brings maximum risk to
+                # ~3.1% on best signals vs 2.5% at threshold — well within Kelly bounds.
+                # NANO excluded (already quarter-sized; further scaling counterproductive).
+                # Margin guard and CVaR kill-switch still override this at all times.
+                if analysis.confidence >= 0.92 and not is_nano:
+                    base_risk_pct *= 1.25
+
                 is_micro = "MICRO" in analysis.signal
                 risk_multiplier = margin_mult * reduction_mult * regime_mult_q
                 if is_nano:
                     risk_multiplier = risk_multiplier * 0.25   # NANO = quarter size
                 elif is_micro:
-                    risk_multiplier = risk_multiplier * 0.50   # MICRO = half size 
+                    risk_multiplier = risk_multiplier * 0.50   # MICRO = half size
 
                 if "XAU" in symbol or "XAG" in symbol:
-                    # Gold: 1 lot = 100 oz. Tick size=0.01, tick value=$0.01/oz/lot
-                    # → $1 price move = $100/lot (100oz × $1). Capital/lot = sl × 100.
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    # Gold/Silver: 1 lot = 100 oz. $1 move = $100/lot.
+                    # [S14-P1] REMOVED 50% haircut. Gold is an institutional asset with
+                    # well-calibrated ICT signals and a reliable capital_per_lot formula.
+                    # The haircut was a legacy penalty from early over-caution — at 2% risk
+                    # on a $1.79 SL, correct sizing is 1.30 lots, not 0.65.
+                    # BTC/ETH/Oil/NGAS retain the 0.5 haircut (speculative/volatile).
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100
                     min_lot  = 0.10
                     vol_step = 0.01
@@ -1496,16 +1524,18 @@ class TradingBot:
                 elif "SP 500" in symbol:
                     # US SP 500 (Deriv): contract_size=1, tick_size=0.01, tick_value=$0.01.
                     # tick_value/tick_size = 1.0 → capital_per_lot = sl_distance × 1.
-                    # Example: 10pt SL → $10 risk/lot → $179 risk ÷ $10 = 17.9 lots.
-                    # Verified: Assets_specification.xlsx, "US SP 500" column.
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    # [S14-P1] REMOVED 50% haircut. SP500 is a liquid institutional instrument;
+                    # the formula is correctly calibrated and the max_lot cap (18 lots at $9k)
+                    # provides the real safety ceiling. Verified: Assets_specification.xlsx.
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1.0
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "Tech 100" in symbol:
                     # US Tech 100 (Deriv): same 1:1 structure as SP 500.
                     # stops_level=150 (larger than SP500's 50) → wider minimum SL.
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    # [S14-P1] REMOVED 50% haircut — see SP500 note above.
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1.0
                     min_lot  = 0.1
                     vol_step = 0.1
@@ -1513,7 +1543,8 @@ class TradingBot:
                     # Germany 40 DAX (Deriv): contract_size=1, tick=0.01, tv=$0.01.
                     # Profit currency = EUR — note this for P&L display only;
                     # risk formula is identical to SP500/Tech100.
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    # [S14-P1] REMOVED 50% haircut — see SP500 note above.
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1.0
                     min_lot  = 0.1
                     vol_step = 0.1
@@ -1544,7 +1575,13 @@ class TradingBot:
                     # scales with account: ~0.5@$9k, ~2.5@$50k (spec max not provided)
                     max_lot = max(0.5, round(balance / 20000, 2))
                 elif "XAU" in symbol or "XAG" in symbol:
-                    max_lot = 2.0
+                    # [BUG-B FIX] Previous cap of 2.0 was calibrated against 0.5× haircut.
+                    # After S14-P1 (haircut removed) + S14-P4 (sniper ×1.25), the cap was
+                    # binding at $13k balance and suppressing effective risk to below 2% at $20k.
+                    # Gold 3.0 lots @ $1.79 SL = $537 max risk = 5.7% of $9.4k — hard ceiling.
+                    # Silver 2.5 stays conservative (higher volatility per lot).
+                    # In practice the Kelly formula produces 1.12-1.62 lots at $9k, well below cap.
+                    max_lot = 3.0 if "XAU" in symbol else 2.5
                 elif "Oil" in symbol:
                     # [BUG-43 FIX] Previous cap scaled with balance/100 → ~91 lots at $9k.
                     # With the corrected lot formula (×100 multiplier) 91 lots = ~$750k notional.
@@ -1566,9 +1603,22 @@ class TradingBot:
                 elif is_nano:
                     max_lot = 0.10
                 elif is_micro:
-                    max_lot = max(0.5, round(balance / 20000, 2))   # ~0.5 at $9k
+                    # [S14-P2] MICRO max_lot now scales properly with account size.
+                    # Old formula: max(0.5, balance/20000) → floor of 0.5 dominated at $9k
+                    # because balance/20000 = 0.47 < 0.5. The formula never scaled above
+                    # the floor until $10,000+ balance, capping all MICRO trades at 0.5.
+                    # New: max(balance/12000, 0.30) scales from day 1:
+                    #   $9k → 0.78 lots  |  $20k → 1.67  |  $50k → 4.17
+                    # min floor 0.30 ensures we never go below minimum viable size.
+                    max_lot = max(round(balance / 12000, 2), 0.30)   # ~0.78 at $9k
                 else:
-                    max_lot = max(1.0, round(balance / 5000, 2))    # ~1.8 at $9k
+                    # [S14-P5] STANDARD max_lot: balance/3500 (was balance/5000).
+                    # Old: ~1.88 lots at $9k. New: ~2.69 lots.
+                    # The ICT scoring engine earns 0.80+ rigorously — at that confidence
+                    # level, the structural case supports larger position sizing.
+                    # Still well below broker spec maximums.
+                    #   $9k → 2.69 lots  |  $20k → 5.71  |  $50k → 14.3
+                    max_lot = max(1.0, round(balance / 3500, 2))    # ~2.69 at $9k
 
                 if lot > max_lot:
                     self.log_info(
