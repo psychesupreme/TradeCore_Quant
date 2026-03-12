@@ -2,6 +2,7 @@
   "account_id": "32128474",
   "scaled_positions": [
     "BTCUSD_69219.997_SELL",
+    "EURGBP_0.86291_SELL",
     "XAUUSD_5139.09_BUY"
   ],
   "last_logged_signal": {
@@ -31,9 +32,9 @@
       "SKIPPED"
     ],
     "AUDUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "SELL_MICRO",
+      0.72,
+      "ATTEMPTED"
     ],
     "NZDUSD": [
       "NEUTRAL",
@@ -41,9 +42,9 @@
       "SKIPPED"
     ],
     "EURJPY": [
-      "BUY_MICRO",
-      0.83,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "GBPJPY": [
       "NEUTRAL",

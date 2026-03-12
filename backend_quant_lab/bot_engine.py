@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import time
 import MetaTrader5 as mt5 
 from mt5_interface import MT5Gateway
-from analyst import analyze_market_structure, AnalysisRequest, calculate_atr
+from analyst import analyze_market_structure, AnalysisRequest, calculate_atr, detect_candlestick_pattern
 from models import Candle
 from telegram_client import TelegramNotifier
 from db_manager import DBManager
@@ -108,6 +108,14 @@ class TradingBot:
         # After 4 consecutive rejections on the same entry price, the OB zone
         # is being swept through — signal is invalidated and must not place.
         self._price_close_rejections: dict = {}
+
+        # [BUG-58] Stale trap loop counter — parallel to _price_close_rejections.
+        # Tracks how many consecutive times a (symbol, entry_price) pair has been
+        # cancelled by the stale trap checker (TP reached before limit filled).
+        # After 3 stale traps at the same price the OB is fully behind the market
+        # → zone is dead. Apply the same STALE_ZONE cooldown as S15-L2.
+        # Key: (symbol, entry_price_rounded). Value: stale count.
+        self._stale_trap_counts: dict = {}
 
         # [S15-L1] Entry momentum watch list.
         # After a LIMIT fills, the position is added here so the next
@@ -472,6 +480,34 @@ class TradingBot:
                 res = mt5.order_send(req)
                 if res and res.retcode == mt5.TRADE_RETCODE_DONE:
                     self.log_info(f"🗑️ Stale Trap Avoided: Cancelled {symbol} limit order. ({reason})")
+
+                    # [BUG-58] Count consecutive stale traps at this (symbol, price).
+                    # Both "Stale Trap" and "Structure invalidated" mean the same thing:
+                    # this entry level is no longer valid — market has moved past it.
+                    # After 3 hits the zone is dead behind the market.
+                    # Cooldown prevents the engine from regenerating the same dead signal.
+                    # Evidence: EURUSD SELL 99% conf fired 8× in 15 minutes — never filled.
+                    entry_px  = round(float(ord.price_open), 5)
+                    stale_key = (symbol, entry_px)
+                    self._stale_trap_counts[stale_key] = \
+                        self._stale_trap_counts.get(stale_key, 0) + 1
+                    stale_count = self._stale_trap_counts[stale_key]
+
+                    if stale_count >= 3:
+                        self._stale_trap_counts.pop(stale_key, None)
+                        # Apply cooldown using the standard symbol_cooldowns mechanism.
+                        # This prevents process_symbol() from regenerating the signal
+                        # for 15 minutes (same gate as post-rejection cooldown).
+                        self.symbol_cooldowns[symbol] = datetime.utcnow()
+                        self.log_info(
+                            f"🚫 Momentum Chase Detected: {symbol} entry {entry_px} "
+                            f"cancelled 3× by stale trap — OB is behind market. "
+                            f"15-min cooldown applied."
+                        )
+                    else:
+                        self.log_debug(
+                            f"⚠️ Stale trap #{stale_count}/3 for {symbol} @ {entry_px}."
+                        )
 
     def evaluate_open_positions(self, positions):
         for pos in positions:
@@ -1541,6 +1577,79 @@ class TradingBot:
                 sl_atr_buf   = ict_cond.get('sl_atr_buffer', volatility_buffer * 0.1)
                 tp_target    = ict_cond.get('tp_target_level')   # asian H/L or session target
 
+                # ── [S16] SCALP MODEL PRICE LEVELS ───────────────────────────
+                # When the Silver Bullet / Time-FVG / PO3 scalp model wins
+                # (conditions['scalp_model'] = True), override the SL/TP levels
+                # with FVG-derived and Asian-range-derived levels instead of the
+                # generic swing structure used by the ICT model.
+                #
+                # Scalp entry logic:
+                #   Entry  = FVG midpoint (50% retracement into the gap) — this is
+                #            the highest-probability fill zone within a Silver Bullet
+                #   SL     = FVG low/high + small ATR buffer (outside the gap)
+                #            If price closes through the full FVG it's invalidated
+                #   TP     = Asian High/Low (opposite extremity of the PO3 range)
+                #            or 2× FVG size projected in the trade direction if
+                #            Asian level is not available
+                #
+                # Asset-specific TP extensions:
+                #   Gold:   TP may extend to Asian H/L ±0.3×ATR (Gold often exceeds)
+                #   Silver: TP = strict Asian level (smaller margin)
+                #   Crypto: TP = Asian H/L or 1.5× FVG size (crypto overshoots often)
+                is_scalp_model = ict_cond.get('scalp_model', False)
+                if is_scalp_model:
+                    tfvg_high  = ict_cond.get('tfvg_high')
+                    tfvg_low   = ict_cond.get('tfvg_low')
+                    tfvg_mid   = ict_cond.get('tfvg_mid')
+                    tfvg_size  = (tfvg_high - tfvg_low) if (tfvg_high and tfvg_low) else 0
+                    asian_high = ict_cond.get('asian_high')
+                    asian_low  = ict_cond.get('asian_low')
+                    is_btc_eth = any(x in symbol for x in ('BTC', 'ETH'))
+
+                    if tfvg_mid and is_buy:
+                        # BUY scalp: enter at FVG midpoint, SL below FVG low
+                        ob_entry    = tfvg_mid
+                        ob_zone_low = tfvg_low
+                        if tfvg_low:
+                            swing_sl_ref = tfvg_low
+                            sl_atr_buf   = volatility_buffer * 0.15
+                        # TP: Asian High (BSL pool) or FVG projected
+                        if asian_high:
+                            ext = volatility_buffer * 0.30 if 'XAU' in symbol else 0.0
+                            ext = volatility_buffer * 0.20 if is_btc_eth else ext
+                            tp_target = asian_high + ext
+                        elif tfvg_size > 0:
+                            mult = 1.5 if is_btc_eth else 2.0
+                            tp_target = tfvg_mid + tfvg_size * mult
+                        self.log_info(
+                            f"📐 Scalp Levels [{symbol} BUY]: "
+                            f"Entry≈{ob_entry:.5f}  SL≈{swing_sl_ref:.5f}  "
+                            f"TP≈{tp_target:.5f}  (FVG mid={tfvg_mid:.5f} "
+                            f"Asian_H={asian_high})"
+                        )
+
+                    elif tfvg_mid and not is_buy:
+                        # SELL scalp: enter at FVG midpoint, SL above FVG high
+                        ob_entry     = tfvg_mid
+                        ob_zone_high = tfvg_high
+                        if tfvg_high:
+                            swing_sl_ref = tfvg_high
+                            sl_atr_buf   = volatility_buffer * 0.15
+                        if asian_low:
+                            ext = volatility_buffer * 0.30 if 'XAU' in symbol else 0.0
+                            ext = volatility_buffer * 0.20 if is_btc_eth else ext
+                            tp_target = asian_low - ext
+                        elif tfvg_size > 0:
+                            mult = 1.5 if is_btc_eth else 2.0
+                            tp_target = tfvg_mid - tfvg_size * mult
+                        self.log_info(
+                            f"📐 Scalp Levels [{symbol} SELL]: "
+                            f"Entry≈{ob_entry:.5f}  SL≈{swing_sl_ref:.5f}  "
+                            f"TP≈{tp_target:.5f}  (FVG mid={tfvg_mid:.5f} "
+                            f"Asian_L={asian_low})"
+                        )
+                # ─────────────────────────────────────────────────────────────
+
                 if is_buy:
                     if is_nano:
                         action = "BUY_MARKET"
@@ -1665,6 +1774,42 @@ class TradingBot:
 
                 tp = self.gateway.normalize_price(symbol, tp_price)
 
+                # ── [S17] CANDLESTICK CONFLICT GUARD ─────────────────────────
+                # Source: The Candlestick Trading Bible — a strong opposing candle
+                # at the entry zone signals smart money REJECTING this level in the
+                # opposite direction. This is the primary driver of zero-MFE losses
+                # (Sprint 15 forensics: price swept zone immediately after fill).
+                #
+                # Guard: if the most recent CLOSED M15 candle is a STRONG opposing
+                # pattern (Engulfing Bar or Pin Bar — the two highest-conviction
+                # conflict patterns per the book), suppress the LIMIT order.
+                # Doji/Harami/Tweezers conflicts are softer — already handled via
+                # the score penalty in analyze_market_structure(); no hard block.
+                #
+                # Only applies to LIMIT orders (not NANO market entries — those
+                # already fire at market when price has moved to the zone).
+                if not is_nano:
+                    try:
+                        _s17_atr = df['atr'].iloc[-1] if 'atr' in df.columns else volatility_buffer
+                        _s17_dir = 'BUY' if is_buy else 'SELL'
+                        _s17_chk = detect_candlestick_pattern(df, _s17_dir, _s17_atr)
+                        _hard_block_patterns = {
+                            'Bearish_Engulfing', 'Bullish_Engulfing',
+                            'Shooting_Star', 'Hammer',
+                        }
+                        if (_s17_chk.get('conflict') and
+                                _s17_chk.get('conflict_pattern') in _hard_block_patterns):
+                            self.log_info(
+                                f"🕯️ Candle Conflict [{symbol}]: "
+                                f"{_s17_chk['conflict_pattern']} opposes "
+                                f"{analysis.signal} at entry {price:.5f} — "
+                                f"LIMIT order suppressed."
+                            )
+                            return
+                    except Exception:
+                        pass   # never block a trade due to candle check error
+                # ─────────────────────────────────────────────────────────────
+
                 # ── LIMIT PRICE VALIDATION (BUG-27 FIX) ──────────────────────
                 # MT5 rejects SELL_LIMIT if price <= ask + stops_level*point,
                 # and BUY_LIMIT if price >= bid - stops_level*point.
@@ -1729,6 +1874,9 @@ class TradingBot:
                         else:
                             # Price has moved away from entry — zone may be fresh again
                             self._price_close_rejections.pop(rejection_key, None)
+                            # [BUG-58] Also reset stale trap counter when price retreats
+                            stale_key = (symbol, round(price, 5))
+                            self._stale_trap_counts.pop(stale_key, None)
                 # ─────────────────────────────────────────────────────────────
 
                 sl_distance = abs(price - sl)

@@ -1588,6 +1588,245 @@ def wyckoff_spring_check(df: pd.DataFrame, manip_data: dict,
 
 # ── CORE ICT CONFLUENCE SCORER ────────────────────────────────────────────────
 
+# ── [S17] CANDLESTICK INTELLIGENCE LAYER ─────────────────────────────────────
+#
+#   Detects 6 key price-action patterns on the last 1-3 closed bars.
+#   Source: The Candlestick Trading Bible (Munehisa Homma / ICT school).
+#
+#   Design rule (from the book): a pattern ONLY earns a bonus when it occurs
+#   at a key structural level. In TradeCore that level is already required by
+#   the ICT/PO3 layer — so the bonus is additive on top of an existing signal,
+#   never a standalone trigger.
+#
+#   Pattern bonuses (confirmed = pattern agrees with trade direction):
+#     Engulfing Bar         +0.15  (strongest — body fully engulfs prior body)
+#     Hammer / Shooting Star +0.12  (pin bar: tail ≥ 2× body, tail ≥ 0.3×ATR)
+#     Morning / Evening Star +0.12  (3-bar reversal; third bar closes past midpoint)
+#     Dragonfly / Gravestone Doji +0.08
+#     Harami (Inside Bar)   +0.08  (compression before continuation)
+#     Tweezers Top/Bottom   +0.08  (double rejection at same high/low)
+#     Plain Doji             +0.05  (indecision — weakest confirmation)
+#
+#   Conflict penalties (pattern opposes trade direction):
+#     Engulfing conflict    -0.15  (also triggers hard block in bot_engine)
+#     Pin bar conflict      -0.12  (also triggers hard block in bot_engine)
+#     Doji variant conflict  -0.08
+#
+#   Called once per signal cycle from compute_ict_confluence() (both MANIP
+#   and DISTRIBUTION paths) and compute_scalp_confluence() (60% weight).
+
+def detect_candlestick_pattern(df: pd.DataFrame, direction: str,
+                                atr: float) -> dict:
+    """
+    [S17] Candlestick Intelligence Layer.
+
+    Evaluates the last 1-3 CLOSED bars for reversal and continuation patterns.
+    Returns a bonus when the pattern confirms the trade direction and a
+    conflict flag when a strong opposing pattern forms at the entry zone.
+
+    Args:
+        df:        M15 OHLCV DataFrame (must have >= 4 rows)
+        direction: 'BUY' or 'SELL'
+        atr:       current 14-bar ATR value
+
+    Returns dict:
+        pattern:          str   — pattern name or 'NONE'
+        confirmed:        bool  — pattern aligns with direction → add bonus
+        bonus:            float — score to add if confirmed
+        conflict:         bool  — strong opposing pattern → subtract / block
+        conflict_pattern: str   — name of conflicting pattern
+        conflict_penalty: float — score to subtract if conflict
+    """
+    empty = {
+        'pattern': 'NONE', 'confirmed': False, 'bonus': 0.0,
+        'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0,
+    }
+    try:
+        if len(df) < 4 or atr <= 0:
+            return empty
+
+        # c2 = most recent CLOSED candle (pattern bar)
+        # c1 = one bar earlier (context / mother candle for Harami)
+        c1 = df.iloc[-3]
+        c2 = df.iloc[-2]
+
+        is_buy = (direction == 'BUY')
+
+        # ── Per-bar metrics ──────────────────────────────────────────
+        def _metrics(c):
+            body   = abs(c['close'] - c['open'])
+            bull   = c['close'] > c['open']
+            upper  = c['high'] - max(c['close'], c['open'])
+            lower  = min(c['close'], c['open']) - c['low']
+            return body, bull, upper, lower
+
+        c1_body, c1_bull, c1_upper, c1_lower = _metrics(c1)
+        c2_body, c2_bull, c2_upper, c2_lower = _metrics(c2)
+
+        min_body = atr * 0.05   # noise filter: must be a real candle body
+
+        # ── 1. ENGULFING BAR ─────────────────────────────────────────
+        # Second body fully engulfs first body; bodies must be opposite colors
+        # (same-color engulfing is weaker — excluded per book guidance).
+        bull_engulf = (
+            c2_bull and not c1_bull and
+            c2['open']  < c1['close'] and
+            c2['close'] > c1['open']  and
+            c2_body > min_body and c1_body > min_body
+        )
+        bear_engulf = (
+            not c2_bull and c1_bull and
+            c2['open']  > c1['close'] and
+            c2['close'] < c1['open']  and
+            c2_body > min_body and c1_body > min_body
+        )
+        if is_buy and bull_engulf:
+            return {'pattern': 'Bullish_Engulfing', 'confirmed': True, 'bonus': 0.15,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if not is_buy and bear_engulf:
+            return {'pattern': 'Bearish_Engulfing', 'confirmed': True, 'bonus': 0.15,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if is_buy and bear_engulf:
+            return {'pattern': 'NONE', 'confirmed': False, 'bonus': 0.0,
+                    'conflict': True, 'conflict_pattern': 'Bearish_Engulfing',
+                    'conflict_penalty': 0.15}
+        if not is_buy and bull_engulf:
+            return {'pattern': 'NONE', 'confirmed': False, 'bonus': 0.0,
+                    'conflict': True, 'conflict_pattern': 'Bullish_Engulfing',
+                    'conflict_penalty': 0.15}
+
+        # ── 2. PIN BAR — Hammer / Shooting Star ──────────────────────
+        # Book: "shadow should be at least twice the length of the real body."
+        # Extra: tail must be ≥ 0.3×ATR to be meaningful at a structural level.
+        # Exclude near-zero body (those are Doji variants, handled below).
+        small_body  = c2_body < atr * 0.40
+        is_doji_body = c2_body < atr * 0.08
+        hammer = (
+            small_body and not is_doji_body and
+            c2_lower >= 2.0 * max(c2_body, min_body) and
+            c2_lower >= atr * 0.30 and
+            c2_upper <= c2_lower * 0.50      # minimal upper wick
+        )
+        shooting_star = (
+            small_body and not is_doji_body and
+            c2_upper >= 2.0 * max(c2_body, min_body) and
+            c2_upper >= atr * 0.30 and
+            c2_lower <= c2_upper * 0.50      # minimal lower wick
+        )
+        if is_buy and hammer:
+            return {'pattern': 'Hammer', 'confirmed': True, 'bonus': 0.12,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if not is_buy and shooting_star:
+            return {'pattern': 'Shooting_Star', 'confirmed': True, 'bonus': 0.12,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if is_buy and shooting_star:
+            return {'pattern': 'NONE', 'confirmed': False, 'bonus': 0.0,
+                    'conflict': True, 'conflict_pattern': 'Shooting_Star',
+                    'conflict_penalty': 0.12}
+        if not is_buy and hammer:
+            return {'pattern': 'NONE', 'confirmed': False, 'bonus': 0.0,
+                    'conflict': True, 'conflict_pattern': 'Hammer',
+                    'conflict_penalty': 0.12}
+
+        # ── 3. MORNING STAR / EVENING STAR ───────────────────────────
+        # 3-bar pattern on the three most recent CLOSED bars:
+        #   p1 = df.iloc[-4]  strong trend bar
+        #   p2 = df.iloc[-3]  small indecision / Doji (≤ 40% of p1 body)
+        #   p3 = df.iloc[-2]  confirmation bar closing past p1 midpoint
+        # We use closed bars only — df.iloc[-1] is still forming.
+        p1 = df.iloc[-4]
+        p2 = df.iloc[-3]
+        p3 = df.iloc[-2]   # = c2 above — same candle, named for clarity
+        p1_body = abs(p1['close'] - p1['open'])
+        p2_body = abs(p2['close'] - p2['open'])
+        p3_body = abs(p3['close'] - p3['open'])
+        p1_mid  = (p1['open'] + p1['close']) / 2.0
+
+        morning_star = (
+            p1['close'] < p1['open'] and   # p1 bearish
+            p1_body >= atr * 0.40 and       # p1 significant
+            p2_body <= p1_body * 0.40 and   # p2 small (indecision)
+            p3['close'] > p3['open'] and    # p3 bullish
+            p3['close'] > p1_mid and        # closes past p1 midpoint
+            p3_body >= atr * 0.30           # p3 meaningful
+        )
+        evening_star = (
+            p1['close'] > p1['open'] and
+            p1_body >= atr * 0.40 and
+            p2_body <= p1_body * 0.40 and
+            p3['close'] < p3['open'] and
+            p3['close'] < p1_mid and
+            p3_body >= atr * 0.30
+        )
+        if is_buy and morning_star:
+            return {'pattern': 'Morning_Star', 'confirmed': True, 'bonus': 0.12,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if not is_buy and evening_star:
+            return {'pattern': 'Evening_Star', 'confirmed': True, 'bonus': 0.12,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+
+        # ── 4. DOJI — Plain / Dragonfly / Gravestone ─────────────────
+        doji_body   = is_doji_body    # body < 8% ATR = essentially no real body
+        dragonfly   = doji_body and c2_lower >= atr * 0.30 and c2_upper <= atr * 0.15
+        gravestone  = doji_body and c2_upper >= atr * 0.30 and c2_lower <= atr * 0.15
+        plain_doji  = doji_body and not dragonfly and not gravestone
+
+        if is_buy and dragonfly:
+            return {'pattern': 'Dragonfly_Doji', 'confirmed': True, 'bonus': 0.08,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if not is_buy and gravestone:
+            return {'pattern': 'Gravestone_Doji', 'confirmed': True, 'bonus': 0.08,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if is_buy and gravestone:
+            return {'pattern': 'NONE', 'confirmed': False, 'bonus': 0.0,
+                    'conflict': True, 'conflict_pattern': 'Gravestone_Doji',
+                    'conflict_penalty': 0.08}
+        if not is_buy and dragonfly:
+            return {'pattern': 'NONE', 'confirmed': False, 'bonus': 0.0,
+                    'conflict': True, 'conflict_pattern': 'Dragonfly_Doji',
+                    'conflict_penalty': 0.08}
+        if plain_doji:
+            # Neutral doji at key level = indecision; mild confirmation any direction
+            return {'pattern': 'Doji', 'confirmed': True, 'bonus': 0.05,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+
+        # ── 5. HARAMI (Inside Bar) ────────────────────────────────────
+        # c2 body fully inside c1 body = compression before continuation.
+        # At a structural ICT level this signals the market is coiling before
+        # the expected directional move.
+        harami = (
+            c1_body >= atr * 0.20 and
+            c2_body < c1_body and
+            max(c2['close'], c2['open']) < max(c1['close'], c1['open']) and
+            min(c2['close'], c2['open']) > min(c1['close'], c1['open'])
+        )
+        if harami:
+            return {'pattern': 'Harami', 'confirmed': True, 'bonus': 0.08,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+
+        # ── 6. TWEEZERS TOP / BOTTOM ─────────────────────────────────
+        # Two consecutive candles testing the same high or low (within 0.15×ATR).
+        # Tweezers Bottom: equal lows, first bearish, second bullish → BUY signal.
+        # Tweezers Top   : equal highs, first bullish, second bearish → SELL signal.
+        equal_lows  = abs(c2['low']  - c1['low'])  < atr * 0.15
+        equal_highs = abs(c2['high'] - c1['high']) < atr * 0.15
+
+        tweezers_bottom = equal_lows  and not c1_bull and c2_bull
+        tweezers_top    = equal_highs and     c1_bull and not c2_bull
+
+        if is_buy and tweezers_bottom:
+            return {'pattern': 'Tweezers_Bottom', 'confirmed': True, 'bonus': 0.08,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+        if not is_buy and tweezers_top:
+            return {'pattern': 'Tweezers_Top', 'confirmed': True, 'bonus': 0.08,
+                    'conflict': False, 'conflict_pattern': 'NONE', 'conflict_penalty': 0.0}
+
+        return empty
+
+    except Exception:
+        return empty
+
+
 def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                             symbol: str, market_regime: str,
                             utc_now: datetime = None) -> tuple:
@@ -1664,6 +1903,12 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     s13_profile = compute_volume_profile(df, lookback=200, atr=current_atr)
     s13_delta   = compute_delta_context(df)
     s13_wyckoff = wyckoff_spring_check(df, manip_data, avg_vol)
+
+    # ── S17 CANDLESTICK INTELLIGENCE — compute once, used in all paths ─────
+    # Pre-compute both directions; each scoring path uses its own result.
+    # detect_candlestick_pattern() reads df.iloc[-4:-1] (all closed bars).
+    s17_candle_bull = detect_candlestick_pattern(df, 'BUY',  current_atr)
+    s17_candle_bear = detect_candlestick_pattern(df, 'SELL', current_atr)
 
     # ── ACCUMULATION — map range, do not trade ─────────────────────
     if amd_phase == 'ACCUMULATION':
@@ -1777,6 +2022,28 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                 reason = reason + (f" | S13[VWAP_Z:{s13_vwap.get('vwap_z',0):.2f}"
                                    f" HVN:{s13_profile.get('ob_at_hvn',False)}"
                                    f" Δ:{s13_delta.get('cum_delta_slope',0):.0f}]")
+
+            # ── [S17] Candlestick Intelligence — DISTRIBUTION ─────────
+            s17_dist = s17_candle_bull if "BUY" in signal else s17_candle_bear
+            if s17_dist['confirmed']:
+                score = min(0.99, score + s17_dist['bonus'])
+                cond['s17_candle_pattern']   = s17_dist['pattern']
+                cond['s17_candle_confirmed'] = True
+                cond['s17_candle_conflict']  = False
+                cond['s17_conflict_pattern'] = 'NONE'
+                reason = reason + f" | S17[{s17_dist['pattern']}+{s17_dist['bonus']:.2f}]"
+            elif s17_dist['conflict']:
+                score = max(0.0, score - s17_dist['conflict_penalty'])
+                cond['s17_candle_pattern']   = 'NONE'
+                cond['s17_candle_confirmed'] = False
+                cond['s17_candle_conflict']  = True
+                cond['s17_conflict_pattern'] = s17_dist['conflict_pattern']
+                reason = reason + f" | S17[⚠️CONFLICT:{s17_dist['conflict_pattern']}]"
+            else:
+                cond['s17_candle_pattern']   = 'NONE'
+                cond['s17_candle_confirmed'] = False
+                cond['s17_candle_conflict']  = False
+                cond['s17_conflict_pattern'] = 'NONE'
 
             if "DEAD MARKET" in market_regime:
                 signal = "BUY_NANO" if "BUY" in signal else "SELL_NANO"
@@ -1986,6 +2253,25 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         if s13_bonus > 0:
             score = min(0.99, score + s13_bonus)
 
+        # ── [S17] Candlestick Intelligence — BULLISH MANIPULATION ────
+        if s17_candle_bull['confirmed']:
+            score = min(0.99, score + s17_candle_bull['bonus'])
+            cond['s17_candle_pattern']   = s17_candle_bull['pattern']
+            cond['s17_candle_confirmed'] = True
+            cond['s17_candle_conflict']  = False
+            cond['s17_conflict_pattern'] = 'NONE'
+        elif s17_candle_bull['conflict']:
+            score = max(0.0, score - s17_candle_bull['conflict_penalty'])
+            cond['s17_candle_pattern']   = 'NONE'
+            cond['s17_candle_confirmed'] = False
+            cond['s17_candle_conflict']  = True
+            cond['s17_conflict_pattern'] = s17_candle_bull['conflict_pattern']
+        else:
+            cond['s17_candle_pattern']   = 'NONE'
+            cond['s17_candle_confirmed'] = False
+            cond['s17_candle_conflict']  = False
+            cond['s17_conflict_pattern'] = 'NONE'
+
         # ── Signal type ─────────────────────────────────────────────
         if "DEAD MARKET" in market_regime:       signal = "BUY_NANO"
         elif "HIGH VOLATILITY" in market_regime: signal = "BUY"
@@ -1995,10 +2281,14 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
                    f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
                    f" Spring:{spring_ok}]") if s13_bonus > 0 else ""
+        s17_tag = (f" | S17[{cond['s17_candle_pattern']}+{s17_candle_bull['bonus']:.2f}]"
+                   if cond.get('s17_candle_confirmed')
+                   else (f" | S17[⚠️{cond['s17_conflict_pattern']}]"
+                         if cond.get('s17_candle_conflict') else ""))
         reason = (f"ICT Bullish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bull} "
                   f"Disc:{in_discount}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s17_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     # ── BEARISH MANIPULATION ───────────────────────────────────────
@@ -2123,6 +2413,25 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         if s13_bonus > 0:
             score = min(0.99, score + s13_bonus)
 
+        # ── [S17] Candlestick Intelligence — BEARISH MANIPULATION ────
+        if s17_candle_bear['confirmed']:
+            score = min(0.99, score + s17_candle_bear['bonus'])
+            cond['s17_candle_pattern']   = s17_candle_bear['pattern']
+            cond['s17_candle_confirmed'] = True
+            cond['s17_candle_conflict']  = False
+            cond['s17_conflict_pattern'] = 'NONE'
+        elif s17_candle_bear['conflict']:
+            score = max(0.0, score - s17_candle_bear['conflict_penalty'])
+            cond['s17_candle_pattern']   = 'NONE'
+            cond['s17_candle_confirmed'] = False
+            cond['s17_candle_conflict']  = True
+            cond['s17_conflict_pattern'] = s17_candle_bear['conflict_pattern']
+        else:
+            cond['s17_candle_pattern']   = 'NONE'
+            cond['s17_candle_confirmed'] = False
+            cond['s17_candle_conflict']  = False
+            cond['s17_conflict_pattern'] = 'NONE'
+
         # ── Signal type ─────────────────────────────────────────────
         if "DEAD MARKET" in market_regime:       signal = "SELL_NANO"
         elif "HIGH VOLATILITY" in market_regime: signal = "SELL"
@@ -2132,10 +2441,14 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
                    f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
                    f" Upthrust:{upthrust_ok}]") if s13_bonus > 0 else ""
+        s17_tag = (f" | S17[{cond['s17_candle_pattern']}+{s17_candle_bear['bonus']:.2f}]"
+                   if cond.get('s17_candle_confirmed')
+                   else (f" | S17[⚠️{cond['s17_conflict_pattern']}]"
+                         if cond.get('s17_candle_conflict') else ""))
         reason = (f"ICT Bearish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bear} "
                   f"Prem:{in_premium}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s17_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     return "NEUTRAL", 0.0, f"[{amd_phase}] No sweep or displacement detected.", {}, kill_zone
@@ -2427,6 +2740,671 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     return "NEUTRAL", 0.0, "No sweep or displacement detected.", {}, kill_zone
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# SPRINT 16 — SILVER BULLET / TIME-FVG / POWER OF 3 SCALP ENGINE
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Rationale:
+#   The standard ICT engine applies identical logic to all 20 assets. For
+#   Gold, Silver and crypto this leaves a systematic edge on the table:
+#   these assets exhibit TIME-SPECIFIC FVG windows (ICT Silver Bullet) where
+#   institutional imbalances form and mitigate within the SAME 60-minute
+#   window — a near-mechanical short-term fill expectation that scalpers use
+#   as primary setups. A random FVG at 20:00 UTC on EURUSD is speculative.
+#   A time-FVG on XAUUSD created at 15:15 UTC during the NY Silver Bullet is
+#   structurally different in terms of expected mitigation timing.
+#
+# Architecture:
+#   1. get_silver_bullet_windows(symbol) — per-asset Silver Bullet UTC ranges
+#   2. detect_time_fvg(df, direction, symbol, utc_now, atr) — FVG formed WITHIN
+#      a Silver Bullet window, returns level not just bool
+#   3. detect_po3_asian_sweep(df, asian, utc_now, symbol, atr) — Power of 3:
+#      Asian range formed → sweep → displacement → FVG left behind
+#   4. compute_scalp_confluence(df, df_macro, symbol, utc_now) — composite
+#      score combining all three, returns full signal tuple
+#
+# Asset-specific calibration:
+#   XAUUSD — Silver Bullet 07:00-08:00, 15:00-16:00, 19:00-20:00 UTC
+#             Asian range 20:00(prev)-03:00 UTC | min FVG 0.5×ATR
+#   XAGUSD — same windows, min FVG 0.4×ATR (more volatile per point)
+#   BTCUSD — wider Asian 00:00-08:00 UTC, SB 07:30-08:30, 13:00-14:00
+#   ETHUSD — same as BTC
+#
+# Integration:
+#   compute_scalp_confluence() is called from analyze_market_structure() for
+#   XAU/XAG/BTC/ETH. If the scalp score exceeds the ICT score it wins.
+#   The winning signal is tagged with 'scalp_model' in conditions dict so
+#   bot_engine can apply asset-specific sizing and TP logic.
+# ───────────────────────────────────────────────────────────────────────────────
+
+
+_SILVER_BULLET_ASSETS = {'XAUUSD', 'XAGUSD', 'BTCUSD', 'ETHUSD'}
+
+# Silver Bullet window definitions per asset — (start_hour, start_min, end_hour, end_min)
+# All times in TRUE UTC. Names chosen to map to institutional session triggers.
+_SILVER_BULLET_WINDOWS: dict = {
+    # Gold & Silver — three windows, aligned to Midnight NY Open, London-NY transition, NY PM
+    'XAUUSD': [
+        (7,  0,  8,  0, 'Gold_London_Open_SB'),    # 07:00-08:00 UTC = 02:00-03:00 EST
+        (15, 0, 16,  0, 'Gold_NY_Afternoon_SB'),    # 15:00-16:00 UTC = 10:00-11:00 EST
+        (19, 0, 20,  0, 'Gold_NY_PM_SB'),           # 19:00-20:00 UTC = 14:00-15:00 EST
+    ],
+    'XAGUSD': [
+        (7,  0,  8,  0, 'Silver_London_Open_SB'),
+        (15, 0, 16,  0, 'Silver_NY_Afternoon_SB'),
+        (19, 0, 20,  0, 'Silver_NY_PM_SB'),
+    ],
+    # Crypto — crypto trades 24h; highest-probability windows at London and NY opens
+    'BTCUSD': [
+        (7, 30,  8, 30, 'BTC_London_Open_SB'),      # 07:30-08:30 UTC = 02:30-03:30 EST
+        (13, 0, 14,  0, 'BTC_NY_Open_SB'),           # 13:00-14:00 UTC = 08:00-09:00 EST
+        (15, 0, 16,  0, 'BTC_NY_Midday_SB'),         # 15:00-16:00 UTC = 10:00-11:00 EST
+    ],
+    'ETHUSD': [
+        (7, 30,  8, 30, 'ETH_London_Open_SB'),
+        (13, 0, 14,  0, 'ETH_NY_Open_SB'),
+        (15, 0, 16,  0, 'ETH_NY_Midday_SB'),
+    ],
+}
+
+# Asian accumulation range boundaries per asset (UTC)
+# Crypto uses a wider window — 8h of consolidation before London opens
+_ASIAN_RANGE_HOURS: dict = {
+    'XAUUSD': (20, 3),    # 20:00 prev UTC → 03:00 UTC (NY close → Asian)
+    'XAGUSD': (20, 3),
+    'BTCUSD': (0,  8),    # 00:00 → 08:00 UTC (pure Asian + early London pre-market)
+    'ETHUSD': (0,  8),
+}
+
+# Per-asset minimum FVG size as multiple of ATR
+_MIN_FVG_ATR: dict = {
+    'XAUUSD': 0.50,
+    'XAGUSD': 0.40,
+    'BTCUSD': 0.30,
+    'ETHUSD': 0.30,
+}
+
+
+def get_silver_bullet_windows(symbol: str) -> list:
+    """
+    Return the list of Silver Bullet window tuples for the given symbol.
+    Each tuple: (sh, sm, eh, em, name) in UTC.
+    Returns [] if symbol is not in the scalp asset list.
+    """
+    # Normalise broker suffixes (e.g. 'XAUUSDm' → 'XAUUSD')
+    base = symbol.upper()
+    for key in _SILVER_BULLET_WINDOWS:
+        if base.startswith(key):
+            return _SILVER_BULLET_WINDOWS[key]
+    return []
+
+
+def _is_in_silver_bullet_window(utc_now: datetime, symbol: str) -> tuple:
+    """
+    Returns (True, window_name) if utc_now falls inside any Silver Bullet
+    window for the asset.  Returns (False, '') otherwise.
+    """
+    windows = get_silver_bullet_windows(symbol)
+    t = utc_now.hour * 60 + utc_now.minute
+    for sh, sm, eh, em, name in windows:
+        ws = sh * 60 + sm
+        we = eh * 60 + em
+        if ws <= t < we:
+            return True, name
+    return False, ''
+
+
+def detect_asian_range_scalp(df: pd.DataFrame, symbol: str,
+                              utc_now: datetime, atr: float) -> dict:
+    """
+    Asset-specific Asian range detection for the scalp engine.
+    Uses per-asset hour boundaries from _ASIAN_RANGE_HOURS.
+
+    Returns dict:
+      valid:           True if ≥ 3 candles found
+      asian_high:      float — session high
+      asian_low:       float — session low
+      asian_midpoint:  float
+      range_atr:       float — range size / ATR (quality measure)
+      range_pips:      float — raw range size
+      is_tight:        bool  — range < 0.8×ATR (better for SB setup)
+    """
+    empty = {'valid': False, 'asian_high': None, 'asian_low': None,
+             'asian_midpoint': None, 'range_atr': 0.0, 'range_pips': 0.0,
+             'is_tight': False}
+
+    if df is None or len(df) < 5 or atr <= 0:
+        return empty
+
+    base = symbol.upper()
+    sh, eh = _ASIAN_RANGE_HOURS.get(
+        next((k for k in _ASIAN_RANGE_HOURS if base.startswith(k)), ''),
+        (0, 3)
+    )
+
+    today = utc_now.date()
+
+    if 'timestamp' in df.columns:
+        try:
+            df2 = df.copy()
+            df2['_dt'] = pd.to_datetime(df2['timestamp'], utc=True)
+
+            if sh > eh:
+                # Overnight window: e.g. 20:00 yesterday → 03:00 today
+                import datetime as _dt_mod
+                yesterday = today - _dt_mod.timedelta(days=1)
+                asian = df2[
+                    ((df2['_dt'].dt.date == yesterday) & (df2['_dt'].dt.hour >= sh)) |
+                    ((df2['_dt'].dt.date == today)     & (df2['_dt'].dt.hour < eh))
+                ]
+            else:
+                # Same-day window: e.g. 00:00-08:00 today
+                asian = df2[
+                    (df2['_dt'].dt.date == today) &
+                    (df2['_dt'].dt.hour >= sh) &
+                    (df2['_dt'].dt.hour < eh)
+                ]
+
+            if len(asian) >= 3:
+                ah = float(asian['high'].max())
+                al = float(asian['low'].min())
+                rng = ah - al
+                return {
+                    'valid':          True,
+                    'asian_high':     round(ah, 5),
+                    'asian_low':      round(al, 5),
+                    'asian_midpoint': round((ah + al) / 2, 5),
+                    'range_atr':      round(rng / atr, 2),
+                    'range_pips':     round(rng, 5),
+                    'is_tight':       rng < atr * 0.8,
+                }
+        except Exception:
+            pass
+
+    # Fallback: rolling candle count approximation
+    bars = 8 * 4 if 'BTC' in symbol.upper() or 'ETH' in symbol.upper() else 3 * 4
+    win  = df.tail(bars * 2).head(bars)
+    if len(win) < 3:
+        return empty
+    ah = float(win['high'].max())
+    al = float(win['low'].min())
+    rng = ah - al
+    return {
+        'valid':          True,
+        'asian_high':     round(ah, 5),
+        'asian_low':      round(al, 5),
+        'asian_midpoint': round((ah + al) / 2, 5),
+        'range_atr':      round(rng / atr, 2),
+        'range_pips':     round(rng, 5),
+        'is_tight':       rng < atr * 0.8,
+    }
+
+
+def detect_time_fvg(df: pd.DataFrame, direction: str, symbol: str,
+                    utc_now: datetime, atr: float) -> dict:
+    """
+    Time-based Fair Value Gap — an FVG that was created INSIDE a Silver Bullet
+    window.  This is the core distinction from the generic detect_fvg():
+    a time-FVG has a well-defined expectation of SAME-SESSION mitigation.
+
+    Scans last `lookback` bars. For each c1-c2-c3 FVG triplet, checks if the
+    bar time falls within any Silver Bullet window for the asset.
+
+    Returns dict:
+      found:          bool
+      fvg_high:       float — top of gap
+      fvg_low:        float — bottom of gap
+      fvg_mid:        float — midpoint (ideal entry for scalp)
+      fvg_size:       float — gap size in price units
+      fvg_size_atr:   float — gap size / ATR
+      window_name:    str   — which SB window created it
+      bars_ago:       int   — how many bars since formation (freshness)
+      filled_pct:     float — 0.0 if untouched, 1.0 if fully filled
+    """
+    empty = {'found': False, 'fvg_high': None, 'fvg_low': None,
+             'fvg_mid': None, 'fvg_size': 0.0, 'fvg_size_atr': 0.0,
+             'window_name': '', 'bars_ago': 0, 'filled_pct': 0.0}
+
+    windows = get_silver_bullet_windows(symbol)
+    if not windows or len(df) < 12 or atr <= 0:
+        return empty
+
+    min_gap = atr * _MIN_FVG_ATR.get(
+        next((k for k in _MIN_FVG_ATR if symbol.upper().startswith(k)), ''), 0.30
+    )
+
+    lookback = 20
+    win = df.tail(lookback + 2).reset_index(drop=True)
+    n   = len(win)
+
+    has_ts = 'timestamp' in win.columns
+
+    for i in range(n - 2):
+        c1 = win.iloc[i]
+        c3 = win.iloc[i + 2]
+        subsequent = win.iloc[i + 2:]
+
+        # Determine window membership if timestamps available
+        w_name = ''
+        if has_ts:
+            try:
+                c2_dt = pd.to_datetime(win.iloc[i + 1]['timestamp'], utc=True)
+                t = c2_dt.hour * 60 + c2_dt.minute
+                for sh, sm, eh, em, name in windows:
+                    if sh * 60 + sm <= t < eh * 60 + em:
+                        w_name = name
+                        break
+            except Exception:
+                pass
+        else:
+            # Without timestamps: only accept if currently inside a window
+            in_sb, w_name = _is_in_silver_bullet_window(utc_now, symbol)
+            if not in_sb:
+                continue
+
+        if not w_name:
+            continue   # FVG formed outside any SB window — not a time-FVG
+
+        bars_ago = n - 2 - i   # 0 = most recent
+
+        if direction == 'BUY':
+            gap_low  = float(c1['high'])
+            gap_high = float(c3['low'])
+            if gap_high <= gap_low or (gap_high - gap_low) < min_gap:
+                continue
+            # Check how much of the gap has been filled (price re-entered)
+            min_sub_low = float(subsequent['low'].min()) if len(subsequent) > 0 else gap_high
+            if min_sub_low <= gap_low:
+                continue   # fully filled — dead FVG
+            filled_pct = max(0.0, min(1.0, (gap_high - min_sub_low) / (gap_high - gap_low)))
+            if filled_pct >= 0.80:
+                continue   # mostly filled
+
+        else:   # SELL
+            gap_high = float(c1['low'])
+            gap_low  = float(c3['high'])
+            if gap_low >= gap_high or (gap_high - gap_low) < min_gap:
+                continue
+            max_sub_high = float(subsequent['high'].max()) if len(subsequent) > 0 else gap_low
+            if max_sub_high >= gap_high:
+                continue
+            filled_pct = max(0.0, min(1.0, (max_sub_high - gap_low) / (gap_high - gap_low)))
+            if filled_pct >= 0.80:
+                continue
+
+        size = gap_high - gap_low
+        return {
+            'found':        True,
+            'fvg_high':     round(gap_high, 5),
+            'fvg_low':      round(gap_low, 5),
+            'fvg_mid':      round((gap_high + gap_low) / 2, 5),
+            'fvg_size':     round(size, 5),
+            'fvg_size_atr': round(size / atr, 2),
+            'window_name':  w_name,
+            'bars_ago':     bars_ago,
+            'filled_pct':   round(filled_pct, 2) if 'filled_pct' in dir() else 0.0,
+        }
+
+    return empty
+
+
+def detect_po3_asian_sweep(df: pd.DataFrame, asian: dict,
+                            utc_now: datetime, symbol: str, atr: float) -> dict:
+    """
+    Power of 3 — Asian Range Sweep + Displacement detector.
+
+    The Power of 3 for XAU/XAG/Crypto:
+      Phase 1 (Accumulation): Asian session builds a range (detected by detect_asian_range_scalp)
+      Phase 2 (Manipulation): London or early NY sweeps ABOVE Asian High or BELOW Asian Low
+                               This is the "Judas Swing" — engineered liquidity grab
+      Phase 3 (Distribution):  After the sweep, price displaces in the TRUE direction
+                               leaving FVGs behind — these are the prime scalp entries
+
+    Unlike the standard Judas swing detector (which fires on any swing), this
+    function requires:
+      a) A valid Asian range (not just any accumulation)
+      b) A confirmed SWEEP: candle closes BEYOND the Asian H/L, not just wicks
+      c) A DISPLACEMENT: the very next bar (or within 3 bars) closes back INSIDE
+         the Asian range AND beyond the Asian midpoint
+      d) An FVG formed during the displacement move
+
+    Returns dict:
+      swept:            bool — Asian H or L has been swept
+      direction:        'BUY' (sweep of AH → expect down) or
+                        'SELL' (sweep of AL → expect up)
+                        NOTE: direction = expected trade direction AFTER sweep
+      sweep_level:      float — the level that was swept
+      sweep_type:       'ABOVE_AH' or 'BELOW_AL'
+      displacement:     bool — confirmed displacement after sweep
+      disp_fvg:         dict  — FVG left by displacement (may be empty)
+      sweep_bars_ago:   int
+      po3_score:        float — composite quality score
+    """
+    empty = {'swept': False, 'direction': None, 'sweep_level': None,
+             'sweep_type': None, 'displacement': False,
+             'disp_fvg': {}, 'sweep_bars_ago': 0, 'po3_score': 0.0}
+
+    if not asian.get('valid') or atr <= 0:
+        return empty
+
+    ah  = asian['asian_high']
+    al  = asian['asian_low']
+    mid = asian['asian_midpoint']
+
+    if df is None or len(df) < 10:
+        return empty
+
+    window  = df.tail(30).reset_index(drop=True)
+    n       = len(window)
+    result  = dict(empty)
+
+    for i in range(n - 1):
+        bar = window.iloc[i]
+        # Sweep ABOVE Asian High (bearish setup → expect SELL after sweep)
+        if bar['high'] > ah and bar['close'] > ah:
+            swept_dir   = 'SELL'
+            sweep_type  = 'ABOVE_AH'
+            sweep_level = ah
+        # Sweep BELOW Asian Low (bullish setup → expect BUY after sweep)
+        elif bar['low'] < al and bar['close'] < al:
+            swept_dir   = 'BUY'
+            sweep_type  = 'BELOW_AL'
+            sweep_level = al
+        else:
+            continue
+
+        # Found a sweep — look for displacement in the next 1-4 bars
+        sweep_bars_ago = n - 1 - i
+        result.update({
+            'swept':          True,
+            'direction':      swept_dir,
+            'sweep_level':    sweep_level,
+            'sweep_type':     sweep_type,
+            'sweep_bars_ago': sweep_bars_ago,
+        })
+
+        # Displacement: within 3 bars, price closes back inside the range
+        # AND past the Asian midpoint in the opposite direction
+        for j in range(i + 1, min(i + 5, n)):
+            disp_bar = window.iloc[j]
+            if swept_dir == 'SELL':
+                # After sweep above AH: expect close back below mid (bearish displacement)
+                if disp_bar['close'] < mid:
+                    result['displacement'] = True
+                    # Check for FVG left by this displacement (scan bars i..j)
+                    sub_df = window.iloc[max(0, i - 1): j + 2]
+                    fvg = detect_time_fvg(sub_df, 'SELL', symbol, utc_now, atr)
+                    if not fvg['found']:
+                        # Also accept a generic FVG from the displacement bars
+                        fvg = _detect_fvg_from_slice(sub_df, 'SELL', atr,
+                                                      min_gap=atr * _MIN_FVG_ATR.get(
+                                                          next((k for k in _MIN_FVG_ATR
+                                                                if symbol.upper().startswith(k)), ''),
+                                                          0.3))
+                    result['disp_fvg'] = fvg
+                    break
+            else:
+                # After sweep below AL: expect close back above mid (bullish displacement)
+                if disp_bar['close'] > mid:
+                    result['displacement'] = True
+                    sub_df = window.iloc[max(0, i - 1): j + 2]
+                    fvg = detect_time_fvg(sub_df, 'BUY', symbol, utc_now, atr)
+                    if not fvg['found']:
+                        fvg = _detect_fvg_from_slice(sub_df, 'BUY', atr,
+                                                      min_gap=atr * _MIN_FVG_ATR.get(
+                                                          next((k for k in _MIN_FVG_ATR
+                                                                if symbol.upper().startswith(k)), ''),
+                                                          0.3))
+                    result['disp_fvg'] = fvg
+                    break
+
+        # Quality score for PO3 component
+        po3_score = 0.0
+        if result['swept']:          po3_score += 0.20
+        if result['displacement']:   po3_score += 0.20
+        if result.get('disp_fvg', {}).get('found'):  po3_score += 0.15
+        if asian.get('is_tight'):    po3_score += 0.05   # tighter range = cleaner sweep
+        # Freshness bonus: recent sweeps are more actionable
+        if sweep_bars_ago <= 2:       po3_score += 0.05
+        result['po3_score'] = round(po3_score, 3)
+
+        # Use the MOST RECENT sweep (first found in reverse scan would be ideal,
+        # but we scan forward and keep the latest by overwriting until end of loop)
+        # To get most recent: break on first valid displacement, ignore stale sweeps
+        if result['displacement']:
+            break
+
+    return result
+
+
+def _detect_fvg_from_slice(df_slice: pd.DataFrame, direction: str,
+                            atr: float, min_gap: float = 0.0) -> dict:
+    """
+    Helper: generic (non-time-gated) FVG detection on a small DataFrame slice.
+    Used internally by detect_po3_asian_sweep to find displacement FVGs even
+    when no Silver Bullet timestamp is available.
+    """
+    empty = {'found': False}
+    if df_slice is None or len(df_slice) < 3 or atr <= 0:
+        return empty
+    win = df_slice.reset_index(drop=True)
+    n   = len(win)
+    mg  = max(min_gap, atr * 0.20)
+    for i in range(n - 2):
+        c1 = win.iloc[i]
+        c3 = win.iloc[i + 2]
+        if direction == 'BUY':
+            gl = float(c1['high']); gh = float(c3['low'])
+            if gh > gl and (gh - gl) >= mg:
+                return {'found': True, 'fvg_low': round(gl, 5),
+                        'fvg_high': round(gh, 5),
+                        'fvg_mid': round((gl + gh) / 2, 5),
+                        'fvg_size': round(gh - gl, 5),
+                        'window_name': 'displacement'}
+        else:
+            gh = float(c1['low']); gl = float(c3['high'])
+            if gl < gh and (gh - gl) >= mg:
+                return {'found': True, 'fvg_low': round(gl, 5),
+                        'fvg_high': round(gh, 5),
+                        'fvg_mid': round((gl + gh) / 2, 5),
+                        'fvg_size': round(gh - gl, 5),
+                        'window_name': 'displacement'}
+    return empty
+
+
+def compute_scalp_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
+                              symbol: str, utc_now: datetime = None) -> tuple:
+    """
+    Silver Bullet / Time-FVG / Power of 3 composite scorer for scalp assets.
+
+    Scoring breakdown (max 1.00):
+      Silver Bullet window active     +0.20  (time filter — highest specificity)
+      Time-based FVG found            +0.25  (imbalance within SB window)
+      PO3 sweep confirmed             +0.20  (Asian range manipulation)
+      PO3 displacement confirmed      +0.15  (smart money reversal)
+      FVG fresh (≤ 3 bars)            +0.10  (recency filter)
+      Asian range quality (tight)     +0.05  (clean accumulation)
+      Macro trend aligned             +0.05  (H4 not counter-directional)
+
+    For an entry-quality signal we expect ≥ 0.65 on this scale.
+
+    Returns: (signal, score, reason, conditions_dict, kill_zone)
+    """
+    if utc_now is None:
+        utc_now = datetime.utcnow()
+
+    empty_ret = ("NEUTRAL", 0.0, "Scalp: no setup", {}, "N/A")
+
+    if df is None or len(df) < 20:
+        return empty_ret
+
+    df = df.copy()
+    if 'atr' not in df.columns:
+        df['atr'] = calculate_atr(df)
+
+    current_atr = max(float(df['atr'].iloc[-1]), 1e-8)
+
+    # ── 1. Is current time inside a Silver Bullet window? ───────────────
+    in_sb, sb_name = _is_in_silver_bullet_window(utc_now, symbol)
+
+    # ── 2. Asian range for this asset ────────────────────────────────────
+    asian = detect_asian_range_scalp(df, symbol, utc_now, current_atr)
+
+    # ── 3. Macro trend alignment (H4) ────────────────────────────────────
+    macro_trend = _derive_macro_trend(df_macro) if df_macro is not None and len(df_macro) >= 10 else "NEUTRAL"
+
+    # ── 4. Power of 3 sweep detection ────────────────────────────────────
+    po3 = detect_po3_asian_sweep(df, asian, utc_now, symbol, current_atr)
+
+    # ── 5. Direction from PO3 sweep (or skip if no sweep) ─────────────
+    # PO3 direction is the trade direction after the sweep.
+    # If no PO3 sweep, attempt to read direction from existing price structure.
+    if po3['swept'] and po3['direction']:
+        direction = po3['direction']
+    else:
+        # No clear PO3 sweep — try last macro structure
+        if macro_trend == 'BULLISH':
+            direction = 'BUY'
+        elif macro_trend == 'BEARISH':
+            direction = 'SELL'
+        else:
+            return empty_ret   # no directional bias — no scalp signal
+
+    # ── 6. Time-FVG in direction ──────────────────────────────────────────
+    tfvg = detect_time_fvg(df, direction, symbol, utc_now, current_atr)
+
+    # ── 7. Score assembly ─────────────────────────────────────────────────
+    score = 0.0
+    cond  = {
+        'scalp_model':    True,
+        'symbol':         symbol,
+        'direction':      direction,
+        'sb_active':      in_sb,
+        'sb_window':      sb_name,
+        'asian_valid':    asian.get('valid', False),
+        'asian_high':     asian.get('asian_high'),
+        'asian_low':      asian.get('asian_low'),
+        'asian_tight':    asian.get('is_tight', False),
+        'asian_range_atr': asian.get('range_atr', 0.0),
+        'po3_swept':      po3.get('swept', False),
+        'po3_direction':  po3.get('direction'),
+        'po3_sweep_type': po3.get('sweep_type'),
+        'po3_displaced':  po3.get('displacement', False),
+        'po3_score':      po3.get('po3_score', 0.0),
+        'tfvg_found':     tfvg.get('found', False),
+        'tfvg_high':      tfvg.get('fvg_high'),
+        'tfvg_low':       tfvg.get('fvg_low'),
+        'tfvg_mid':       tfvg.get('fvg_mid'),
+        'tfvg_window':    tfvg.get('window_name', ''),
+        'tfvg_bars_ago':  tfvg.get('bars_ago', 0),
+        'macro_trend':    macro_trend,
+    }
+
+    # Silver Bullet window active — time filter bonus
+    if in_sb:
+        score += 0.20
+        cond['score_sb'] = 0.20
+
+    # Power of 3 sweep
+    if po3.get('swept'):
+        score += 0.20
+        cond['score_po3_sweep'] = 0.20
+
+    # Power of 3 displacement after sweep
+    if po3.get('displacement'):
+        score += 0.15
+        cond['score_po3_disp'] = 0.15
+
+    # Displacement FVG (generic FVG from the PO3 move)
+    if po3.get('disp_fvg', {}).get('found'):
+        score += 0.10
+        cond['score_disp_fvg'] = 0.10
+
+    # Time-based FVG in Silver Bullet window
+    if tfvg.get('found'):
+        score += 0.25
+        cond['score_tfvg'] = 0.25
+        # Freshness bonus
+        if tfvg.get('bars_ago', 99) <= 3:
+            score += 0.10
+            cond['score_tfvg_fresh'] = 0.10
+
+    # Asian range quality
+    if asian.get('is_tight'):
+        score += 0.05
+        cond['score_asian_tight'] = 0.05
+
+    # Macro alignment
+    macro_aligned = (direction == 'BUY' and macro_trend == 'BULLISH') or \
+                    (direction == 'SELL' and macro_trend == 'BEARISH')
+    if macro_aligned:
+        score += 0.05
+        cond['score_macro'] = 0.05
+
+    # [S17] Candlestick confluence — 60% weight (scalp signals are tighter / faster)
+    s17_scalp = detect_candlestick_pattern(df, direction, current_atr)
+    if s17_scalp['confirmed']:
+        s17_scalp_bonus = round(s17_scalp['bonus'] * 0.60, 3)
+        score = min(0.99, score + s17_scalp_bonus)
+        cond['s17_candle_pattern']  = s17_scalp['pattern']
+        cond['s17_candle_confirmed'] = True
+        cond['s17_candle_conflict']  = False
+        cond['score_s17_candle']    = s17_scalp_bonus
+    elif s17_scalp['conflict']:
+        s17_scalp_penalty = round(s17_scalp['conflict_penalty'] * 0.60, 3)
+        score = max(0.0, score - s17_scalp_penalty)
+        cond['s17_candle_pattern']   = 'NONE'
+        cond['s17_candle_confirmed'] = False
+        cond['s17_candle_conflict']  = True
+        cond['s17_conflict_pattern'] = s17_scalp['conflict_pattern']
+    else:
+        cond['s17_candle_pattern']   = 'NONE'
+        cond['s17_candle_confirmed'] = False
+        cond['s17_candle_conflict']  = False
+
+    # Hard floor: require at minimum a sweep OR a time-FVG — don't trade on clock alone
+    if not po3.get('swept') and not tfvg.get('found'):
+        reason = (f"Scalp [{symbol}]: SB={in_sb} but no PO3 sweep and no time-FVG — "
+                  f"no structural basis. Score={score:.2f}")
+        return "NEUTRAL", 0.0, reason, cond, sb_name or "N/A"
+
+    # Macro counter-directional veto (H4 strongly opposite → no trade)
+    if not macro_aligned and macro_trend != "NEUTRAL":
+        # Counter-trend scalps are allowed but score-capped at 0.70
+        score = min(score, 0.70)
+        cond['macro_veto_cap'] = 0.70
+
+    score = min(round(score, 3), 0.99)
+
+    # ── 8. Signal type ────────────────────────────────────────────────────
+    # Scalp signals are always MICRO (tight SL, fast exit)
+    if score >= 0.65:
+        sig = f"{direction}_MICRO"
+    elif score >= 0.50:
+        sig = f"{direction}_NANO"   # lower confidence — nano sizing
+    else:
+        return "NEUTRAL", score, f"Scalp score {score:.2f} below threshold", cond, sb_name or "N/A"
+
+    # ── 9. Kill zone label ────────────────────────────────────────────────
+    kill_zone = sb_name if in_sb else f"PO3_{po3.get('sweep_type', 'SWEEP')}"
+
+    # ── 10. Reason string ────────────────────────────────────────────────
+    sb_tag  = f"⏰{sb_name}" if in_sb else "⏰OutsideSB"
+    po3_tag = f"PO3✅[{po3.get('sweep_type','')} disp={po3.get('displacement')}]" if po3.get('swept') else "PO3❌"
+    fvg_tag = (f"TimeFVG✅[{tfvg.get('window_name','')} +{tfvg.get('bars_ago',0)}bars]"
+               if tfvg.get('found') else "TimeFVG❌")
+    asian_tag = (f"Asian[H={asian.get('asian_high')} L={asian.get('asian_low')} "
+                 f"tight={asian.get('is_tight')}]" if asian.get('valid') else "Asian[?]")
+    s17_scalp_tag = (f" | S17[{cond.get('s17_candle_pattern')}+{cond.get('score_s17_candle', 0):.2f}]"
+                     if cond.get('s17_candle_confirmed')
+                     else (f" | S17[⚠️{cond.get('s17_conflict_pattern')}]"
+                           if cond.get('s17_candle_conflict') else ""))
+    reason = (f"SCALP {direction} [{symbol}] Score:{score:.3f} | "
+              f"{sb_tag} | {po3_tag} | {fvg_tag} | {asian_tag} | Macro:{macro_trend}{s17_scalp_tag}")
+
+    return sig, score, reason, cond, kill_zone
+
+
 # ── MAIN ENTRY POINT ──────────────────────────────────────────────────────────
 
 def analyze_market_structure(
@@ -2465,6 +3443,39 @@ def analyze_market_structure(
     signal, score, reason, conditions, kill_zone = compute_ict_confluence(
         df, df_macro, sym, market_regime, utc_now
     )
+
+    # ── [S16] SILVER BULLET / TIME-FVG / PO3 SCALP ENGINE ──────────────
+    # For Gold, Silver and Crypto, run the dedicated scalp model in parallel.
+    # If the scalp model produces a higher-confidence signal than the ICT
+    # engine, it wins. The winning model is tagged in the conditions dict.
+    # Rationale: time-based FVGs on XAU/XAG/BTC/ETH have a different fill
+    # expectation profile than standard ICT setups — same-session mitigation
+    # is near-mechanical during Silver Bullet windows. Running both models
+    # and taking the higher score ensures we never miss a high-quality scalp
+    # setup just because the ICT swing model didn't trigger.
+    if any(sym.upper().startswith(k) for k in _SILVER_BULLET_ASSETS):
+        try:
+            sc_sig, sc_score, sc_reason, sc_cond, sc_kz = compute_scalp_confluence(
+                df, df_macro, sym, utc_now
+            )
+            if sc_sig != "NEUTRAL" and sc_score > score:
+                # Scalp model wins — merge conditions, tag signal source
+                sc_cond['ict_score_shadow']  = score
+                sc_cond['ict_signal_shadow'] = signal
+                sc_cond['model_winner']      = 'SCALP'
+                signal     = sc_sig
+                score      = sc_score
+                reason     = sc_reason
+                conditions = sc_cond
+                kill_zone  = sc_kz
+            elif sc_sig != "NEUTRAL":
+                # ICT won but scalp model also fired — log as secondary
+                conditions['scalp_score_shadow']  = sc_score
+                conditions['scalp_signal_shadow'] = sc_sig
+                conditions['model_winner']        = 'ICT'
+        except Exception as _sc_err:
+            conditions['scalp_error'] = str(_sc_err)
+    # ────────────────────────────────────────────────────────────────────
 
     resp = AnalysisResponse(
         symbol=request.symbol,
