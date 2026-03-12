@@ -12278,3 +12278,120 @@
 2026-03-12 15:07:07 [INFO] Stopped.
 2026-03-12 15:07:09 [INFO] ✅ TradeCore v53.0: Engine Active. Monitoring 20 Assets.
 2026-03-12 15:08:11 [INFO] 🟢 Trade Closed: #8580518496 GBPJPY BUY | WIN | P&L: $+27.51
+2026-03-12 15:09:13 [DEBUG] [EURUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:13 [DEBUG] [GBPUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:13 [DEBUG] [USDJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:13 [DEBUG] [USDCAD] DISTRIBUTION [London_NY]: No OB/FVG retest in NEUTRAL direction.
+2026-03-12 15:09:13 [DEBUG] [AUDUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:09:14 [DEBUG] [NZDUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [EURJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:09:14 [DEBUG] [XAUUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [XAGUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [BTCUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:09:14 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6715.29
+2026-03-12 15:09:14 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24753.35
+2026-03-12 15:10:46 [DEBUG] [EURUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [GBPUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [USDJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [USDCAD] DISTRIBUTION [London_NY]: No OB/FVG retest in NEUTRAL direction.
+2026-03-12 15:10:46 [DEBUG] [AUDUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:10:46 [DEBUG] [NZDUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [EURJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:10:46 [DEBUG] [XAUUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [XAGUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [BTCUSD] INDETERMINATE [London_NY] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:10:46 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6715.29
+2026-03-12 15:10:46 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24753.35
+2026-03-12 15:11:43 [DEBUG] [EURUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [GBPUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [USDJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [USDCAD] DISTRIBUTION [London_NY]: No OB/FVG retest in NEUTRAL direction.
+2026-03-12 15:11:43 [DEBUG] [AUDUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:11:43 [DEBUG] [NZDUSD] INDETERMINATE [London_NY] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [EURJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:11:43 [DEBUG] [XAUUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [XAGUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [BTCUSD] INDETERMINATE [London_NY] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:11:43 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6715.29
+2026-03-12 15:11:43 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24753.35
+2026-03-12 15:12:37 [DEBUG] [EURUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:37 [DEBUG] [GBPUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:37 [DEBUG] [USDJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:37 [DEBUG] [USDCAD] DISTRIBUTION [London_NY]: No OB/FVG retest in NEUTRAL direction.
+2026-03-12 15:12:37 [DEBUG] [AUDUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:12:38 [DEBUG] [NZDUSD] INDETERMINATE [London_NY] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [EURJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:12:38 [DEBUG] [XAUUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [XAGUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [BTCUSD] INDETERMINATE [London_NY] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:12:38 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6715.29
+2026-03-12 15:12:38 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24753.35
+2026-03-12 15:13:35 [DEBUG] [EURUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:35 [DEBUG] [GBPUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [USDJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [USDCAD] DISTRIBUTION [London_NY]: No OB/FVG retest in NEUTRAL direction.
+2026-03-12 15:13:36 [DEBUG] [AUDUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:13:36 [DEBUG] [NZDUSD] INDETERMINATE [London_NY] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [EURJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:13:36 [DEBUG] [XAUUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [XAGUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [BTCUSD] INDETERMINATE [London_NY] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:13:36 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6715.29
+2026-03-12 15:13:36 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24753.35
+2026-03-12 15:15:12 [INFO] 🔎 MTF Confluence Locked: EURUSD SELL_MICRO (Conf: 99%)
+2026-03-12 15:15:12 [INFO] ⚠️ Lot Cap: EURUSD calculated 2.42 lots → capped at 0.77 (MICRO)
+2026-03-12 15:15:12 [INFO] ⚡ TRAP SET: EURUSD SELL_LIMIT | Entry: 1.15572 | Lot: 0.77
+2026-03-12 15:15:12 [DEBUG] [EURJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:15:13 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:15:13 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:15:13 [DEBUG] [XAUUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:15:13 [DEBUG] [XAGUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:15:13 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:15:13 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:15:13 [DEBUG] [BTCUSD] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:15:13 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6721.54
+2026-03-12 15:15:13 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24778.85
+2026-03-12 15:16:38 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:16:38 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:16:38 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:16:38 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:16:38 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6721.54
+2026-03-12 15:16:38 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24778.85
+2026-03-12 15:17:38 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:17:38 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:17:38 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:17:38 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:17:38 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6721.54
+2026-03-12 15:17:38 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24778.85
+2026-03-12 15:18:39 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:18:39 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:18:39 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:18:39 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:18:39 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6721.54
+2026-03-12 15:18:39 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24778.85
+2026-03-12 15:19:50 [DEBUG] [GBPJPY] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:19:50 [DEBUG] [AUDJPY] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-03-12 15:19:50 [DEBUG] [US Oil] INDETERMINATE [London_NY] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:19:50 [DEBUG] [NGAS] INDETERMINATE [London_NY] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-12 15:19:50 [DEBUG] [US SP 500] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:6754.92 AL:6721.54
+2026-03-12 15:19:50 [DEBUG] [US Tech 100] ACCUMULATION [London_NY] | conf:0.42 | Mapping range | AH:24901.1 AL:24778.85
