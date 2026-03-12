@@ -1,8 +1,8 @@
 {
   "account_id": "32128474",
   "scaled_positions": [
-    "XAUUSD_5139.09_BUY",
-    "BTCUSD_69219.997_SELL"
+    "BTCUSD_69219.997_SELL",
+    "XAUUSD_5139.09_BUY"
   ],
   "last_logged_signal": {
     "EURUSD": [
@@ -16,9 +16,9 @@
       "SKIPPED"
     ],
     "USDJPY": [
-      "BUY_MICRO",
-      0.55,
-      "LOW_CONFIDENCE (55%)"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "USDCAD": [
       "NEUTRAL",
@@ -26,24 +26,24 @@
       "SKIPPED"
     ],
     "USDCHF": [
-      "BUY_MICRO",
-      0.55,
-      "LOW_CONFIDENCE (55%)"
-    ],
-    "AUDUSD": [
-      "SELL_MICRO",
-      0.55,
-      "LOW_CONFIDENCE (55%)"
-    ],
-    "NZDUSD": [
-      "SELL_MICRO",
-      0.55,
-      "LOW_CONFIDENCE (55%)"
-    ],
-    "EURJPY": [
       "NEUTRAL",
       0.0,
       "SKIPPED"
+    ],
+    "AUDUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "NZDUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "EURJPY": [
+      "BUY_MICRO",
+      0.83,
+      "ATTEMPTED"
     ],
     "GBPJPY": [
       "NEUTRAL",
@@ -51,8 +51,8 @@
       "SKIPPED"
     ],
     "EURGBP": [
-      "BUY_MICRO",
-      0.99,
+      "SELL_NANO",
+      0.85,
       "ATTEMPTED"
     ],
     "AUDJPY": [

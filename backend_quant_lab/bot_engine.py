@@ -103,6 +103,23 @@ class TradingBot:
         # (appears in open positions) and calls save_trade() immediately.
         self._pending_order_info: dict = {}
 
+        # [S15-L2] Consecutive price-too-close rejection counter.
+        # Key: (symbol, entry_price_str). Value: rejection count.
+        # After 4 consecutive rejections on the same entry price, the OB zone
+        # is being swept through — signal is invalidated and must not place.
+        self._price_close_rejections: dict = {}
+
+        # [S15-L1] Entry momentum watch list.
+        # After a LIMIT fills, the position is added here so the next
+        # run_cycle can validate that the first close moved in our direction.
+        # Key: ticket. Value: {'symbol','type','open_price','sl_dist','fill_candle_time'}
+        self._momentum_watch: dict = {}
+
+        # [S15-L4] Markov directional trap cleanup — tracks last regime seen.
+        # When Markov flips to BEAR, cancel pending BUY limits.
+        # When Markov flips to BULL, cancel pending SELL limits.
+        self._last_markov_gate: str = "OK"  # "OK" | "HALT_BEAR" | "HALT_BULL" | "HALT_HVOL"
+
         # [SPRINT 7] Quantitative analytics engine.
         # Cached for 5 min. Provides: risk_pct, var_limit, cvar_limit,
         # kelly_fraction, regime_gate, regime_multiplier.
@@ -659,6 +676,17 @@ class TradingBot:
                             model_type = info.get('model_type'),
                             model_sizing = info.get('model_sizing'),
                         )
+                        # [S15-L1] Register fill in momentum watch list.
+                        # The first M5 candle after fill validates entry quality.
+                        sl_d = abs(pos.get('open_price', 0.0) - pos.get('sl', 0.0))
+                        self._momentum_watch[ticket] = {
+                            'symbol':          pos['symbol'],
+                            'type':            pos['type'],
+                            'open_price':      pos.get('open_price', 0.0),
+                            'sl_dist':         sl_d,
+                            'fill_time':       datetime.utcnow(),
+                            'checked':         False,
+                        }
                         self.log_debug(f"[{pos['symbol']}] Trade recorded: "
                                        f"ticket={ticket} model={info.get('model_type')}")
                     except Exception as e:
@@ -750,6 +778,80 @@ class TradingBot:
             self.log_debug(f"Close Detection Error: {_ce}")
         # ────────────────────────────────────────────────────────────────
 
+        # [S15-L1] ENTRY MOMENTUM GUARD ──────────────────────────────────
+        # After a LIMIT fills, we wait one full M5 candle (≥3 min) then check
+        # whether the first close moved IN our direction. If the first close
+        # after fill moved AGAINST us by more than 0.3×SL, the OB zone has
+        # been swept through (no bounce) — close immediately at market.
+        #
+        # This catches the zero-MFE pattern (6/9 losses, $332 lost) where
+        # price filled the limit and immediately continued through the zone.
+        # The 3-min delay ensures we don't panic-exit on a normal retest
+        # before the structure plays out.
+        #
+        # Thresholds:  wait ≥ 3 min | adverse move > 0.30×SL → emergency close
+        if self._momentum_watch:
+            now_utc = datetime.utcnow()
+            stale_tickets = []
+            for watch_ticket, wdata in list(self._momentum_watch.items()):
+                # Skip if already checked or fill was too recent
+                elapsed = (now_utc - wdata['fill_time']).total_seconds()
+                if elapsed < 180:   # < 3 min — wait for candle to close
+                    continue
+                if wdata.get('checked'):
+                    stale_tickets.append(watch_ticket)
+                    continue
+
+                # Mark checked so we only evaluate once
+                self._momentum_watch[watch_ticket]['checked'] = True
+                stale_tickets.append(watch_ticket)
+
+                # Is this position still open?
+                live_pos = next(
+                    (p for p in current_positions if p.get('ticket') == watch_ticket), None
+                )
+                if live_pos is None:
+                    continue  # already closed (SL or TP hit fast) — nothing to do
+
+                sym       = wdata['symbol']
+                is_buy    = wdata['type'] == 'BUY'
+                open_px   = wdata['open_price']
+                sl_dist   = wdata['sl_dist']
+                if sl_dist <= 0:
+                    continue
+
+                tick = mt5.symbol_info_tick(self.gateway.find_symbol(sym) or sym)
+                if tick is None:
+                    continue
+
+                current_px = tick.bid if is_buy else tick.ask
+                # Adverse move: for BUY, price dropped below open; for SELL, rose above
+                adverse_move = (open_px - current_px) if is_buy else (current_px - open_px)
+
+                if adverse_move > sl_dist * 0.30:
+                    # Zone swept — close position immediately
+                    vol = live_pos.get('volume', 0.0)
+                    self.log_info(
+                        f"⚡ Momentum Guard: {sym} adverse={adverse_move:.5f} "
+                        f"({adverse_move/sl_dist:.0%}×SL after 3min) — closing."
+                    )
+                    try:
+                        self.gateway.close_position(
+                            watch_ticket, sym, vol, wdata['type']
+                        )
+                        self.async_alert(
+                            f"⚡ **Momentum Guard Exit:** {sym}\n"
+                            f"Zone swept — closed {vol} lots at market.\n"
+                            f"Adverse move: {adverse_move/sl_dist:.0%} of SL in 3 min."
+                        )
+                    except Exception as _mg_e:
+                        self.log_debug(f"Momentum Guard close error ({sym}): {_mg_e}")
+
+            # Prune checked/stale entries
+            for t in stale_tickets:
+                self._momentum_watch.pop(t, None)
+        # ────────────────────────────────────────────────────────────────
+
         current_day = datetime.utcnow().day
         
         if self.kill_switch_active:
@@ -811,9 +913,49 @@ class TradingBot:
                 p_bear = markov.get('p_bear_next', 0)
                 p_hv   = markov.get('p_high_vol_next', 0)
                 self.log_info(f"🔴 Markov Gate HALT: P(BEAR)={p_bear:.0%} P(HIGH_VOL)={p_hv:.0%}. No new positions.")
+
+            # [S15-L4] DIRECTIONAL TRAP CLEANUP on regime flip.
+            # Markov HALT blocks new signals but previously left existing limit
+            # traps sitting in the order book. A BUY limit placed in a normal
+            # market that then flips BEAR will fill INTO a trending bear move —
+            # exactly the wrong side. Cancel contra-regime pending limits only
+            # when the regime gate first fires (not every cycle to avoid spam).
+            # BEAR → cancel pending BUY limits  |  HIGH_VOL → cancel all limits
+            # (keep SELL limits in BEAR — they are regime-aligned)
+            p_bear = markov.get('p_bear_next', 0)
+            p_hv   = markov.get('p_high_vol_next', 0)
+            new_gate = "HALT_BEAR" if p_bear > 0.65 else "HALT_HVOL" if p_hv > 0.50 else "HALT"
+            if new_gate != self._last_markov_gate:
+                self._last_markov_gate = new_gate
+                try:
+                    raw_orders = mt5.orders_get()
+                    if raw_orders:
+                        cancel_types = set()
+                        if "BEAR" in new_gate:
+                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_BUY_STOP}
+                        else:  # HIGH_VOL — cancel both directions (no directional edge)
+                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_SELL_LIMIT,
+                                            mt5.ORDER_TYPE_BUY_STOP,  mt5.ORDER_TYPE_SELL_STOP}
+                        cancelled = 0
+                        for order in raw_orders:
+                            if order.type in cancel_types:
+                                req = {"action": mt5.TRADE_ACTION_REMOVE, "order": order.ticket}
+                                res = mt5.order_send(req)
+                                if res and res.retcode == mt5.TRADE_RETCODE_DONE:
+                                    self._pending_order_info.pop(order.ticket, None)
+                                    cancelled += 1
+                        if cancelled:
+                            self.log_info(f"🧹 Markov Cleanup: {cancelled} contra-regime limit(s) "
+                                          f"cancelled ({new_gate}).")
+                except Exception:
+                    pass
             return
-        elif markov.get('trading_gate') == 'REDUCE':
-            self._risk_reduction_mode = True
+        else:
+            # Regime cleared or REDUCE — reset HALT tracker so next flip triggers cleanup again
+            if self._last_markov_gate != "OK":
+                self._last_markov_gate = "OK"
+            if markov.get('trading_gate') == 'REDUCE':
+                self._risk_reduction_mode = True
 
         is_open, market_status = self.check_market_schedule()
         if not is_open:
@@ -822,6 +964,86 @@ class TradingBot:
             return 
 
         self.apply_trailing_stop(current_positions)
+
+        # [S15-P4] SESSION-END PROFIT ANCHOR ─────────────────────────────
+        # At London PM close (17:00 UTC) and NY close (22:00 UTC), scan all
+        # open positions. If a position:
+        #   (a) has been open > 4 hours, AND
+        #   (b) is currently in profit (floating P&L > 0), AND
+        #   (c) is within 1R of its TP or has been trailing for > 6h
+        # → close it at market to bank the gain.
+        #
+        # Motivation: GBPUSD SELL (MFE 97% to TP, then reversed to full loss)
+        # was open for 1h50m during London lunch and was never closed.
+        # Pattern: positions that survive into the next session often give back
+        # gains as the new session opens with a fresh bias.
+        #
+        # Sessions: London PM = 17:00-17:05 UTC | NY close = 22:00-22:05 UTC
+        # Only fires in the 5-minute window each session (second < 300).
+        # Minimum 4h open prevents premature intraday closes.
+        try:
+            now_utc = datetime.utcnow()
+            hour    = now_utc.hour
+            minute  = now_utc.minute
+            is_session_close = (
+                (hour == 17 and minute < 5) or   # London PM close
+                (hour == 22 and minute < 5)        # NY close
+            )
+            if is_session_close and current_positions:
+                for pos in current_positions:
+                    try:
+                        _sym   = pos['symbol']
+                        _tick  = pos.get('ticket')
+                        _type  = pos['type']
+                        _open  = pos.get('open_price', 0.0)
+                        _sl    = pos.get('sl', 0.0)
+                        _tp    = pos.get('tp', 0.0)
+                        _vol   = pos.get('volume', 0.0)
+                        _since = pos.get('time', 0)
+
+                        hours_open = (now_utc - datetime.utcfromtimestamp(_since)).total_seconds() / 3600
+                        if hours_open < 4.0:
+                            continue  # too new — let it run
+
+                        _tick_data = mt5.symbol_info_tick(
+                            self.gateway.find_symbol(_sym) or _sym
+                        )
+                        if not _tick_data:
+                            continue
+
+                        _is_buy     = _type == 'BUY'
+                        _price_now  = _tick_data.bid if _is_buy else _tick_data.ask
+                        _float_pl   = (_price_now - _open) if _is_buy else (_open - _price_now)
+                        _sl_dist    = abs(_open - _sl) if _sl else 0
+
+                        if _float_pl <= 0:
+                            continue  # not in profit — don't close a loser
+
+                        # Only close if near TP (within 2R of TP) OR open > 6h
+                        _tp_dist    = abs(_tp - _open) if _tp else 0
+                        _float_r    = _float_pl / _sl_dist if _sl_dist > 0 else 0
+                        _tp_r       = _tp_dist / _sl_dist if _sl_dist > 0 else 0
+                        near_tp_sess = (_tp_r > 0 and _float_r >= _tp_r - 2.0)
+                        long_runner  = (hours_open > 6.0 and _float_r >= 0.5)
+
+                        if near_tp_sess or long_runner:
+                            close_ok = self.gateway.close_position(_tick, _sym, _vol, _type)
+                            if close_ok:
+                                reason = "near-TP at session end" if near_tp_sess else "long-runner at session end"
+                                self.log_info(
+                                    f"🔔 Session Close: {_sym} {_type} lot={_vol} "
+                                    f"banked at +{_float_r:.2f}R ({reason})"
+                                )
+                                self.async_alert(
+                                    f"🔔 **Session Close:** {_sym}\n"
+                                    f"Banked +{_float_pl:.5f} ({_float_r:.2f}R) at session end.\n"
+                                    f"Reason: {reason}"
+                                )
+                    except Exception as _sc_inner:
+                        self.log_debug(f"Session close inner error ({pos.get('symbol','')}): {_sc_inner}")
+        except Exception as _sc_e:
+            self.log_debug(f"Session close error: {_sc_e}")
+        # ────────────────────────────────────────────────────────────────
         self.evaluate_pending_orders() 
         self.evaluate_open_positions(current_positions) 
         self.active_tickets = {p['symbol'] for p in current_positions}
@@ -970,6 +1192,44 @@ class TradingBot:
                             self.async_alert(f"⚖️ **Partial Take Profit:** {symbol}\nSecured 50% Volume. Moving SL to Breakeven.")
                             breakeven_buffer = props['point'] * 5 
                             lock_price = open_price + breakeven_buffer if is_buy else open_price - breakeven_buffer
+
+                            # [S15-P2] SECOND SCALE HARD TP — set 2R TP on residual half.
+                            # After 1:1 scale-out, the remaining 50% enters "trail and hope".
+                            # Evidence: NZDUSD SELL captured 49% of MFE ($12 of $25 potential);
+                            # GBPUSD BUY captured 71% of MFE ($20 of $28 potential).
+                            # Fix: immediately set a 2R TP on the residual position so it has
+                            # a guaranteed exit target even if the trail fails to follow.
+                            # The trail still runs — if price continues, trail captures it.
+                            # But at 2R the residual half is banked regardless.
+                            # Gold/Silver excluded — wide structure needs room.
+                            try:
+                                two_r_tp = (open_price + sl_dist_dynamic * 2.0 if is_buy
+                                            else open_price - sl_dist_dynamic * 2.0)
+                                two_r_tp = self.gateway.normalize_price(symbol, two_r_tp)
+                                existing_tp = pos.get('tp', 0.0)
+                                # Only set 2R TP if current TP is further or absent
+                                set_2r = False
+                                if existing_tp == 0.0:
+                                    set_2r = True
+                                elif is_buy and two_r_tp < existing_tp:
+                                    set_2r = True   # 2R is closer — a real target
+                                elif not is_buy and two_r_tp > existing_tp:
+                                    set_2r = True
+                                if set_2r and "XAU" not in symbol and "XAG" not in symbol:
+                                    tp_req = {
+                                        "action":   mt5.TRADE_ACTION_SLTP,
+                                        "position": ticket,
+                                        "sl":       lock_price,
+                                        "tp":       two_r_tp,
+                                    }
+                                    tp_res = mt5.order_send(tp_req)
+                                    if tp_res and tp_res.retcode == mt5.TRADE_RETCODE_DONE:
+                                        self.log_info(
+                                            f"🎯 2R TP Set: {symbol} residual half locked at "
+                                            f"{two_r_tp:.5f} (2R = {sl_dist_dynamic * 2:.5f} from entry)"
+                                        )
+                            except Exception as _p2e:
+                                self.log_debug(f"S15-P2 2R TP error ({symbol}): {_p2e}")
                     else:
                         self.scaled_positions.add(scale_key)
                         self._save_state()
@@ -986,10 +1246,74 @@ class TradingBot:
                     # the original risk: lock 50% profit at 1R, lock 80% at 2R.
                     one_r  = sl_dist_dynamic
                     two_r  = sl_dist_dynamic * 2.0
-                    if profit_dist > two_r:
+
+                    # [S15-L3] TP-PROXIMITY TRAIL TIGHTEN.
+                    # When floating profit ≥ 0.5 × TP_distance (halfway to TP),
+                    # tighten the trail to 0.3×SL_distance from current price.
+                    # This locks ~40%+ of the potential profit when near TP and
+                    # prevents near-TP reversals from becoming full losses.
+                    # Evidence: USDCAD ($-20) reached 88% to TP; GBPUSD ($-73)
+                    # reached 97% — both reversed all the way back through SL.
+                    tp_price = pos.get('tp', 0.0)
+                    tp_dist  = abs(tp_price - open_price) if tp_price else 0.0
+                    near_tp  = (tp_dist > 0 and profit_dist >= tp_dist * 0.50)
+
+                    if near_tp:
+                        # Tight trail: 0.30×SL behind current price
+                        tight_trail = sl_dist_dynamic * 0.30
+                        lock_price = (price_current - tight_trail if is_buy
+                                      else price_current + tight_trail)
+                    elif profit_dist > two_r:
                         lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
                     elif profit_dist > one_r:
                         lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
+
+                    # [S15-P3] FLOATING TP RATCHET.
+                    # When price clears each full R milestone (2R, 3R, 4R…), advance
+                    # TP to current_price + 1R in the trade direction. This means the
+                    # target always stays 1R ahead of where price is, converting a
+                    # fixed structural TP into a dynamic target that chases the move.
+                    # Evidence: XAUUSD ran 4.08R but TP was at 23.32R (never reached).
+                    # GBPUSD ran 3.13R but TP was at 4.97R — trail exited at 2.23R.
+                    # With floating TP at 3R+1R=4R, GBPUSD would have been banked at 4R.
+                    # Only applies when profit_dist > 2R (position well in profit).
+                    # Skipped if near_tp already firing — let that tighten the trail.
+                    # Gold/Silver: ratchet step is 1.5R (wider structure needs room).
+                    if profit_dist >= two_r and not near_tp:
+                        try:
+                            r_step  = 1.5 if ("XAU" in symbol or "XAG" in symbol) else 1.0
+                            current_r = profit_dist / sl_dist_dynamic
+                            # Find the last full R milestone crossed (floor to nearest R)
+                            import math
+                            last_r_floor = math.floor(current_r)
+                            # New TP = current price + 1R ahead
+                            ratchet_tp = (price_current + sl_dist_dynamic * r_step if is_buy
+                                          else price_current - sl_dist_dynamic * r_step)
+                            ratchet_tp = self.gateway.normalize_price(symbol, ratchet_tp)
+                            existing_tp = pos.get('tp', 0.0)
+                            # Only advance if new ratchet TP is CLOSER (more likely to hit)
+                            advance = False
+                            if existing_tp == 0.0:
+                                advance = True
+                            elif is_buy and ratchet_tp < existing_tp:
+                                advance = True
+                            elif not is_buy and ratchet_tp > existing_tp:
+                                advance = True
+                            if advance:
+                                ratchet_req = {
+                                    "action":   mt5.TRADE_ACTION_SLTP,
+                                    "position": ticket,
+                                    "sl":       current_sl,
+                                    "tp":       ratchet_tp,
+                                }
+                                r_res = mt5.order_send(ratchet_req)
+                                if r_res and r_res.retcode == mt5.TRADE_RETCODE_DONE:
+                                    self.log_info(
+                                        f"🎯 TP Ratcheted: {symbol} at {current_r:.1f}R → "
+                                        f"new TP {ratchet_tp:.5f} (+{r_step}R ahead)"
+                                    )
+                        except Exception as _p3e:
+                            self.log_debug(f"S15-P3 ratchet error ({symbol}): {_p3e}")
                 
                 if lock_price == 0: 
                     continue
@@ -1314,7 +1638,32 @@ class TradingBot:
                     
                 price = self.gateway.normalize_price(symbol, raw_price)
                 sl = self.gateway.normalize_price(symbol, sl_price) 
-                tp = self.gateway.normalize_price(symbol, tp_price) 
+
+                # [S15-P1] AUTO TP CAP — structural TP > 6R is effectively "no TP".
+                # The ICT engine places TPs at Asian session extremes or structural
+                # swing levels, which are sometimes 10-25R away from entry. A trade
+                # with no realistic TP relies entirely on trailing — which in practice
+                # captures only 77% of MFE (evidence: both XAUUSD runners, GBPUSD).
+                # Fix: when structural TP > 6×SL_dist, cap it at 3×SL_dist.
+                #   3R gives a hard guaranteed exit anchor while still being above the
+                #   1:1 scale-out and the 2R TP on the residual half (S15-P2).
+                #   Trail still runs — if price blasts through 3R the trail gets it.
+                #   But if trail degrades or session ends, 3R is banked regardless.
+                # Gold/Silver excluded — structural targets often genuinely need room.
+                # Evidence: XAUUSD 03-11 (23:49) TP was at 23.32R, MFE=4.08R, $52 left.
+                sl_dist_check = abs(price - sl_price) if sl_price else 0
+                if sl_dist_check > 0 and tp_price:
+                    tp_dist_check = abs(tp_price - price)
+                    tp_r          = tp_dist_check / sl_dist_check
+                    if tp_r > 6.0 and "XAU" not in symbol and "XAG" not in symbol:
+                        capped_tp    = price + (sl_dist_check * 3.0) if is_buy else price - (sl_dist_check * 3.0)
+                        tp_price     = capped_tp
+                        self.log_info(
+                            f"🎯 TP Cap Applied: {symbol} structural TP was {tp_r:.1f}R "
+                            f"→ capped at 3.0R ({tp_price:.5f})"
+                        )
+
+                tp = self.gateway.normalize_price(symbol, tp_price)
 
                 # ── LIMIT PRICE VALIDATION (BUG-27 FIX) ──────────────────────
                 # MT5 rejects SELL_LIMIT if price <= ask + stops_level*point,
@@ -1336,18 +1685,50 @@ class TradingBot:
                         stops_pt = getattr(sym_info, 'stops_level', 0) * sym_info.point
                         # Add a 2-point buffer on top of broker minimum
                         min_dist = stops_pt + (sym_info.point * 2)
+                        rejection_key = f"{symbol}_{round(price, 5)}"
                         if is_buy and price >= (tick.bid - min_dist):
+                            # [S15-L2] Consecutive rejection tracking
+                            self._price_close_rejections[rejection_key] = \
+                                self._price_close_rejections.get(rejection_key, 0) + 1
+                            count = self._price_close_rejections[rejection_key]
                             self.log_info(
                                 f"⚠️ Price Validation: {symbol} BUY_LIMIT {price} too close "
-                                f"to market ({tick.bid}). Min distance: {min_dist:.5f}. Skipping."
+                                f"to market ({tick.bid}). Min distance: {min_dist:.5f}. "
+                                f"Rejection #{count}/4."
                             )
+                            if count >= 4:
+                                # OB zone swept repeatedly — invalidate this entry level
+                                self._price_close_rejections.pop(rejection_key, None)
+                                self.log_info(
+                                    f"🚫 Stale Zone Invalidated: {symbol} entry {price} "
+                                    f"rejected 4× — OB swept. Signal cancelled."
+                                )
+                                DBManager.update_signal_result(
+                                    symbol, analysis.signal, "STALE_ZONE (4× rejected)"
+                                )
                             return
                         elif not is_buy and price <= (tick.ask + min_dist):
+                            self._price_close_rejections[rejection_key] = \
+                                self._price_close_rejections.get(rejection_key, 0) + 1
+                            count = self._price_close_rejections[rejection_key]
                             self.log_info(
                                 f"⚠️ Price Validation: {symbol} SELL_LIMIT {price} too close "
-                                f"to market ({tick.ask}). Min distance: {min_dist:.5f}. Skipping."
+                                f"to market ({tick.ask}). Min distance: {min_dist:.5f}. "
+                                f"Rejection #{count}/4."
                             )
+                            if count >= 4:
+                                self._price_close_rejections.pop(rejection_key, None)
+                                self.log_info(
+                                    f"🚫 Stale Zone Invalidated: {symbol} entry {price} "
+                                    f"rejected 4× — OB swept. Signal cancelled."
+                                )
+                                DBManager.update_signal_result(
+                                    symbol, analysis.signal, "STALE_ZONE (4× rejected)"
+                                )
                             return
+                        else:
+                            # Price has moved away from entry — zone may be fresh again
+                            self._price_close_rejections.pop(rejection_key, None)
                 # ─────────────────────────────────────────────────────────────
 
                 sl_distance = abs(price - sl)
@@ -1619,6 +2000,21 @@ class TradingBot:
                     # Still well below broker spec maximums.
                     #   $9k → 2.69 lots  |  $20k → 5.71  |  $50k → 14.3
                     max_lot = max(1.0, round(balance / 3500, 2))    # ~2.69 at $9k
+
+                # [BUG-57 FIX] Signal-type cap override — applies AFTER asset-specific caps.
+                # Germany/SP500/Tech100 had their own max_lot branches (17–18 lots) that
+                # appeared BEFORE the is_micro branch in the cascade. A Germany SELL_MICRO
+                # therefore got max_lot=17 instead of 0.78, allowing 1.4 lots to execute
+                # on a MICRO signal (confirmed: 2026-03-12 13:40 Germany 40 SELL $-102.24).
+                # Fix: enforce MICRO/NANO ceilings unconditionally after asset cap is set.
+                # The asset cap establishes the broker/structural ceiling.
+                # The signal-type cap establishes the regime/sizing ceiling.
+                # Both must apply — the lower of the two always wins.
+                if is_nano:
+                    max_lot = min(max_lot, 0.10)
+                elif is_micro:
+                    micro_cap = max(round(balance / 12000, 2), 0.30)
+                    max_lot   = min(max_lot, micro_cap)
 
                 if lot > max_lot:
                     self.log_info(
