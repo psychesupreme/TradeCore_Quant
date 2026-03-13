@@ -2457,9 +2457,9 @@ class TradingBot:
                             # Price has moved away from entry — zone may be fresh again
                             self._price_close_rejections.pop(rejection_key, None)
                             self._stale_zone_cooldowns.pop(stale_zone_key, None)  # [BUG-60] also clear cooldown if price retreated
-                            # [BUG-58] Also reset stale trap counter when price retreats
-                            stale_key = (symbol, round(price, 5))
-                            self._stale_trap_counts.pop(stale_key, None)
+                            # [SPRINT 17c HOTFIX] Removed BUG-58 stale trap counter reset.
+                            # A stale trap (TP hit before entry) permanently invalidates the structural thesis.
+                            # Wiping the memory here caused an infinite place/cancel machine-gun loop.
                 # ─────────────────────────────────────────────────────────────
 
                 sl_distance = abs(price - sl)
