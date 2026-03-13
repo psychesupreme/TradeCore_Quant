@@ -237,7 +237,7 @@ class MT5Gateway:
             "sl":         p.sl,
             "tp":         p.tp,
             "magic":      p.magic,   # Required for NANO trailing stop (magic 510001)
-            "time":       p.time_msc // 1000  # [BUG-36] Unix timestamp (seconds); enables 12h dead-momentum killer
+            "time":       p.time     # [SPRINT 17b] BUG FIX: Used p.time directly (fixes silent KeyError on brokers missing time_msc)
         } for p in pos]
 
     def get_historical_deals(self, days=365):

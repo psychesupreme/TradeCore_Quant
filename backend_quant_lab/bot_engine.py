@@ -109,6 +109,14 @@ class TradingBot:
         # is being swept through — signal is invalidated and must not place.
         self._price_close_rejections: dict = {}
 
+        # [BUG-60] Stale zone cooldown tracker.
+        # After a zone is invalidated (4× price rejections), suppress re-evaluation
+        # of the same entry level for 15 minutes. Without this, the system immediately
+        # re-arms the same OB price zone on the very next cycle (confirmed: AUDUSD
+        # 2026-03-12 16:06:39 Stale Zone fired, 16:07:40 Rejection #1 re-started).
+        # Key: (symbol, rounded_price). Value: datetime when zone was invalidated.
+        self._stale_zone_cooldowns: dict = {}
+
         # [BUG-58] Stale trap loop counter — parallel to _price_close_rejections.
         # Tracks how many consecutive times a (symbol, entry_price) pair has been
         # cancelled by the stale trap checker (TP reached before limit filled).
@@ -127,6 +135,10 @@ class TradingBot:
         # When Markov flips to BEAR, cancel pending BUY limits.
         # When Markov flips to BULL, cancel pending SELL limits.
         self._last_markov_gate: str = "OK"  # "OK" | "HALT_BEAR" | "HALT_BULL" | "HALT_HVOL"
+
+        # [TELEGRAM] Manual pause flag — set by /pause N command.
+        # Suppresses new signal execution for N minutes without stopping the engine.
+        self._manual_pause_until: datetime = None
 
         # [SPRINT 7] Quantitative analytics engine.
         # Cached for 5 min. Provides: risk_pct, var_limit, cvar_limit,
@@ -206,64 +218,530 @@ class TradingBot:
         threading.Thread(target=_send).start()
 
     def handle_telegram_command(self, command):
-        cmd = command.split()[0].lower()
+        parts = command.strip().split()
+        cmd   = parts[0].lower() if parts else ""
+        args  = parts[1:] if len(parts) > 1 else []
         self.log_info(f"📩 Received Command: {cmd}")
-        
-        if cmd == "/status": 
+
+        # ── /help ─────────────────────────────────────────────────────────
+        if cmd == "/help":
+            msg = (
+                "🤖 **TradeCore v53.0 — Commands**\n"
+                "━━━━━━━━━━━━━━━━━━━━\n"
+                "📊 *Info*\n"
+                "  /status — live balance, positions, float PnL\n"
+                "  /balance — quick balance check\n"
+                "  /performance — all-time win rate, P&L, R/R\n"
+                "  /risk — VaR, Kelly %, daily P&L, drawdown\n"
+                "  /regime — current Markov market state\n"
+                "  /amd [SYM] — AMD phase for all or one asset\n"
+                "  /news — upcoming high-impact events\n"
+                "  /trades [N] — last N closed trades (default 5)\n"
+                "  /signals [N] — last N signals placed (default 5)\n"
+                "  /pending — active limit orders\n"
+                "  /cooldowns — active symbol cooldowns\n"
+                "━━━━━━━━━━━━━━━━━━━━\n"
+                "⚙️ *Control*\n"
+                "  /pause [mins] — pause new signals (default 30m)\n"
+                "  /resume — resume signal execution immediately\n"
+                "  /close [SYMBOL|all] — close position(s)\n"
+                "  /cancel [SYMBOL|all] — cancel pending limit(s)\n"
+                "  /summary — trigger daily summary report now\n"
+                "  /stop — stop the engine entirely\n"
+                "  /start — restart the engine\n"
+            )
+            self.async_alert(msg)
+
+        # ── /status ───────────────────────────────────────────────────────
+        elif cmd == "/status":
             self._report_status()
+
+        # ── /balance ──────────────────────────────────────────────────────
+        elif cmd == "/balance":
+            acc = self.gateway.get_account_info()
+            if acc:
+                self.async_alert(
+                    f"💰 **Balance:** ${acc['balance']:,.2f}\n"
+                    f"📈 **Equity:** ${acc['equity']:,.2f}\n"
+                    f"🛡️ **Free Margin:** ${acc['free_margin']:,.2f}"
+                )
+
+        # ── /performance ──────────────────────────────────────────────────
+        elif cmd == "/performance":
+            try:
+                import sqlite3 as _sl
+                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                rows = con.execute("""
+                    SELECT profit FROM trades
+                    WHERE profit IS NOT NULL AND profit != 0
+                      AND comment NOT LIKE '%ghost%'
+                """).fetchall()
+                con.close()
+                profits = [r[0] for r in rows]
+                if not profits:
+                    self.async_alert("📉 No closed trades yet.")
+                    return
+                wins   = [p for p in profits if p > 0]
+                losses = [p for p in profits if p < 0]
+                wr     = len(wins) / len(profits) * 100
+                net    = sum(profits)
+                avg_w  = sum(wins) / len(wins) if wins else 0
+                avg_l  = abs(sum(losses) / len(losses)) if losses else 1
+                rr     = avg_w / avg_l if avg_l > 0 else 0
+                pf     = sum(wins) / abs(sum(losses)) if losses else float('inf')
+                max_dd = min(profits)
+                acc    = self.gateway.get_account_info()
+                bal    = acc['balance'] if acc else 0
+                self.async_alert(
+                    f"📊 **All-Time Performance**\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"💰 Net P&L:    ${net:+,.2f}\n"
+                    f"📈 Balance:    ${bal:,.2f}\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"🎯 Trades:     {len(profits)} (W:{len(wins)} L:{len(losses)})\n"
+                    f"✅ Win Rate:   {wr:.1f}%\n"
+                    f"⚖️ R/R Ratio:  {rr:.2f}:1\n"
+                    f"📊 Profit Fac: {pf:.2f}\n"
+                    f"📉 Max Loss:   ${max_dd:+.2f}\n"
+                    f"💵 Avg Win:    ${avg_w:+.2f}\n"
+                    f"🔴 Avg Loss:   ${-avg_l:+.2f}\n"
+                    f"🎲 E[trade]:   ${net/len(profits):+.2f}"
+                )
+            except Exception as e:
+                self.async_alert(f"⚠️ Performance query error: {e}")
+
+        # ── /trades [N] ───────────────────────────────────────────────────
+        elif cmd == "/trades":
+            try:
+                n = int(args[0]) if args else 5
+                n = max(1, min(n, 20))
+                import sqlite3 as _sl
+                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                rows = con.execute("""
+                    SELECT symbol, type, profit, volume, close_time FROM trades
+                    WHERE profit IS NOT NULL AND profit != 0
+                      AND comment NOT LIKE '%ghost%'
+                    ORDER BY close_time DESC LIMIT ?
+                """, (n,)).fetchall()
+                con.close()
+                if not rows:
+                    self.async_alert("📭 No closed trades found.")
+                    return
+                lines = [f"📋 **Last {n} Closed Trades**\n━━━━━━━━━━━━━━━━━━━━"]
+                for sym, typ, pnl, vol, ct in rows:
+                    icon = "🟢" if pnl > 0 else "🔴"
+                    dt   = str(ct)[:16] if ct else "—"
+                    lines.append(f"{icon} {sym} {typ} | ${pnl:+.2f} | {vol}L | {dt}")
+                self.async_alert("\n".join(lines))
+            except Exception as e:
+                self.async_alert(f"⚠️ Trades query error: {e}")
+
+        # ── /pending ──────────────────────────────────────────────────────
+        elif cmd == "/pending":
+            try:
+                import MetaTrader5 as _mt5
+                orders = _mt5.orders_get()
+                if not orders:
+                    self.async_alert("📭 No pending limit orders.")
+                    return
+                lines = [f"⏳ **Pending Orders ({len(orders)})**\n━━━━━━━━━━━━━━━━━━━━"]
+                for o in orders:
+                    typ  = "BUY_LIM" if o.type == _mt5.ORDER_TYPE_BUY_LIMIT else "SELL_LIM"
+                    age  = int((datetime.utcnow().timestamp() - o.time_setup) / 60)
+                    lines.append(f"📌 {o.symbol} {typ} @ {o.price_open:.5g} | {o.volume_current}L | {age}m ago")
+                self.async_alert("\n".join(lines))
+            except Exception as e:
+                self.async_alert(f"⚠️ Pending orders error: {e}")
+
+        # ── /close [SYMBOL|all] ───────────────────────────────────────────
+        elif cmd == "/close":
+            target = args[0].upper() if args else "all"
+            positions = self.gateway.get_open_positions()
+            if not positions:
+                self.async_alert("📭 No open positions to close.")
+                return
+            closed, failed = [], []
+            for pos in positions:
+                if target == "ALL" or pos['symbol'].upper() == target or \
+                   target in pos['symbol'].upper():
+                    ok = self.gateway.close_position(
+                        pos['ticket'], pos['symbol'], pos['volume'], pos['type']
+                    )
+                    (closed if ok else failed).append(pos['symbol'])
+            parts_msg = []
+            if closed:  parts_msg.append(f"✅ Closed: {', '.join(closed)}")
+            if failed:  parts_msg.append(f"❌ Failed: {', '.join(failed)}")
+            if not closed and not failed:
+                parts_msg.append(f"⚠️ No positions found matching '{target}'")
+            self.async_alert("🔒 **Manual Close**\n" + "\n".join(parts_msg))
+
+        # ── /cancel [SYMBOL|all] ──────────────────────────────────────────
+        elif cmd == "/cancel":
+            target = args[0].upper() if args else "all"
+            try:
+                import MetaTrader5 as _mt5
+                orders = _mt5.orders_get()
+                if not orders:
+                    self.async_alert("📭 No pending orders to cancel.")
+                    return
+                cancelled, failed = [], []
+                for o in orders:
+                    sym = o.symbol.upper()
+                    if target == "ALL" or target in sym or sym == target:
+                        req = {
+                            "action": _mt5.TRADE_ACTION_REMOVE,
+                            "order":  o.ticket,
+                        }
+                        res = _mt5.order_send(req)
+                        if res and res.retcode == _mt5.TRADE_RETCODE_DONE:
+                            cancelled.append(o.symbol)
+                            self.execution_lock.discard(o.symbol)
+                        else:
+                            failed.append(o.symbol)
+                parts_msg = []
+                if cancelled: parts_msg.append(f"✅ Cancelled: {', '.join(cancelled)}")
+                if failed:    parts_msg.append(f"❌ Failed: {', '.join(failed)}")
+                self.async_alert("🗑️ **Manual Cancel**\n" + "\n".join(parts_msg))
+            except Exception as e:
+                self.async_alert(f"⚠️ Cancel error: {e}")
+
+        # ── /regime ───────────────────────────────────────────────────────
+        elif cmd == "/regime":
+            regime = self.market_regime
+            ks     = self.kill_switch_active
+            paused = (
+                self._manual_pause_until and
+                datetime.utcnow() < self._manual_pause_until
+            )
+            pause_txt = ""
+            if paused:
+                remaining = int((self._manual_pause_until - datetime.utcnow()).total_seconds() / 60)
+                pause_txt = f"\n⏸️ **Signals paused** — {remaining}m remaining"
+            markov_gate = self._last_markov_gate
+            icon = "🟢" if "NORMAL" in regime else ("🟡" if "HIGH" in regime else "⚪")
+            self.async_alert(
+                f"{icon} **Market Regime**\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"Regime:      {regime}\n"
+                f"Markov Gate: {markov_gate}\n"
+                f"Kill Switch: {'🛑 ACTIVE' if ks else '✅ Clear'}"
+                f"{pause_txt}"
+            )
+
+        # ── /pause [minutes] ──────────────────────────────────────────────
+        elif cmd == "/pause":
+            try:
+                mins = int(args[0]) if args else 30
+                mins = max(1, min(mins, 480))
+                self._manual_pause_until = datetime.utcnow() + timedelta(minutes=mins)
+                self.async_alert(
+                    f"⏸️ **Signals Paused for {mins} minutes**\n"
+                    f"Resumes at {self._manual_pause_until.strftime('%H:%M')} UTC\n"
+                    f"Use /resume to cancel early."
+                )
+            except Exception:
+                self.async_alert("⚠️ Usage: /pause [minutes] (e.g. /pause 60)")
+
+        # ── /resume ───────────────────────────────────────────────────────
+        elif cmd == "/resume":
+            self._manual_pause_until = None
+            self.async_alert("▶️ **Signal execution resumed.**")
+
+        # ── /news ─────────────────────────────────────────────────────────
         elif cmd == "/news":
             news_data = self.news_manager.get_upcoming_news()
-            if not news_data: 
+            if not news_data:
                 self.async_alert("🌍 **No High Impact News Found.**")
             else:
-                lines = ["📰 **Upcoming News Risks**"]
-                for item in news_data[:5]:
-                    icon = "🔴" if item['impact'] == 'High' else "🟠" 
-                    lines.append(f"{icon} {item['time'].split()[-1]} • {item['country']} {item['title']}")
+                lines = ["📰 **Upcoming News Risks**\n━━━━━━━━━━━━━━━━━━━━"]
+                for item in news_data[:8]:
+                    icon = "🔴" if item['impact'] == 'High' else "🟠"
+                    lines.append(
+                        f"{icon} {item['time'].split()[-1]} • {item['country']} {item['title']}"
+                    )
                 self.async_alert("\n".join(lines))
+
+        # ── /summary ──────────────────────────────────────────────────────
+        elif cmd == "/summary":
+            self.async_alert("📋 Generating daily summary...")
+            self.send_daily_summary()
+
+        # ── /risk ─────────────────────────────────────────────────────────
+        elif cmd == "/risk":
+            try:
+                import sqlite3 as _sl
+                acc = self.gateway.get_account_info()
+                bal = acc['balance'] if acc else 0
+                eq  = acc['equity']  if acc else 0
+                # Daily P&L from DB
+                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                today = datetime.utcnow().strftime('%Y-%m-%d')
+                rows_today = con.execute(
+                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL",
+                    (f"{today}%",)
+                ).fetchone()
+                all_profits = con.execute(
+                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0"
+                ).fetchall()
+                con.close()
+                daily_pnl  = rows_today[0] or 0.0
+                profits    = [r[0] for r in all_profits]
+                # Peak equity proxy: balance + max running sum
+                peak       = bal
+                cumsum     = 0.0
+                for p in profits:
+                    cumsum += p
+                    peak    = max(peak, bal - cumsum + p) if p else peak
+                drawdown   = ((peak - bal) / peak * 100) if peak > 0 else 0
+                # Kelly from quant (if available)
+                try:
+                    from quant_analyzer import QuantAnalyzer
+                    qa = QuantAnalyzer(profits)
+                    kelly = qa.kelly_fraction * 100
+                    var95 = qa.value_at_risk(0.95)
+                except Exception:
+                    kelly, var95 = 0.0, 0.0
+                weekly_target = 3000.0  # $3K/week target from sprint history
+                days_remaining = 7 - datetime.utcnow().weekday()
+                self.async_alert(
+                    f"🔬 **Risk Dashboard**\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"💰 Balance:       ${bal:,.2f}\n"
+                    f"📊 Equity:        ${eq:,.2f}\n"
+                    f"📅 Today P&L:     ${daily_pnl:+.2f}\n"
+                    f"📉 Drawdown:      {drawdown:.1f}%\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"🎲 Kelly Fraction: {kelly:.1f}%\n"
+                    f"📐 VaR(95%):      ${var95:.2f}\n"
+                    f"🎯 Weekly Target: ${weekly_target:,.0f} ({days_remaining}d left)\n"
+                    f"🔢 Total Trades:  {len(profits)}/30 (Kelly activates at 30)"
+                )
+            except Exception as e:
+                self.async_alert(f"⚠️ Risk query error: {e}")
+
+        # ── /amd [SYMBOL] ─────────────────────────────────────────────────
+        elif cmd == "/amd":
+            try:
+                from analyst import compute_amd_phase, SESSION_WINDOWS
+                target_sym = args[0].upper() if args else None
+                syms = ([target_sym] if target_sym else self.active_symbols[:10])
+                import MetaTrader5 as _mt5
+                import pandas as _pd
+                lines = ["🔄 **AMD Phase Report**\n━━━━━━━━━━━━━━━━━━━━"]
+                for sym in syms:
+                    try:
+                        _rates = _mt5.copy_rates_from_pos(
+                            self.gateway.find_symbol(sym) or sym,
+                            _mt5.TIMEFRAME_M15, 0, 200
+                        )
+                        if _rates is None:
+                            lines.append(f"⚪ {sym}: no data")
+                            continue
+                        df = _pd.DataFrame(_rates)
+                        df['time'] = _pd.to_datetime(df['time'], unit='s')
+                        df.set_index('time', inplace=True)
+                        phase, conf, _ = compute_amd_phase(df)
+                        icon = {"ACCUMULATION": "🟡", "MANIPULATION": "🟠",
+                                "DISTRIBUTION": "🟢"}.get(phase, "⚪")
+                        lines.append(f"{icon} {sym}: {phase} ({conf:.0%})")
+                    except Exception:
+                        lines.append(f"⚪ {sym}: error")
+                self.async_alert("\n".join(lines))
+            except Exception as e:
+                self.async_alert(f"⚠️ AMD query error: {e}")
+
+        # ── /cooldowns ────────────────────────────────────────────────────
+        elif cmd == "/cooldowns":
+            try:
+                now = datetime.utcnow()
+                lines = ["⏱️ **Active Cooldowns**\n━━━━━━━━━━━━━━━━━━━━"]
+                # Symbol cooldowns (post-close + BUG-58 momentum chase)
+                sym_cds = [(sym, t) for sym, t in self.symbol_cooldowns.items()
+                           if (now - t).total_seconds() < 900]
+                if sym_cds:
+                    for sym, t in sorted(sym_cds, key=lambda x: x[1], reverse=True):
+                        remaining = 900 - int((now - t).total_seconds())
+                        lines.append(f"🔴 {sym}: {remaining//60}m {remaining%60}s left")
+                # Stale zone cooldowns
+                sz_cds = [(k, t) for k, t in self._stale_zone_cooldowns.items()
+                          if (now - t).total_seconds() < 900]
+                if sz_cds:
+                    for (sym, zone), t in sz_cds:
+                        remaining = 900 - int((now - t).total_seconds())
+                        lines.append(f"🚫 {sym} zone {zone}: {remaining//60}m left (stale OB)")
+                # Stale trap counts in progress
+                if self._stale_trap_counts:
+                    for (sym, px), cnt in self._stale_trap_counts.items():
+                        lines.append(f"⚠️ {sym} @ {px}: {cnt}/3 stale traps")
+                if len(lines) == 1:
+                    lines.append("✅ No active cooldowns — all symbols ready.")
+                self.async_alert("\n".join(lines))
+            except Exception as e:
+                self.async_alert(f"⚠️ Cooldown query error: {e}")
+
+        # ── /signals [N] ──────────────────────────────────────────────────
+        elif cmd == "/signals":
+            try:
+                n = int(args[0]) if args else 5
+                n = max(1, min(n, 15))
+                import sqlite3 as _sl
+                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                rows = con.execute("""
+                    SELECT symbol, signal_type, confidence, entry_price, timestamp
+                    FROM signals
+                    WHERE entry_price IS NOT NULL
+                    ORDER BY timestamp DESC LIMIT ?
+                """, (n,)).fetchall()
+                con.close()
+                if not rows:
+                    self.async_alert("📭 No recent signals in DB.")
+                    return
+                lines = [f"📡 **Last {n} Signals**\n━━━━━━━━━━━━━━━━━━━━"]
+                for sym, sig, conf, ep, ts in rows:
+                    conf_pct = f"{float(conf)*100:.0f}%" if conf else "—"
+                    ep_str   = f"@ {float(ep):.5g}" if ep else ""
+                    dt       = str(ts)[:16] if ts else "—"
+                    lines.append(f"📌 {sym} {sig} {conf_pct} {ep_str} | {dt}")
+                self.async_alert("\n".join(lines))
+            except Exception as e:
+                self.async_alert(f"⚠️ Signals query error: {e}")
+
+        # ── /stop ─────────────────────────────────────────────────────────
         elif cmd == "/stop":
             self.stop_service()
             self.async_alert("🛑 **Bot Stopped by User Command**")
+
+        # ── /start ────────────────────────────────────────────────────────
         elif cmd == "/start":
-            if not self.is_running: 
+            if not self.is_running:
                 self.start_service()
-        elif cmd == "/balance":
-            acc = self.gateway.get_account_info()
-            if acc: 
-                self.async_alert(f"💰 **Balance:** ${acc['balance']:.2f}\n**Equity:** ${acc['equity']:.2f}")
+
+        # ── Unknown ───────────────────────────────────────────────────────
+        else:
+            self.async_alert(
+                f"❓ Unknown command: `{cmd}`\n"
+                f"Send /help to see all available commands."
+            )
 
     def _report_status(self):
+        """
+        [S18] Rich at-a-glance status — replaces the old thin 8-line version.
+        Consolidates account, positions, pending orders, today's P&L, weekly
+        progress, regime, and cooldown summary into one message so the operator
+        never needs to follow /status with 3 more commands.
+        """
         acc = self.gateway.get_account_info()
         if acc:
-            balance = acc['balance']
-            equity = acc['equity']
-            free_margin = acc['free_margin']
+            balance      = acc['balance']
+            equity       = acc['equity']
+            free_margin  = acc['free_margin']
             margin_level = acc.get('margin_level', 0.0)
         else:
             balance = equity = free_margin = margin_level = 0.0
 
-        positions = self.gateway.get_open_positions()
+        positions    = self.gateway.get_open_positions()
         total_profit = sum(p['profit'] for p in positions)
-        
+
+        # ── Today's P&L from DB ──────────────────────────────────────────
+        today_pnl   = 0.0
+        today_w     = 0
+        today_l     = 0
+        weekly_pnl  = 0.0
+        total_trades = 0
+        try:
+            import sqlite3 as _sl
+            today_str      = datetime.utcnow().strftime('%Y-%m-%d')
+            from datetime import timedelta as _td
+            week_start_str = (datetime.utcnow() - _td(days=datetime.utcnow().weekday())).strftime('%Y-%m-%d')
+            con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+            today_rows  = con.execute(
+                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0",
+                (f"{today_str}%",)
+            ).fetchall()
+            week_rows   = con.execute(
+                "SELECT profit FROM trades WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
+                (week_start_str,)
+            ).fetchall()
+            all_rows    = con.execute(
+                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
+            ).fetchone()
+            con.close()
+            today_pnl    = sum(r[0] for r in today_rows)
+            today_w      = sum(1 for r in today_rows if r[0] > 0)
+            today_l      = sum(1 for r in today_rows if r[0] < 0)
+            weekly_pnl   = sum(r[0] for r in week_rows)
+            total_trades = all_rows[0] if all_rows else 0
+        except Exception:
+            pass
+
+        # ── Weekly target progress bar ───────────────────────────────────
+        WEEKLY_TARGET   = 3000.0
+        wp_pct          = min(100.0, (weekly_pnl / WEEKLY_TARGET) * 100) if WEEKLY_TARGET > 0 else 0
+        filled_bars     = min(10, int(wp_pct / 10))
+        bar             = "█" * filled_bars + "░" * (10 - filled_bars)
+        week_icon       = "🎯" if weekly_pnl >= WEEKLY_TARGET else ("🟢" if weekly_pnl > 0 else "🔴")
+
+        # ── Pending orders ───────────────────────────────────────────────
+        raw_orders   = mt5.orders_get()
+        pending_list = list(raw_orders) if raw_orders else []
+
+        # ── Regime + pause status ────────────────────────────────────────
+        regime      = self.market_regime
+        ks          = self.kill_switch_active
+        markov_gate = self._last_markov_gate
+        regime_icon = "🟢" if "NORMAL" in regime else ("🟡" if "HIGH" in regime or "NEUTRAL" in regime else "🔴")
+        paused      = self._manual_pause_until and datetime.utcnow() < self._manual_pause_until
+        pause_line  = ""
+        if paused:
+            mins_left  = int((self._manual_pause_until - datetime.utcnow()).total_seconds() / 60)
+            pause_line = f"\n⏸️ PAUSED — {mins_left}m remaining"
+        ks_line     = "\n🛑 KILL SWITCH ACTIVE" if ks else ""
+
+        # ── Active cooldowns summary ─────────────────────────────────────
+        now = datetime.utcnow()
+        live_cds = [sym for sym, t in self.symbol_cooldowns.items()
+                    if (now - t).total_seconds() < 900]
+        cd_line  = f"\n⏱️ Cooldowns: {', '.join(live_cds)}" if live_cds else ""
+
+        # ── Kelly activation status ──────────────────────────────────────
+        kelly_bar = f"{total_trades}/30" if total_trades < 30 else "✅ ACTIVE"
+
         msg = (
-            f"📊 **TradeCore v53.0 Status**\n"
-            f"-------------------------\n"
-            f"💰 Balance: ${balance:,.2f}\n"
-            f"📈 Equity: ${equity:,.2f}\n"
-            f"🛡️ Free Margin: ${free_margin:,.2f}\n"
-            f"⚡ Margin Level: {margin_level:.2f}%\n"
-            f"-------------------------\n"
-            f"🎯 Active Trades: {len(positions)}\n"
-            f"⏳ Pending Executions: {len(self.execution_lock)}\n"
-            f"💵 Floating PnL: ${total_profit:,.2f}\n"
+            f"📊 **TradeCore v53.0** {datetime.utcnow().strftime('%H:%M UTC')}\n"
+            f"━━━━━━━━━━━━━━━━━━━━\n"
+            f"💰 Balance:    ${balance:,.2f}\n"
+            f"📈 Equity:     ${equity:,.2f}  (float: ${total_profit:+.2f})\n"
+            f"🛡️ Margin:     ${free_margin:,.2f}  ({margin_level:.0f}%)\n"
+            f"━━━━━━━━━━━━━━━━━━━━\n"
+            f"📅 Today:      ${today_pnl:+.2f}  ({today_w}W / {today_l}L)\n"
+            f"{week_icon} Week [{bar}] {wp_pct:.0f}%\n"
+            f"   ${weekly_pnl:+.2f} of ${WEEKLY_TARGET:,.0f} target\n"
+            f"━━━━━━━━━━━━━━━━━━━━\n"
+            f"🎯 Open:       {len(positions)}  |  ⏳ Pending: {len(pending_list)}\n"
+            f"🔢 Kelly:      {kelly_bar}\n"
+            f"{regime_icon} Regime:    {regime}\n"
+            f"🧠 Markov:     {markov_gate}"
+            f"{pause_line}{ks_line}{cd_line}\n"
         )
-        
+
+        # ── Open positions detail ────────────────────────────────────────
         if positions:
-            msg += "-------------------------\n"
+            msg += "━━━━━━━━━━━━━━━━━━━━\n"
             for p in positions:
-                icon = "🟢" if p['profit'] >= 0 else "🔴"
-                msg += f"{icon} {p['symbol']} ({p['type']}): ${p['profit']:.2f}\n"
-                
+                icon   = "🟢" if p['profit'] >= 0 else "🔴"
+                dur_h  = (time.time() - p.get('time', time.time())) / 3600
+                dur_s  = f"{dur_h:.1f}h"
+                msg   += f"{icon} {p['symbol']} {p['type']}: ${p['profit']:+.2f}  ({dur_s})\n"
+
+        # ── Pending orders detail ────────────────────────────────────────
+        if pending_list:
+            msg += "━━━━━━━━━━━━━━━━━━━━\n"
+            for o in pending_list:
+                typ  = "BUY↑" if o.type == mt5.ORDER_TYPE_BUY_LIMIT else "SELL↓"
+                age  = int((datetime.utcnow().timestamp() - o.time_setup) / 60)
+                msg += f"📌 {o.symbol} {typ} @ {o.price_open:.5g}  ({age}m)\n"
+
+        msg += "━━━━━━━━━━━━━━━━━━━━\n/help for full command list"
         self.async_alert(msg)
 
     def send_daily_summary(self):
@@ -286,11 +764,11 @@ class TradingBot:
             floating  = sum(p['profit'] for p in positions)
 
             # Signal funnel from DB: today only
-            # [BUG-37 FIX] DB lives at working directory root, NOT in logs/
+            # [SPRINT 17b] Validating root DB path again.
             today_str = datetime.utcnow().strftime('%Y-%m-%d')
             try:
                 import sqlite3 as _sl
-                con = _sl.connect("tradecore.db")   # [BUG-37] was: "logs/tradecore.db"
+                con = _sl.connect("tradecore.db")   # [BUG-37] verified
                 rows = con.execute("""
                     SELECT result, COUNT(*) FROM signals
                     WHERE timestamp >= ? GROUP BY result
@@ -317,7 +795,7 @@ class TradingBot:
                 now_for_week = datetime.utcnow()
                 week_start = now_for_week - timedelta(days=now_for_week.weekday())
                 week_start_str = week_start.strftime('%Y-%m-%d')
-                con2 = _sl.connect("tradecore.db")
+                con2 = _sl.connect("tradecore.db") # [SPRINT 17b] Validated
                 week_trades = con2.execute("""
                     SELECT profit FROM trades
                     WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0
@@ -398,6 +876,30 @@ class TradingBot:
         if not self.gateway.start():
             self.log_info("CRITICAL: MT5 Connection Failed")
             return False
+
+        # [S18] DB integrity guard on startup.
+        # tradecore.db can become malformed if the process is killed mid-write
+        # while the WAL has uncommitted frames (observed 2026-03-13: WAL+SHM
+        # present, integrity_check failed, all queries throwing DatabaseError).
+        # Fix: checkpoint the WAL on every startup to flush any pending frames
+        # back to the main DB file before the engine begins reading/writing.
+        # If integrity_check still fails after checkpoint, we log the warning
+        # but continue — the DB is non-critical for trade execution itself.
+        try:
+            import sqlite3 as _sl
+            _con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+            _con.execute("PRAGMA journal_mode=WAL")
+            _con.execute("PRAGMA synchronous=NORMAL")
+            _con.execute("PRAGMA wal_checkpoint(FULL)")
+            _ic = _con.execute("PRAGMA integrity_check").fetchone()
+            _con.close()
+            if _ic and _ic[0] == "ok":
+                self.log_info("✅ DB integrity check passed (WAL checkpointed).")
+            else:
+                self.log_info(f"⚠️ DB integrity warning on startup: {_ic}. "
+                              f"Trade logging may be impaired — run sync_db.py to repair.")
+        except Exception as _e:
+            self.log_info(f"⚠️ DB startup check error: {_e}. Continuing without DB.")
         
         self.active_symbols = []
         for v in self.vip_assets:
@@ -422,6 +924,16 @@ class TradingBot:
     def stop_service(self):
         self.is_running = False
         self.notifier.stop_listening()
+        # [S18] Checkpoint WAL on clean shutdown to prevent DB corruption.
+        # If the process is killed after this point the WAL frames are already
+        # flushed, so the next startup integrity_check will pass.
+        try:
+            import sqlite3 as _sl
+            _con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+            _con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            _con.close()
+        except Exception:
+            pass
         self.log_info("Stopped.")
 
     def check_market_schedule(self):
@@ -667,6 +1179,13 @@ class TradingBot:
     def run_cycle(self):
         if not self.is_running: 
             return
+
+        # [TELEGRAM /pause] Manual pause guard — suppresses new signal scoring
+        # without stopping the engine (monitoring, trailing, and closes continue).
+        _is_manually_paused = (
+            self._manual_pause_until is not None and
+            datetime.utcnow() < self._manual_pause_until
+        )
         
         acc = self.gateway.get_account_info()
         if not acc: 
@@ -1117,6 +1636,12 @@ class TradingBot:
         upcoming_news = self.news_manager.get_upcoming_news() if self.news_manager else []
 
         for symbol in self.active_symbols:
+            # [TELEGRAM /pause] Skip new signal generation during manual pause.
+            # Trailing stops, scale-outs, session-end anchors, and limit fill
+            # detection all run above this loop so positions are always managed.
+            if _is_manually_paused:
+                continue
+
             if symbol in self.symbol_cooldowns:
                 time_since_close = datetime.utcnow() - self.symbol_cooldowns[symbol]  # [UTC FIX]
                 # [S9-FIX] Restore 15-min cooldown. 60-min was too aggressive:
@@ -1489,9 +2014,29 @@ class TradingBot:
                      self.execute_signal(symbol, analysis, df_micro, props, regime=symbol_regime)
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
-                     self.log_debug(f"[{symbol}] {analysis.reason}")
+                     # [BUG-67] Throttle "NY Lunch: Reaccumulation" spam — once per 15 min per symbol.
+                     _reason_str = analysis.reason or ""
+                     if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
+                         _last = getattr(self, '_ny_lunch_last_log', {})
+                         _now  = datetime.utcnow()
+                         if (_now - _last.get(symbol, datetime(2000,1,1))).total_seconds() > 900:
+                             self.log_debug(f"[{symbol}] {_reason_str}")
+                             _last[symbol] = _now
+                             self._ny_lunch_last_log = _last
+                     else:
+                         self.log_debug(f"[{symbol}] {_reason_str}")
             else:
-                 self.log_debug(f"[{symbol}] {analysis.reason}")
+                 # [BUG-67] Apply same NY Lunch throttle to the outer else branch.
+                 _reason_str = analysis.reason or ""
+                 if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
+                     _last = getattr(self, '_ny_lunch_last_log', {})
+                     _now  = datetime.utcnow()
+                     if (_now - _last.get(symbol, datetime(2000,1,1))).total_seconds() > 900:
+                         self.log_debug(f"[{symbol}] {_reason_str}")
+                         _last[symbol] = _now
+                         self._ny_lunch_last_log = _last
+                 else:
+                     self.log_debug(f"[{symbol}] {_reason_str}")
                  
             # [OPT-6] Signal deduplication: write to DB only when something meaningful
             # changes. Prevents 50+ identical LOW_CONFIDENCE rows per symbol per hour.
@@ -1828,9 +2373,44 @@ class TradingBot:
                         # Use getattr() with safe default — same pattern as get_symbol_properties().
                         # Without this, USDCAD/GBPJPY crashed: 'SymbolInfo' has no 'stops_level'.
                         stops_pt = getattr(sym_info, 'stops_level', 0) * sym_info.point
+                        # [BUG-64] For high-value indices (Germany 40, SP500, Tech100), stops_level
+                        # represents absolute minimum distance in price units. For Germany 40 with
+                        # stops_level=20 and point=0.01 → stops_pt=0.20 which is only 20 index points.
+                        # At 23609 entry vs 23620 market (11pts gap), this 0.20 minimum correctly rejects.
+                        # The real problem was BUG-63 (rejection_key drift) preventing the counter
+                        # from accumulating. With BUG-63 fixed, the 4× gate now fires correctly.
+                        # No change needed to min_dist formula — it was mathematically correct.
                         # Add a 2-point buffer on top of broker minimum
                         min_dist = stops_pt + (sym_info.point * 2)
-                        rejection_key = f"{symbol}_{round(price, 5)}"
+                        # [BUG-63] Use asset-class-appropriate rounding for the rejection key.
+                        # Root cause: Germany 40 OB body_low drifts ±0.01–0.05 pts per bar
+                        # recalculation, making rejection_key different each scan cycle and
+                        # resetting the counter to #1 every time → the 4× stale gate never fires.
+                        # Fix: round indices to nearest 1 point, crypto to 0dp, FX to 4dp.
+                        # Confirmed: Germany 40 always showed Rejection #1/4 across 7 consecutive
+                        # cycles (2026-03-12 13:31–13:40) and eventually filled for -$102.24.
+                        _idx_syms = {"US SP 500", "US Tech 100", "Germany 40"}
+                        _crypto_syms = {"BTCUSD", "ETHUSD"}
+                        if symbol in _idx_syms:
+                            _rnd = max(1, round(price / 5))  # group into 5-point zones
+                            rejection_key = f"{symbol}_{_rnd}"
+                        elif symbol in _crypto_syms:
+                            rejection_key = f"{symbol}_{round(price, 0)}"
+                        elif symbol in ("XAUUSD",):
+                            rejection_key = f"{symbol}_{round(price, 1)}"
+                        else:
+                            rejection_key = f"{symbol}_{round(price, 4)}"
+                        # [BUG-60] Stale zone cooldown — suppress re-evaluation of a recently
+                        # invalidated OB entry for 15 minutes after 4× rejection fires.
+                        # Without this: AUDUSD zone invalidated at 16:06:39, restarted at
+                        # 16:07:40 (1 min later). Confirmed in logs 2026-03-12.
+                        stale_zone_key = (symbol, rejection_key)
+                        if stale_zone_key in self._stale_zone_cooldowns:
+                            elapsed = (datetime.utcnow() - self._stale_zone_cooldowns[stale_zone_key]).total_seconds()
+                            if elapsed < 900:  # 15-minute cooldown
+                                return  # Zone still dead — silently suppress
+                            else:
+                                self._stale_zone_cooldowns.pop(stale_zone_key, None)
                         if is_buy and price >= (tick.bid - min_dist):
                             # [S15-L2] Consecutive rejection tracking
                             self._price_close_rejections[rejection_key] = \
@@ -1844,9 +2424,10 @@ class TradingBot:
                             if count >= 4:
                                 # OB zone swept repeatedly — invalidate this entry level
                                 self._price_close_rejections.pop(rejection_key, None)
+                                self._stale_zone_cooldowns[stale_zone_key] = datetime.utcnow()  # [BUG-60]
                                 self.log_info(
                                     f"🚫 Stale Zone Invalidated: {symbol} entry {price} "
-                                    f"rejected 4× — OB swept. Signal cancelled."
+                                    f"rejected 4× — OB swept. Signal cancelled. 15-min cooldown started."
                                 )
                                 DBManager.update_signal_result(
                                     symbol, analysis.signal, "STALE_ZONE (4× rejected)"
@@ -1863,9 +2444,10 @@ class TradingBot:
                             )
                             if count >= 4:
                                 self._price_close_rejections.pop(rejection_key, None)
+                                self._stale_zone_cooldowns[stale_zone_key] = datetime.utcnow()  # [BUG-60]
                                 self.log_info(
                                     f"🚫 Stale Zone Invalidated: {symbol} entry {price} "
-                                    f"rejected 4× — OB swept. Signal cancelled."
+                                    f"rejected 4× — OB swept. Signal cancelled. 15-min cooldown started."
                                 )
                                 DBManager.update_signal_result(
                                     symbol, analysis.signal, "STALE_ZONE (4× rejected)"
@@ -1874,6 +2456,7 @@ class TradingBot:
                         else:
                             # Price has moved away from entry — zone may be fresh again
                             self._price_close_rejections.pop(rejection_key, None)
+                            self._stale_zone_cooldowns.pop(stale_zone_key, None)  # [BUG-60] also clear cooldown if price retreated
                             # [BUG-58] Also reset stale trap counter when price retreats
                             stale_key = (symbol, round(price, 5))
                             self._stale_trap_counts.pop(stale_key, None)
@@ -2158,18 +2741,29 @@ class TradingBot:
                 # The asset cap establishes the broker/structural ceiling.
                 # The signal-type cap establishes the regime/sizing ceiling.
                 # Both must apply — the lower of the two always wins.
+                # [BUG-61 FIX] MICRO cap must never reduce lot below asset min_lot.
+                # Oil (vol_step=1.0, min_lot=1.0) was being capped to 0.77 by the MICRO
+                # formula, which is below the broker's minimum volume → MT5 "Invalid volume".
+                # Fix: max(micro_cap, min_lot) ensures the final cap is always broker-valid.
+                # Confirmed: 2026-03-13 04:45 US Oil BUY_MICRO 1.0→0.77 rejected.
                 if is_nano:
                     max_lot = min(max_lot, 0.10)
                 elif is_micro:
                     micro_cap = max(round(balance / 12000, 2), 0.30)
-                    max_lot   = min(max_lot, micro_cap)
+                    max_lot   = min(max_lot, max(micro_cap, min_lot))  # [BUG-61] never below asset min_lot
 
                 if lot > max_lot:
+                    # [BUG-65] Re-normalize capped lot to vol_step.
+                    # e.g. US Oil MICRO cap = 0.78, vol_step = 0.1 → 0.78 is not a valid
+                    # broker volume → MT5 "Invalid volume". Floor to step after capping.
+                    # Confirmed: 2026-03-13 04:45 US Oil BUY_MICRO capped at 0.77 → rejected.
+                    capped = _math.floor(max_lot * step_inv) / step_inv
+                    capped = max(capped, min_lot)
                     self.log_info(
-                        f"⚠️ Lot Cap: {symbol} calculated {lot} lots → capped at {max_lot} "
+                        f"⚠️ Lot Cap: {symbol} calculated {lot} lots → capped at {capped} "
                         f"({'MICRO' if is_micro else 'NANO' if is_nano else 'STANDARD'})"
                     )
-                    lot = max_lot
+                    lot = capped
                 
                 filling_mode_code = props.get('filling_mode', 0)
                 if filling_mode_code & 1:
@@ -2178,6 +2772,31 @@ class TradingBot:
                     type_filling = mt5.ORDER_FILLING_IOC
                 else:
                     type_filling = mt5.ORDER_FILLING_RETURN 
+
+                # [BUG-66] Pre-submission price freshness + normalization.
+                # USDCHF BUY_LIMIT and AUDJPY SELL_LIMIT were rejected with MT5
+                # "Invalid price" (observed: 2026-03-12 15:48, 2026-03-13 03:01).
+                # Root cause: by the time order reaches MT5, market moved past the
+                # limit price (SELL limit above current ask, or BUY limit above bid).
+                # Fix: re-fetch tick and validate direction before submission.
+                # Also: normalize price to sym_info.digits to prevent precision errors.
+                try:
+                    _fresh_tick = mt5.symbol_info_tick(self.gateway.find_symbol(symbol) or symbol)
+                    _sinfo = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
+                    if _sinfo and _fresh_tick:
+                        _digits = getattr(_sinfo, 'digits', 5)
+                        price = round(price, _digits)
+                        sl    = round(sl,    _digits)
+                        tp    = round(tp,    _digits) if tp else tp
+                        if not is_nano:
+                            if is_buy and price >= _fresh_tick.ask:
+                                self.log_info(f"⏭️ Skip {symbol} BUY_LIMIT {price}: price above market ask {_fresh_tick.ask:.{_digits}f}. Order would be filled immediately or rejected.")
+                                return
+                            if not is_buy and price <= _fresh_tick.bid:
+                                self.log_info(f"⏭️ Skip {symbol} SELL_LIMIT {price}: price below market bid {_fresh_tick.bid:.{_digits}f}. Order would be filled immediately or rejected.")
+                                return
+                except Exception:
+                    pass  # Never block a trade due to freshness check failure
 
                 request = {
                     "action": mt5.TRADE_ACTION_DEAL if is_nano else mt5.TRADE_ACTION_PENDING,
@@ -2266,7 +2885,8 @@ class TradingBot:
                     # ────────────────────────────────────────────────────
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
-                    self.log_info(f"❌ MT5 REJECTED {symbol}: {err_msg}")
+                    retcode = result.retcode if result else -1
+                    self.log_info(f"❌ MT5 REJECTED {symbol}: {err_msg} (retcode={retcode})")
                     # [BUG-31 FIX] Apply symbol cooldown after ANY rejection.
                     # Previously: no cooldown set → same signal retried every 60s
                     # indefinitely.  Evidence: 194 consecutive rejections over

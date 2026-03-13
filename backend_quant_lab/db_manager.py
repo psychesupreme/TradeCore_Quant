@@ -328,14 +328,16 @@ class DBManager:
     def get_signal_history() -> pd.DataFrame:
         """Returns signal log for QML training.
         [SPRINT 9] Filtered to FILLED/ATTEMPTED only — SKIPPED rows inflated
-        the query to 48k+ rows and are irrelevant for model training."""
+        the query to 48k+ rows and are irrelevant for model training.
+        [SPRINT 17b] BUG FIX: Added 'EXECUTED' back to the filter. 
+        Skipping it dropped 302 historically valid signals, starving the ML model."""
         conn = get_db_connection()
         try:
             df = pd.read_sql_query('''
                 SELECT symbol, timestamp, signal_type, confidence,
                        result, ict_score, kill_zone, indicators
                 FROM signals
-                WHERE result IN ('FILLED', 'ATTEMPTED')
+                WHERE result IN ('FILLED', 'ATTEMPTED', 'EXECUTED')
                 ORDER BY timestamp ASC
             ''', conn)
             return df

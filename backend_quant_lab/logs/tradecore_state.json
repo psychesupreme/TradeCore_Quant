@@ -32,9 +32,9 @@
       "SKIPPED"
     ],
     "AUDUSD": [
-      "SELL_MICRO",
-      0.72,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "NZDUSD": [
       "NEUTRAL",
@@ -52,9 +52,9 @@
       "SKIPPED"
     ],
     "EURGBP": [
-      "SELL_NANO",
-      0.85,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "AUDJPY": [
       "NEUTRAL",
@@ -87,14 +87,14 @@
       "SKIPPED"
     ],
     "US SP 500": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "SELL_MICRO",
+      0.75,
+      "ATTEMPTED"
     ],
     "US Tech 100": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "SELL_MICRO",
+      0.63,
+      "LOW_CONFIDENCE (63%)"
     ],
     "Germany 40": [
       "NEUTRAL",
