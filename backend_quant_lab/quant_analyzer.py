@@ -1,10 +1,13 @@
 # ============================================================
-# TradeCore v52.0 — quant_analyzer.py  [SPRINT 7 FULL REWRITE]
+# Kom v1.0 (formerly TradeCore) — quant_analyzer.py 
+# [SPRINT 18a: REBRAND & ELITE 10 ALIGNMENT]
 #
-# Replaces the 5-metric stub with a full institutional-grade
-# quantitative analytics engine. All formulas documented inline.
+# SPRINT 18a UPGRADES:
+#   - System rebranded to Kom v1.0.
+#   - CLI Output updated to reflect Kom v1.0 architecture.
+#   - Asset Breakdown filters updated to map to the Elite 10 Matrix.
 #
-# METRICS IMPLEMENTED:
+# HISTORICAL PRESERVATION (Sprint 7 Full Rewrite):
 #   Expectancy          — per-trade and per-dollar-risked EV
 #   Sharpe Ratio        — risk-adjusted return (annualised)
 #   Sortino Ratio       — downside-only deviation penalty
@@ -624,10 +627,6 @@ class QuantEngine:
         p_bear          = forward_probs[idx_map['BEAR']]
 
         # Gate decision
-        # Thresholds raised vs original spec — balance-based Markov is more
-        # conservative and less noisy than equity-based, so we can afford to
-        # act on it only when truly extreme.
-        # Low confidence (< 500 obs ≈ < 8 hours) → always NORMAL, never HALT.
         n_obs = len(states)
         if n_obs < 200:
             gate = 'NORMAL'   # not enough history to trust Markov output
@@ -685,9 +684,6 @@ class QuantEngine:
             }
 
         # N >= 30: quantile regression pending Phase C implementation
-        # Score adjustment is 0.0 until the model is trained — bot runs on
-        # pure ICT confluence scoring. available=False prevents dashboard
-        # from misleadingly showing "QML Active".
         return {
             'available':  False,
             'n':          n,
@@ -748,14 +744,19 @@ class QuantEngine:
             return {'max_dd_usd': None, 'max_dd_pct': None, 'current_dd_pct': None}
 
     def _asset_breakdown(self, df: pd.DataFrame) -> dict:
+        """
+        [SPRINT 18a] Updated to map perfectly to the Elite 10 Matrix.
+        Groups assets by their institutional class (Hard Assets vs Indices vs FX vs Crypto).
+        """
         if df is None or df.empty:
             return {}
         breakdown = {}
         categories = {
             'LIMIT':  df[df['comment'].str.contains('Limit', case=False, na=False)],
             'NANO':   df[df['comment'].str.contains('Nano',  case=False, na=False)],
-            'GOLD':   df[df['symbol'].str.contains('XAU|XAG', na=False)],
-            'FX':     df[~df['symbol'].str.contains('XAU|XAG|BTC|ETH', na=False)],
+            'HARD_ASSET': df[df['symbol'].str.contains('XAU|XAG|Oil', na=False)],
+            'EQUITIES': df[df['symbol'].str.contains('SP 500|Tech 100', na=False)],
+            'FX':     df[df['symbol'].str.contains('USDJPY|EURUSD|GBPUSD', na=False)],
             'CRYPTO': df[df['symbol'].str.contains('BTC|ETH', na=False)],
         }
         for label, subset in categories.items():
@@ -782,7 +783,7 @@ def analyze_performance():
     n      = report['n_trades']
 
     print("\n" + "="*65)
-    print("  📊 TRADECORE v52.0 — QUANTITATIVE PERFORMANCE REPORT")
+    print("  📊 KOM v1.0 — QUANTITATIVE PERFORMANCE REPORT")
     print("="*65)
     print(f"  Trades in sample : {n}  ({'statistically valid' if n>=30 else 'OBSERVATION MODE — need 30+'})")
     print(f"  Generated        : {report['generated_at'][:19]} UTC")
@@ -831,13 +832,13 @@ def analyze_performance():
           f"|  P(BEAR next): {mk.get('p_bear_next','N/A')}")
 
     qml = report['qml']
-    print(f"  QML                 {'Active' if qml.get('available') else qml.get('note','N/A')}")
+    print(f"  QML PIPELINE        {'Active' if qml.get('available') else qml.get('note','N/A')}")
 
     dd = report['drawdown']
     print(f"\n  MAX DRAWDOWN        ${dd.get('max_dd_usd','N/A')}  "
           f"({(dd.get('max_dd_pct') or 0)*100:.2f}%)")
 
-    print("\n  ASSET BREAKDOWN")
+    print("\n  ELITE 10 BREAKDOWN")
     for label, data in report.get('asset_breakdown', {}).items():
         print(f"    {label:<10}  N={data['n']}  "
               f"WR={data['win_rate']*100:.0f}%  "

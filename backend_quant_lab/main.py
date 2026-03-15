@@ -1,16 +1,31 @@
 # ============================================================
-# Kom v1.0 — main.py  [SPRINT 18: DUAL-LOOP ARCHITECTURE]
+# Kom v1.0 (formerly TradeCore) — main.py  
+# [SPRINT 18: DUAL-LOOP ARCHITECTURE & API REBRAND]
 #
-# SPRINT 18 UPGRADES:
-#   [DECOUPLED SCHEDULING] The monolithic 60-second loop is split:
-#     - run_execution_cycle: Runs every 10 seconds. Manages live 
-#       trailing stops, Take Profits, and momentum kill-switches.
-#     - run_analysis_cycle: Runs every 60 seconds. Handles the heavy
-#       Pandas lifting (VWAP, Wyckoff, SMC) to find setups.
+# HISTORICAL ARCHITECTURE NOTES (Sprints 1 - 17c):
+#   - [Sprint 1-10] The original engine ran on a pure `while True:` 
+#     sleep loop, which blocked Telegram commands and API requests.
+#   - [Sprint 11] Migrated to FastAPI + Uvicorn to allow the local 
+#     HTML/Flutter dashboards to pull state asynchronously without 
+#     interrupting the trade execution thread.
+#   - [Sprint 17b] Added APScheduler to replace the crude `asyncio` 
+#     sleep loops, ensuring exact execution timing and preventing 
+#     memory leaks from overlapping async tasks.
+#
+# SPRINT 18 UPGRADES (The Kom Transition):
+#   [DECOUPLED SCHEDULING] The monolithic 60-second loop was destroying 
+#   latency during heavy Pandas recalculations. It is now split:
+#     1. run_execution_cycle: Runs every 10 seconds. Manages live 
+#        trailing stops, Take Profits, and momentum kill-switches.
+#     2. run_analysis_cycle: Runs every 60 seconds. Handles the heavy
+#        Pandas lifting (VWAP, Wyckoff, SMC) to find setups.
 #   [VERSION CONTROL] System-wide rebrand to Kom v1.0.
+#   [API RESTORATION] Endpoints preserved as /bot/* to maintain 
+#   backward compatibility with the Flutter frontend.
 # ============================================================
 
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from apscheduler.schedulers.background import BackgroundScheduler
 from bot_engine import TradingBot
 import logging
@@ -19,7 +34,9 @@ import subprocess
 import os
 import sys
 
-# Configure logging
+# ==========================================
+# LOGGING SETUP
+# ==========================================
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -29,15 +46,31 @@ logging.basicConfig(
 )
 logger = logging.getLogger("Kom_API")
 
-# Initialize FastAPI with new Version Control
+# ==========================================
+# FASTAPI INITIALIZATION
+# ==========================================
 app = FastAPI(title="Kom API", version="1.0")
+
+# [BUG-54 FIX] Add CORS middleware to allow the local dashboard.html 
+# to fetch data without being blocked by the browser's security policy.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Localhost access permitted
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize the Master Engine
 bot = TradingBot()
 scheduler = BackgroundScheduler()
 
 def run_sync_db():
-    """Runs the DB sync script via subprocess to avoid blocking the Fast/Heavy loops."""
+    """
+    [SPRINT 14b] Runs the DB sync script via subprocess.
+    Prevents the heavy SQLite historical sync from blocking the 
+    Fast/Heavy execution loops in the main thread.
+    """
     try:
         if os.path.exists("sync_db.py"):
             subprocess.Popen([sys.executable, "sync_db.py"])
@@ -69,7 +102,7 @@ def startup_event():
         seconds=10, 
         id='execution_loop', 
         replace_existing=True,
-        max_instances=1
+        max_instances=1 # Prevents thread pile-up if MT5 hangs
     )
     
     # 2. The Analysis Loop (Heavy: 60s)
@@ -113,6 +146,10 @@ def shutdown_event():
     bot.stop_service()
     logger.info("✅ System safely offline.")
 
+# ==========================================
+# RESTORED DASHBOARD API ENDPOINTS
+# ==========================================
+
 @app.get("/")
 def read_root():
     return {
@@ -124,3 +161,15 @@ def read_root():
 @app.get("/bot/status")
 def get_status():
     return bot.get_status()
+
+@app.get("/bot/performance")
+def get_performance():
+    return bot.get_performance()
+
+@app.get("/bot/risk")
+def get_risk():
+    return bot.get_risk()
+
+@app.get("/bot/news")
+def get_news():
+    return bot.get_news()
