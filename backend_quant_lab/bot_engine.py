@@ -49,117 +49,62 @@ class TradingBot:
         self.notifier = TelegramNotifier() 
         self.news_manager = NewsManager() 
         
-        # ==========================================
-        # FULLY DIVERSIFIED ASSET MATRIX (target: 20 assets)
-        # ==========================================
-        # [SPRINT 8] 20-asset matrix: confirmed broker symbols.
-        # US Oil = "US Oil" (Deriv), NGAS = Natural Gas, Germany 40 = DAX.
-        # Routing checks use: 'Oil' in symbol, 'NGAS' in symbol, 'Germany' in symbol.
+        # [SPRINT 18a] Threading Lock to prevent MT5 C-extension collisions
+        # during asynchronous LIMIT order dispatch vs Fast Loop state checking.
+        self.mt5_lock = threading.Lock()
+        
         self.vip_assets = [
-            # Forex (11)
-            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD",
-            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",
-            # Metals (2)
-            "XAUUSD", "XAGUSD",
-            # Commodities (2) [SPRINT 8]
-            "US Oil", "NGAS",
-            # Crypto (2)
-            "BTCUSD", "ETHUSD",
-            # Indices (3) [SPRINT 8]
-            "US SP 500", "US Tech 100", "Germany 40",
+            "EURUSD", "GBPUSD", "USDJPY",         
+            "XAUUSD", "XAGUSD", "US Oil",         
+            "US SP 500", "US Tech 100",           
+            "BTCUSD", "ETHUSD",                   
         ]
         
         self.active_symbols = [] 
         self.symbol_cooldowns = {} 
         
-        # Expanded absolute capacity limits
         self.MAX_OPEN_TRADES = 12       
         self.MAX_SNIPER_SLOTS = 5      
-        self.MAX_GOLD_TRADES = 3       # Reused as MAX_COMMODITY_TRADES (gold, silver, oil, ngas)       
+        self.MAX_GOLD_TRADES = 3       
         
         self.logs = []
         self.is_running = False
         self.active_tickets = set()
         self.execution_lock = set() 
         
-        # --- STATE PERSISTENCE ---
+        # [SPRINT 18a] Close-Spam Protection Set
+        self._closing_tickets = set()
+        
         self.state_file = "logs/tradecore_state.json"
-        self.scaled_positions = set()  # populated in start_service() once MT5 is connected
+        self.scaled_positions = set()  
         
         self.daily_start_balance = 0.0
         self.last_trade_day = -1
         self.kill_switch_active = False
-        self.kill_switch_time   = None    # [S9] tracks when KS last fired for 8h cooldown
+        self.kill_switch_time   = None    
 
         self.current_var = 0.0
         self.market_regime = "CALIBRATING..."
 
-        # [OPT-6] Signal deduplication tracker.
         self._last_logged_signal: dict = {}
-
-        # [SPRINT 9] Pending LIMIT fill tracker.
-        # When a LIMIT order is placed successfully, we store its info here
-        # keyed by MT5 order ticket.  run_cycle() detects when it fills
-        # (appears in open positions) and calls save_trade() immediately.
         self._pending_order_info: dict = {}
-
-        # [S15-L2] Consecutive price-too-close rejection counter.
-        # Key: (symbol, entry_price_str). Value: rejection count.
-        # After 4 consecutive rejections on the same entry price, the OB zone
-        # is being swept through — signal is invalidated and must not place.
         self._price_close_rejections: dict = {}
-
-        # [BUG-60] Stale zone cooldown tracker.
-        # After a zone is invalidated (4× price rejections), suppress re-evaluation
-        # of the same entry level for 15 minutes. Without this, the system immediately
-        # re-arms the same OB price zone on the very next cycle (confirmed: AUDUSD
-        # 2026-03-12 16:06:39 Stale Zone fired, 16:07:40 Rejection #1 re-started).
-        # Key: (symbol, rounded_price). Value: datetime when zone was invalidated.
         self._stale_zone_cooldowns: dict = {}
-
-        # [BUG-58] Stale trap loop counter — parallel to _price_close_rejections.
-        # Tracks how many consecutive times a (symbol, entry_price) pair has been
-        # cancelled by the stale trap checker (TP reached before limit filled).
-        # After 3 stale traps at the same price the OB is fully behind the market
-        # → zone is dead. Apply the same STALE_ZONE cooldown as S15-L2.
-        # Key: (symbol, entry_price_rounded). Value: stale count.
         self._stale_trap_counts: dict = {}
-
-        # [S15-L1] Entry momentum watch list.
-        # After a LIMIT fills, the position is added here so the next
-        # run_cycle can validate that the first close moved in our direction.
-        # Key: ticket. Value: {'symbol','type','open_price','sl_dist','fill_candle_time'}
         self._momentum_watch: dict = {}
-
-        # [S15-L4] Markov directional trap cleanup — tracks last regime seen.
-        # When Markov flips to BEAR, cancel pending BUY limits.
-        # When Markov flips to BULL, cancel pending SELL limits.
-        self._last_markov_gate: str = "OK"  # "OK" | "HALT_BEAR" | "HALT_BULL" | "HALT_HVOL"
-
-        # [TELEGRAM] Manual pause flag — set by /pause N command.
-        # Suppresses new signal execution for N minutes without stopping the engine.
+        self._last_markov_gate: str = "OK"  
         self._manual_pause_until: datetime = None
 
-        # [SPRINT 7] Quantitative analytics engine.
-        # Cached for 5 min. Provides: risk_pct, var_limit, cvar_limit,
-        # kelly_fraction, regime_gate, regime_multiplier.
         self.quant_engine = QuantEngine()
-        # [SPRINT 7] Risk reduction flag — set by VaR warning, cleared when safe
         self._risk_reduction_mode = False
 
     def _get_current_account_id(self):
-        """Safely fetch account ID from gateway — returns None if not connected yet."""
         try:
             return self.gateway.get_account_id()
         except Exception:
             return None
 
     def _load_state(self):
-        """
-        Load scaled_positions and _last_logged_signal from disk.
-        If the saved account_id does not match the current MT5 account,
-        the state is discarded and a clean set is returned.
-        """
         try:
             if os.path.exists(self.state_file):
                 with open(self.state_file, "r") as f:
@@ -173,7 +118,6 @@ class TradingBot:
                     )
                     self._save_state()
                     return set()
-                # [S9] Restore signal dedup tracker — prevents first-cycle log flood
                 raw_dedup = data.get("last_logged_signal", {})
                 self._last_logged_signal = {k: tuple(v) for k, v in raw_dedup.items()}
                 return set(data.get("scaled_positions", []))
@@ -182,10 +126,8 @@ class TradingBot:
         return set()
 
     def _save_state(self):
-        """Save scaled_positions + signal dedup dict with current account_id."""
         try:
             account_id = self._get_current_account_id()
-            # Serialize tuples as lists (JSON-safe)
             dedup_serializable = {
                 k: list(v) for k, v in self._last_logged_signal.items()
             }
@@ -197,6 +139,35 @@ class TradingBot:
                 }, f, indent=2)
         except Exception as e:
             self.log_debug(f"State Save Error: {e}")
+
+    def _garbage_collect_state(self):
+        """
+        [SPRINT 18a] State-Memory Leak Fix.
+        Purges dead price coordinates and expired cooldowns at daily rollover.
+        Ensures Ram footprint remains pristine over months of 24/5 uptime.
+        """
+        now = datetime.utcnow()
+        
+        # 1. Prune stale zone cooldowns > 24h
+        stale_keys = [k for k, t in self._stale_zone_cooldowns.items() if (now - t).total_seconds() > 86400]
+        for k in stale_keys:
+            self._stale_zone_cooldowns.pop(k, None)
+
+        # 2. Prune symbol cooldowns > 24h
+        sym_keys = [k for k, t in self.symbol_cooldowns.items() if (now - t).total_seconds() > 86400]
+        for k in sym_keys:
+            self.symbol_cooldowns.pop(k, None)
+            
+        # 3. Wipe static counters daily (zones from yesterday are structurally irrelevant)
+        self._stale_trap_counts.clear()
+        self._price_close_rejections.clear()
+        
+        # 4. Prune momentum watch list > 24h
+        mom_keys = [k for k, v in self._momentum_watch.items() if (now - v['fill_time']).total_seconds() > 86400]
+        for k in mom_keys:
+            self._momentum_watch.pop(k, None)
+            
+        self.log_debug("🧹 Garbage Collection: Cleared stale state tracking variables.")
 
     def log_info(self, message):
         logger.info(message)
@@ -223,10 +194,9 @@ class TradingBot:
         args  = parts[1:] if len(parts) > 1 else []
         self.log_info(f"📩 Received Command: {cmd}")
 
-        # ── /help ─────────────────────────────────────────────────────────
         if cmd == "/help":
             msg = (
-                "🤖 **TradeCore v53.0 — Commands**\n"
+                "🤖 **Kom v1.0 — Commands**\n"
                 "━━━━━━━━━━━━━━━━━━━━\n"
                 "📊 *Info*\n"
                 "  /status — live balance, positions, float PnL\n"
@@ -251,12 +221,8 @@ class TradingBot:
                 "  /start — restart the engine\n"
             )
             self.async_alert(msg)
-
-        # ── /status ───────────────────────────────────────────────────────
         elif cmd == "/status":
             self._report_status()
-
-        # ── /balance ──────────────────────────────────────────────────────
         elif cmd == "/balance":
             acc = self.gateway.get_account_info()
             if acc:
@@ -265,12 +231,10 @@ class TradingBot:
                     f"📈 **Equity:** ${acc['equity']:,.2f}\n"
                     f"🛡️ **Free Margin:** ${acc['free_margin']:,.2f}"
                 )
-
-        # ── /performance ──────────────────────────────────────────────────
         elif cmd == "/performance":
             try:
                 import sqlite3 as _sl
-                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                con = _sl.connect("tradecore.db")
                 rows = con.execute("""
                     SELECT profit FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
@@ -309,14 +273,12 @@ class TradingBot:
                 )
             except Exception as e:
                 self.async_alert(f"⚠️ Performance query error: {e}")
-
-        # ── /trades [N] ───────────────────────────────────────────────────
         elif cmd == "/trades":
             try:
                 n = int(args[0]) if args else 5
                 n = max(1, min(n, 20))
                 import sqlite3 as _sl
-                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                con = _sl.connect("tradecore.db")
                 rows = con.execute("""
                     SELECT symbol, type, profit, volume, close_time FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
@@ -335,8 +297,6 @@ class TradingBot:
                 self.async_alert("\n".join(lines))
             except Exception as e:
                 self.async_alert(f"⚠️ Trades query error: {e}")
-
-        # ── /pending ──────────────────────────────────────────────────────
         elif cmd == "/pending":
             try:
                 import MetaTrader5 as _mt5
@@ -352,8 +312,6 @@ class TradingBot:
                 self.async_alert("\n".join(lines))
             except Exception as e:
                 self.async_alert(f"⚠️ Pending orders error: {e}")
-
-        # ── /close [SYMBOL|all] ───────────────────────────────────────────
         elif cmd == "/close":
             target = args[0].upper() if args else "all"
             positions = self.gateway.get_open_positions()
@@ -374,8 +332,6 @@ class TradingBot:
             if not closed and not failed:
                 parts_msg.append(f"⚠️ No positions found matching '{target}'")
             self.async_alert("🔒 **Manual Close**\n" + "\n".join(parts_msg))
-
-        # ── /cancel [SYMBOL|all] ──────────────────────────────────────────
         elif cmd == "/cancel":
             target = args[0].upper() if args else "all"
             try:
@@ -392,7 +348,8 @@ class TradingBot:
                             "action": _mt5.TRADE_ACTION_REMOVE,
                             "order":  o.ticket,
                         }
-                        res = _mt5.order_send(req)
+                        with self.mt5_lock:
+                            res = _mt5.order_send(req)
                         if res and res.retcode == _mt5.TRADE_RETCODE_DONE:
                             cancelled.append(o.symbol)
                             self.execution_lock.discard(o.symbol)
@@ -404,8 +361,6 @@ class TradingBot:
                 self.async_alert("🗑️ **Manual Cancel**\n" + "\n".join(parts_msg))
             except Exception as e:
                 self.async_alert(f"⚠️ Cancel error: {e}")
-
-        # ── /regime ───────────────────────────────────────────────────────
         elif cmd == "/regime":
             regime = self.market_regime
             ks     = self.kill_switch_active
@@ -427,8 +382,6 @@ class TradingBot:
                 f"Kill Switch: {'🛑 ACTIVE' if ks else '✅ Clear'}"
                 f"{pause_txt}"
             )
-
-        # ── /pause [minutes] ──────────────────────────────────────────────
         elif cmd == "/pause":
             try:
                 mins = int(args[0]) if args else 30
@@ -441,13 +394,9 @@ class TradingBot:
                 )
             except Exception:
                 self.async_alert("⚠️ Usage: /pause [minutes] (e.g. /pause 60)")
-
-        # ── /resume ───────────────────────────────────────────────────────
         elif cmd == "/resume":
             self._manual_pause_until = None
             self.async_alert("▶️ **Signal execution resumed.**")
-
-        # ── /news ─────────────────────────────────────────────────────────
         elif cmd == "/news":
             news_data = self.news_manager.get_upcoming_news()
             if not news_data:
@@ -460,21 +409,16 @@ class TradingBot:
                         f"{icon} {item['time'].split()[-1]} • {item['country']} {item['title']}"
                     )
                 self.async_alert("\n".join(lines))
-
-        # ── /summary ──────────────────────────────────────────────────────
         elif cmd == "/summary":
             self.async_alert("📋 Generating daily summary...")
             self.send_daily_summary()
-
-        # ── /risk ─────────────────────────────────────────────────────────
         elif cmd == "/risk":
             try:
                 import sqlite3 as _sl
                 acc = self.gateway.get_account_info()
                 bal = acc['balance'] if acc else 0
                 eq  = acc['equity']  if acc else 0
-                # Daily P&L from DB
-                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                con = _sl.connect("tradecore.db")
                 today = datetime.utcnow().strftime('%Y-%m-%d')
                 rows_today = con.execute(
                     "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL",
@@ -486,14 +430,12 @@ class TradingBot:
                 con.close()
                 daily_pnl  = rows_today[0] or 0.0
                 profits    = [r[0] for r in all_profits]
-                # Peak equity proxy: balance + max running sum
                 peak       = bal
                 cumsum     = 0.0
                 for p in profits:
                     cumsum += p
                     peak    = max(peak, bal - cumsum + p) if p else peak
                 drawdown   = ((peak - bal) / peak * 100) if peak > 0 else 0
-                # Kelly from quant (if available)
                 try:
                     from quant_analyzer import QuantAnalyzer
                     qa = QuantAnalyzer(profits)
@@ -501,7 +443,7 @@ class TradingBot:
                     var95 = qa.value_at_risk(0.95)
                 except Exception:
                     kelly, var95 = 0.0, 0.0
-                weekly_target = 3000.0  # $3K/week target from sprint history
+                weekly_target = 3000.0  
                 days_remaining = 7 - datetime.utcnow().weekday()
                 self.async_alert(
                     f"🔬 **Risk Dashboard**\n"
@@ -518,8 +460,6 @@ class TradingBot:
                 )
             except Exception as e:
                 self.async_alert(f"⚠️ Risk query error: {e}")
-
-        # ── /amd [SYMBOL] ─────────────────────────────────────────────────
         elif cmd == "/amd":
             try:
                 from analyst import compute_amd_phase, SESSION_WINDOWS
@@ -549,27 +489,22 @@ class TradingBot:
                 self.async_alert("\n".join(lines))
             except Exception as e:
                 self.async_alert(f"⚠️ AMD query error: {e}")
-
-        # ── /cooldowns ────────────────────────────────────────────────────
         elif cmd == "/cooldowns":
             try:
                 now = datetime.utcnow()
                 lines = ["⏱️ **Active Cooldowns**\n━━━━━━━━━━━━━━━━━━━━"]
-                # Symbol cooldowns (post-close + BUG-58 momentum chase)
                 sym_cds = [(sym, t) for sym, t in self.symbol_cooldowns.items()
                            if (now - t).total_seconds() < 900]
                 if sym_cds:
                     for sym, t in sorted(sym_cds, key=lambda x: x[1], reverse=True):
                         remaining = 900 - int((now - t).total_seconds())
                         lines.append(f"🔴 {sym}: {remaining//60}m {remaining%60}s left")
-                # Stale zone cooldowns
                 sz_cds = [(k, t) for k, t in self._stale_zone_cooldowns.items()
                           if (now - t).total_seconds() < 900]
                 if sz_cds:
                     for (sym, zone), t in sz_cds:
                         remaining = 900 - int((now - t).total_seconds())
                         lines.append(f"🚫 {sym} zone {zone}: {remaining//60}m left (stale OB)")
-                # Stale trap counts in progress
                 if self._stale_trap_counts:
                     for (sym, px), cnt in self._stale_trap_counts.items():
                         lines.append(f"⚠️ {sym} @ {px}: {cnt}/3 stale traps")
@@ -578,14 +513,12 @@ class TradingBot:
                 self.async_alert("\n".join(lines))
             except Exception as e:
                 self.async_alert(f"⚠️ Cooldown query error: {e}")
-
-        # ── /signals [N] ──────────────────────────────────────────────────
         elif cmd == "/signals":
             try:
                 n = int(args[0]) if args else 5
                 n = max(1, min(n, 15))
                 import sqlite3 as _sl
-                con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+                con = _sl.connect("tradecore.db")
                 rows = con.execute("""
                     SELECT symbol, signal_type, confidence, entry_price, timestamp
                     FROM signals
@@ -605,18 +538,12 @@ class TradingBot:
                 self.async_alert("\n".join(lines))
             except Exception as e:
                 self.async_alert(f"⚠️ Signals query error: {e}")
-
-        # ── /stop ─────────────────────────────────────────────────────────
         elif cmd == "/stop":
             self.stop_service()
             self.async_alert("🛑 **Bot Stopped by User Command**")
-
-        # ── /start ────────────────────────────────────────────────────────
         elif cmd == "/start":
             if not self.is_running:
                 self.start_service()
-
-        # ── Unknown ───────────────────────────────────────────────────────
         else:
             self.async_alert(
                 f"❓ Unknown command: `{cmd}`\n"
@@ -624,12 +551,6 @@ class TradingBot:
             )
 
     def _report_status(self):
-        """
-        [S18] Rich at-a-glance status — replaces the old thin 8-line version.
-        Consolidates account, positions, pending orders, today's P&L, weekly
-        progress, regime, and cooldown summary into one message so the operator
-        never needs to follow /status with 3 more commands.
-        """
         acc = self.gateway.get_account_info()
         if acc:
             balance      = acc['balance']
@@ -642,7 +563,6 @@ class TradingBot:
         positions    = self.gateway.get_open_positions()
         total_profit = sum(p['profit'] for p in positions)
 
-        # ── Today's P&L from DB ──────────────────────────────────────────
         today_pnl   = 0.0
         today_w     = 0
         today_l     = 0
@@ -653,7 +573,7 @@ class TradingBot:
             today_str      = datetime.utcnow().strftime('%Y-%m-%d')
             from datetime import timedelta as _td
             week_start_str = (datetime.utcnow() - _td(days=datetime.utcnow().weekday())).strftime('%Y-%m-%d')
-            con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+            con = _sl.connect("tradecore.db")
             today_rows  = con.execute(
                 "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0",
                 (f"{today_str}%",)
@@ -674,18 +594,15 @@ class TradingBot:
         except Exception:
             pass
 
-        # ── Weekly target progress bar ───────────────────────────────────
         WEEKLY_TARGET   = 3000.0
         wp_pct          = min(100.0, (weekly_pnl / WEEKLY_TARGET) * 100) if WEEKLY_TARGET > 0 else 0
         filled_bars     = min(10, int(wp_pct / 10))
         bar             = "█" * filled_bars + "░" * (10 - filled_bars)
         week_icon       = "🎯" if weekly_pnl >= WEEKLY_TARGET else ("🟢" if weekly_pnl > 0 else "🔴")
 
-        # ── Pending orders ───────────────────────────────────────────────
         raw_orders   = mt5.orders_get()
         pending_list = list(raw_orders) if raw_orders else []
 
-        # ── Regime + pause status ────────────────────────────────────────
         regime      = self.market_regime
         ks          = self.kill_switch_active
         markov_gate = self._last_markov_gate
@@ -697,17 +614,15 @@ class TradingBot:
             pause_line = f"\n⏸️ PAUSED — {mins_left}m remaining"
         ks_line     = "\n🛑 KILL SWITCH ACTIVE" if ks else ""
 
-        # ── Active cooldowns summary ─────────────────────────────────────
         now = datetime.utcnow()
         live_cds = [sym for sym, t in self.symbol_cooldowns.items()
                     if (now - t).total_seconds() < 900]
         cd_line  = f"\n⏱️ Cooldowns: {', '.join(live_cds)}" if live_cds else ""
 
-        # ── Kelly activation status ──────────────────────────────────────
         kelly_bar = f"{total_trades}/30" if total_trades < 30 else "✅ ACTIVE"
 
         msg = (
-            f"📊 **TradeCore v53.0** {datetime.utcnow().strftime('%H:%M UTC')}\n"
+            f"📊 **Kom v1.0** {datetime.utcnow().strftime('%H:%M UTC')}\n"
             f"━━━━━━━━━━━━━━━━━━━━\n"
             f"💰 Balance:    ${balance:,.2f}\n"
             f"📈 Equity:     ${equity:,.2f}  (float: ${total_profit:+.2f})\n"
@@ -724,7 +639,6 @@ class TradingBot:
             f"{pause_line}{ks_line}{cd_line}\n"
         )
 
-        # ── Open positions detail ────────────────────────────────────────
         if positions:
             msg += "━━━━━━━━━━━━━━━━━━━━\n"
             for p in positions:
@@ -733,7 +647,6 @@ class TradingBot:
                 dur_s  = f"{dur_h:.1f}h"
                 msg   += f"{icon} {p['symbol']} {p['type']}: ${p['profit']:+.2f}  ({dur_s})\n"
 
-        # ── Pending orders detail ────────────────────────────────────────
         if pending_list:
             msg += "━━━━━━━━━━━━━━━━━━━━\n"
             for o in pending_list:
@@ -745,15 +658,6 @@ class TradingBot:
         self.async_alert(msg)
 
     def send_daily_summary(self):
-        """
-        [S9] Daily Telegram summary — fires at 23:50 UTC via scheduler.
-        Provides a full-day accountability report so the operator can review
-        performance from their phone without accessing the terminal.
-        Covers: balance, day P&L, weekly P&L target progress, signal funnel,
-        upcoming news, kill-switch status.
-        [S11] BUG-37 fixed: DB path corrected from "logs/tradecore.db" to "tradecore.db".
-        [S11] Added weekly P&L tracker toward $3,000/week target.
-        """
         try:
             acc = self.gateway.get_account_info()
             balance  = acc['balance']  if acc else 0.0
@@ -763,12 +667,10 @@ class TradingBot:
             positions = self.gateway.get_open_positions()
             floating  = sum(p['profit'] for p in positions)
 
-            # Signal funnel from DB: today only
-            # [SPRINT 17b] Validating root DB path again.
             today_str = datetime.utcnow().strftime('%Y-%m-%d')
             try:
                 import sqlite3 as _sl
-                con = _sl.connect("tradecore.db")   # [BUG-37] verified
+                con = _sl.connect("tradecore.db")
                 rows = con.execute("""
                     SELECT result, COUNT(*) FROM signals
                     WHERE timestamp >= ? GROUP BY result
@@ -784,7 +686,6 @@ class TradingBot:
             low_conf  = sum(v for k, v in funnel.items() if 'LOW_CONFIDENCE' in k)
             skipped   = funnel.get('SKIPPED', 0)
 
-            # [S11] Weekly P&L tracker toward $3,000/week target
             WEEKLY_TARGET = 3000.0
             weekly_pnl = 0.0
             trades_this_week = 0
@@ -795,7 +696,7 @@ class TradingBot:
                 now_for_week = datetime.utcnow()
                 week_start = now_for_week - timedelta(days=now_for_week.weekday())
                 week_start_str = week_start.strftime('%Y-%m-%d')
-                con2 = _sl.connect("tradecore.db") # [SPRINT 17b] Validated
+                con2 = _sl.connect("tradecore.db")
                 week_trades = con2.execute("""
                     SELECT profit FROM trades
                     WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0
@@ -810,13 +711,11 @@ class TradingBot:
 
             week_progress_pct = (weekly_pnl / WEEKLY_TARGET) * 100 if WEEKLY_TARGET > 0 else 0
             remaining_to_target = WEEKLY_TARGET - weekly_pnl
-            # Progress bar (10 segments)
             filled_bars = min(10, int(week_progress_pct / 10))
             bar = "█" * filled_bars + "░" * (10 - filled_bars)
             week_icon = "🎯" if weekly_pnl >= WEEKLY_TARGET else ("🟢" if weekly_pnl > 0 else "🔴")
             week_wr = f"{winners_this_week}/{trades_this_week}" if trades_this_week > 0 else "—"
 
-            # Upcoming high-impact news (next 12 hours)
             news_lines = []
             now = datetime.utcnow()
             for ev in self.news_manager.events:
@@ -833,7 +732,7 @@ class TradingBot:
             regime_ico = "🟢" if "NORMAL" in self.market_regime else ("🟡" if "HIGH" in self.market_regime else "⚪")
 
             msg = (
-                f"📋 **TradeCore v53.0 — Daily Summary**\n"
+                f"📋 **Kom v1.0 — Daily Summary**\n"
                 f"🕐 UTC {now.strftime('%Y-%m-%d %H:%M')}\n"
                 f"━━━━━━━━━━━━━━━━━━━━\n"
                 f"💰 Balance:   ${balance:,.2f}\n"
@@ -877,17 +776,9 @@ class TradingBot:
             self.log_info("CRITICAL: MT5 Connection Failed")
             return False
 
-        # [S18] DB integrity guard on startup.
-        # tradecore.db can become malformed if the process is killed mid-write
-        # while the WAL has uncommitted frames (observed 2026-03-13: WAL+SHM
-        # present, integrity_check failed, all queries throwing DatabaseError).
-        # Fix: checkpoint the WAL on every startup to flush any pending frames
-        # back to the main DB file before the engine begins reading/writing.
-        # If integrity_check still fails after checkpoint, we log the warning
-        # but continue — the DB is non-critical for trade execution itself.
         try:
             import sqlite3 as _sl
-            _con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+            _con = _sl.connect("tradecore.db")
             _con.execute("PRAGMA journal_mode=WAL")
             _con.execute("PRAGMA synchronous=NORMAL")
             _con.execute("PRAGMA wal_checkpoint(FULL)")
@@ -896,8 +787,7 @@ class TradingBot:
             if _ic and _ic[0] == "ok":
                 self.log_info("✅ DB integrity check passed (WAL checkpointed).")
             else:
-                self.log_info(f"⚠️ DB integrity warning on startup: {_ic}. "
-                              f"Trade logging may be impaired — run sync_db.py to repair.")
+                self.log_info(f"⚠️ DB integrity warning on startup: {_ic}. Trade logging may be impaired.")
         except Exception as _e:
             self.log_info(f"⚠️ DB startup check error: {_e}. Continuing without DB.")
         
@@ -910,26 +800,21 @@ class TradingBot:
 
         self.is_running = True
         self.execution_lock.clear()
-        self.account_id = self._get_current_account_id()  # cache for this session
-        # Load state NOW — MT5 is connected so account_id comparison works correctly.
-        # Stale entries from a different account are discarded automatically here.
+        self.account_id = self._get_current_account_id()
         self.scaled_positions = self._load_state()
-        self.log_info(f"✅ TradeCore v53.0: Engine Active. Monitoring {len(self.active_symbols)} Assets.")
+        self.log_info(f"✅ Kom v1.0: Engine Active. Monitoring {len(self.active_symbols)} Elite Assets.")
         
         self.news_manager.fetch_calendar()
         self.notifier.start_listening(self.handle_telegram_command)
-        self.async_alert("🚀 **TradeCore v53.0 Master Online**\nDynamic Structural Targets Armed.")
+        self.async_alert("🚀 **Kom v1.0 Master Online**\nDynamic Structural Targets Armed.")
         return True
 
     def stop_service(self):
         self.is_running = False
         self.notifier.stop_listening()
-        # [S18] Checkpoint WAL on clean shutdown to prevent DB corruption.
-        # If the process is killed after this point the WAL frames are already
-        # flushed, so the next startup integrity_check will pass.
         try:
             import sqlite3 as _sl
-            _con = _sl.connect("tradecore.db")  # [SPRINT 17b] Validated path
+            _con = _sl.connect("tradecore.db")
             _con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
             _con.close()
         except Exception:
@@ -989,16 +874,12 @@ class TradingBot:
                     
             if cancel:
                 req = {"action": mt5.TRADE_ACTION_REMOVE, "order": ticket}
-                res = mt5.order_send(req)
+                # [SPRINT 18a] Wrapped in MT5 Lock
+                with self.mt5_lock:
+                    res = mt5.order_send(req)
                 if res and res.retcode == mt5.TRADE_RETCODE_DONE:
                     self.log_info(f"🗑️ Stale Trap Avoided: Cancelled {symbol} limit order. ({reason})")
 
-                    # [BUG-58] Count consecutive stale traps at this (symbol, price).
-                    # Both "Stale Trap" and "Structure invalidated" mean the same thing:
-                    # this entry level is no longer valid — market has moved past it.
-                    # After 3 hits the zone is dead behind the market.
-                    # Cooldown prevents the engine from regenerating the same dead signal.
-                    # Evidence: EURUSD SELL 99% conf fired 8× in 15 minutes — never filled.
                     entry_px  = round(float(ord.price_open), 5)
                     stale_key = (symbol, entry_px)
                     self._stale_trap_counts[stale_key] = \
@@ -1007,9 +888,6 @@ class TradingBot:
 
                     if stale_count >= 3:
                         self._stale_trap_counts.pop(stale_key, None)
-                        # Apply cooldown using the standard symbol_cooldowns mechanism.
-                        # This prevents process_symbol() from regenerating the signal
-                        # for 15 minutes (same gate as post-rejection cooldown).
                         self.symbol_cooldowns[symbol] = datetime.utcnow()
                         self.log_info(
                             f"🚫 Momentum Chase Detected: {symbol} entry {entry_px} "
@@ -1025,14 +903,12 @@ class TradingBot:
         for pos in positions:
             try:
                 symbol = pos['symbol']
+                ticket = pos['ticket']
                 is_buy = pos['type'] == 'BUY'
                 
                 duration_hours = (time.time() - pos['time']) / 3600.0
                 profit = pos['profit']
                 
-                # RESTORED: Stable 12-Hour Time Decay. 
-                # Prevents the AI from panicking and exiting valid setups early.
-                # [SPRINT 7] MAE/MFE tick tracking — called every cycle
                 tick = mt5.symbol_info_tick(symbol)
                 if tick:
                     open_price = pos.get('open_price', 0.0)
@@ -1043,26 +919,24 @@ class TradingBot:
                     else:
                         adverse   = max(0.0, tick.ask - open_price)
                         favorable = max(0.0, open_price - tick.ask)
-                    DBManager.update_mae_mfe(pos['ticket'], adverse, favorable)
+                    DBManager.update_mae_mfe(ticket, adverse, favorable)
 
                 if duration_hours > 12.0 and profit < 0:
+                    # [SPRINT 18a] Close-Spam Lock
+                    if ticket in self._closing_tickets:
+                        continue
+                    self._closing_tickets.add(ticket)
+                    
                     self.log_info(f"⏳ Time Decay Killswitch: {symbol} stuck in dead momentum for >12H. Liquidating.")
-                    self.gateway.close_position(pos['ticket'], symbol, pos['volume'], pos['type'])
+                    self.gateway.close_position(ticket, symbol, pos['volume'], pos['type'])
                     self.async_alert(f"⏳ **Dead Momentum Liquidated:** {symbol}\nTrade closed early to free up margin.")
-                    self.symbol_cooldowns[symbol] = datetime.utcnow()  # [UTC FIX]
+                    self.symbol_cooldowns[symbol] = datetime.utcnow()
                     continue
 
             except Exception:
                 pass
 
     def get_asset_regime(self, symbol: str) -> str:
-        """
-        [OPT-7] Per-asset-class regime detection.
-        Old system used EURUSD for ALL assets — a ranging Friday EURUSD
-        would flag BTC and Gold as DEAD MARKET even during strong moves.
-        Each asset now measures its own 15-candle vol% for regime classification.
-        Regime thresholds are calibrated per asset class.
-        """
         try:
             df = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
         except Exception:
@@ -1079,54 +953,52 @@ class TradingBot:
             return "NORMAL (TRENDING)"
         vol_pct = (recent_high - recent_low) / price
 
-        # Thresholds calibrated per asset class
         if "BTC" in s or "ETH" in s:
-            # Crypto: high vol = >3%, dead = <0.5%
             if vol_pct > 0.030:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.005:  return "NORMAL (TRENDING)"
             return "DEAD MARKET"
         elif "XAU" in s or "XAG" in s:
-            # Metals: high vol = >1%, dead = <0.15%
             if vol_pct > 0.010:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.0015: return "NORMAL (TRENDING)"
             return "DEAD MARKET"
         elif "Oil" in s or "NGAS" in s:
-            # Commodities (WTI Crude / Natural Gas): highly volatile
-            # NGAS is more volatile than Oil — unified threshold is conservative
             if vol_pct > 0.020:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.003:  return "NORMAL (TRENDING)"
             return "DEAD MARKET"
         elif "SP 500" in s or "Tech 100" in s or "Germany" in s:
-            # Indices: high vol = >1.5%, dead = <0.2%
             if vol_pct > 0.015:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.002:  return "NORMAL (TRENDING)"
             return "DEAD MARKET"
         elif "JPY" in s:
-            # JPY crosses: high vol = >0.6%, dead = <0.08%
             if vol_pct > 0.006:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.0008: return "NORMAL (TRENDING)"
             return "DEAD MARKET"
         else:
-            # FX majors: high vol = >0.8%, dead = <0.1%
             if vol_pct > 0.008:  return "HIGH VOLATILITY (GARCH)"
             if vol_pct > 0.001:  return "NORMAL (TRENDING)"
             return "DEAD MARKET"
 
     def evaluate_risk_metrics(self, current_positions=None):
-        """
-        [OPT-5] Proper parametric VaR using ATR-based daily return std-dev.
-        [SPRINT 9] Multi-asset VaR: uses max ATR% across all open positions,
-        not EURUSD-only. A BTC or Gold spike now correctly elevates VaR.
-        """
         try:
             import MetaTrader5 as mt5
-            df = self.gateway.get_market_data("EURUSD")
-            if df.empty or len(df) < 15:
+            # [SPRINT 18a] Decouple baseline from EURUSD dependency
+            baseline_df = None
+            for base_sym in ["EURUSD", "GBPUSD", "US SP 500", "BTCUSD"]:
+                real_base = self.gateway.find_symbol(base_sym) or base_sym
+                try:
+                    df = self.gateway.get_market_data(real_base)
+                    if not df.empty and len(df) >= 15:
+                        baseline_df = df
+                        break
+                except Exception:
+                    continue
+                    
+            if baseline_df is None or baseline_df.empty:
                 return "CALIBRATING...", 0.0
 
-            recent_high   = df['high'].iloc[-15:].max()
-            recent_low    = df['low'].iloc[-15:].min()
-            current_price = df['close'].iloc[-1]
+            recent_high   = baseline_df['high'].iloc[-15:].max()
+            recent_low    = baseline_df['low'].iloc[-15:].min()
+            current_price = baseline_df['close'].iloc[-1]
             vol_pct       = (recent_high - recent_low) / current_price
 
             if vol_pct > 0.008:    regime = "HIGH VOLATILITY (GARCH)"
@@ -1136,14 +1008,10 @@ class TradingBot:
             acc     = self.gateway.get_account_info()
             balance = acc['balance'] if acc else 10000.0
 
-            df['atr']   = calculate_atr(df, period=14)
-            atr_eurusd  = df['atr'].iloc[-1]
-            base_std    = (atr_eurusd / current_price) if current_price > 0 and atr_eurusd > 0 else vol_pct
+            baseline_df['atr'] = calculate_atr(baseline_df, period=14)
+            atr_baseline  = baseline_df['atr'].iloc[-1]
+            base_std    = (atr_baseline / current_price) if current_price > 0 and atr_baseline > 0 else vol_pct
 
-            # [S9] Multi-asset: compute ATR% for each open position symbol
-            # and use the maximum as the portfolio vol driver. This means
-            # a BTCUSD or XAUUSD spike correctly elevates the portfolio VaR
-            # even if EURUSD is calm.
             max_asset_std = base_std
             if current_positions:
                 seen = set()
@@ -1176,30 +1044,21 @@ class TradingBot:
             self.log_debug(f"⚠️ VaR Calculation Error: {e}")
             return "UNKNOWN", 0.0
 
-    def run_cycle(self):
+    def run_execution_cycle(self):
         if not self.is_running: 
             return
 
-        # [TELEGRAM /pause] Manual pause guard — suppresses new signal scoring
-        # without stopping the engine (monitoring, trailing, and closes continue).
-        _is_manually_paused = (
-            self._manual_pause_until is not None and
-            datetime.utcnow() < self._manual_pause_until
-        )
-        
         acc = self.gateway.get_account_info()
         if not acc: 
             return
-        
-        DBManager.log_snapshot(acc['balance'], acc['equity'], acc['margin_level'], acc['free_margin'],
-                               account_id=acc.get('account_id'))
+            
         current_positions = self.gateway.get_open_positions()
 
-        # [S9] LIMIT FILL DETECTION ─────────────────────────────────────
-        # When a LIMIT order fills, execute_signal stores its info in
-        # _pending_order_info keyed by order ticket. Here we detect
-        # when it appears in the open positions list and call save_trade()
-        # immediately so model_type/account_id are properly recorded.
+        # [SPRINT 18a] Clean up the closing tickets lock list
+        live_tickets = {p['ticket'] for p in current_positions}
+        self._closing_tickets.intersection_update(live_tickets)
+
+        # Check pending LIMIT fills
         if self._pending_order_info:
             db_open = DBManager.get_open_trade_tickets()
             for pos in current_positions:
@@ -1207,14 +1066,8 @@ class TradingBot:
                 if ticket in self._pending_order_info and ticket not in db_open:
                     info = self._pending_order_info.pop(ticket)
                     try:
-                        # [BUG-45 FIX] Guard against epoch-zero timestamp.
-                        # p.time_msc is 0 on some broker implementations when
-                        # a LIMIT fills instantly at open. Storing that as
-                        # datetime(0) → '1970-01-01' breaks the 12h dead-
-                        # momentum killer and daily P&L date attribution.
-                        # If timestamp is before year 2000, fall back to utcnow.
                         raw_ts = pos.get('time', 0)
-                        if raw_ts < 946684800:   # < 2000-01-01 00:00:00 UTC
+                        if raw_ts < 946684800:
                             raw_ts = int(time.time())
                         open_time = datetime.utcfromtimestamp(raw_ts).strftime('%Y-%m-%d %H:%M:%S')
                         DBManager.save_trade(
@@ -1231,8 +1084,6 @@ class TradingBot:
                             model_type = info.get('model_type'),
                             model_sizing = info.get('model_sizing'),
                         )
-                        # [S15-L1] Register fill in momentum watch list.
-                        # The first M5 candle after fill validates entry quality.
                         sl_d = abs(pos.get('open_price', 0.0) - pos.get('sl', 0.0))
                         self._momentum_watch[ticket] = {
                             'symbol':          pos['symbol'],
@@ -1242,35 +1093,23 @@ class TradingBot:
                             'fill_time':       datetime.utcnow(),
                             'checked':         False,
                         }
-                        self.log_debug(f"[{pos['symbol']}] Trade recorded: "
-                                       f"ticket={ticket} model={info.get('model_type')}")
+                        self.log_debug(f"[{pos['symbol']}] Trade recorded: ticket={ticket}")
                     except Exception as e:
                         self.log_debug(f"Fill Record Error ({ticket}): {e}")
-        # ────────────────────────────────────────────────────────────────
 
-        # [BUG-44c] REAL-TIME TRADE CLOSE DETECTION ──────────────────────
-        # Primary mechanism: runs every 60s (vs sync_db's 5-min safety net).
-        # Compares DB open trades against live MT5 positions. Any DB trade
-        # not found in the live position list has been closed (SL, TP, or
-        # manual). We fetch the closing deal immediately and record it.
-        #
-        # Evidence: USDJPY #147 (MAE=109% of SL) and USDCAD #149 (MAE=135%)
-        # were still showing as 'open' in DB after being stopped out because
-        # DBManager.close_trade() was never called from bot_engine. This loop
-        # is the fix.
+        # Real-time trade close detection
         try:
             mt5_live_tickets = {p['ticket'] for p in current_positions}
-            db_open_detail   = DBManager.get_open_trades_detail()   # [{ticket,symbol,type,open_price}]
+            db_open_detail   = DBManager.get_open_trades_detail()
             db_open_map      = {t['ticket']: t for t in db_open_detail}
 
             for db_ticket, db_trade in db_open_map.items():
                 if db_ticket in mt5_live_tickets:
-                    continue   # still open — nothing to do
+                    continue   
 
-                # Position gone from MT5 — find its closing deal
                 deals = mt5.history_deals_get(position=db_ticket)
                 if not deals:
-                    continue   # not in history yet (very recent close) — sync_db will catch it
+                    continue   
 
                 close_deal = None
                 for deal in reversed(deals):
@@ -1278,21 +1117,13 @@ class TradingBot:
                         close_deal = deal
                         break
                 if close_deal is None:
-                    close_deal = deals[-1]   # fallback for brokers that omit entry flag
+                    close_deal = deals[-1]
                 if close_deal is None:
                     continue
 
-                close_time = datetime.utcfromtimestamp(
-                    close_deal.time
-                ).strftime('%Y-%m-%d %H:%M:%S')
-                net_profit = (
-                    close_deal.profit
-                    + getattr(close_deal, 'swap',       0.0)
-                    + getattr(close_deal, 'commission', 0.0)
-                )
+                close_time = datetime.utcfromtimestamp(close_deal.time).strftime('%Y-%m-%d %H:%M:%S')
+                net_profit = (close_deal.profit + getattr(close_deal, 'swap', 0.0) + getattr(close_deal, 'commission', 0.0))
 
-                # [BUG-51] close_trade has AND close_time IS NULL guard —
-                # concurrent calls from sync_db are safely idempotent.
                 DBManager.close_trade(
                     ticket      = db_ticket,
                     close_price = close_deal.price,
@@ -1301,72 +1132,42 @@ class TradingBot:
                     commission  = getattr(close_deal, 'commission', 0.0),
                 )
 
-                outcome = ("WIN" if net_profit > 0
-                           else "BREAK_EVEN" if net_profit == 0 else "LOSS")
+                outcome = ("WIN" if net_profit > 0 else "BREAK_EVEN" if net_profit == 0 else "LOSS")
                 icon    = "🟢" if net_profit > 0 else "🔴"
 
-                # pips_result: signed price delta in trade direction
                 open_px   = db_trade.get('open_price', 0.0) or close_deal.price
                 direction = 1 if db_trade.get('type') == 'BUY' else -1
                 pips_raw  = (close_deal.price - open_px) * direction
 
-                DBManager.update_signal_outcome(
-                    db_trade['symbol'], outcome, pips_raw
-                )
+                DBManager.update_signal_outcome(db_trade['symbol'], outcome, pips_raw)
 
-                # [BUG-56] Remove from scaled_positions so next trade on
-                # same symbol can scale out independently.
                 scale_key = f"{db_trade['symbol']}_{open_px}_{db_trade.get('type','BUY')}"
                 self.scaled_positions.discard(scale_key)
                 self._save_state()
 
-                self.log_info(
-                    f"{icon} Trade Closed: #{db_ticket} {db_trade['symbol']} "
-                    f"{db_trade.get('type','?')} | {outcome} | P&L: ${net_profit:+.2f}"
-                )
-                self.async_alert(
-                    f"{icon} **Trade Closed — {outcome}**\n"
-                    f"{db_trade['symbol']} {db_trade.get('type','?')}\n"
-                    f"P&L: ${net_profit:+.2f}"
-                )
+                self.log_info(f"{icon} Trade Closed: #{db_ticket} {db_trade['symbol']} | P&L: ${net_profit:+.2f}")
+                self.async_alert(f"{icon} **Trade Closed — {outcome}**\n{db_trade['symbol']} | P&L: ${net_profit:+.2f}")
         except Exception as _ce:
             self.log_debug(f"Close Detection Error: {_ce}")
-        # ────────────────────────────────────────────────────────────────
 
-        # [S15-L1] ENTRY MOMENTUM GUARD ──────────────────────────────────
-        # After a LIMIT fills, we wait one full M5 candle (≥3 min) then check
-        # whether the first close moved IN our direction. If the first close
-        # after fill moved AGAINST us by more than 0.3×SL, the OB zone has
-        # been swept through (no bounce) — close immediately at market.
-        #
-        # This catches the zero-MFE pattern (6/9 losses, $332 lost) where
-        # price filled the limit and immediately continued through the zone.
-        # The 3-min delay ensures we don't panic-exit on a normal retest
-        # before the structure plays out.
-        #
-        # Thresholds:  wait ≥ 3 min | adverse move > 0.30×SL → emergency close
+        # Entry Momentum Guard
         if self._momentum_watch:
             now_utc = datetime.utcnow()
             stale_tickets = []
             for watch_ticket, wdata in list(self._momentum_watch.items()):
-                # Skip if already checked or fill was too recent
                 elapsed = (now_utc - wdata['fill_time']).total_seconds()
-                if elapsed < 180:   # < 3 min — wait for candle to close
+                if elapsed < 180:   
                     continue
                 if wdata.get('checked'):
                     stale_tickets.append(watch_ticket)
                     continue
 
-                # Mark checked so we only evaluate once
                 self._momentum_watch[watch_ticket]['checked'] = True
                 stale_tickets.append(watch_ticket)
 
-                # Is this position still open?
-                live_pos = next(
-                    (p for p in current_positions if p.get('ticket') == watch_ticket), None
-                )
+                live_pos = next((p for p in current_positions if p.get('ticket') == watch_ticket), None)
                 if live_pos is None:
-                    continue  # already closed (SL or TP hit fast) — nothing to do
+                    continue
 
                 sym       = wdata['symbol']
                 is_buy    = wdata['type'] == 'BUY'
@@ -1380,170 +1181,73 @@ class TradingBot:
                     continue
 
                 current_px = tick.bid if is_buy else tick.ask
-                # Adverse move: for BUY, price dropped below open; for SELL, rose above
                 adverse_move = (open_px - current_px) if is_buy else (current_px - open_px)
 
                 if adverse_move > sl_dist * 0.30:
-                    # Zone swept — close position immediately
-                    vol = live_pos.get('volume', 0.0)
-                    self.log_info(
-                        f"⚡ Momentum Guard: {sym} adverse={adverse_move:.5f} "
-                        f"({adverse_move/sl_dist:.0%}×SL after 3min) — closing."
-                    )
-                    try:
-                        self.gateway.close_position(
-                            watch_ticket, sym, vol, wdata['type']
-                        )
-                        self.async_alert(
-                            f"⚡ **Momentum Guard Exit:** {sym}\n"
-                            f"Zone swept — closed {vol} lots at market.\n"
-                            f"Adverse move: {adverse_move/sl_dist:.0%} of SL in 3 min."
-                        )
-                    except Exception as _mg_e:
-                        self.log_debug(f"Momentum Guard close error ({sym}): {_mg_e}")
+                    # [SPRINT 18a] Close-Spam Lock
+                    if watch_ticket in self._closing_tickets:
+                        continue
+                    self._closing_tickets.add(watch_ticket)
 
-            # Prune checked/stale entries
+                    vol = live_pos.get('volume', 0.0)
+                    self.log_info(f"⚡ Momentum Guard Exit: {sym} adverse={adverse_move:.5f}")
+                    try:
+                        self.gateway.close_position(watch_ticket, sym, vol, wdata['type'])
+                    except Exception as _mg_e:
+                        self.log_debug(f"Momentum Guard close error: {_mg_e}")
+
             for t in stale_tickets:
                 self._momentum_watch.pop(t, None)
-        # ────────────────────────────────────────────────────────────────
 
         current_day = datetime.utcnow().day
         
         if self.kill_switch_active:
             now_utc         = datetime.utcnow()
             new_trading_day = (current_day != self.last_trade_day)
-            hours_since_ks  = (
-                (now_utc - self.kill_switch_time).total_seconds() / 3600.0
-                if self.kill_switch_time else 99.0
-            )
-            # [S9] Require BOTH midnight crossing AND 8h elapsed since KS fired.
-            # Prevents a 23:58 breach resetting at 00:00 (only 2 min later).
+            hours_since_ks  = ((now_utc - self.kill_switch_time).total_seconds() / 3600.0 if self.kill_switch_time else 99.0)
             if new_trading_day and hours_since_ks >= 8.0:
                 self.log_info("🌅 Kill Switch Reset: New trading day + 8h cooldown passed.")
                 self.kill_switch_active = False
                 self.kill_switch_time   = None
                 self.daily_start_balance = acc['balance']
                 self.last_trade_day      = current_day
+                self._garbage_collect_state()  # [SPRINT 18a]
             else:
-                if now_utc.minute % 30 == 0 and now_utc.second < 5:
-                    hrs_remaining = max(0.0, 8.0 - hours_since_ks)
-                    self.log_info(f"🛑 Kill Switch Active. "
-                                  f"{hrs_remaining:.1f}h remaining before reset eligible.")
                 return
 
         if current_day != self.last_trade_day:
             self.daily_start_balance = acc['balance']
             self.last_trade_day = current_day
-
-        self.market_regime, self.current_var = self.evaluate_risk_metrics(current_positions)
+            self._garbage_collect_state()  # [SPRINT 18a]
 
         if self.daily_start_balance > 0 and self.current_var > 0:
             current_dd_usd = self.daily_start_balance - acc['equity']
-            
-            # [SPRINT 7] Two-stage kill switch: VaR warning → CVaR halt
-            # CVaR (Expected Shortfall) fires first — it's the average loss
-            # in the worst 1% of sessions. More conservative than VaR alone.
             quant_params = self.quant_engine.get_live_risk_params()
             cvar_limit   = quant_params.get('cvar_limit', self.current_var * 1.29)
             var_limit    = quant_params.get('var_limit',  self.current_var)
 
             if current_dd_usd >= cvar_limit:
-                self.log_info(f"🛑 KILL SWITCH [CVaR]: Tail-risk limit breached! (DD: ${current_dd_usd:.2f} | CVaR: ${cvar_limit:.2f})")
-                self.async_alert(f"🛑 **CRITICAL: CVaR BREACHED**\nExpected Shortfall limit hit (${cvar_limit:.2f}). Liquidating {len(current_positions)} positions.")
+                self.log_info(f"🛑 KILL SWITCH [CVaR]: Tail-risk limit breached! (DD: ${current_dd_usd:.2f})")
+                self.async_alert(f"🛑 **CRITICAL: CVaR BREACHED**\nLiquidating {len(current_positions)} positions.")
                 self.close_all_positions(current_positions)
                 self.kill_switch_active = True
-                self.kill_switch_time   = datetime.utcnow()   # [S9] start 8h cooldown clock
+                self.kill_switch_time   = datetime.utcnow()
                 return
             elif current_dd_usd >= var_limit:
-                self.log_info(f"⚠️ VaR WARNING: Drawdown ${current_dd_usd:.2f} hit VaR limit ${var_limit:.2f}. Halving position sizes.")
                 self._risk_reduction_mode = True
             else:
                 self._risk_reduction_mode = False
 
-        # [SPRINT 7] Markov Regime Gate — check regime transition probabilities
-        # If P(HIGH_VOL) > 50% or P(BEAR) > 65% → halt new positions
-        markov = self.quant_engine.markov_regime()
-        if markov.get('trading_gate') == 'HALT':
-            if datetime.utcnow().second < 5:
-                p_bear = markov.get('p_bear_next', 0)
-                p_hv   = markov.get('p_high_vol_next', 0)
-                self.log_info(f"🔴 Markov Gate HALT: P(BEAR)={p_bear:.0%} P(HIGH_VOL)={p_hv:.0%}. No new positions.")
-
-            # [S15-L4] DIRECTIONAL TRAP CLEANUP on regime flip.
-            # Markov HALT blocks new signals but previously left existing limit
-            # traps sitting in the order book. A BUY limit placed in a normal
-            # market that then flips BEAR will fill INTO a trending bear move —
-            # exactly the wrong side. Cancel contra-regime pending limits only
-            # when the regime gate first fires (not every cycle to avoid spam).
-            # BEAR → cancel pending BUY limits  |  HIGH_VOL → cancel all limits
-            # (keep SELL limits in BEAR — they are regime-aligned)
-            p_bear = markov.get('p_bear_next', 0)
-            p_hv   = markov.get('p_high_vol_next', 0)
-            new_gate = "HALT_BEAR" if p_bear > 0.65 else "HALT_HVOL" if p_hv > 0.50 else "HALT"
-            if new_gate != self._last_markov_gate:
-                self._last_markov_gate = new_gate
-                try:
-                    raw_orders = mt5.orders_get()
-                    if raw_orders:
-                        cancel_types = set()
-                        if "BEAR" in new_gate:
-                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_BUY_STOP}
-                        else:  # HIGH_VOL — cancel both directions (no directional edge)
-                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_SELL_LIMIT,
-                                            mt5.ORDER_TYPE_BUY_STOP,  mt5.ORDER_TYPE_SELL_STOP}
-                        cancelled = 0
-                        for order in raw_orders:
-                            if order.type in cancel_types:
-                                req = {"action": mt5.TRADE_ACTION_REMOVE, "order": order.ticket}
-                                res = mt5.order_send(req)
-                                if res and res.retcode == mt5.TRADE_RETCODE_DONE:
-                                    self._pending_order_info.pop(order.ticket, None)
-                                    cancelled += 1
-                        if cancelled:
-                            self.log_info(f"🧹 Markov Cleanup: {cancelled} contra-regime limit(s) "
-                                          f"cancelled ({new_gate}).")
-                except Exception:
-                    pass
-            return
-        else:
-            # Regime cleared or REDUCE — reset HALT tracker so next flip triggers cleanup again
-            if self._last_markov_gate != "OK":
-                self._last_markov_gate = "OK"
-            if markov.get('trading_gate') == 'REDUCE':
-                self._risk_reduction_mode = True
-
-        is_open, market_status = self.check_market_schedule()
-        if not is_open:
-            if datetime.now().minute % 30 == 0 and datetime.now().second < 5:
-                self.log_info(f"💤 Market Offline: {market_status}. Bot standing by.")
-            return 
-
         self.apply_trailing_stop(current_positions)
+        self.evaluate_pending_orders() 
+        self.evaluate_open_positions(current_positions) 
 
-        # [S15-P4] SESSION-END PROFIT ANCHOR ─────────────────────────────
-        # At London PM close (17:00 UTC) and NY close (22:00 UTC), scan all
-        # open positions. If a position:
-        #   (a) has been open > 4 hours, AND
-        #   (b) is currently in profit (floating P&L > 0), AND
-        #   (c) is within 1R of its TP or has been trailing for > 6h
-        # → close it at market to bank the gain.
-        #
-        # Motivation: GBPUSD SELL (MFE 97% to TP, then reversed to full loss)
-        # was open for 1h50m during London lunch and was never closed.
-        # Pattern: positions that survive into the next session often give back
-        # gains as the new session opens with a fresh bias.
-        #
-        # Sessions: London PM = 17:00-17:05 UTC | NY close = 22:00-22:05 UTC
-        # Only fires in the 5-minute window each session (second < 300).
-        # Minimum 4h open prevents premature intraday closes.
+        # Session End Profit Anchor
         try:
             now_utc = datetime.utcnow()
             hour    = now_utc.hour
             minute  = now_utc.minute
-            is_session_close = (
-                (hour == 17 and minute < 5) or   # London PM close
-                (hour == 22 and minute < 5)        # NY close
-            )
+            is_session_close = ((hour == 17 and minute < 5) or (hour == 22 and minute < 5))
             if is_session_close and current_positions:
                 for pos in current_positions:
                     try:
@@ -1558,11 +1262,9 @@ class TradingBot:
 
                         hours_open = (now_utc - datetime.utcfromtimestamp(_since)).total_seconds() / 3600
                         if hours_open < 4.0:
-                            continue  # too new — let it run
+                            continue  
 
-                        _tick_data = mt5.symbol_info_tick(
-                            self.gateway.find_symbol(_sym) or _sym
-                        )
+                        _tick_data = mt5.symbol_info_tick(self.gateway.find_symbol(_sym) or _sym)
                         if not _tick_data:
                             continue
 
@@ -1572,9 +1274,8 @@ class TradingBot:
                         _sl_dist    = abs(_open - _sl) if _sl else 0
 
                         if _float_pl <= 0:
-                            continue  # not in profit — don't close a loser
+                            continue  
 
-                        # Only close if near TP (within 2R of TP) OR open > 6h
                         _tp_dist    = abs(_tp - _open) if _tp else 0
                         _float_r    = _float_pl / _sl_dist if _sl_dist > 0 else 0
                         _tp_r       = _tp_dist / _sl_dist if _sl_dist > 0 else 0
@@ -1582,27 +1283,88 @@ class TradingBot:
                         long_runner  = (hours_open > 6.0 and _float_r >= 0.5)
 
                         if near_tp_sess or long_runner:
+                            # [SPRINT 18a] Close-Spam Lock
+                            if _tick in self._closing_tickets:
+                                continue
+                            self._closing_tickets.add(_tick)
+
                             close_ok = self.gateway.close_position(_tick, _sym, _vol, _type)
                             if close_ok:
-                                reason = "near-TP at session end" if near_tp_sess else "long-runner at session end"
-                                self.log_info(
-                                    f"🔔 Session Close: {_sym} {_type} lot={_vol} "
-                                    f"banked at +{_float_r:.2f}R ({reason})"
-                                )
-                                self.async_alert(
-                                    f"🔔 **Session Close:** {_sym}\n"
-                                    f"Banked +{_float_pl:.5f} ({_float_r:.2f}R) at session end.\n"
-                                    f"Reason: {reason}"
-                                )
+                                self.log_info(f"🔔 Session Close: {_sym} {_type} banked at +{_float_r:.2f}R")
                     except Exception as _sc_inner:
-                        self.log_debug(f"Session close inner error ({pos.get('symbol','')}): {_sc_inner}")
+                        pass
         except Exception as _sc_e:
-            self.log_debug(f"Session close error: {_sc_e}")
-        # ────────────────────────────────────────────────────────────────
-        self.evaluate_pending_orders() 
-        self.evaluate_open_positions(current_positions) 
-        self.active_tickets = {p['symbol'] for p in current_positions}
+            pass
 
+    def run_analysis_cycle(self):
+        if not self.is_running: 
+            return
+
+        _is_manually_paused = (
+            self._manual_pause_until is not None and
+            datetime.utcnow() < self._manual_pause_until
+        )
+
+        acc = self.gateway.get_account_info()
+        if not acc: 
+            return
+            
+        DBManager.log_snapshot(acc['balance'], acc['equity'], acc['margin_level'], acc['free_margin'],
+                               account_id=acc.get('account_id'))
+                               
+        if self.kill_switch_active:
+            return
+
+        current_positions = self.gateway.get_open_positions()
+        self.market_regime, self.current_var = self.evaluate_risk_metrics(current_positions)
+
+        markov = self.quant_engine.markov_regime()
+        if markov.get('trading_gate') == 'HALT':
+            if datetime.utcnow().second < 5:
+                p_bear = markov.get('p_bear_next', 0)
+                p_hv   = markov.get('p_high_vol_next', 0)
+                self.log_info(f"🔴 Markov Gate HALT: P(BEAR)={p_bear:.0%} P(HIGH_VOL)={p_hv:.0%}. No new positions.")
+
+            p_bear = markov.get('p_bear_next', 0)
+            p_hv   = markov.get('p_high_vol_next', 0)
+            new_gate = "HALT_BEAR" if p_bear > 0.65 else "HALT_HVOL" if p_hv > 0.50 else "HALT"
+            if new_gate != self._last_markov_gate:
+                self._last_markov_gate = new_gate
+                try:
+                    raw_orders = mt5.orders_get()
+                    if raw_orders:
+                        cancel_types = set()
+                        if "BEAR" in new_gate:
+                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_BUY_STOP}
+                        else:  
+                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_SELL_LIMIT,
+                                            mt5.ORDER_TYPE_BUY_STOP,  mt5.ORDER_TYPE_SELL_STOP}
+                        cancelled = 0
+                        for order in raw_orders:
+                            if order.type in cancel_types:
+                                req = {"action": mt5.TRADE_ACTION_REMOVE, "order": order.ticket}
+                                # [SPRINT 18a] Threading Lock
+                                with self.mt5_lock:
+                                    res = mt5.order_send(req)
+                                if res and res.retcode == mt5.TRADE_RETCODE_DONE:
+                                    self._pending_order_info.pop(order.ticket, None)
+                                    cancelled += 1
+                        if cancelled:
+                            self.log_info(f"🧹 Markov Cleanup: {cancelled} contra-regime limit(s) cancelled.")
+                except Exception:
+                    pass
+            return
+        else:
+            if self._last_markov_gate != "OK":
+                self._last_markov_gate = "OK"
+            if markov.get('trading_gate') == 'REDUCE':
+                self._risk_reduction_mode = True
+
+        is_open, market_status = self.check_market_schedule()
+        if not is_open:
+            return 
+
+        self.active_tickets = {p['symbol'] for p in current_positions}
         gold_trades = len([p for p in current_positions if "XAU" in p['symbol'] or "XAG" in p['symbol']])
         current_count = len(current_positions) + len(self.execution_lock) 
         
@@ -1610,11 +1372,6 @@ class TradingBot:
         pending_list = list(raw_orders) if raw_orders else []
         usd_exposure_base = len([p for p in current_positions if "USD" in p['symbol']]) + len([o for o in pending_list if "USD" in o.symbol])
 
-        # [S9] BASE CURRENCY CORRELATION GUARD ──────────────────────────
-        # Tracks how many open/pending positions share the same 3-char base.
-        # Prevents silent EUR/GBP/AUD double-exposure (e.g. EURUSD + EURJPY).
-        # The existing USD lock above handles USD-specific exposure.
-        # Cap: max 2 positions with the same base currency simultaneously.
         base_exposure: dict = {}
         for p in current_positions:
             b = p['symbol'][:3]
@@ -1622,48 +1379,34 @@ class TradingBot:
         for o in pending_list:
             b = o.symbol[:3]
             base_exposure[b] = base_exposure.get(b, 0) + 1
-        # ────────────────────────────────────────────────────────────────
 
         if current_count >= (self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS):
-            if datetime.now().second < 5: 
-                self.log_info(f"⏸️ Absolute Capacity Full ({current_count}/{self.MAX_OPEN_TRADES + self.MAX_SNIPER_SLOTS}). System maxed out.")
             return
 
         is_sniper_mode = (current_count >= self.MAX_OPEN_TRADES)
-        if is_sniper_mode and datetime.now().second < 5:
-            self.log_info(f"🎯 Base capacity full. 92%+ Global Sniper Mode Active.")
-        
         upcoming_news = self.news_manager.get_upcoming_news() if self.news_manager else []
 
         for symbol in self.active_symbols:
-            # [TELEGRAM /pause] Skip new signal generation during manual pause.
-            # Trailing stops, scale-outs, session-end anchors, and limit fill
-            # detection all run above this loop so positions are always managed.
             if _is_manually_paused:
                 continue
 
             if symbol in self.symbol_cooldowns:
-                time_since_close = datetime.utcnow() - self.symbol_cooldowns[symbol]  # [UTC FIX]
-                # [S9-FIX] Restore 15-min cooldown. 60-min was too aggressive:
-                # a spread rejection at market open locked the symbol for a full hour.
-                # 15 min prevents retry storms while keeping signal capture responsive.
+                time_since_close = datetime.utcnow() - self.symbol_cooldowns[symbol]  
                 if time_since_close < timedelta(minutes=15):
                     continue 
             
-            # Dynamic USD Exposure Lock
             current_usd_locks = len([s for s in self.execution_lock if "USD" in s])
             if "USD" in symbol and (usd_exposure_base + current_usd_locks) >= 2:
                 continue
 
-            # [S9] Base-currency correlation guard (EUR, GBP, AUD, NZD, etc.)
             sym_base = symbol[:3]
             live_base_count = base_exposure.get(sym_base, 0) + (1 if symbol in self.execution_lock else 0)
             if live_base_count >= 2:
                 continue
 
             symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
-            
             nano_trades = len([p for p in current_positions if p['symbol'] == symbol and p.get('magic', 510000) == 510001])
+            
             if "DEAD MARKET" in self.market_regime and nano_trades >= 1:
                 continue 
 
@@ -1710,16 +1453,8 @@ class TradingBot:
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
 
-                # [S12-P1A] Dynamic 1:1 RR trigger — derived from the position's
-                # actual SL distance, not a fixed pip value.
-                # sl_distance = |open_price - sl|. Scale-out fires when
-                # profit_dist ≥ sl_distance (true 1:1 RR), not at an arbitrary
-                # 2-pip / 2pt threshold that may be well below 1R.
-                # If SL is missing/zero (shouldn't happen post-fix but defensive),
-                # fall back to the previous asset-class hard-coded values.
                 sl_dist_dynamic = abs(open_price - current_sl) if current_sl and current_sl != 0.0 else 0.0
 
-                # Fallback hard-coded floors (only used when SL data unavailable)
                 if sl_dist_dynamic <= 0:
                     if   "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
                         sl_dist_dynamic = 2.0
@@ -1728,69 +1463,58 @@ class TradingBot:
                     elif "JPY" in symbol:
                         sl_dist_dynamic = 0.200
                     else:
-                        sl_dist_dynamic = 0.0050  # 5-pip floor for standard FX
+                        sl_dist_dynamic = 0.0050  
 
-                # [BUG-39 FIX] scale_key must NOT include the ticket.
-                # After a partial close, MT5 can issue a new ticket to the residual
-                # position. If the key included the ticket, scaled_positions would
-                # miss the new key and scale-out would fire a second time.
-                # symbol + open_price + type uniquely identifies a position intent
-                # and is stable across partial fills and ticket reassignments.
                 scale_key = f"{symbol}_{open_price}_{pos['type']}"
-                is_ready_to_scale = profit_dist >= sl_dist_dynamic  # true 1:1 RR
+                is_ready_to_scale = profit_dist >= sl_dist_dynamic  
 
                 if is_ready_to_scale and scale_key not in self.scaled_positions:
                     half_vol = current_vol / 2.0
                     close_vol = round(half_vol / vol_step) * vol_step
                     
                     if close_vol >= min_lot:
-                        self.log_info(f"⚖️ Scaling Out: {symbol} hit 1:1 RR. Closing {close_vol} Lots to secure cash.")
-                        success = self.gateway.close_position(ticket, symbol, close_vol, pos['type'])
-                        
-                        if success:
-                            self.scaled_positions.add(scale_key)
-                            self._save_state()
-                            self.async_alert(f"⚖️ **Partial Take Profit:** {symbol}\nSecured 50% Volume. Moving SL to Breakeven.")
-                            breakeven_buffer = props['point'] * 5 
-                            lock_price = open_price + breakeven_buffer if is_buy else open_price - breakeven_buffer
+                        # [SPRINT 18a] Close-Spam protection for scale outs
+                        if f"{ticket}_SCALE" not in self._closing_tickets:
+                            self._closing_tickets.add(f"{ticket}_SCALE")
+                            self.log_info(f"⚖️ Scaling Out: {symbol} hit 1:1 RR. Closing {close_vol} Lots to secure cash.")
+                            success = self.gateway.close_position(ticket, symbol, close_vol, pos['type'])
+                            
+                            if success:
+                                self.scaled_positions.add(scale_key)
+                                self._save_state()
+                                self.async_alert(f"⚖️ **Partial Take Profit:** {symbol}\nSecured 50% Volume. Moving SL to Breakeven.")
+                                breakeven_buffer = props['point'] * 5 
+                                lock_price = open_price + breakeven_buffer if is_buy else open_price - breakeven_buffer
 
-                            # [S15-P2] SECOND SCALE HARD TP — set 2R TP on residual half.
-                            # After 1:1 scale-out, the remaining 50% enters "trail and hope".
-                            # Evidence: NZDUSD SELL captured 49% of MFE ($12 of $25 potential);
-                            # GBPUSD BUY captured 71% of MFE ($20 of $28 potential).
-                            # Fix: immediately set a 2R TP on the residual position so it has
-                            # a guaranteed exit target even if the trail fails to follow.
-                            # The trail still runs — if price continues, trail captures it.
-                            # But at 2R the residual half is banked regardless.
-                            # Gold/Silver excluded — wide structure needs room.
-                            try:
-                                two_r_tp = (open_price + sl_dist_dynamic * 2.0 if is_buy
-                                            else open_price - sl_dist_dynamic * 2.0)
-                                two_r_tp = self.gateway.normalize_price(symbol, two_r_tp)
-                                existing_tp = pos.get('tp', 0.0)
-                                # Only set 2R TP if current TP is further or absent
-                                set_2r = False
-                                if existing_tp == 0.0:
-                                    set_2r = True
-                                elif is_buy and two_r_tp < existing_tp:
-                                    set_2r = True   # 2R is closer — a real target
-                                elif not is_buy and two_r_tp > existing_tp:
-                                    set_2r = True
-                                if set_2r and "XAU" not in symbol and "XAG" not in symbol:
-                                    tp_req = {
-                                        "action":   mt5.TRADE_ACTION_SLTP,
-                                        "position": ticket,
-                                        "sl":       lock_price,
-                                        "tp":       two_r_tp,
-                                    }
-                                    tp_res = mt5.order_send(tp_req)
-                                    if tp_res and tp_res.retcode == mt5.TRADE_RETCODE_DONE:
-                                        self.log_info(
-                                            f"🎯 2R TP Set: {symbol} residual half locked at "
-                                            f"{two_r_tp:.5f} (2R = {sl_dist_dynamic * 2:.5f} from entry)"
-                                        )
-                            except Exception as _p2e:
-                                self.log_debug(f"S15-P2 2R TP error ({symbol}): {_p2e}")
+                                try:
+                                    two_r_tp = (open_price + sl_dist_dynamic * 2.0 if is_buy
+                                                else open_price - sl_dist_dynamic * 2.0)
+                                    two_r_tp = self.gateway.normalize_price(symbol, two_r_tp)
+                                    existing_tp = pos.get('tp', 0.0)
+                                    set_2r = False
+                                    if existing_tp == 0.0:
+                                        set_2r = True
+                                    elif is_buy and two_r_tp < existing_tp:
+                                        set_2r = True   
+                                    elif not is_buy and two_r_tp > existing_tp:
+                                        set_2r = True
+                                    if set_2r and "XAU" not in symbol and "XAG" not in symbol:
+                                        tp_req = {
+                                            "action":   mt5.TRADE_ACTION_SLTP,
+                                            "position": ticket,
+                                            "sl":       lock_price,
+                                            "tp":       two_r_tp,
+                                        }
+                                        # [SPRINT 18a] MT5 Lock
+                                        with self.mt5_lock:
+                                            tp_res = mt5.order_send(tp_req)
+                                        if tp_res and tp_res.retcode == mt5.TRADE_RETCODE_DONE:
+                                            self.log_info(
+                                                f"🎯 2R TP Set: {symbol} residual half locked at "
+                                                f"{two_r_tp:.5f} (2R = {sl_dist_dynamic * 2:.5f} from entry)"
+                                            )
+                                except Exception as _p2e:
+                                    self.log_debug(f"S15-P2 2R TP error ({symbol}): {_p2e}")
                     else:
                         self.scaled_positions.add(scale_key)
                         self._save_state()
@@ -1802,25 +1526,14 @@ class TradingBot:
                         lock_price = open_price + secured_dist if is_buy else open_price - secured_dist
                         
                 else:
-                    # [S12-P1A] Trail triggers also use 1×SL and 2×SL distance,
-                    # not fixed pip values. This makes the trail proportional to
-                    # the original risk: lock 50% profit at 1R, lock 80% at 2R.
                     one_r  = sl_dist_dynamic
                     two_r  = sl_dist_dynamic * 2.0
 
-                    # [S15-L3] TP-PROXIMITY TRAIL TIGHTEN.
-                    # When floating profit ≥ 0.5 × TP_distance (halfway to TP),
-                    # tighten the trail to 0.3×SL_distance from current price.
-                    # This locks ~40%+ of the potential profit when near TP and
-                    # prevents near-TP reversals from becoming full losses.
-                    # Evidence: USDCAD ($-20) reached 88% to TP; GBPUSD ($-73)
-                    # reached 97% — both reversed all the way back through SL.
                     tp_price = pos.get('tp', 0.0)
                     tp_dist  = abs(tp_price - open_price) if tp_price else 0.0
                     near_tp  = (tp_dist > 0 and profit_dist >= tp_dist * 0.50)
 
                     if near_tp:
-                        # Tight trail: 0.30×SL behind current price
                         tight_trail = sl_dist_dynamic * 0.30
                         lock_price = (price_current - tight_trail if is_buy
                                       else price_current + tight_trail)
@@ -1829,30 +1542,16 @@ class TradingBot:
                     elif profit_dist > one_r:
                         lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
 
-                    # [S15-P3] FLOATING TP RATCHET.
-                    # When price clears each full R milestone (2R, 3R, 4R…), advance
-                    # TP to current_price + 1R in the trade direction. This means the
-                    # target always stays 1R ahead of where price is, converting a
-                    # fixed structural TP into a dynamic target that chases the move.
-                    # Evidence: XAUUSD ran 4.08R but TP was at 23.32R (never reached).
-                    # GBPUSD ran 3.13R but TP was at 4.97R — trail exited at 2.23R.
-                    # With floating TP at 3R+1R=4R, GBPUSD would have been banked at 4R.
-                    # Only applies when profit_dist > 2R (position well in profit).
-                    # Skipped if near_tp already firing — let that tighten the trail.
-                    # Gold/Silver: ratchet step is 1.5R (wider structure needs room).
                     if profit_dist >= two_r and not near_tp:
                         try:
                             r_step  = 1.5 if ("XAU" in symbol or "XAG" in symbol) else 1.0
                             current_r = profit_dist / sl_dist_dynamic
-                            # Find the last full R milestone crossed (floor to nearest R)
                             import math
                             last_r_floor = math.floor(current_r)
-                            # New TP = current price + 1R ahead
                             ratchet_tp = (price_current + sl_dist_dynamic * r_step if is_buy
                                           else price_current - sl_dist_dynamic * r_step)
                             ratchet_tp = self.gateway.normalize_price(symbol, ratchet_tp)
                             existing_tp = pos.get('tp', 0.0)
-                            # Only advance if new ratchet TP is CLOSER (more likely to hit)
                             advance = False
                             if existing_tp == 0.0:
                                 advance = True
@@ -1867,7 +1566,9 @@ class TradingBot:
                                     "sl":       current_sl,
                                     "tp":       ratchet_tp,
                                 }
-                                r_res = mt5.order_send(ratchet_req)
+                                # [SPRINT 18a] MT5 Lock
+                                with self.mt5_lock:
+                                    r_res = mt5.order_send(ratchet_req)
                                 if r_res and r_res.retcode == mt5.TRADE_RETCODE_DONE:
                                     self.log_info(
                                         f"🎯 TP Ratcheted: {symbol} at {current_r:.1f}R → "
@@ -1905,24 +1606,19 @@ class TradingBot:
                         "sl": lock_price, 
                         "tp": pos.get('tp', 0.0)
                     }
-                    res = mt5.order_send(req)
+                    # [SPRINT 18a] MT5 Lock
+                    with self.mt5_lock:
+                        res = mt5.order_send(req)
                     if res and res.retcode == mt5.TRADE_RETCODE_DONE:
                         self.log_info(f"🛡️ Dynamic Profit Locked: {symbol} SL secured at {lock_price}")
             except Exception:
                 pass
 
     def process_symbol(self, symbol, is_sniper_mode=False, upcoming_news=None):
-        now = datetime.utcnow()   # [UTC FIX] was datetime.now() — standardized to utcnow()
+        now = datetime.utcnow()
         if upcoming_news is None: 
             upcoming_news = []
 
-        # [BUG-25 FIX] Previous news guard used datetime.strptime() with a fixed
-        # format string that never matched ForexFactory's actual date format, so
-        # every parse raised ValueError → caught silently → news guard completely
-        # disabled for all events. Replaced with news_manager.is_news_window()
-        # which uses the pre-parsed _event_dt datetime objects directly.
-        # Tier 1 events (NFP/FOMC/CPI) get 4h pre + 30min post block.
-        # Tier 2 events get 15min each side.
         in_news_window, news_reason = self.news_manager.is_news_window(now=now)
         if in_news_window:
             if now.second < 5:
@@ -1960,38 +1656,17 @@ class TradingBot:
         if df_micro.empty or df_macro.empty: 
             return
 
-        # [OPT-7] Per-asset-class regime: replaces the global EURUSD-only regime.
-        # BTC/Gold/Indices now calibrate their own vol% against their own thresholds.
         symbol_regime = self.get_asset_regime(symbol)
 
         try:
             candles_micro = [Candle(**row) for row in df_micro.to_dict('records') if hasattr(row['time'], 'year')]
             req = AnalysisRequest(symbol=symbol, candles=candles_micro, daily_trend="NEUTRAL")
             
-            # [OPT-7] Pass per-asset regime + symbol for calibrated ATR threshold
             analysis = analyze_market_structure(
                 req, df_macro=df_macro, market_regime=symbol_regime, symbol=symbol
             )
             
             result_status = "SKIPPED"
-            # [S9-PRECISION] Thresholds recalibrated for the new detection engine.
-            # [S14] TIERED CONFIDENCE THRESHOLDS by signal class.
-            #
-            # STANDARD signals (BUY / SELL — HIGH_VOL regime, full size):
-            #   Standard mode: 0.80  | Sniper mode: 0.90
-            #   (sweep+disp+OB+PD minimum; sniper = near-full confluence)
-            #
-            # MICRO signals (BUY_MICRO / SELL_MICRO — NORMAL regime, half size):
-            #   Standard mode: 0.65  | Sniper mode: 0.75
-            #   Rationale: MICRO already has risk_multiplier × 0.50 — half capital.
-            #   The risk is discounted so the confidence gate should be too.
-            #   This unlocks day-trading and scalping frequency in the dominant
-            #   NORMAL regime without opening the floodgates (conf < 0.65 blocked).
-            #   Evidence: 20 MICRO signals blocked 22:00-00:00 at conf 0.47-0.60;
-            #   conf ≥ 0.65 captures structurally confirmed setups only.
-            #
-            # NANO (BUY_NANO / SELL_NANO — DEAD market, quarter size):
-            #   Uses same gate as parent signal class (unchanged).
             _is_micro_sig = "MICRO" in analysis.signal
             if is_sniper_mode:
                 required_conf = 0.75 if _is_micro_sig else 0.90
@@ -2014,7 +1689,6 @@ class TradingBot:
                      self.execute_signal(symbol, analysis, df_micro, props, regime=symbol_regime)
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
-                     # [BUG-67] Throttle "NY Lunch: Reaccumulation" spam — once per 15 min per symbol.
                      _reason_str = analysis.reason or ""
                      if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
                          _last = getattr(self, '_ny_lunch_last_log', {})
@@ -2026,7 +1700,6 @@ class TradingBot:
                      else:
                          self.log_debug(f"[{symbol}] {_reason_str}")
             else:
-                 # [BUG-67] Apply same NY Lunch throttle to the outer else branch.
                  _reason_str = analysis.reason or ""
                  if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
                      _last = getattr(self, '_ny_lunch_last_log', {})
@@ -2038,18 +1711,14 @@ class TradingBot:
                  else:
                      self.log_debug(f"[{symbol}] {_reason_str}")
                  
-            # [OPT-6] Signal deduplication: write to DB only when something meaningful
-            # changes. Prevents 50+ identical LOW_CONFIDENCE rows per symbol per hour.
-            # Always write: ATTEMPTED (execution), first occurrence, signal type change,
-            # or confidence shift ≥ 2%. Suppress repeated SKIPPED/LOW_CONF at same level.
             conf_bucket = round(analysis.confidence, 2)
             last        = self._last_logged_signal.get(symbol)
             should_log  = (
-                result_status == "ATTEMPTED"                              # always log executions
-                or last is None                                            # first seen for this symbol
-                or last[0] != analysis.signal                             # signal type changed
-                or abs(last[1] - conf_bucket) >= 0.02                    # confidence shifted ≥2%
-                or (result_status != "SKIPPED" and last[2] == "SKIPPED") # first non-neutral
+                result_status == "ATTEMPTED"                             
+                or last is None                                          
+                or last[0] != analysis.signal                            
+                or abs(last[1] - conf_bucket) >= 0.02                    
+                or (result_status != "SKIPPED" and last[2] == "SKIPPED") 
             )
 
             if should_log:
@@ -2094,18 +1763,12 @@ class TradingBot:
                 min_buffer = 10.0 if "BTC" in symbol else 2.0 if "ETH" in symbol else 0.50 if ("XAU" in symbol or "Oil" in symbol or "NGAS" in symbol) else 0.10 if "JPY" in symbol else 0.0010
                 volatility_buffer = max(structure_range, min_buffer)
 
-                # [S12] ATR-based buffer for Gold/Silver — min_buffer(0.50) is too
-                # small: Gold M15 ATR is 5-25pt, so SL from a 0.50 buffer fails the
-                # 1.5pt guard every time. Use 0.5×ATR as Gold's volatility_buffer.
                 if "XAU" in symbol or "XAG" in symbol:
                     atr_val = df['atr'].iloc[-1] if 'atr' in df.columns else volatility_buffer
                     volatility_buffer = max(atr_val * 0.5, volatility_buffer)
 
                 magic_number = 510001 if is_nano else 510000
 
-                # ==========================================
-                # BOUNDED DYNAMIC NANO STOP LOSS
-                # ==========================================
                 base_nano_sl = volatility_buffer * 0.4
                 floor_sl = 0.060 if "JPY" in symbol else 0.00060  
                 ceil_sl = 0.150 if "JPY" in symbol else 0.00150   
@@ -2113,34 +1776,14 @@ class TradingBot:
                 dynamic_nano_sl = max(floor_sl, min(base_nano_sl, ceil_sl))
                 dynamic_nano_tp = dynamic_nano_sl * 2.0
 
-                # ── Pull structural price levels from analyst conditions ──
                 ict_cond     = getattr(analysis, 'ict_conditions', {}) or {}
-                ob_entry     = ict_cond.get('ob_entry_price')    # OB body midpoint
-                ob_zone_low  = ict_cond.get('ob_zone_low')       # OB full zone low
-                ob_zone_high = ict_cond.get('ob_zone_high')      # OB full zone high
-                swing_sl_ref = ict_cond.get('swing_sl_ref')      # structural swept level
+                ob_entry     = ict_cond.get('ob_entry_price')    
+                ob_zone_low  = ict_cond.get('ob_zone_low')       
+                ob_zone_high = ict_cond.get('ob_zone_high')      
+                swing_sl_ref = ict_cond.get('swing_sl_ref')      
                 sl_atr_buf   = ict_cond.get('sl_atr_buffer', volatility_buffer * 0.1)
-                tp_target    = ict_cond.get('tp_target_level')   # asian H/L or session target
+                tp_target    = ict_cond.get('tp_target_level')   
 
-                # ── [S16] SCALP MODEL PRICE LEVELS ───────────────────────────
-                # When the Silver Bullet / Time-FVG / PO3 scalp model wins
-                # (conditions['scalp_model'] = True), override the SL/TP levels
-                # with FVG-derived and Asian-range-derived levels instead of the
-                # generic swing structure used by the ICT model.
-                #
-                # Scalp entry logic:
-                #   Entry  = FVG midpoint (50% retracement into the gap) — this is
-                #            the highest-probability fill zone within a Silver Bullet
-                #   SL     = FVG low/high + small ATR buffer (outside the gap)
-                #            If price closes through the full FVG it's invalidated
-                #   TP     = Asian High/Low (opposite extremity of the PO3 range)
-                #            or 2× FVG size projected in the trade direction if
-                #            Asian level is not available
-                #
-                # Asset-specific TP extensions:
-                #   Gold:   TP may extend to Asian H/L ±0.3×ATR (Gold often exceeds)
-                #   Silver: TP = strict Asian level (smaller margin)
-                #   Crypto: TP = Asian H/L or 1.5× FVG size (crypto overshoots often)
                 is_scalp_model = ict_cond.get('scalp_model', False)
                 if is_scalp_model:
                     tfvg_high  = ict_cond.get('tfvg_high')
@@ -2152,13 +1795,11 @@ class TradingBot:
                     is_btc_eth = any(x in symbol for x in ('BTC', 'ETH'))
 
                     if tfvg_mid and is_buy:
-                        # BUY scalp: enter at FVG midpoint, SL below FVG low
                         ob_entry    = tfvg_mid
                         ob_zone_low = tfvg_low
                         if tfvg_low:
                             swing_sl_ref = tfvg_low
                             sl_atr_buf   = volatility_buffer * 0.15
-                        # TP: Asian High (BSL pool) or FVG projected
                         if asian_high:
                             ext = volatility_buffer * 0.30 if 'XAU' in symbol else 0.0
                             ext = volatility_buffer * 0.20 if is_btc_eth else ext
@@ -2174,7 +1815,6 @@ class TradingBot:
                         )
 
                     elif tfvg_mid and not is_buy:
-                        # SELL scalp: enter at FVG midpoint, SL above FVG high
                         ob_entry     = tfvg_mid
                         ob_zone_high = tfvg_high
                         if tfvg_high:
@@ -2193,7 +1833,6 @@ class TradingBot:
                             f"TP≈{tp_target:.5f}  (FVG mid={tfvg_mid:.5f} "
                             f"Asian_L={asian_low})"
                         )
-                # ─────────────────────────────────────────────────────────────
 
                 if is_buy:
                     if is_nano:
@@ -2203,35 +1842,18 @@ class TradingBot:
                         tp_price = tick.ask + dynamic_nano_tp
                     else:
                         action = "BUY_LIMIT"
-                        # [S12-P0A] Entry: use OB body_low (institutional value zone).
-                        # If no OB detected, fall back to ob_zone_low, then to
-                        # the forming candle's low as last resort.
                         raw_price = ob_entry or ob_zone_low or df.iloc[-2]['low']
 
-                        # [S12-P0B] SL: place below the swept swing low + ATR buffer.
-                        # The swept level IS the liquidity that was taken — SL beneath
-                        # it means the trade is invalidated only if that hunt was a fake.
-                        # Fall back to df.iloc[-3]['low'] if no structural reference.
                         if swing_sl_ref is not None:
                             sl_price = swing_sl_ref - sl_atr_buf
                         else:
                             sl_price = df.iloc[-3]['low'] - (volatility_buffer * 0.1)
 
-                        # [BUG-40 FIX] Enforce minimum SL distance from entry price.
-                        # Root cause: when ob_entry is None, raw_price falls back to
-                        # df.iloc[-2]['low'] which is typically JUST ABOVE swing_sl_ref.
-                        # This makes sl_distance ≈ sl_atr_buf (~1-2 pips) — far below
-                        # the 5-pip SL guard. Fix: expand the SL outward to the asset's
-                        # minimum guard distance from entry, preserving structural
-                        # placement when it's already far enough.
-                        # Evidence: EURGBP sl_dist=0.00023, GBPUSD=0.00003, NZDUSD=0.00019
-                        # 20% buffer above min prevents float precision boundary failure
-                        # (0.86460 - 0.0005 yields 0.000499999... in IEEE 754).
                         _buy_min_sl_guard = (100.0  if "BTC"     in symbol else
                                              5.0    if "ETH"     in symbol else
                                              1.5    if "XAU"     in symbol else
                                              0.10   if "XAG"     in symbol else
-                                             0.50   if "Oil"     in symbol else  # BUG-43: was 0.10 (too tight for Oil volatility)
+                                             0.50   if "Oil"     in symbol else  
                                              0.05   if "NGAS"    in symbol else
                                              1.0    if "SP 500"  in symbol else
                                              2.0    if ("Tech 100" in symbol or "Germany" in symbol) else
@@ -2241,10 +1863,6 @@ class TradingBot:
                         if sl_price > _min_sl_from_entry_buy:
                             sl_price = _min_sl_from_entry_buy
 
-                        # [S12-P1B] TP: target the Asian High (opposite liquidity pool).
-                        # For a bullish manipulation (swept SSL), smart money now
-                        # distributes toward BSL = Asian High. Use 30-bar lookback high
-                        # as backup if Asian range is not available.
                         if tp_target:
                             tp_price = tp_target
                         else:
@@ -2257,24 +1875,18 @@ class TradingBot:
                         tp_price = tick.bid - dynamic_nano_tp
                     else:
                         action = "SELL_LIMIT"
-                        # [S12-P0A] Entry: use OB body_high for SELL (institutional supply zone).
                         raw_price = ob_entry or ob_zone_high or df.iloc[-2]['high']
 
-                        # [S12-P0B] SL: place above the swept swing high + ATR buffer.
                         if swing_sl_ref is not None:
                             sl_price = swing_sl_ref + sl_atr_buf
                         else:
                             sl_price = df.iloc[-3]['high'] + (volatility_buffer * 0.1)
 
-                        # [BUG-40 FIX] Mirror of BUY fix — enforce min SL distance from
-                        # SELL entry. Structural SL (above swing high) can be within
-                        # 1-2 pips of the fallback entry (df.iloc[-2]['high']).
-                        # 20% buffer above min prevents float precision boundary failure.
                         _sell_min_sl_guard = (100.0  if "BTC"     in symbol else
                                               5.0    if "ETH"     in symbol else
                                               1.5    if "XAU"     in symbol else
                                               0.10   if "XAG"     in symbol else
-                                              0.50   if "Oil"     in symbol else  # BUG-43: was 0.10
+                                              0.50   if "Oil"     in symbol else  
                                               0.05   if "NGAS"    in symbol else
                                               1.0    if "SP 500"  in symbol else
                                               2.0    if ("Tech 100" in symbol or "Germany" in symbol) else
@@ -2284,7 +1896,6 @@ class TradingBot:
                         if sl_price < _min_sl_from_entry_sell:
                             sl_price = _min_sl_from_entry_sell
 
-                        # [S12-P1B] TP: target Asian Low (swept BSL → distribute toward SSL).
                         if tp_target:
                             tp_price = tp_target
                         else:
@@ -2293,18 +1904,6 @@ class TradingBot:
                 price = self.gateway.normalize_price(symbol, raw_price)
                 sl = self.gateway.normalize_price(symbol, sl_price) 
 
-                # [S15-P1] AUTO TP CAP — structural TP > 6R is effectively "no TP".
-                # The ICT engine places TPs at Asian session extremes or structural
-                # swing levels, which are sometimes 10-25R away from entry. A trade
-                # with no realistic TP relies entirely on trailing — which in practice
-                # captures only 77% of MFE (evidence: both XAUUSD runners, GBPUSD).
-                # Fix: when structural TP > 6×SL_dist, cap it at 3×SL_dist.
-                #   3R gives a hard guaranteed exit anchor while still being above the
-                #   1:1 scale-out and the 2R TP on the residual half (S15-P2).
-                #   Trail still runs — if price blasts through 3R the trail gets it.
-                #   But if trail degrades or session ends, 3R is banked regardless.
-                # Gold/Silver excluded — structural targets often genuinely need room.
-                # Evidence: XAUUSD 03-11 (23:49) TP was at 23.32R, MFE=4.08R, $52 left.
                 sl_dist_check = abs(price - sl_price) if sl_price else 0
                 if sl_dist_check > 0 and tp_price:
                     tp_dist_check = abs(tp_price - price)
@@ -2319,20 +1918,6 @@ class TradingBot:
 
                 tp = self.gateway.normalize_price(symbol, tp_price)
 
-                # ── [S17] CANDLESTICK CONFLICT GUARD ─────────────────────────
-                # Source: The Candlestick Trading Bible — a strong opposing candle
-                # at the entry zone signals smart money REJECTING this level in the
-                # opposite direction. This is the primary driver of zero-MFE losses
-                # (Sprint 15 forensics: price swept zone immediately after fill).
-                #
-                # Guard: if the most recent CLOSED M15 candle is a STRONG opposing
-                # pattern (Engulfing Bar or Pin Bar — the two highest-conviction
-                # conflict patterns per the book), suppress the LIMIT order.
-                # Doji/Harami/Tweezers conflicts are softer — already handled via
-                # the score penalty in analyze_market_structure(); no hard block.
-                #
-                # Only applies to LIMIT orders (not NANO market entries — those
-                # already fire at market when price has moved to the zone).
                 if not is_nano:
                     try:
                         _s17_atr = df['atr'].iloc[-1] if 'atr' in df.columns else volatility_buffer
@@ -2352,47 +1937,18 @@ class TradingBot:
                             )
                             return
                     except Exception:
-                        pass   # never block a trade due to candle check error
-                # ─────────────────────────────────────────────────────────────
+                        pass   
 
-                # ── LIMIT PRICE VALIDATION (BUG-27 FIX) ──────────────────────
-                # MT5 rejects SELL_LIMIT if price <= ask + stops_level*point,
-                # and BUY_LIMIT if price >= bid - stops_level*point.
-                # Root cause: df.iloc[-1] is the CURRENTLY FORMING candle.
-                # Its high/low is live market price, not a future level, so
-                # on fast-moving symbols the limit was at or below market.
-                # Log evidence: EURUSD/USDCHF/NZDUSD/XAUUSD/XAGUSD all
-                # rejected while GBPUSD/USDCAD/AUDJPY (wider structure) passed.
-                # Fix: compute minimum safe distance from the symbol's stops_level
-                # and reject before sending — logs a clear reason instead of
-                # letting MT5 silently eat the order.
                 if not is_nano:
                     sym_info = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
                     if sym_info:
-                        # [HOTFIX] Some brokers don't expose stops_level on SymbolInfo directly.
-                        # Use getattr() with safe default — same pattern as get_symbol_properties().
-                        # Without this, USDCAD/GBPJPY crashed: 'SymbolInfo' has no 'stops_level'.
                         stops_pt = getattr(sym_info, 'stops_level', 0) * sym_info.point
-                        # [BUG-64] For high-value indices (Germany 40, SP500, Tech100), stops_level
-                        # represents absolute minimum distance in price units. For Germany 40 with
-                        # stops_level=20 and point=0.01 → stops_pt=0.20 which is only 20 index points.
-                        # At 23609 entry vs 23620 market (11pts gap), this 0.20 minimum correctly rejects.
-                        # The real problem was BUG-63 (rejection_key drift) preventing the counter
-                        # from accumulating. With BUG-63 fixed, the 4× gate now fires correctly.
-                        # No change needed to min_dist formula — it was mathematically correct.
-                        # Add a 2-point buffer on top of broker minimum
                         min_dist = stops_pt + (sym_info.point * 2)
-                        # [BUG-63] Use asset-class-appropriate rounding for the rejection key.
-                        # Root cause: Germany 40 OB body_low drifts ±0.01–0.05 pts per bar
-                        # recalculation, making rejection_key different each scan cycle and
-                        # resetting the counter to #1 every time → the 4× stale gate never fires.
-                        # Fix: round indices to nearest 1 point, crypto to 0dp, FX to 4dp.
-                        # Confirmed: Germany 40 always showed Rejection #1/4 across 7 consecutive
-                        # cycles (2026-03-12 13:31–13:40) and eventually filled for -$102.24.
+                        
                         _idx_syms = {"US SP 500", "US Tech 100", "Germany 40"}
                         _crypto_syms = {"BTCUSD", "ETHUSD"}
                         if symbol in _idx_syms:
-                            _rnd = max(1, round(price / 5))  # group into 5-point zones
+                            _rnd = max(1, round(price / 5))  
                             rejection_key = f"{symbol}_{_rnd}"
                         elif symbol in _crypto_syms:
                             rejection_key = f"{symbol}_{round(price, 0)}"
@@ -2400,19 +1956,16 @@ class TradingBot:
                             rejection_key = f"{symbol}_{round(price, 1)}"
                         else:
                             rejection_key = f"{symbol}_{round(price, 4)}"
-                        # [BUG-60] Stale zone cooldown — suppress re-evaluation of a recently
-                        # invalidated OB entry for 15 minutes after 4× rejection fires.
-                        # Without this: AUDUSD zone invalidated at 16:06:39, restarted at
-                        # 16:07:40 (1 min later). Confirmed in logs 2026-03-12.
+                            
                         stale_zone_key = (symbol, rejection_key)
                         if stale_zone_key in self._stale_zone_cooldowns:
                             elapsed = (datetime.utcnow() - self._stale_zone_cooldowns[stale_zone_key]).total_seconds()
-                            if elapsed < 900:  # 15-minute cooldown
-                                return  # Zone still dead — silently suppress
+                            if elapsed < 900:  
+                                return  
                             else:
                                 self._stale_zone_cooldowns.pop(stale_zone_key, None)
+                                
                         if is_buy and price >= (tick.bid - min_dist):
-                            # [S15-L2] Consecutive rejection tracking
                             self._price_close_rejections[rejection_key] = \
                                 self._price_close_rejections.get(rejection_key, 0) + 1
                             count = self._price_close_rejections[rejection_key]
@@ -2422,9 +1975,8 @@ class TradingBot:
                                 f"Rejection #{count}/4."
                             )
                             if count >= 4:
-                                # OB zone swept repeatedly — invalidate this entry level
                                 self._price_close_rejections.pop(rejection_key, None)
-                                self._stale_zone_cooldowns[stale_zone_key] = datetime.utcnow()  # [BUG-60]
+                                self._stale_zone_cooldowns[stale_zone_key] = datetime.utcnow()  
                                 self.log_info(
                                     f"🚫 Stale Zone Invalidated: {symbol} entry {price} "
                                     f"rejected 4× — OB swept. Signal cancelled. 15-min cooldown started."
@@ -2444,7 +1996,7 @@ class TradingBot:
                             )
                             if count >= 4:
                                 self._price_close_rejections.pop(rejection_key, None)
-                                self._stale_zone_cooldowns[stale_zone_key] = datetime.utcnow()  # [BUG-60]
+                                self._stale_zone_cooldowns[stale_zone_key] = datetime.utcnow()  
                                 self.log_info(
                                     f"🚫 Stale Zone Invalidated: {symbol} entry {price} "
                                     f"rejected 4× — OB swept. Signal cancelled. 15-min cooldown started."
@@ -2454,36 +2006,22 @@ class TradingBot:
                                 )
                             return
                         else:
-                            # Price has moved away from entry — zone may be fresh again
                             self._price_close_rejections.pop(rejection_key, None)
-                            self._stale_zone_cooldowns.pop(stale_zone_key, None)  # [BUG-60] also clear cooldown if price retreated
-                            # [SPRINT 17c HOTFIX] Removed BUG-58 stale trap counter reset.
-                            # A stale trap (TP hit before entry) permanently invalidates the structural thesis.
-                            # Wiping the memory here caused an infinite place/cancel machine-gun loop.
-                # ─────────────────────────────────────────────────────────────
+                            self._stale_zone_cooldowns.pop(stale_zone_key, None)  
 
                 sl_distance = abs(price - sl)
 
-                # [BUG-41 FIX] SL-to-current-price stops_level guard.
-                # MT5 "Invalid stops" happens when the SL is too close to the
-                # CURRENT market price — not just the limit order price. The
-                # existing guard only checks |entry - sl|. But if the market has
-                # moved toward sl since the signal fired (before order submission),
-                # MT5 rejects with "Invalid stops" even though |entry - sl| passes.
-                # Fix: also enforce |current_price - sl| >= broker stops_minimum.
-                # Evidence: USDJPY 99%, USDCHF 99%, XAUUSD 92% all rejected at 17:00.
                 if not is_nano:
                     try:
                         _sym_info_41 = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
                         if _sym_info_41:
                             _stops_pt = getattr(_sym_info_41, 'stops_level', 0) * _sym_info_41.point
-                            _min_stop_dist = _stops_pt + (_sym_info_41.point * 3)   # 3pt buffer
+                            _min_stop_dist = _stops_pt + (_sym_info_41.point * 3)   
                             if is_buy:
                                 _sl_to_current = abs(tick.bid - sl)
                             else:
                                 _sl_to_current = abs(tick.ask - sl)
                             if _sl_to_current < _min_stop_dist and _min_stop_dist > 0:
-                                # SL would be rejected by MT5 — expand it outward
                                 if is_buy:
                                     sl = self.gateway.normalize_price(
                                         symbol, tick.bid - _min_stop_dist)
@@ -2497,43 +2035,29 @@ class TradingBot:
                                     f"→ {_min_stop_dist:.5f})"
                                 )
                     except Exception:
-                        pass   # Non-fatal: original SL used if MT5 info unavailable
+                        pass   
 
-                # [BUG-35 FIX] Minimum SL distance guard
-                # If SL is too tight, the lot formula produces dangerously large lots.
-                # SL MINIMUM GUARD — prevents execution when SL is too tight to
-                # survive spread + slippage, and avoids runaway lot sizes.
-                # Minimums derived from Deriv asset spec: stops_level × tick_size,
-                # with a 2× safety buffer on top of the absolute broker minimum.
-                # Source: Assets_specification.xlsx — "Stops level" row.
                 if not is_nano:
                     if "BTC" in symbol:
-                        min_sl_guard = 100.0      # 100 pts on BTC
+                        min_sl_guard = 100.0      
                     elif "ETH" in symbol:
                         min_sl_guard = 5.0
                     elif "XAU" in symbol:
-                        min_sl_guard = 1.5        # 150 pips on Gold
+                        min_sl_guard = 1.5        
                     elif "XAG" in symbol:
                         min_sl_guard = 0.10
                     elif "Oil" in symbol:
-                        # spec stops_level=50, tick=0.001 → broker min=0.05.
-                        # [BUG-43] Oil min guard raised from 0.10 to 0.50 to ensure
-                        # meaningful SL with corrected ×100 lot formula.
-                        # 0.50 SL × 100 = $50/lot → ~1 lot at $9k account ✓
                         min_sl_guard = 0.50
                     elif "NGAS" in symbol:
-                        # spec stops_level=5, tick=0.001 → broker min=0.005; use 0.01
                         min_sl_guard = 0.01
                     elif "SP 500" in symbol:
-                        # spec stops_level=50, tick=0.01 → broker min=0.50; use 1.0
                         min_sl_guard = 1.0
                     elif "Tech 100" in symbol or "Germany" in symbol:
-                        # spec stops_level=150, tick=0.01 → broker min=1.50; use 2.0
                         min_sl_guard = 2.0
                     elif "JPY" in symbol:
-                        min_sl_guard = 0.10       # 10 pips JPY pairs
+                        min_sl_guard = 0.10       
                     else:
-                        min_sl_guard = 0.0005     # 5 pips standard FX
+                        min_sl_guard = 0.0005     
                     if sl_distance < min_sl_guard:
                         self.log_info(
                             f"⚠️ SL Guard: {symbol} SL distance {sl_distance:.5f} "
@@ -2554,108 +2078,63 @@ class TradingBot:
                     self.log_info(f"⚠️ Margin Alert: Cannot open {symbol}. Free Margin too low (${free_margin:.2f})")
                     return
                 
-                # [SPRINT 7] Kelly-informed dynamic risk scaling
-                # Uses quarter-Kelly when N>=30, fixed 2% below that.
-                # Confidence scaling: higher ICT score → proportionally more risk.
                 quant_params    = self.quant_engine.get_live_risk_params()
                 kelly_risk      = quant_params.get('risk_pct', 0.02)
                 regime_mult_q   = quant_params.get('regime_multiplier', 1.0)
 
-                # Margin guard still overrides Kelly
                 margin_mult     = 0.5 if (margin_level > 0.0 and margin_level < 500.0) else 1.0
                 reduction_mult  = 0.5 if self._risk_reduction_mode else 1.0
 
-                # Confidence scaling: 80% = base risk, 99% = +25% more risk
-                # Anchored to new standard threshold (0.80) so the full scaling
-                # range applies across genuine signals, not a compressed 0.88-0.99 band
                 conf_scale      = (analysis.confidence - 0.80) / (0.99 - 0.80)
                 conf_scale      = max(0.0, min(1.0, conf_scale))
                 base_risk_pct   = kelly_risk * (1.0 + 0.25 * conf_scale)
 
-                # [S14-P4] SNIPER GROWTH BONUS — conf >= 0.92 earns +25% capital.
-                # At this confidence level the ICT engine has full sweep+displacement+
-                # OB+FVG+PD+BOS alignment. The additional 25% brings maximum risk to
-                # ~3.1% on best signals vs 2.5% at threshold — well within Kelly bounds.
-                # NANO excluded (already quarter-sized; further scaling counterproductive).
-                # Margin guard and CVaR kill-switch still override this at all times.
                 if analysis.confidence >= 0.92 and not is_nano:
                     base_risk_pct *= 1.25
 
                 is_micro = "MICRO" in analysis.signal
                 risk_multiplier = margin_mult * reduction_mult * regime_mult_q
                 if is_nano:
-                    risk_multiplier = risk_multiplier * 0.25   # NANO = quarter size
+                    risk_multiplier = risk_multiplier * 0.25   
                 elif is_micro:
-                    risk_multiplier = risk_multiplier * 0.50   # MICRO = half size
+                    risk_multiplier = risk_multiplier * 0.50   
 
                 if "XAU" in symbol or "XAG" in symbol:
-                    # Gold/Silver: 1 lot = 100 oz. $1 move = $100/lot.
-                    # [S14-P1] REMOVED 50% haircut. Gold is an institutional asset with
-                    # well-calibrated ICT signals and a reliable capital_per_lot formula.
-                    # The haircut was a legacy penalty from early over-caution — at 2% risk
-                    # on a $1.79 SL, correct sizing is 1.30 lots, not 0.65.
-                    # BTC/ETH/Oil/NGAS retain the 0.5 haircut (speculative/volatile).
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100
                     min_lot  = 0.10
                     vol_step = 0.01
                 elif "BTC" in symbol:
-                    # BTC CFD (Deriv): contract_size=1. Tick_size=1, tick_value=$1.
-                    # $1 price move = $1/lot → capital_per_lot = sl_distance × 1.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 1
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "ETH" in symbol:
-                    # ETH CFD (Deriv): same 1:1 structure as BTC.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 1
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "Oil" in symbol:
-                    # US Oil (Deriv): tick_size=0.001, tick_value=$0.001, contract_size=100.
-                    # A $1 price move on 1 lot = (1/0.001) × $0.001 × 100 = $100 P&L.
-                    # [BUG-43 FIX] capital_per_lot = sl_distance × 100.
-                    # Old formula (* 1.0) produced 860 lots on 2026-03-11 — capped at 91, still fatal.
-                    # Correct: 0.069 × 100 = $6.9/lot → ~8.5 lots at $9k account ✓
-                    # Verified: Assets_specification.xlsx, "US Oil" column.
-                    # min_volume=1 (integer lots only), vol_step=1.
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 100.0  # BUG-43 fix: was * 1.0 (860 lots on 2026-03-11)
-                    min_lot  = 1.0     # spec: minimal volume = 1 (not 0.1!)
-                    vol_step = 1.0     # spec: volume step = 1 (integer lots only)
+                    capital_per_lot = sl_distance * 100.0  
+                    min_lot  = 1.0     
+                    vol_step = 1.0     
                 elif "NGAS" in symbol:
-                    # NGAS (Deriv): contract_size=10000, tick_size=0.001, tick_value=$0.001.
-                    # [BUG-42 FIX] capital_per_lot = (sl/tick_size)*tick_value*contract_size
-                    #   = (sl/0.001)*0.001*10000 = sl*10000. Old formula (*1.0) was wrong
-                    # HARD max: spec maximal volume = 5 lots (binding constraint).
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 10000.0  # BUG-42 fix: was * 1.0 (5526 lots on 2026-03-11)
+                    capital_per_lot = sl_distance * 10000.0  
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "SP 500" in symbol:
-                    # US SP 500 (Deriv): contract_size=1, tick_size=0.01, tick_value=$0.01.
-                    # tick_value/tick_size = 1.0 → capital_per_lot = sl_distance × 1.
-                    # [S14-P1] REMOVED 50% haircut. SP500 is a liquid institutional instrument;
-                    # the formula is correctly calibrated and the max_lot cap (18 lots at $9k)
-                    # provides the real safety ceiling. Verified: Assets_specification.xlsx.
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1.0
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "Tech 100" in symbol:
-                    # US Tech 100 (Deriv): same 1:1 structure as SP 500.
-                    # stops_level=150 (larger than SP500's 50) → wider minimum SL.
-                    # [S14-P1] REMOVED 50% haircut — see SP500 note above.
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1.0
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "Germany" in symbol:
-                    # Germany 40 DAX (Deriv): contract_size=1, tick=0.01, tv=$0.01.
-                    # Profit currency = EUR — note this for P&L display only;
-                    # risk formula is identical to SP500/Tech100.
-                    # [S14-P1] REMOVED 50% haircut — see SP500 note above.
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1.0
                     min_lot  = 0.1
@@ -2666,97 +2145,45 @@ class TradingBot:
                     min_lot  = 0.30
                     vol_step = 0.01
                 else:
-                    # Standard FX: 1 lot = 100,000 units; pip = 0.0001
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100000
                     min_lot  = 0.30
                     vol_step = 0.01
 
                 raw_lot        = risk_capital / capital_per_lot
-                # Round DOWN to volume step (broker rejects if not aligned to step)
                 import math as _math
                 step_inv       = round(1.0 / vol_step)
                 calculated_lot = _math.floor(raw_lot * step_inv) / step_inv
                 lot = max(min_lot, calculated_lot)
 
-                # HARD MAXIMUM LOT CAP — spec-verified per asset.
-                # Internal safe caps are well below the broker's spec maximum
-                # to prevent outsized positions from tight SLs or edge cases.
-                # Source: Assets_specification.xlsx "Maximal volume" column.
                 if "BTC" in symbol or "ETH" in symbol:
-                    # scales with account: ~0.5@$9k, ~2.5@$50k (spec max not provided)
                     max_lot = max(0.5, round(balance / 20000, 2))
                 elif "XAU" in symbol or "XAG" in symbol:
-                    # [BUG-B FIX] Previous cap of 2.0 was calibrated against 0.5× haircut.
-                    # After S14-P1 (haircut removed) + S14-P4 (sniper ×1.25), the cap was
-                    # binding at $13k balance and suppressing effective risk to below 2% at $20k.
-                    # Gold 3.0 lots @ $1.79 SL = $537 max risk = 5.7% of $9.4k — hard ceiling.
-                    # Silver 2.5 stays conservative (higher volatility per lot).
-                    # In practice the Kelly formula produces 1.12-1.62 lots at $9k, well below cap.
                     max_lot = 3.0 if "XAU" in symbol else 2.5
                 elif "Oil" in symbol:
-                    # [BUG-43 FIX] Previous cap scaled with balance/100 → ~91 lots at $9k.
-                    # With the corrected lot formula (×100 multiplier) 91 lots = ~$750k notional.
-                    # Safe cap: Oil is high-volatility commodity; max 5 lots at current account.
-                    # Scales conservatively: ~1 lot per $1500 balance, hard ceiling at 10.
-                    # [BUG-53 FIX] int() wraps round() — vol_step=1.0 requires integer lot values.
-                    max_lot = max(1.0, min(10, int(round(balance / 1500, 0))))   # ~6 at $9k
+                    max_lot = max(1.0, min(10, int(round(balance / 1500, 0))))   
                 elif "NGAS" in symbol:
-                    max_lot = 5.0    # HARD limit from spec: maximal volume = 5
+                    max_lot = 5.0    
                 elif "SP 500" in symbol:
-                    # spec max=150; safe internal cap
-                    max_lot = max(0.1, min(30, round(balance / 500, 1)))   # ~17 at $9k
+                    max_lot = max(0.1, min(30, round(balance / 500, 1)))   
                 elif "Tech 100" in symbol:
-                    # spec max=100; safe internal cap
-                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   # ~17 at $9k
+                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
                 elif "Germany" in symbol:
-                    # spec max=100; same structure as Tech 100
-                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   # ~17 at $9k
+                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
                 elif is_nano:
                     max_lot = 0.10
                 elif is_micro:
-                    # [S14-P2] MICRO max_lot now scales properly with account size.
-                    # Old formula: max(0.5, balance/20000) → floor of 0.5 dominated at $9k
-                    # because balance/20000 = 0.47 < 0.5. The formula never scaled above
-                    # the floor until $10,000+ balance, capping all MICRO trades at 0.5.
-                    # New: max(balance/12000, 0.30) scales from day 1:
-                    #   $9k → 0.78 lots  |  $20k → 1.67  |  $50k → 4.17
-                    # min floor 0.30 ensures we never go below minimum viable size.
-                    max_lot = max(round(balance / 12000, 2), 0.30)   # ~0.78 at $9k
+                    max_lot = max(round(balance / 12000, 2), 0.30)   
                 else:
-                    # [S14-P5] STANDARD max_lot: balance/3500 (was balance/5000).
-                    # Old: ~1.88 lots at $9k. New: ~2.69 lots.
-                    # The ICT scoring engine earns 0.80+ rigorously — at that confidence
-                    # level, the structural case supports larger position sizing.
-                    # Still well below broker spec maximums.
-                    #   $9k → 2.69 lots  |  $20k → 5.71  |  $50k → 14.3
-                    max_lot = max(1.0, round(balance / 3500, 2))    # ~2.69 at $9k
+                    max_lot = max(1.0, round(balance / 3500, 2))    
 
-                # [BUG-57 FIX] Signal-type cap override — applies AFTER asset-specific caps.
-                # Germany/SP500/Tech100 had their own max_lot branches (17–18 lots) that
-                # appeared BEFORE the is_micro branch in the cascade. A Germany SELL_MICRO
-                # therefore got max_lot=17 instead of 0.78, allowing 1.4 lots to execute
-                # on a MICRO signal (confirmed: 2026-03-12 13:40 Germany 40 SELL $-102.24).
-                # Fix: enforce MICRO/NANO ceilings unconditionally after asset cap is set.
-                # The asset cap establishes the broker/structural ceiling.
-                # The signal-type cap establishes the regime/sizing ceiling.
-                # Both must apply — the lower of the two always wins.
-                # [BUG-61 FIX] MICRO cap must never reduce lot below asset min_lot.
-                # Oil (vol_step=1.0, min_lot=1.0) was being capped to 0.77 by the MICRO
-                # formula, which is below the broker's minimum volume → MT5 "Invalid volume".
-                # Fix: max(micro_cap, min_lot) ensures the final cap is always broker-valid.
-                # Confirmed: 2026-03-13 04:45 US Oil BUY_MICRO 1.0→0.77 rejected.
                 if is_nano:
                     max_lot = min(max_lot, 0.10)
                 elif is_micro:
                     micro_cap = max(round(balance / 12000, 2), 0.30)
-                    max_lot   = min(max_lot, max(micro_cap, min_lot))  # [BUG-61] never below asset min_lot
+                    max_lot   = min(max_lot, max(micro_cap, min_lot))  
 
                 if lot > max_lot:
-                    # [BUG-65] Re-normalize capped lot to vol_step.
-                    # e.g. US Oil MICRO cap = 0.78, vol_step = 0.1 → 0.78 is not a valid
-                    # broker volume → MT5 "Invalid volume". Floor to step after capping.
-                    # Confirmed: 2026-03-13 04:45 US Oil BUY_MICRO capped at 0.77 → rejected.
                     capped = _math.floor(max_lot * step_inv) / step_inv
                     capped = max(capped, min_lot)
                     self.log_info(
@@ -2773,13 +2200,6 @@ class TradingBot:
                 else:
                     type_filling = mt5.ORDER_FILLING_RETURN 
 
-                # [BUG-66] Pre-submission price freshness + normalization.
-                # USDCHF BUY_LIMIT and AUDJPY SELL_LIMIT were rejected with MT5
-                # "Invalid price" (observed: 2026-03-12 15:48, 2026-03-13 03:01).
-                # Root cause: by the time order reaches MT5, market moved past the
-                # limit price (SELL limit above current ask, or BUY limit above bid).
-                # Fix: re-fetch tick and validate direction before submission.
-                # Also: normalize price to sym_info.digits to prevent precision errors.
                 try:
                     _fresh_tick = mt5.symbol_info_tick(self.gateway.find_symbol(symbol) or symbol)
                     _sinfo = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
@@ -2796,7 +2216,7 @@ class TradingBot:
                                 self.log_info(f"⏭️ Skip {symbol} SELL_LIMIT {price}: price below market bid {_fresh_tick.bid:.{_digits}f}. Order would be filled immediately or rejected.")
                                 return
                 except Exception:
-                    pass  # Never block a trade due to freshness check failure
+                    pass  
 
                 request = {
                     "action": mt5.TRADE_ACTION_DEAL if is_nano else mt5.TRADE_ACTION_PENDING,
@@ -2807,7 +2227,7 @@ class TradingBot:
                     "tp": float(tp),
                     "deviation": 10,
                     "magic": magic_number,
-                    "comment": "SMC_Nano" if is_nano else "SMC_Limit",
+                    "comment": "Kom_v1.0",
                     "type_time": mt5.ORDER_TIME_GTC if is_nano else mt5.ORDER_TIME_SPECIFIED,
                     "type_filling": type_filling,
                 }
@@ -2820,31 +2240,27 @@ class TradingBot:
                 else: 
                     request["type"] = mt5.ORDER_TYPE_SELL if is_nano else mt5.ORDER_TYPE_SELL_LIMIT
 
-                # ── SEND ORDER with filling-mode fallback (BUG-32 FIX) ────────
-                # For NANO market orders, the broker's declared filling_mode
-                # bitmask can be stale or change per-session (we observed 194
-                # "Unsupported filling mode" rejections Mar 5 03:15-05:59 with
-                # no automatic recovery).  Try FOK first (most compatible),
-                # then IOC, then RETURN before giving up.
                 fill_order   = [mt5.ORDER_FILLING_FOK,
                                 mt5.ORDER_FILLING_IOC,
                                 mt5.ORDER_FILLING_RETURN]
                 fill_names   = ["FOK", "IOC", "RETURN"]
-                FILL_ERR     = 10038   # TRADE_RETCODE_INVALID_FILL
+                FILL_ERR     = 10038   
 
                 result = None
                 if is_nano:
                     for idx, fmode in enumerate(fill_order):
                         request["type_filling"] = fmode
-                        result = mt5.order_send(request)
+                        # [SPRINT 18a] MT5 Lock applied to execution
+                        with self.mt5_lock:
+                            result = mt5.order_send(request)
                         if result and result.retcode == mt5.TRADE_RETCODE_DONE:
-                            break   # success — no need to try other modes
+                            break   
                         if result and result.retcode != FILL_ERR:
-                            break   # failure is NOT a filling-mode issue, stop retrying
-                        # filling-mode mismatch — try next mode silently
+                            break   
                 else:
-                    result = mt5.order_send(request)
-                # ─────────────────────────────────────────────────────────────
+                    # [SPRINT 18a] MT5 Lock applied to execution
+                    with self.mt5_lock:
+                        result = mt5.order_send(request)
 
                 safe_action = action.replace("_", " ")
 
@@ -2852,13 +2268,10 @@ class TradingBot:
                     fill_label = f" | Fill: {fill_names[fill_order.index(request['type_filling'])]}" if is_nano else ""
                     self.log_info(f"⚡ {'MARKET EXECUTION' if is_nano else 'TRAP SET'}: {symbol} {action} | Entry: {price} | Lot: {lot}{fill_label}")
                     self.async_alert(f"⚡ **SMC {safe_action}**: {symbol}\nTarget Entry: {price}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
-                    # [BUG-33 FIX] Update signal record from ATTEMPTED → FILLED
                     DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
 
-                    # [S9] TRADE RECORDING ──────────────────────────────
                     acc_id = self._get_current_account_id()
                     if is_nano:
-                        # Market orders fill instantly — record now
                         DBManager.save_trade(
                             ticket      = result.order,
                             symbol      = symbol,
@@ -2874,61 +2287,23 @@ class TradingBot:
                             model_sizing= 'STANDARD',
                         )
                     else:
-                        # LIMIT order — pending until filled.  run_cycle() will
-                        # detect the fill and call save_trade() at that point.
                         self._pending_order_info[result.order] = {
                             'regime':       regime,
                             'account_id':   acc_id,
                             'model_type':   'ICT_STANDARD',
                             'model_sizing': 'STANDARD',
                         }
-                    # ────────────────────────────────────────────────────
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
                     retcode = result.retcode if result else -1
                     self.log_info(f"❌ MT5 REJECTED {symbol}: {err_msg} (retcode={retcode})")
-                    # [BUG-31 FIX] Apply symbol cooldown after ANY rejection.
-                    # Previously: no cooldown set → same signal retried every 60s
-                    # indefinitely.  Evidence: 194 consecutive rejections over
-                    # 2h45m (Mar 5 03:15-05:59) for NZDUSD, EURUSD, GBPUSD etc.
-                    # A standard 15-min cooldown prevents the retry storm while
-                    # still allowing a fresh attempt when conditions change.
                     self.symbol_cooldowns[symbol] = datetime.utcnow()
-                    # [BUG-33 FIX] Update signal record from ATTEMPTED → REJECTED
                     DBManager.update_signal_result(symbol, analysis.signal, f"REJECTED: {err_msg}")
 
             except Exception as e:
                 self.log_info(f"⚠️ Thread Execution Error on {symbol}: {e}")
-                # [HOTFIX] Apply cooldown on ANY exception, not just clean rejections.
-                # Without this: exception path skips BUG-31 protection entirely.
-                # Evidence: USDCAD/GBPJPY retried every 60s despite crashing each time.
-                # The stops_level AttributeError above is fixed, but this guard ensures
-                # future unknown exceptions also don't produce infinite retry cascades.
                 self.symbol_cooldowns[symbol] = datetime.utcnow()
             finally:
                 self.execution_lock.discard(symbol)
                 
         threading.Thread(target=_async_execute).start()
-            
-    # ==========================================
-    # FULLY RESTORED DASHBOARD API TELEMETRY
-    # ==========================================
-    def get_status(self):
-        acc = self.gateway.get_account_info()
-        raw_pos = self.gateway.get_open_positions()
-        return {
-            "is_running": self.is_running,
-            "active_users": 1,
-            "watched_symbols": self.active_symbols,
-            "recent_logs": self.logs,
-            "account": acc,
-            "positions": raw_pos,
-            "total_pnl": sum(p['profit'] for p in raw_pos) if raw_pos else 0.0,
-            "market_regime": self.market_regime,
-            "daily_var": self.current_var,
-            # [BUG-24 FIX] kill_switch was absent from the response dict.
-            # Flutter dashboard reads data['kill_switch'] to show the red
-            # lockout banner — KeyError meant it silently defaulted to False
-            # and the banner never appeared even during an active kill switch.
-            "kill_switch": self.kill_switch_active
-        }

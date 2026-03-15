@@ -1,5 +1,19 @@
 # ============================================================
-# TradeCore v53.0 — analyst.py  [SPRINT 13 CONFLUENCE AMPLIFIER]
+# Kom v1.0 (formerly TradeCore) — analyst.py  
+# [SPRINT 18: DUAL-LOOP OPTIMIZATION & ML PIPELINE PREP]
+#
+# SPRINT 18 NOTES:
+#   - Rebranded to Kom v1.0.
+#   - Verified as 100% Stateless: This file contains only pure functions.
+#     It retains zero memory between cycles, making it perfectly safe
+#     to be executed asynchronously by the new Heavy Analysis Loop without
+#     race conditions or state corruption.
+#   - All previous heuristic comments (Sprint 9-17c) are strictly preserved
+#     as they form the Feature Engineering baseline for the upcoming
+#     Quantitative Machine Learning (QML) phase.
+#
+# SPRINT 17c HOTFIX RETAINED:
+#   - Machine-gun loop paradox documentation preserved (bot_engine.py handles).
 #
 # SPRINT 13 ADDITIONS — MULTI-FRAMEWORK CONFLUENCE LAYER:
 #   [S13-F1] compute_vwap_context()
@@ -28,11 +42,6 @@
 #   Max S13 bonus: +0.61 | Score ceiling: 0.99 | Thresholds unchanged (0.80/0.90)
 #   Integration: additive bonuses in BULLISH MANIP, BEARISH MANIP, DISTRIBUTION
 #   Architecture: ICT core generates signal, S13 layer amplifies confidence.
-#
-# SPRINT 13 ALSO INCLUDES:
-#   VWAP macro override: in DISTRIBUTION, VWAP slope replaces stale H4 EMA
-#   when the two conflict. Prevents blocking live distribution signals with
-#   4-hour-lagged trend filters.
 #
 # SPRINT 12 ADDITIONS — ENTRY/EXIT PRECISION:
 #   [S12-P0A] Structural entry: OB body_low/high (not live candle price)

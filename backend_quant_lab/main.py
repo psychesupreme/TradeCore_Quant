@@ -1,192 +1,126 @@
-import traceback
-import io
-import csv
-from datetime import datetime
-from contextlib import asynccontextmanager
+# ============================================================
+# Kom v1.0 — main.py  [SPRINT 18: DUAL-LOOP ARCHITECTURE]
+#
+# SPRINT 18 UPGRADES:
+#   [DECOUPLED SCHEDULING] The monolithic 60-second loop is split:
+#     - run_execution_cycle: Runs every 10 seconds. Manages live 
+#       trailing stops, Take Profits, and momentum kill-switches.
+#     - run_analysis_cycle: Runs every 60 seconds. Handles the heavy
+#       Pandas lifting (VWAP, Wyckoff, SMC) to find setups.
+#   [VERSION CONTROL] System-wide rebrand to Kom v1.0.
+# ============================================================
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, PlainTextResponse
+from fastapi import FastAPI, BackgroundTasks
 from apscheduler.schedulers.background import BackgroundScheduler
-
 from bot_engine import TradingBot
-from sync_db import sync_database
+import logging
+from datetime import datetime
+import subprocess
+import os
+import sys
 
-# Initialize the Global Singleton Bot Engine
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger("Kom_API")
+
+# Initialize FastAPI with new Version Control
+app = FastAPI(title="Kom API", version="1.0")
+
+# Initialize the Master Engine
 bot = TradingBot()
 scheduler = BackgroundScheduler()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("\n" + "="*50)
-    print("🚀 System Startup: Initializing TradeCore v53.0...")
-    print("="*50)
-    
+def run_sync_db():
+    """Runs the DB sync script via subprocess to avoid blocking the Fast/Heavy loops."""
     try:
-        if bot.start_service():
-            print("✅ Bot Service Started Successfully")
+        if os.path.exists("sync_db.py"):
+            subprocess.Popen([sys.executable, "sync_db.py"])
         else:
-            print("❌ Bot Service Failed to Start")
-
-        if not scheduler.get_jobs():
-            scheduler.add_job(bot.run_cycle, 'interval', seconds=60, id='trade_loop')
-            scheduler.add_job(sync_database, 'interval', minutes=5, id='db_cleaner')
-            # [S9] Daily Telegram summary at 23:50 UTC — operator accountability report.
-            # Fires once per day so autopilot can be monitored from a phone.
-            scheduler.add_job(
-                bot.send_daily_summary,
-                'cron', hour=23, minute=50,
-                id='daily_summary', timezone='UTC'
-            )
-            scheduler.start()
-            print("✅ Scheduler Active: Trading Loop, DB Sync & Daily Summary Online.")
-            
+            logger.warning("sync_db.py not found. Skipping historical sync.")
     except Exception as e:
-        print(f"❌ CRITICAL STARTUP ERROR: {e}")
-        traceback.print_exc()
-        
-    yield
+        logger.error(f"Sync DB Error: {e}")
+
+@app.on_event("startup")
+def startup_event():
+    logger.info("==================================================")
+    logger.info("🚀 System Startup: Initializing Kom v1.0...")
+    logger.info("==================================================")
     
-    print("\n⚠️ System Shutdown...")
-    bot.stop_service()
+    # Boot the MT5 connection and internal state
+    if not bot.start_service():
+        logger.error("❌ Kom Engine failed to start. Check MT5 connection.")
+        return
+        
+    # ==========================================
+    # SPRINT 18: ASYNCHRONOUS DUAL-LOOP ROUTING
+    # ==========================================
+    
+    # 1. The Execution Loop (Fast: 10s)
+    # High-frequency management: Trailing stops, scale-outs, momentum guards
+    scheduler.add_job(
+        bot.run_execution_cycle, 
+        'interval', 
+        seconds=10, 
+        id='execution_loop', 
+        replace_existing=True,
+        max_instances=1
+    )
+    
+    # 2. The Analysis Loop (Heavy: 60s)
+    # Low-frequency structural math: Pandas, VWAP, SMC logic
+    scheduler.add_job(
+        bot.run_analysis_cycle, 
+        'interval', 
+        seconds=60, 
+        id='analysis_loop', 
+        replace_existing=True,
+        max_instances=1
+    )
+    
+    # 3. Database Synchronization (Safety Net: 5m)
+    scheduler.add_job(
+        run_sync_db, 
+        'interval', 
+        minutes=5, 
+        id='db_sync', 
+        replace_existing=True,
+        max_instances=1
+    )
+    
+    # 4. Daily Summary Telegram Report
+    scheduler.add_job(
+        bot.send_daily_summary, 
+        'cron', 
+        hour=23, 
+        minute=50, 
+        id='daily_summary', 
+        replace_existing=True
+    )
+    
+    scheduler.start()
+    logger.info("✅ Scheduler Active: Dual-Loop (Execution 10s / Analysis 60s) Online.")
+
+@app.on_event("shutdown")
+def shutdown_event():
+    logger.info("🛑 Shutting down Kom v1.0...")
     scheduler.shutdown()
+    bot.stop_service()
+    logger.info("✅ System safely offline.")
 
-app = FastAPI(title="TradeCore v53.0", lifespan=lifespan)
+@app.get("/")
+def read_root():
+    return {
+        "system": "Kom",
+        "version": "1.0",
+        "status": "Online" if bot.is_running else "Offline"
+    }
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.get("/bot/status")
-async def get_bot_status():
-    try:
-        return bot.get_status()
-    except Exception as e:
-        print("\n❌ API ERROR on /bot/status:")
-        traceback.print_exc() 
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/bot/news")
-async def get_news():
-    try:
-        bot.news_manager.fetch_calendar()
-        events = bot.news_manager.events
-        return [e for e in events if e['impact'] in ['High', 'Medium']]
-    except Exception as e:
-        print(f"\n❌ API ERROR on /bot/news: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch news data")
-
-@app.get("/bot/performance")
-async def get_performance():
-    try:
-        import pandas as pd
-        
-        STARTING_DEFICIT = 0.0
-        curve_data = [{"date": "Start", "profit": STARTING_DEFICIT}]
-        
-        total_realized = 0.0
-        monthly_realized = 0.0
-        
-        # --- NEW BOT AUDIT METRICS ---
-        win_rate = 0.0
-        profit_factor = 0.0
-        total_trades = 0
-        
-        deals = bot.gateway.get_historical_deals(days=365)
-        
-        if deals:
-            df = pd.DataFrame(deals)
-            if 'profit' in df.columns:
-                total_realized = float(df['profit'].sum())
-                
-                df['time'] = pd.to_datetime(df['time'])
-                now = datetime.now()
-                monthly_df = df[(df['time'].dt.month == now.month) & (df['time'].dt.year == now.year)]
-                monthly_realized = float(monthly_df['profit'].sum())
-
-                # --- CALCULATE WIN RATE & PROFIT FACTOR ---
-                wins = df[df['profit'] > 0]
-                losses = df[df['profit'] < 0]
-                
-                gross_profit = wins['profit'].sum() if not wins.empty else 0.0
-                gross_loss = abs(losses['profit'].sum()) if not losses.empty else 0.0
-                
-                total_trades = len(df)
-                if total_trades > 0:
-                    win_rate = round((len(wins) / total_trades) * 100, 1)
-                
-                if gross_loss > 0:
-                    profit_factor = round(gross_profit / gross_loss, 2)
-                elif gross_profit > 0:
-                    profit_factor = 99.9 # Mathematically perfect if no losses
-
-                df['cumulative_profit'] = df['profit'].cumsum() + STARTING_DEFICIT
-                df['date'] = df['time'].dt.strftime('%m-%d %H:%M')
-                
-                trade_points = df[['date', 'cumulative_profit']].rename(
-                    columns={'cumulative_profit': 'profit'}
-                ).to_dict(orient='records')
-                curve_data.extend(trade_points)
-
-        if len(curve_data) < 2:
-            curve_data.append({
-                "date": datetime.now().strftime('%m-%d %H:%M'),
-                "profit": STARTING_DEFICIT
-            })
-
-        return {
-            "total_realized": total_realized,
-            "monthly_realized": monthly_realized,
-            "win_rate": win_rate,
-            "profit_factor": profit_factor,
-            "total_trades": total_trades,
-            "curve": curve_data
-        }
-    except Exception as e:
-        print(f"\n❌ API ERROR on /bot/performance:")
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail="Failed to fetch MT5 performance data")
-
-@app.get("/quant/export_report")
-async def export_report():
-    try:
-        deals = bot.gateway.get_historical_deals(days=365)
-        output = io.StringIO()
-        writer = csv.writer(output)
-        
-        writer.writerow(["System", "TradeCore v53.0 Quant Auditor"])
-        writer.writerow(["Generated", datetime.now().strftime("%Y-%m-%d %H:%M")])
-        writer.writerow([])
-        writer.writerow(["Close Time", "Symbol", "Action", "Volume", "Profit ($)"])
-        
-        for d in deals:
-            writer.writerow([d['time'], d['symbol'], d['type'], d['volume'], d['profit']])
-            
-        response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv")
-        response.headers["Content-Disposition"] = f"attachment; filename=TradeCore_Audit_{datetime.now().strftime('%Y%m%d')}.csv"
-        return response
-    except Exception as e:
-        print(f"❌ AUDIT ERROR: {e}")
-        raise HTTPException(status_code=500, detail="Failed to generate CSV audit")
-
-@app.get("/system/logs")
-async def get_system_logs():
-    log_content = "\n".join(bot.logs)
-    status = bot.get_status()
-    acc = status.get('account') or {'balance': 0, 'equity': 0}
-    
-    report = f"""--- TRADECORE SYSTEM REPORT ---
-Generated: {datetime.now()}
-Status: {'ONLINE' if status['is_running'] else 'OFFLINE'}
-
---- ACCOUNT ---
-Balance: {acc['balance']}
-Equity: {acc['equity']}
-
---- LIVE LOGS ---
-{log_content}"""
-    return PlainTextResponse(report)
+@app.get("/api/status")
+def get_status():
+    return bot.get_status()

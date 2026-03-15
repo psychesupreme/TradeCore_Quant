@@ -40,38 +40,34 @@ class MT5Gateway:
         print("⚡ Optimizing Asset Indexing for Fast Boot...")
         
         # ==========================================
-        # FAST-BOOT WHITELIST (20 Assets) [SPRINT 8]
+        # SPRINT 18: ELITE 10 ASSET MATRIX
+        # Reduced from 20 to 10 to eliminate spread-drag
+        # and optimize asynchronous loop processing times.
         # ==========================================
         vip_bases = [
-            "EURUSD", "GBPUSD", "USDJPY", "USDCAD", "USDCHF", "AUDUSD", "NZDUSD", # Majors
-            "EURJPY", "GBPJPY", "EURGBP", "AUDJPY",                               # Crosses
-            "XAUUSD", "XAGUSD",                                                   # Metals
-            "US Oil", "NGAS",                                                     # Commodities [SPRINT 8]
-            "BTCUSD", "ETHUSD",                                                   # Crypto
-            "US SP 500", "US Tech 100", "Germany 40",                             # Indices [SPRINT 8]
+            "EURUSD", "GBPUSD", "USDJPY",                         # FX Majors
+            "XAUUSD", "XAGUSD", "US Oil",                         # Hard Assets
+            "US SP 500", "US Tech 100",                           # Equities
+            "BTCUSD", "ETHUSD",                                   # Crypto
         ]
         
         count = 0
         
         for s in symbols:
-            # Check if any of our VIP base names exist anywhere inside the broker's asset name
             if any(vip in s.name for vip in vip_bases):
                 self.symbol_map[s.name] = s.name
                 
-                # Create a clean version without broker suffixes (e.g., EURUSD.m -> EURUSD)
                 clean = s.name.split('.')[0].split('_')[0]
                 if clean not in self.symbol_map: 
                     self.symbol_map[clean] = s.name
                     
-                # Create a hyper-simplified version with no spaces/symbols for aggressive matching
                 simple = re.sub(r'[^a-zA-Z0-9]', '', s.name)
                 if simple not in self.symbol_map: 
                     self.symbol_map[simple] = s.name
                     
                 count += 1
                 
-        print(f"✅ Fast Boot: Indexed {count} VIP Assets instead of {len(symbols)}.")
-        # Warn if any VIP base had zero broker matches (catches symbol name mismatches)
+        print(f"✅ Fast Boot: Indexed {count} Elite Assets instead of {len(symbols)}.")
         for vip in vip_bases:
             vip_norm = re.sub(r'[^a-zA-Z0-9]', '', vip).lower()
             matched = any(re.sub(r'[^a-zA-Z0-9]', '', k).lower().startswith(vip_norm[:6])
@@ -81,17 +77,13 @@ class MT5Gateway:
 
     def find_symbol(self, target):
         if not self.symbol_map: self._build_symbol_cache()
-        # Pass 1: exact match
         if target in self.symbol_map: return self.symbol_map[target]
-        # Pass 2: case-insensitive exact
         tl = target.lower()
         for k, v in self.symbol_map.items():
             if k.lower() == tl: return v
-        # Pass 3: normalised (strip spaces/dots/dashes)
         tn = re.sub(r'[^a-zA-Z0-9]', '', target).lower()
         for k, v in self.symbol_map.items():
             if re.sub(r'[^a-zA-Z0-9]', '', k).lower() == tn: return v
-        # Pass 4: substring fallback
         for k, v in self.symbol_map.items():
             if k in target or target in k: return v
         return None
@@ -157,7 +149,7 @@ class MT5Gateway:
             "action": mt5.TRADE_ACTION_DEAL, "symbol": real_symbol,
             "volume": float(lot), "type": type_op, "price": price,
             "sl": float(sl), "tp": float(tp), "magic": 27000,
-            "comment": "TradeCore v51", "type_time": mt5.ORDER_TIME_GTC, "type_filling": fill
+            "comment": "Kom_v1.0", "type_time": mt5.ORDER_TIME_GTC, "type_filling": fill
         }
         
         for attempt in range(5):
@@ -197,7 +189,6 @@ class MT5Gateway:
         return False
 
     def get_account_id(self):
-        """Return MT5 account number as string. Used to bind state/DB records to account."""
         if not self.connected: self.start()
         i = mt5.account_info()
         return str(i.login) if i else None
@@ -221,7 +212,7 @@ class MT5Gateway:
             "margin_level": i.margin_level,
             "free_margin":  i.margin_free,
             "account_id":   str(i.login),
-            "account_type": i.trade_mode,   # 0=real, 1=demo
+            "account_type": i.trade_mode,   
         }
     
     def get_open_positions(self):
@@ -236,8 +227,8 @@ class MT5Gateway:
             "open_price": p.price_open,
             "sl":         p.sl,
             "tp":         p.tp,
-            "magic":      p.magic,   # Required for NANO trailing stop (magic 510001)
-            "time":       p.time     # [SPRINT 17b] BUG FIX: Used p.time directly (fixes silent KeyError on brokers missing time_msc)
+            "magic":      p.magic,   
+            "time":       p.time     
         } for p in pos]
 
     def get_historical_deals(self, days=365):

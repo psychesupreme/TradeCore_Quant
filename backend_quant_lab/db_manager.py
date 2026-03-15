@@ -1,15 +1,24 @@
 # ============================================================
-# TradeCore v52.0 — db_manager.py  [SPRINT 7]
+# Kom v1.0 (formerly TradeCore) — db_manager.py
+# [SPRINT 18: REBRAND & ML DATA PIPELINE PREP]
 #
-# SPRINT 7 ADDITIONS:
+# SPRINT 18 NOTES:
+#   - System rebranded to Kom v1.0.
+#   - Database connection logic retained to point to the original 
+#     data file to preserve the pristine historical dataset 
+#     required for the upcoming Machine Learning (QML) training phase.
+#
+# SPRINT 17b FIXES RETAINED:
+#   - get_signal_history() includes 'EXECUTED' to prevent ML data starvation.
+#
+# SPRINT 7 & 8 ADDITIONS RETAINED:
 #   update_mae_mfe()       — Called every cycle for open trades.
-#   save_trade()           — Now accepts regime.
-#   log_signal()           — Now accepts ict_score, kill_zone, ict_conditions.
-#   log_snapshot()         — Accepts margin_level (already live, kept).
+#   save_trade()           — Accepts regime, account_id, model_type.
+#   log_signal()           — Accepts ict_score, kill_zone, ict_conditions.
+#   log_snapshot()         — Accepts margin_level.
 #   update_signal_result() — BUG-33 fix preserved.
-#   get_closed_trades()    — New: DataFrame for quant engine.
-#   get_equity_curve()     — New: balance series for ratio math.
-#   get_signal_history()   — New: signal log for QML.
+#   get_closed_trades()    — DataFrame for quant engine.
+#   get_equity_curve()     — Balance series for ratio math.
 # ============================================================
 
 from database import get_db_connection
@@ -43,8 +52,10 @@ class DBManager:
     def log_signal(symbol, signal_type, confidence, indicators_dict, result,
                    ict_score=None, kill_zone=None, ict_conditions=None,
                    model_type=None, model_sizing=None, account_id=None):
-        """[SPRINT 8] model_type/model_sizing enable per-model performance tracking.
-        account_id isolates records across demo/live account switches."""
+        """
+        [SPRINT 8] model_type/model_sizing enable per-model performance tracking.
+        account_id isolates records across demo/live account switches.
+        """
         conn = get_db_connection()
         c = conn.cursor()
         try:
@@ -67,7 +78,10 @@ class DBManager:
 
     @staticmethod
     def update_signal_result(symbol, signal_type, new_result):
-        """[BUG-33 FIX] Updates ATTEMPTED → FILLED or REJECTED once MT5 responds."""
+        """
+        [BUG-33 FIX] Updates ATTEMPTED → FILLED or REJECTED once MT5 responds.
+        Critical for accurate funnel metrics in the daily summary.
+        """
         conn = get_db_connection()
         c = conn.cursor()
         try:
@@ -94,7 +108,10 @@ class DBManager:
     @staticmethod
     def save_trade(ticket, symbol, type_op, vol, open_price, sl, tp, time,
                    regime=None, account_id=None, model_type=None, model_sizing=None):
-        """Opens a new trade record. [SPRINT 8] account_id + model tracking."""
+        """
+        Opens a new trade record. 
+        [SPRINT 8] account_id + model tracking appended.
+        """
         conn = get_db_connection()
         c = conn.cursor()
         try:
@@ -114,7 +131,7 @@ class DBManager:
     @staticmethod
     def update_mae_mfe(ticket, adverse_excursion, favorable_excursion):
         """
-        [SPRINT 7] Called every cycle for each open position.
+        [SPRINT 7] Called every cycle by run_execution_cycle() for open positions.
         adverse_excursion  = abs(open_price - worst_price_seen)  [always positive]
         favorable_excursion = abs(best_price_seen - open_price)  [always positive]
         MAX() ensures we only store the worst/best extremes, never override with
@@ -140,7 +157,7 @@ class DBManager:
                     commission=0.0, slippage=0.0):
         """
         [BUG-51 FIX] Added 'AND close_time IS NULL' guard.
-        If run_cycle and sync_db both detect the same closed trade in the same
+        If the execution loop and sync_db both detect the same closed trade in the same
         window, only the first write succeeds; the second is a safe no-op.
         """
         conn = get_db_connection()
@@ -170,7 +187,7 @@ class DBManager:
         """
         [BUG-44c / BUG-56] Returns list of dicts for truly-open trades:
         ticket, symbol, type, open_price. Used by close detection loop in
-        run_cycle() to reconstruct scale_key for scaled_positions cleanup
+        run_execution_cycle() to reconstruct scale_key for scaled_positions cleanup
         and to log meaningful close events without extra round-trips.
         """
         conn = get_db_connection()
@@ -221,7 +238,10 @@ class DBManager:
     @staticmethod
     def log_snapshot(balance, equity, margin_level, free_margin, margin=0.0,
                     account_id=None):
-        """[SPRINT 8] account_id isolates equity curves across account switches."""
+        """
+        [SPRINT 8] account_id isolates equity curves across account switches.
+        Provides the baseline for Sharpe/Sortino ratios in the quant engine.
+        """
         conn = get_db_connection()
         c = conn.cursor()
         try:
@@ -242,9 +262,11 @@ class DBManager:
 
     @staticmethod
     def get_closed_trades(account_id=None) -> pd.DataFrame:
-        """Returns closed trades for the given account_id (or all if None).
+        """
+        Returns closed trades for the given account_id (or all if None).
         [SPRINT 8] account_id filter ensures quant metrics are not cross-contaminated
-        between demo and live accounts."""
+        between demo and live accounts.
+        """
         conn = get_db_connection()
         try:
             if account_id:
@@ -308,6 +330,7 @@ class DBManager:
         Returns the set of tickets currently recorded as TRULY OPEN in the DB:
         - close_time IS NULL  (not yet closed)
         - profit IS NULL      (not a ghost_cleanup entry, which has profit=0.0)
+        
         [BUG-44d FIX] Previous query (close_time IS NULL only) returned 138
         ghost_cleanup entries whose profit=0.0 but no close_time, causing the
         close detection loop to attempt MT5 history lookups on 138 phantom trades.
@@ -326,16 +349,19 @@ class DBManager:
 
     @staticmethod
     def get_signal_history() -> pd.DataFrame:
-        """Returns signal log for QML training.
+        """
+        Returns signal log for QML (Machine Learning) training pipeline.
         [SPRINT 9] Filtered to FILLED/ATTEMPTED only — SKIPPED rows inflated
         the query to 48k+ rows and are irrelevant for model training.
         [SPRINT 17b] BUG FIX: Added 'EXECUTED' back to the filter. 
-        Skipping it dropped 302 historically valid signals, starving the ML model."""
+        Skipping it dropped 302 historically valid signals, starving the ML model.
+        """
         conn = get_db_connection()
         try:
             df = pd.read_sql_query('''
                 SELECT symbol, timestamp, signal_type, confidence,
-                       result, ict_score, kill_zone, indicators
+                       result, ict_score, kill_zone, indicators, ict_conditions,
+                       outcome, pips_result
                 FROM signals
                 WHERE result IN ('FILLED', 'ATTEMPTED', 'EXECUTED')
                 ORDER BY timestamp ASC
