@@ -8,20 +8,21 @@
 #   - [Sprint 11] Migrated to FastAPI + Uvicorn to allow the local 
 #     HTML/Flutter dashboards to pull state asynchronously without 
 #     interrupting the trade execution thread.
-#   - [Sprint 17b] Added APScheduler to replace the crude `asyncio` 
+#   - [Sprint 14b] Offloaded DB historical sync to a separate 
+#     subprocess (sync_db.py) to prevent GIL thread-locking.
+#   - [Sprint 17b] Added APScheduler to replace crude `asyncio` 
 #     sleep loops, ensuring exact execution timing and preventing 
 #     memory leaks from overlapping async tasks.
+#   - [BUG-54] Implemented Starlette CORSMiddleware to allow 
+#     local dashboard.html fetch requests.
 #
 # SPRINT 18 UPGRADES (The Kom Transition):
 #   [DECOUPLED SCHEDULING] The monolithic 60-second loop was destroying 
 #   latency during heavy Pandas recalculations. It is now split:
-#     1. run_execution_cycle: Runs every 10 seconds. Manages live 
-#        trailing stops, Take Profits, and momentum kill-switches.
-#     2. run_analysis_cycle: Runs every 60 seconds. Handles the heavy
-#        Pandas lifting (VWAP, Wyckoff, SMC) to find setups.
+#     1. run_execution_cycle: Runs every 10s (stops, momentum, scale-outs).
+#     2. run_analysis_cycle: Runs every 60s (VWAP, Wyckoff, SMC math).
 #   [VERSION CONTROL] System-wide rebrand to Kom v1.0.
-#   [API RESTORATION] Endpoints preserved as /bot/* to maintain 
-#   backward compatibility with the Flutter frontend.
+#   [API RESTORATION] Endpoints mapped to /bot/* for Flutter compatibility.
 # ============================================================
 
 from fastapi import FastAPI
