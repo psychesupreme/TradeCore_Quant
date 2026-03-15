@@ -38440,3 +38440,33 @@
 2026-03-16 01:33:27 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-16 01:33:27 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-16 01:33:28 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-16 01:34:37 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.14465 AL:1.14242
+2026-03-16 01:34:37 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:5068.4 AL:5019.15
+2026-03-16 01:34:37 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:81.345 AL:79.431
+2026-03-16 01:34:37 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.423 AL:94.207
+2026-03-16 01:34:37 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:34:37 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:34:37 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-16 01:35:32 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.14465 AL:1.14242
+2026-03-16 01:35:33 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:5068.4 AL:5019.15
+2026-03-16 01:35:33 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:81.345 AL:79.431
+2026-03-16 01:35:33 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.423 AL:94.207
+2026-03-16 01:35:33 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:35:33 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:35:33 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-16 01:36:28 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.14465 AL:1.14242
+2026-03-16 01:36:28 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:5068.4 AL:5019.15
+2026-03-16 01:36:28 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:81.345 AL:79.431
+2026-03-16 01:36:28 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.423 AL:94.207
+2026-03-16 01:36:28 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:36:28 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:36:28 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-16 01:37:34 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.14465 AL:1.14242
+2026-03-16 01:37:34 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.32841 AL:1.32303
+2026-03-16 01:37:34 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:5068.4 AL:5019.15
+2026-03-16 01:37:34 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:81.345 AL:79.431
+2026-03-16 01:37:35 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.423 AL:94.207
+2026-03-16 01:37:35 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:37:35 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 01:37:35 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-16 01:37:35 [INFO] Stopped.
