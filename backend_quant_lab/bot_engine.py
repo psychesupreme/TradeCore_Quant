@@ -2307,3 +2307,22 @@ class TradingBot:
                 self.execution_lock.discard(symbol)
                 
         threading.Thread(target=_async_execute).start()
+
+# ==========================================
+    # FULLY RESTORED DASHBOARD API TELEMETRY
+    # ==========================================
+    def get_status(self):
+        acc = self.gateway.get_account_info()
+        raw_pos = self.gateway.get_open_positions()
+        return {
+            "is_running": self.is_running,
+            "active_users": 1,
+            "watched_symbols": self.active_symbols,
+            "recent_logs": self.logs,
+            "account": acc,
+            "positions": raw_pos,
+            "total_pnl": sum(p['profit'] for p in raw_pos) if raw_pos else 0.0,
+            "market_regime": self.market_regime,
+            "daily_var": self.current_var,
+            "kill_switch": self.kill_switch_active
+        }        

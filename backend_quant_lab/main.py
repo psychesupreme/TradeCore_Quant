@@ -121,6 +121,6 @@ def read_root():
         "status": "Online" if bot.is_running else "Offline"
     }
 
-@app.get("/api/status")
+@app.get("/bot/status")
 def get_status():
     return bot.get_status()
