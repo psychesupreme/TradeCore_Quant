@@ -13,7 +13,7 @@
 # HISTORICAL PRESERVATION (Sprints 10-17):
 #   - [Sprint 10] Master News Guard implementation. Fetches 
 #     high/medium impact events to pause trading algorithms.
-#   - [Sprint 11] Timezone normalization.
+#   - [Sprint 11] Timezone normalization to strict UTC.
 #   - [Sprint 14] Tier-1 vs Tier-2 classification. Tier-1 
 #     (NFP, CPI, FOMC) creates a 4-hour pre-event blackout.
 #     Tier-2 (Standard High Impact) creates a 15-min blackout.
@@ -35,20 +35,29 @@ class NewsManager:
         self.events = []
         self.last_fetch = None
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
         }
         # [Sprint 14] Tier 1 events require a massive 4-hour pre-event blackout.
-        self.tier_1_keywords = ['CPI', 'FOMC', 'NFP', 'Non-Farm', 'Rate Decision', 'Interest Rate', 'GDP']
+        self.tier_1_keywords = ['CPI', 'FOMC', 'NFP', 'Non-Farm', 'Rate Decision', 'Interest Rate', 'GDP', 'Chair Powell Speaks']
 
     def fetch_calendar(self):
+        """
+        Scrapes ForexFactory for high/medium impact events.
+        Implements Bug-68 Fix: Stateful inheritance of Time and Currency for grouped rows.
+        """
         now = datetime.utcnow()
-        # Cache limit: 1 hour to prevent IP banning from ForexFactory
+        # [S18c] Hardened cache: 1 hour to prevent 403 IP bans from ForexFactory
         if self.last_fetch and (now - self.last_fetch).total_seconds() < 3600:
             return self.events
 
         try:
             url = "https://www.forexfactory.com/calendar"
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = requests.get(url, headers=self.headers, timeout=15)
+            
+            if response.status_code == 403:
+                logger.error("🚫 News fetch failed: HTTP 403 (IP Blocked). Wait 10-15 minutes.")
+                return self.events
+                
             if response.status_code != 200:
                 logger.error(f"News fetch failed: HTTP {response.status_code}")
                 return self.events
@@ -56,27 +65,28 @@ class NewsManager:
             soup = BeautifulSoup(response.content, 'html.parser')
             table = soup.find('table', class_='calendar__table')
             if not table:
+                logger.warning("ForexFactory table structure not found.")
                 return self.events
 
             parsed_events = []
             
-            # [SPRINT 18c / BUG-68 FIX] Initialize stateful trackers for grouped events
+            # [BUG-68 FIX] Initialize stateful trackers for grouped rows
             current_time = "All Day"
             current_currency = "??"
 
             for row in table.find_all('tr', class_='calendar__row'):
-                # Skip date headers and empty structural rows
+                # Skip date headers and structural padding
                 if 'calendar__row--new-day' in row.get('class', []):
                     continue
 
-                # 1. Parse Time (Inherit if blank)
+                # 1. Parse Time (Inherit if cell is blank)
                 time_td = row.find('td', class_='calendar__time')
                 if time_td:
                     t_str = time_td.text.strip()
                     if t_str and t_str != "":
                         current_time = t_str
 
-                # 2. Parse Currency/Country (Inherit if blank)
+                # 2. Parse Currency (Inherit if cell is blank)
                 curr_td = row.find('td', class_='calendar__currency')
                 if curr_td:
                     c_str = curr_td.text.strip()
@@ -97,13 +107,13 @@ class NewsManager:
                 elif 'medium' in impact_class:
                     impact_level = "Medium"
                 else:
-                    continue # We only care about High/Medium impact events
+                    continue # Skip Low impact and Non-economic events
 
                 # 4. Parse Title
                 event_td = row.find('td', class_='calendar__event')
                 event_title = event_td.text.strip() if event_td else "Unknown Event"
 
-                # 5. Tier Classification
+                # 5. Tier Classification (Sprint 14)
                 tier = 2
                 if impact_level == 'High':
                     for kw in self.tier_1_keywords:
@@ -125,7 +135,7 @@ class NewsManager:
 
             self.events = parsed_events
             self.last_fetch = now
-            logger.info(f"✅ Calendar Updated: {len(self.events)} events ({len([e for e in self.events if e['tier']==1])} Tier-1).")
+            logger.info(f"✅ News Pipeline: {len(self.events)} events synced (Stateful Parsing Active).")
             return self.events
 
         except Exception as e:
@@ -135,34 +145,31 @@ class NewsManager:
     def _parse_event_time(self, time_str, utc_now):
         """
         [SPRINT 11] Parses ForexFactory string (e.g., '8:30am') into 
-        a strict UTC datetime object for the current day.
+        a strict UTC datetime object.
         """
         try:
-            if not time_str or time_str == "All Day" or time_str == "Tentative":
+            if not time_str or time_str in ["All Day", "Tentative"]:
                 return None
                 
-            # Clean up FF time strings (they use 'am' / 'pm' without spaces)
+            # Normalize format for strptime
             t_clean = time_str.lower().replace('am', ' AM').replace('pm', ' PM')
             t_clean = re.sub(r'\s+', ' ', t_clean).strip().upper()
-            dt_time = datetime.strptime(t_clean, '%I:%M %p').time()
             
-            event_dt = datetime.combine(utc_now.date(), dt_time)
-            return event_dt
+            dt_time = datetime.strptime(t_clean, '%I:%M %p').time()
+            return datetime.combine(utc_now.date(), dt_time)
         except Exception:
             return None
 
     def is_news_window(self, now=None):
         """
-        [BUG-25 FIX] Directly uses the pre-parsed _event_dt objects.
-        Tier 1: 4 hours before, 30 mins after.
-        Tier 2: 15 mins before, 15 mins after.
-        Returns (True, reason) if blocked, else (False, "").
+        [BUG-25 FIX] Prevents limit placement during volatile windows.
+        Tier 1: 4h pre-event / 30m post-event blackout.
+        Tier 2: 15m pre-event / 15m post-event blackout.
         """
         if not self.events:
             return False, ""
 
-        if now is None:
-            now = datetime.utcnow()
+        now = now or datetime.utcnow()
 
         for ev in self.events:
             if ev['impact'] != 'High':
@@ -187,9 +194,8 @@ class NewsManager:
 
     def get_upcoming_news(self, hours=12):
         """
-        [RESTORED] Returns a list of high/medium impact events occurring 
-        within the next X hours. Used by the Telegram /news command 
-        and the Frontend Dashboard.
+        [RESTORED S18a] Returns a list of high/medium impact events 
+        occurring within the next X hours.
         """
         if not self.events:
             self.fetch_calendar()
@@ -204,7 +210,7 @@ class NewsManager:
                 
             time_diff = (edt - now).total_seconds()
             
-            # If the event is in the future and within the requested window
+            # Filter for future events within the window
             if 0 <= time_diff <= (hours * 3600):
                 upcoming.append(ev)
                 

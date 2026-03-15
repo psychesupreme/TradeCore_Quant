@@ -38272,3 +38272,6 @@
 2026-03-16 00:26:59 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
 2026-03-16 00:27:10 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
 2026-03-16 00:32:00 [INFO] Stopped.
+2026-03-16 00:32:02 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-16 00:32:02 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-16 00:32:12 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
