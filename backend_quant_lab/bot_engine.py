@@ -427,14 +427,19 @@ class TradingBot:
                 eq  = acc['equity']  if acc else 0
                 con = _sl.connect("tradecore.db")
                 today = datetime.utcnow().strftime('%Y-%m-%d')
+                
+                # [BUG FIX] Excluding ghost trades from daily P&L sum
                 rows_today = con.execute(
-                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL",
+                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND comment NOT LIKE '%ghost%'",
                     (f"{today}%",)
                 ).fetchone()
+                
+                # [BUG FIX] Exclude ghost trades from the global profits array
                 all_profits = con.execute(
-                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0"
+                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
                 ).fetchall()
                 con.close()
+                
                 daily_pnl  = rows_today[0] or 0.0
                 profits    = [r[0] for r in all_profits]
                 peak       = bal
@@ -443,15 +448,18 @@ class TradingBot:
                     cumsum += p
                     peak    = max(peak, bal - cumsum + p) if p else peak
                 drawdown   = ((peak - bal) / peak * 100) if peak > 0 else 0
+                
+                # Pull directly from QuantEngine instead of legacy stub
                 try:
-                    from quant_analyzer import QuantAnalyzer
-                    qa = QuantAnalyzer(profits)
-                    kelly = qa.kelly_fraction * 100
-                    var95 = qa.value_at_risk(0.95)
+                    quant_params = self.quant_engine.get_live_risk_params()
+                    kelly = quant_params.get('kelly_fraction', 0.0) * 100
+                    var95 = quant_params.get('var_limit', 0.0)
                 except Exception:
                     kelly, var95 = 0.0, 0.0
+                    
                 weekly_target = 3000.0  
                 days_remaining = 7 - datetime.utcnow().weekday()
+                
                 self.async_alert(
                     f"🔬 **Risk Dashboard**\n"
                     f"━━━━━━━━━━━━━━━━━━━━\n"
@@ -581,8 +589,9 @@ class TradingBot:
             from datetime import timedelta as _td
             week_start_str = (datetime.utcnow() - _td(days=datetime.utcnow().weekday())).strftime('%Y-%m-%d')
             con = _sl.connect("tradecore.db")
+            # [BUG FIX] Ghost exclusion applied to all status counts
             today_rows  = con.execute(
-                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0",
+                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
                 (f"{today_str}%",)
             ).fetchall()
             week_rows   = con.execute(
@@ -2363,6 +2372,7 @@ class TradingBot:
         try:
             import sqlite3
             con = sqlite3.connect("tradecore.db")
+            # [BUG FIX] Excluding ghost trades
             rows = con.execute("SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%' ORDER BY close_time ASC").fetchall()
             con.close()
             
@@ -2392,10 +2402,11 @@ class TradingBot:
 
     def get_risk(self):
         try:
+            # Wire directly to live QuantEngine memory 
             quant_params = self.quant_engine.get_live_risk_params()
             return {
-                "kelly_fraction": quant_params.get('risk_pct', 0.02),
-                "var_95": self.current_var
+                "kelly_fraction": quant_params.get('kelly_fraction', 0.0),
+                "var_95": quant_params.get('var_limit', 0.0)
             }
         except Exception:
             return {"kelly_fraction": 0.0, "var_95": self.current_var}

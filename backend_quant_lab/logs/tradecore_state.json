@@ -17,9 +17,9 @@
       "SKIPPED"
     ],
     "USDJPY": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.9,
+      "ATTEMPTED"
     ],
     "USDCAD": [
       "NEUTRAL",
@@ -62,9 +62,9 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "SELL_MICRO",
+      0.99,
+      "ATTEMPTED"
     ],
     "XAGUSD": [
       "NEUTRAL",
