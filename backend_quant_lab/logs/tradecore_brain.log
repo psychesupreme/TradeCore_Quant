@@ -1573,3 +1573,5 @@
 2026-03-17 00:21:38 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-17 00:21:38 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
 2026-03-17 00:21:38 [INFO] Stopped.
+2026-03-17 00:21:40 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-17 00:21:40 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
