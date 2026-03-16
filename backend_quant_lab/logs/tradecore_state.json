@@ -87,14 +87,14 @@
       "SKIPPED"
     ],
     "US SP 500": [
-      "SELL_MICRO",
-      0.75,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "US Tech 100": [
-      "SELL_MICRO",
-      0.63,
-      "LOW_CONFIDENCE (63%)"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "Germany 40": [
       "NEUTRAL",
