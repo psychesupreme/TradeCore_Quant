@@ -1535,3 +1535,37 @@
 2026-03-17 00:09:02 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
 2026-03-17 00:09:02 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-17 00:09:03 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:10:35 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:10:35 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:10:35 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:12:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:12:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:12:09 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:13:10 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:13:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:13:11 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:14:04 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:14:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:14:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:15:12 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:15:12 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:15:12 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:16:05 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:16:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:16:05 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:17:02 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:17:02 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:17:02 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:17:02 [INFO] Stopped.
+2026-03-17 00:17:04 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-17 00:17:04 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-17 00:17:15 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-17 00:18:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:18:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:18:57 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:19:42 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:19:42 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:19:42 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:20:34 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:20:34 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:20:34 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
