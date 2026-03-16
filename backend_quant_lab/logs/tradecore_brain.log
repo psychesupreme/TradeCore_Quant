@@ -1569,3 +1569,7 @@
 2026-03-17 00:20:34 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
 2026-03-17 00:20:34 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-17 00:20:34 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:21:38 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:21:38 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:21:38 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:21:38 [INFO] Stopped.
