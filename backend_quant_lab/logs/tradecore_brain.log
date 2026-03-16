@@ -1173,3 +1173,353 @@
 2026-03-16 22:09:15 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
 2026-03-16 22:09:15 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-16 22:09:15 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:10:15 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:10:15 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:10:15 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:11:21 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:11:21 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:11:21 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:12:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:12:59 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:12:59 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:14:38 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:14:38 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:14:38 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-16 22:14:38 [INFO] 🔎 MTF Confluence Locked: XAUUSD SELL_MICRO (Conf: 95%)
+2026-03-16 22:14:38 [INFO] 📐 Scalp Levels [XAUUSD SELL]: Entry≈5021.15500  SL≈5027.05000  TP≈4954.60300  (FVG mid=5021.15500 Asian_L=4970.32)
+2026-03-16 22:14:38 [INFO] ⚡ TRAP SET: XAUUSD SELL_LIMIT | Entry: 5021.15 | Lot: 0.1
+2026-03-16 22:14:39 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:14:39 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:14:39 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:14:39 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-16 22:16:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:16:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:16:10 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:17:11 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:17:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:17:11 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:18:37 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:18:37 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:18:37 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:19:28 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:19:28 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:19:28 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:19:28 [INFO] Stopped.
+2026-03-16 22:19:33 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-16 22:19:33 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-16 22:19:43 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-16 22:21:24 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:21:24 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:21:24 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:22:03 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:22:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:22:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:23:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:23:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:23:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:24:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:24:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:24:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:25:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:25:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:25:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:26:23 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:26:23 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:26:23 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:27:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:27:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:27:05 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:28:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:28:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:28:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:29:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:29:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:29:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:30:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:30:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:30:05 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:30:12 [INFO] 📩 Received Command: /status
+2026-03-16 22:30:34 [INFO] 📩 Received Command: /risk
+2026-03-16 22:31:15 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:31:15 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:31:16 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:32:06 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:32:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:32:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:33:06 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:33:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:33:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:34:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:34:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:34:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:35:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:35:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:35:04 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:36:13 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:36:13 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:36:13 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:37:12 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:37:12 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:37:12 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:38:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:38:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:38:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:39:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:39:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:39:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:40:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:40:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:40:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:41:27 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:41:27 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:41:27 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:42:16 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:42:16 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:42:16 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:43:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:43:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:43:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:44:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:44:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:44:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:45:06 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:45:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:45:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:46:20 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:46:20 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:46:21 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:47:12 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:47:12 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:47:12 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:48:06 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:48:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:48:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:49:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:49:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:49:05 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:50:11 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:50:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:50:11 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:51:19 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:51:19 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:51:19 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:52:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:52:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:52:10 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:53:06 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:53:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:53:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:54:06 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:54:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:54:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:55:12 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:55:12 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:55:12 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:56:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:56:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:56:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:57:16 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:57:16 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:57:16 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:58:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:58:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:58:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 22:59:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:59:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 22:59:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:00:29 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:00:29 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:00:29 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:01:18 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:01:18 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:01:18 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:02:26 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:02:26 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:02:26 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:03:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:03:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:03:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:04:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:04:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:04:10 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:05:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:05:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:05:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:06:09 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:06:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:06:09 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:07:20 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:07:20 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:07:20 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:08:09 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:08:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:08:09 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:09:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:09:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:09:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:10:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:10:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:10:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:11:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:11:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:11:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:12:22 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:12:22 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:12:22 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:13:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:13:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:13:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:14:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:14:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:14:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:15:06 [INFO] 📩 Received Command: /status
+2026-03-16 23:15:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:15:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:15:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:15:15 [INFO] 📩 Received Command: /risk
+2026-03-16 23:15:46 [INFO] 📩 Received Command: /status
+2026-03-16 23:16:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:16:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:16:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:16:17 [INFO] 📩 Received Command: /status
+2026-03-16 23:17:20 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:17:20 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:17:20 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:18:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:18:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:18:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:19:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:19:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:19:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:19:11 [INFO] 📩 Received Command: /status
+2026-03-16 23:19:55 [INFO] 📩 Received Command: /help
+2026-03-16 23:20:00 [INFO] 📩 Received Command: /signals
+2026-03-16 23:20:07 [INFO] 📩 Received Command: /trades
+2026-03-16 23:20:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:20:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:20:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:20:19 [INFO] 📩 Received Command: /pending
+2026-03-16 23:21:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:21:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:21:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:22:30 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:22:30 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:22:30 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:23:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:23:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:23:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:24:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:24:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:24:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:25:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:25:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:25:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:25:53 [INFO] 📩 Received Command: /status
+2026-03-16 23:26:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:26:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:26:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:27:34 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:27:34 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:27:34 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:29:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:29:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:29:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:30:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:30:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:30:09 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:30:15 [INFO] 📩 Received Command: /status
+2026-03-16 23:31:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:31:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:31:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:32:38 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:32:38 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:32:38 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:34:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:34:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:34:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:35:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:35:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:35:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:36:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:36:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:36:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:37:40 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:37:40 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:37:40 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:39:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:39:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:39:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:40:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:40:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:40:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:41:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:41:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:41:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:42:34 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:42:34 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:42:34 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:44:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:44:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:44:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:45:09 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:45:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:45:09 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:46:09 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:46:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:46:09 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:47:35 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:47:35 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:47:35 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:47:44 [INFO] ⚖️ Scaling Out: XAUUSD hit 1:1 RR. Closing 0.05 Lots to secure cash.
+2026-03-16 23:47:45 [INFO] 🛡️ Dynamic Profit Locked: XAUUSD SL secured at 5014.42
+2026-03-16 23:49:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:49:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:49:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:50:00 [INFO] 📋 Daily summary dispatched via Telegram.
+2026-03-16 23:50:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:50:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:50:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:51:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:51:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:51:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:52:35 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:52:35 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:52:35 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:53:24 [INFO] 🎯 TP Ratcheted: XAUUSD at 2.2R → new TP 4996.11000 (+1.5R ahead)
+2026-03-16 23:53:24 [INFO] 🛡️ Dynamic Profit Locked: XAUUSD SL secured at 5009.36
+2026-03-16 23:54:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:54:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:54:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:55:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:55:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:55:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:56:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:56:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:56:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:57:23 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:57:23 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:57:23 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:58:20 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:58:20 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:58:20 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-16 23:59:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:59:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-16 23:59:08 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:00:11 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:00:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:00:11 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:01:07 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:01:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:01:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:02:06 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:02:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:02:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:03:18 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:03:18 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:03:18 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:04:06 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:04:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:04:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 00:05:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.396 AL:92.591
+2026-03-17 00:05:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 00:05:09 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
