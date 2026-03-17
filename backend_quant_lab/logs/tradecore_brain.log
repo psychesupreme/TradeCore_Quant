@@ -7653,3 +7653,1021 @@
 2026-03-17 21:59:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-17 21:59:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
 2026-03-17 22:00:40 [INFO] Stopped.
+2026-03-17 22:00:43 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-17 22:00:43 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-17 22:00:55 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-17 22:03:12 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:03:12 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:03:12 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:03:13 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:03:13 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:03:13 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:03:13 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:03:13 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:03:13 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:04:28 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:04:28 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:04:28 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:04:28 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:04:28 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:04:28 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:04:28 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:04:28 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:04:28 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:05:30 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:05:30 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:05:30 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:05:30 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:05:30 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:05:30 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:05:30 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:05:30 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:05:31 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:06:31 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:06:31 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:06:31 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:06:31 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:06:31 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:06:31 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:06:31 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:06:31 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:06:31 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:08:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:08:09 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:08:10 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:08:10 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:08:10 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:08:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:08:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:08:10 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:08:10 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:09:21 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:09:21 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:09:21 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:09:21 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:09:21 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:09:21 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:09:21 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:09:21 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:09:21 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:10:19 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:10:19 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:10:19 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:10:19 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:10:19 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:10:19 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:10:19 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:10:19 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:10:19 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:11:24 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:11:24 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:11:24 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:11:24 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:11:24 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:11:24 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:11:24 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:11:24 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:11:24 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:12:19 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:12:20 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:12:20 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:12:20 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:12:20 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:12:20 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:12:20 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:12:20 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:12:20 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:12:20 [INFO] Stopped.
+2026-03-17 22:12:22 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-17 22:12:22 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-17 22:12:33 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-17 22:14:31 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:14:31 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:14:31 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:14:31 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:14:32 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:14:32 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:14:32 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:14:32 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:14:32 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:15:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:15:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:15:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:15:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:15:57 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 67%)
+2026-03-17 22:15:57 [INFO] ⚠️ Price Validation: XAGUSD SELL_LIMIT 79.316 too close to market (79.327). Min distance: 0.00200. Rejection #1/4.
+2026-03-17 22:15:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:15:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:15:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:15:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:16:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:16:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:16:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:16:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:16:56 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 67%)
+2026-03-17 22:16:56 [INFO] ⚠️ Price Validation: XAGUSD SELL_LIMIT 79.316 too close to market (79.315). Min distance: 0.00200. Rejection #2/4.
+2026-03-17 22:16:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:16:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:16:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:16:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:17:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:17:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:17:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:17:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:17:57 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 67%)
+2026-03-17 22:17:57 [INFO] ⚠️ Lot Cap: XAGUSD calculated 1.84 lots → capped at 0.78 (MICRO)
+2026-03-17 22:17:57 [INFO] ⚡ TRAP SET: XAGUSD SELL_LIMIT | Entry: 79.316 | Lot: 0.78
+2026-03-17 22:17:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:17:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:17:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:17:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:19:12 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:19:13 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:19:13 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:19:13 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:19:13 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:19:13 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:19:13 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:19:13 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:20:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:20:09 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:20:10 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:20:10 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:20:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:20:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:20:10 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:20:10 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:21:13 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:21:13 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:21:13 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:21:13 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:21:13 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:21:13 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:21:13 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:21:13 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:22:07 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:22:07 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:22:07 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:22:07 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:22:07 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:22:07 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:22:07 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:22:07 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:23:08 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:23:08 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:23:08 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:23:08 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:23:08 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:23:08 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:23:08 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:23:08 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:24:29 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:24:29 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:24:29 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:24:29 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:24:29 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:24:29 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:24:29 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:24:29 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:26:05 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:26:05 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:26:05 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:26:05 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:26:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:26:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:26:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:26:05 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:27:05 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:27:05 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:05 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:05 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:27:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:05 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:27:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:27:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:27:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:27:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:29:15 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:29:15 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:29:15 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:29:15 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:29:15 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:29:15 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:29:15 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:29:15 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:30:10 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:30:10 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:10 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:10 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:30:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:11 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:11 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:30:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:30:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:30:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:30:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:31:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:31:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:31:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:31:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:31:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:31:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:31:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:31:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:32:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:32:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:32:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:32:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:32:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:32:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:32:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:32:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:34:01 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:34:01 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:34:01 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:34:01 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:34:01 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:34:01 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:34:01 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:34:01 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:35:04 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:35:04 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:04 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:04 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:35:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:04 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:04 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:35:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:35:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:35:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:35:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:36:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:36:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:36:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:36:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:36:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:36:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:36:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:36:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:37:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:37:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:37:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:37:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:37:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:37:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:37:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:37:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:38:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:38:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:38:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:38:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:38:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:38:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:38:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:38:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:40:10 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:40:10 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:10 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:10 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:40:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:10 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:10 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:40:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:40:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:40:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:40:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:41:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:41:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:41:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:41:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:41:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:41:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:41:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:41:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:42:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:42:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:42:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:42:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:42:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:42:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:42:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:42:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:43:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:43:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:43:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:43:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:43:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:43:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:43:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:43:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:45:27 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:45:27 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:45:27 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:45:27 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:45:27 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:45:27 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:45:27 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:45:27 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:46:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:46:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:46:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:46:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:46:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:46:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:46:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:46:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:47:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:47:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:47:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:47:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:47:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:47:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:47:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:47:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:48:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:48:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:48:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:48:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:48:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:48:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:48:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:48:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:50:28 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:50:28 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:50:28 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:50:28 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:50:28 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:50:28 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:50:28 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:50:28 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:51:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:51:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:51:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:51:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:51:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:51:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:51:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:51:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:52:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:52:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:52:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:52:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:52:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:52:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:52:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:52:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:53:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:53:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:53:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:53:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:53:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:53:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:53:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:53:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:55:41 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:55:41 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:55:41 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:55:41 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:55:41 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:55:41 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:55:41 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:55:41 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:56:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:56:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:56:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:56:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:56:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:56:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:56:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:56:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:57:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:57:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:57:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:57:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:57:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:57:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:57:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:57:54 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 22:58:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 22:58:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:58:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:58:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 22:58:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:58:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:58:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 22:58:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:00:39 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:00:39 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:00:40 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:00:40 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:00:40 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:00:40 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:00:40 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:00:40 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:01:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:01:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:01:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:01:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:01:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:01:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:01:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:01:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:03:00 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:03:00 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:00 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:00 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:03:00 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:00 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:00 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:00 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:03:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:03:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:03:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:03:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:05:28 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:05:28 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:05:29 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:05:29 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:05:29 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:05:29 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:05:29 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:05:29 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:06:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:06:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:06:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:06:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:06:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:06:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:06:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:06:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:07:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:07:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:07:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:07:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:07:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:07:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:07:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:07:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:08:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:08:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:08:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:08:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:08:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:08:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:08:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:08:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:10:17 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:10:18 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:10:18 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:10:18 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:10:18 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:10:18 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:10:18 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:10:18 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:11:10 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:11:10 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:10 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:10 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:11:10 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:10 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:10 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:11:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:11:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:11:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:11:54 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:12:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:12:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:12:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:12:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:12:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:12:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:12:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:12:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:13:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:13:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:13:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:13:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:13:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:13:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:13:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:13:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:14:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:14:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:14:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:14:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:14:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:14:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:14:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:14:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:16:02 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:16:02 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:02 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:02 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:16:02 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:02 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:02 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:02 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:16:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:16:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:16:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:16:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:17:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:17:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:17:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:17:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:17:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:17:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:17:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:17:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:18:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:18:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:18:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:18:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:18:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:18:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:18:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:18:54 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:19:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:19:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:19:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:19:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:19:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:19:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:19:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:19:54 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:20:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:20:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:20:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:20:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:20:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:20:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:20:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:20:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:21:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:21:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:21:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:21:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:21:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:21:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:21:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:21:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:22:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:22:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:22:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:22:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:22:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:22:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:22:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:22:54 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:23:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:23:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:23:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:23:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:23:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:23:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:23:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:23:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:24:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:24:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:24:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:24:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:24:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:24:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:24:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:24:54 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:26:14 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:26:14 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:14 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:14 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:26:14 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:14 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:14 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:14 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:26:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:26:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:26:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:26:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:27:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:27:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:27:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:27:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:27:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:27:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:27:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:27:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:28:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:28:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:28:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:28:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:28:59 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:28:59 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:28:59 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:28:59 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:29:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:29:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:29:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:29:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:29:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:29:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:29:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:29:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:31:25 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:31:25 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:31:25 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:31:25 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:31:25 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:31:25 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:31:25 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:31:26 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2] | Score:0.44 | OB:False FVG:True BOS:False OTE:False Vol:0.9x | POI:ORDER_BLOCK | HTF+0.12 | S17[Bullish_Engulfing+0.15]
+2026-03-17 23:32:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:32:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:32:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:32:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:32:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:32:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:32:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:32:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2] | Score:0.44 | OB:False FVG:True BOS:False OTE:False Vol:0.9x | POI:ORDER_BLOCK | HTF+0.12 | S17[Bullish_Engulfing+0.15]
+2026-03-17 23:33:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:33:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:33:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:33:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:33:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:33:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:33:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:33:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:34:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:34:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:34:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:34:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:34:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:34:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:34:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:34:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:36:39 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:36:39 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:36:39 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:36:39 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:36:39 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:36:39 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:36:39 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:36:39 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:37:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:37:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:37:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:37:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:37:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:37:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:37:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:37:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:38:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:38:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:38:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:38:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:38:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:38:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:38:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:38:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:39:58 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:39:58 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:39:58 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:39:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:39:58 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:39:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:39:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:39:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:41:24 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:41:24 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:41:24 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:41:24 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:41:24 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:41:24 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:41:24 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:41:24 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:42:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:42:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:42:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:42:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:42:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:42:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:42:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:42:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:43:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:43:56 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:43:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:43:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:43:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:43:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:43:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:43:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:44:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:44:57 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:44:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:44:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:44:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:44:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:44:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:44:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:46:27 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:46:27 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:46:27 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:46:27 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:46:27 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:46:27 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:46:27 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:46:27 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:47:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:47:56 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:47:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:47:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:47:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:47:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:47:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:47:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:48:59 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:48:59 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:48:59 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:48:59 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:48:59 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:48:59 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:48:59 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:48:59 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:49:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:49:55 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:49:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:49:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:49:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:49:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:49:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:49:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:50:00 [INFO] 📋 Daily summary dispatched via Telegram.
+2026-03-17 23:51:25 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:51:25 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:51:25 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:51:25 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:51:25 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:51:25 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:51:25 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:51:25 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:52:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:52:56 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:52:56 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:52:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:52:56 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:52:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:52:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:52:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:53:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:53:57 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:53:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:53:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:53:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:53:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:53:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:53:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:54:55 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:54:55 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:54:55 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:54:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:54:55 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:54:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:54:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:54:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:56:16 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:56:16 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:56:16 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:56:16 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:56:16 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:56:16 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:56:16 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:56:16 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:57:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:57:09 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:57:09 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:09 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:57:09 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:09 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:57:56 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:57:57 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:57:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:57:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:57:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:58:57 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:58:57 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-17 23:58:57 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:58:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:58:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:58:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:58:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:58:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-17 23:59:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-17 23:59:57 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:59:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:59:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-17 23:59:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:01:11 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:01:11 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:01:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:01:11 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:01:11 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:02:05 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:02:05 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:02:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:02:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:02:05 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:02:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:02:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:02:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:02:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:02:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:03:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:03:54 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:03:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:03:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:03:54 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:04:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:04:55 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:04:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:04:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:04:55 [DEBUG] [BTCUSD] DISTRIBUTION [Other] | Score:0.49 | OB:True FVG:False BOS:False OTE:False Vol:0.8x | POI:ORDER_BLOCK | HTF+0.12 | S13[VWAP_Z:0.58 HVN:True Δ:-9215]
+2026-03-18 00:06:02 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:06:02 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:06:02 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:06:02 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:06:02 [DEBUG] [BTCUSD] DISTRIBUTION [Other] | Score:0.49 | OB:True FVG:False BOS:False OTE:False Vol:0.8x | POI:ORDER_BLOCK | HTF+0.12 | S13[VWAP_Z:0.58 HVN:True Δ:-9231]
+2026-03-18 00:07:05 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:07:05 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:07:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:07:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:07:05 [DEBUG] [BTCUSD] DISTRIBUTION [Other] | Score:0.49 | OB:True FVG:False BOS:False OTE:False Vol:0.8x | POI:ORDER_BLOCK | HTF+0.12 | S13[VWAP_Z:0.58 HVN:True Δ:-9231]
+2026-03-18 00:07:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:07:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:07:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:07:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:07:57 [DEBUG] [BTCUSD] DISTRIBUTION [Other] | Score:0.49 | OB:True FVG:False BOS:False OTE:False Vol:0.8x | POI:ORDER_BLOCK | HTF+0.12 | S13[VWAP_Z:0.58 HVN:True Δ:-9231]
+2026-03-18 00:08:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:08:55 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:08:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:08:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:08:55 [DEBUG] [BTCUSD] DISTRIBUTION [Other] | Score:0.49 | OB:True FVG:False BOS:False OTE:False Vol:0.8x | POI:ORDER_BLOCK | HTF+0.12 | S13[VWAP_Z:0.58 HVN:True Δ:-9231]
+2026-03-18 00:09:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:09:56 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:09:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:09:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:09:56 [DEBUG] [BTCUSD] DISTRIBUTION [Other] | Score:0.49 | OB:True FVG:False BOS:False OTE:False Vol:0.8x | POI:ORDER_BLOCK | HTF+0.12 | S13[VWAP_Z:0.58 HVN:True Δ:-9231]
+2026-03-18 00:10:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:10:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:10:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:10:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:10:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:12:01 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:12:01 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:12:01 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:12:01 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:12:01 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:12:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:12:56 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:12:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:12:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:12:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:13:58 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:13:58 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:13:58 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:13:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:13:58 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:14:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:14:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:14:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:14:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:14:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:16:04 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:16:05 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:16:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:16:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:16:05 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:17:12 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:17:12 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:17:12 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:17:12 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:17:12 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:17:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:17:55 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:17:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:17:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:17:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:18:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:18:55 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:18:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:18:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:18:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:19:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:19:55 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:19:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:19:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:19:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:20:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:20:56 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:20:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:20:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:20:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:22:15 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:22:15 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:22:15 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:22:15 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:22:16 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:22:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:22:55 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:22:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:22:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:22:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:23:56 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:23:56 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:23:56 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:23:56 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:23:56 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:25:00 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:25:00 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:25:00 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:25:00 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:25:00 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:25:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:25:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:25:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:25:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:25:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:27:27 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:27:27 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:27:27 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:27:27 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:27:27 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:28:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:28:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:28:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:28:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:28:57 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:29:55 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:29:55 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:29:55 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:29:55 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:29:55 [DEBUG] [BTCUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BULLISH direction.
+2026-03-18 00:30:57 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-18 00:30:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:30:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:30:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:30:57 [INFO] 🔎 MTF Confluence Locked: BTCUSD BUY_MICRO (Conf: 70%)
+2026-03-18 00:30:57 [INFO] ⚡ TRAP SET: BTCUSD BUY_LIMIT | Entry: 74328.775 | Lot: 0.38
+2026-03-18 00:32:40 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:32:40 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:32:41 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:33:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:33:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:33:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:34:59 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:34:59 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:34:59 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:35:57 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:95.145 AL:93.074
+2026-03-18 00:35:57 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:35:57 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-18 00:36:17 [INFO] Stopped.
