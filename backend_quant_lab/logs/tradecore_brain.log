@@ -6635,3 +6635,6 @@
 2026-03-17 17:41:37 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM] | conf:0.09 | Price trending, no clean AMD range — skipping.
 2026-03-17 17:41:37 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
 2026-03-17 17:41:37 [INFO] Stopped.
+2026-03-17 17:53:29 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-17 17:53:29 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-17 17:53:40 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
