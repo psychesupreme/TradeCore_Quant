@@ -44,13 +44,21 @@ if not logger.handlers:
     logger.addHandler(f_handler)
 
 # ============================================================
-# [SPRINT 18d: VOLUME OPTIMIZATION]
+# [SPRINT 19c: RISK SHIELD & SIZING HOTFIX]
 # HISTORICAL PRESERVATION & ARCHITECTURE:
+#   - Rollover Shield: The CVaR evaluator is now blindfolded between 
+#     21:50 UTC and 22:15 UTC. This prevents the bot from triggering a 
+#     panic liquidation due to phantom drawdowns caused by 5PM EST 
+#     broker spread widening.
+#   - Index Contract Sizing: Dynamically queries 'trade_contract_size' 
+#     from the broker API to accurately calculate capital exposure per 
+#     lot for Indices (SP500, Tech100, Germany40), preventing massive 
+#     over-leveraging.
+# ============================================================
+# [SPRINT 18d: VOLUME OPTIMIZATION]
 #   - Maintained strict Elite 10 Asset Matrix to prevent spread drag.
 #   - Knob 2: Reduced Standard Confidence Threshold from 0.80 to 0.77.
-#     Catches high-probability "A-minus" setups to accelerate Kelly N=30.
 #   - Knob 3: Extended Limit Order Expiration from 4 hours to 8 hours.
-#     Allows Asian/London setups to trigger during the NY overlap.
 # ============================================================
 
 class TradingBot:
@@ -1251,14 +1259,24 @@ class TradingBot:
             cvar_limit   = quant_params.get('cvar_limit', self.current_var * 1.29)
             var_limit    = quant_params.get('var_limit',  self.current_var)
 
+            # [SPRINT 19c FIX: ROLLOVER SHIELD]
+            # Protects the CVaR engine from phantom drawdowns caused by 5PM NY spread widening
+            now_utc = datetime.utcnow()
+            h = now_utc.hour
+            m = now_utc.minute
+            in_rollover = (h == 21 and m >= 50) or (h == 22 and m <= 15)
+
             if current_dd_usd >= cvar_limit:
-                self.log_info(f"🛑 KILL SWITCH [CVaR]: Tail-risk limit breached! (DD: ${current_dd_usd:.2f})")
-                self.async_alert(f"🛑 **CRITICAL: CVaR BREACHED**\nLiquidating {len(current_positions)} positions.")
-                self.close_all_positions(current_positions)
-                self.kill_switch_active = True
-                self.kill_switch_time   = datetime.utcnow()
-                return
-            elif current_dd_usd >= var_limit:
+                if in_rollover:
+                    self.log_debug(f"🛡️ CVaR Shield Active: Ignored phantom drawdown (${current_dd_usd:.2f}) during Rollover.")
+                else:
+                    self.log_info(f"🛑 KILL SWITCH [CVaR]: Tail-risk limit breached! (DD: ${current_dd_usd:.2f})")
+                    self.async_alert(f"🛑 **CRITICAL: CVaR BREACHED**\nLiquidating {len(current_positions)} positions.")
+                    self.close_all_positions(current_positions)
+                    self.kill_switch_active = True
+                    self.kill_switch_time   = datetime.utcnow()
+                    return
+            elif current_dd_usd >= var_limit and not in_rollover:
                 self._risk_reduction_mode = True
             else:
                 self._risk_reduction_mode = False
@@ -2168,19 +2186,11 @@ class TradingBot:
                     capital_per_lot = sl_distance * 10000.0  
                     min_lot  = 0.1
                     vol_step = 0.1
-                elif "SP 500" in symbol:
+                elif any(idx in symbol for idx in ["SP 500", "Tech 100", "Germany"]):
+                    # [SPRINT 19c FIX: INDEX CONTRACT SIZING]
+                    contract_size = props.get('trade_contract_size', 10.0) if props else 10.0
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
-                    capital_per_lot = sl_distance * 1.0
-                    min_lot  = 0.1
-                    vol_step = 0.1
-                elif "Tech 100" in symbol:
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
-                    capital_per_lot = sl_distance * 1.0
-                    min_lot  = 0.1
-                    vol_step = 0.1
-                elif "Germany" in symbol:
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
-                    capital_per_lot = sl_distance * 1.0
+                    capital_per_lot = sl_distance * contract_size
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "JPY" in symbol:
