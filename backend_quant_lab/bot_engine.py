@@ -44,21 +44,15 @@ if not logger.handlers:
     logger.addHandler(f_handler)
 
 # ============================================================
+# [SPRINT 19e: MOMENTUM-AWARE TRAILING]
+#   - Dynamic Tape Reading: M1 timeframe checks immediate momentum at 1:1 RR.
+#   - Sniper Runner Rule (>= 0.85 Conf): Scales 20% if momentum is strong, trails 80%.
+#   - Sniper Stalled Rule: Dumps 80% if M1 shows rejection/dojis.
+# [SPRINT 19d: CONFIDENCE-WEIGHTED EXECUTION]
+#   - Trade execution confidence scores persisted to state memory.
 # [SPRINT 19c: RISK SHIELD & SIZING HOTFIX]
-# HISTORICAL PRESERVATION & ARCHITECTURE:
-#   - Rollover Shield: The CVaR evaluator is now blindfolded between 
-#     21:50 UTC and 22:15 UTC. This prevents the bot from triggering a 
-#     panic liquidation due to phantom drawdowns caused by 5PM EST 
-#     broker spread widening.
-#   - Index Contract Sizing: Dynamically queries 'trade_contract_size' 
-#     from the broker API to accurately calculate capital exposure per 
-#     lot for Indices (SP500, Tech100, Germany40), preventing massive 
-#     over-leveraging.
-# ============================================================
-# [SPRINT 18d: VOLUME OPTIMIZATION]
-#   - Maintained strict Elite 10 Asset Matrix to prevent spread drag.
-#   - Knob 2: Reduced Standard Confidence Threshold from 0.80 to 0.77.
-#   - Knob 3: Extended Limit Order Expiration from 4 hours to 8 hours.
+#   - Rollover Shield (21:50-22:15 UTC) to ignore phantom VaR breaches.
+#   - Dynamic Index Sizing using API 'trade_contract_size'.
 # ============================================================
 
 class TradingBot:
@@ -67,20 +61,13 @@ class TradingBot:
         self.notifier = TelegramNotifier() 
         self.news_manager = NewsManager() 
         
-        # [SPRINT 18a] Threading Lock to prevent MT5 C-extension collisions
-        # during asynchronous LIMIT order dispatch vs Fast Loop state checking.
         self.mt5_lock = threading.Lock()
         
-        # ==========================================
-        # SPRINT 18: THE ELITE 10 ASSET MATRIX
-        # Stripped exotics. Concentrated on high-liquidity
-        # instruments with pristine SMC/VWAP compliance.
-        # ==========================================
         self.vip_assets = [
-            "EURUSD", "GBPUSD", "USDJPY",         # FX Majors
-            "XAUUSD", "XAGUSD", "US Oil",         # Hard Assets
-            "US SP 500", "US Tech 100",           # Equities
-            "BTCUSD", "ETHUSD",                   # Crypto
+            "EURUSD", "GBPUSD", "USDJPY",
+            "XAUUSD", "XAGUSD", "US Oil",
+            "US SP 500", "US Tech 100",
+            "BTCUSD", "ETHUSD",
         ]
         
         self.active_symbols = [] 
@@ -95,12 +82,12 @@ class TradingBot:
         self.active_tickets = set()
         self.execution_lock = set() 
         
-        # [SPRINT 18a] Close-Spam Protection Set
         self._closing_tickets = set()
         
         # --- STATE PERSISTENCE ---
         self.state_file = "logs/tradecore_state.json"
         self.scaled_positions = set()  
+        self.trade_confidences = {} 
         
         self.daily_start_balance = 0.0
         self.last_trade_day = -1
@@ -144,6 +131,7 @@ class TradingBot:
                     return set()
                 raw_dedup = data.get("last_logged_signal", {})
                 self._last_logged_signal = {k: tuple(v) for k, v in raw_dedup.items()}
+                self.trade_confidences = data.get("trade_confidences", {}) 
                 return set(data.get("scaled_positions", []))
         except Exception as e:
             self.log_debug(f"State Load Error: {e}")
@@ -160,36 +148,38 @@ class TradingBot:
                     "account_id":          account_id,
                     "scaled_positions":    list(self.scaled_positions),
                     "last_logged_signal":  dedup_serializable,
+                    "trade_confidences":   self.trade_confidences, 
                 }, f, indent=2)
         except Exception as e:
             self.log_debug(f"State Save Error: {e}")
 
     def _garbage_collect_state(self):
-        """
-        [SPRINT 18a] State-Memory Leak Fix.
-        Purges dead price coordinates and expired cooldowns at daily rollover.
-        Ensures RAM footprint remains pristine over months of 24/5 uptime.
-        """
         now = datetime.utcnow()
         
-        # 1. Prune stale zone cooldowns > 24h
         stale_keys = [k for k, t in self._stale_zone_cooldowns.items() if (now - t).total_seconds() > 86400]
         for k in stale_keys:
             self._stale_zone_cooldowns.pop(k, None)
 
-        # 2. Prune symbol cooldowns > 24h
         sym_keys = [k for k, t in self.symbol_cooldowns.items() if (now - t).total_seconds() > 86400]
         for k in sym_keys:
             self.symbol_cooldowns.pop(k, None)
             
-        # 3. Wipe static counters daily (zones from yesterday are structurally irrelevant)
         self._stale_trap_counts.clear()
         self._price_close_rejections.clear()
         
-        # 4. Prune momentum watch list > 24h
         mom_keys = [k for k, v in self._momentum_watch.items() if (now - v['fill_time']).total_seconds() > 86400]
         for k in mom_keys:
             self._momentum_watch.pop(k, None)
+            
+        try:
+            import sqlite3 as _sl
+            con = _sl.connect("tradecore.db")
+            open_tickets = [str(r[0]) for r in con.execute("SELECT ticket FROM trades WHERE profit IS NULL OR profit = 0").fetchall()]
+            con.close()
+            stale_tcks = [t for t in self.trade_confidences.keys() if t not in open_tickets]
+            for t in stale_tcks:
+                self.trade_confidences.pop(t, None)
+        except: pass
             
         self.log_debug("🧹 Garbage Collection: Cleared stale state tracking variables.")
 
@@ -445,13 +435,11 @@ class TradingBot:
                 con = _sl.connect("tradecore.db")
                 today = datetime.utcnow().strftime('%Y-%m-%d')
                 
-                # [BUG FIX] Excluding ghost trades from daily P&L sum
                 rows_today = con.execute(
                     "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND comment NOT LIKE '%ghost%'",
                     (f"{today}%",)
                 ).fetchone()
                 
-                # [BUG FIX] Exclude ghost trades from the global profits array
                 all_profits = con.execute(
                     "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
                 ).fetchall()
@@ -466,7 +454,6 @@ class TradingBot:
                     peak    = max(peak, bal - cumsum + p) if p else peak
                 drawdown   = ((peak - bal) / peak * 100) if peak > 0 else 0
                 
-                # Pull directly from QuantEngine instead of legacy stub
                 try:
                     quant_params = self.quant_engine.get_live_risk_params()
                     kelly = quant_params.get('kelly_fraction', 0.0) * 100
@@ -606,7 +593,6 @@ class TradingBot:
             from datetime import timedelta as _td
             week_start_str = (datetime.utcnow() - _td(days=datetime.utcnow().weekday())).strftime('%Y-%m-%d')
             con = _sl.connect("tradecore.db")
-            # [BUG FIX] Ghost exclusion applied to all status counts
             today_rows  = con.execute(
                 "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
                 (f"{today_str}%",)
@@ -908,7 +894,6 @@ class TradingBot:
             if cancel:
                 req = {"action": mt5.TRADE_ACTION_REMOVE, "order": ticket}
                 
-                # [SPRINT 18a] Threading Lock
                 with self.mt5_lock:
                     res = mt5.order_send(req)
                     
@@ -957,7 +942,6 @@ class TradingBot:
                     DBManager.update_mae_mfe(ticket, adverse, favorable)
 
                 if duration_hours > 12.0 and profit < 0:
-                    # [SPRINT 18a] Close-Spam Lock
                     if ticket in self._closing_tickets: continue
                     self._closing_tickets.add(ticket)
                     
@@ -1015,7 +999,6 @@ class TradingBot:
     def evaluate_risk_metrics(self, current_positions=None):
         try:
             import MetaTrader5 as mt5
-            # [SPRINT 18a] Decouple baseline from EURUSD dependency
             baseline_df = None
             for base_sym in ["EURUSD", "GBPUSD", "US SP 500", "BTCUSD"]:
                 real_base = self.gateway.find_symbol(base_sym) or base_sym
@@ -1088,11 +1071,9 @@ class TradingBot:
             
         current_positions = self.gateway.get_open_positions()
 
-        # [SPRINT 18a] Clean up the closing tickets lock list
         live_tickets = {p['ticket'] for p in current_positions}
         self._closing_tickets.intersection_update(live_tickets)
 
-        # Check pending LIMIT fills
         if self._pending_order_info:
             db_open = DBManager.get_open_trade_tickets()
             for pos in current_positions:
@@ -1118,6 +1099,10 @@ class TradingBot:
                             model_type = info.get('model_type'),
                             model_sizing = info.get('model_sizing'),
                         )
+                        
+                        self.trade_confidences[str(ticket)] = info.get('confidence', 0.77)
+                        self._save_state()
+                        
                         sl_d = abs(pos.get('open_price', 0.0) - pos.get('sl', 0.0))
                         self._momentum_watch[ticket] = {
                             'symbol':          pos['symbol'],
@@ -1127,11 +1112,10 @@ class TradingBot:
                             'fill_time':       datetime.utcnow(),
                             'checked':         False,
                         }
-                        self.log_debug(f"[{pos['symbol']}] Trade recorded: ticket={ticket}")
+                        self.log_debug(f"[{pos['symbol']}] Trade recorded: ticket={ticket} (Conf: {self.trade_confidences[str(ticket)]})")
                     except Exception as e:
                         self.log_debug(f"Fill Record Error ({ticket}): {e}")
 
-        # Real-time trade close detection
         try:
             mt5_live_tickets = {p['ticket'] for p in current_positions}
             db_open_detail   = DBManager.get_open_trades_detail()
@@ -1184,7 +1168,6 @@ class TradingBot:
         except Exception as _ce:
             self.log_debug(f"Close Detection Error: {_ce}")
 
-        # Entry Momentum Guard
         if self._momentum_watch:
             now_utc = datetime.utcnow()
             stale_tickets = []
@@ -1218,7 +1201,6 @@ class TradingBot:
                 adverse_move = (open_px - current_px) if is_buy else (current_px - open_px)
 
                 if adverse_move > sl_dist * 0.30:
-                    # [SPRINT 18a] Close-Spam Lock
                     if watch_ticket in self._closing_tickets: continue
                     self._closing_tickets.add(watch_ticket)
 
@@ -1244,14 +1226,14 @@ class TradingBot:
                 self.kill_switch_time   = None
                 self.daily_start_balance = acc['balance']
                 self.last_trade_day      = current_day
-                self._garbage_collect_state()  # [SPRINT 18a]
+                self._garbage_collect_state() 
             else:
                 return
 
         if current_day != self.last_trade_day:
             self.daily_start_balance = acc['balance']
             self.last_trade_day = current_day
-            self._garbage_collect_state()  # [SPRINT 18a]
+            self._garbage_collect_state() 
 
         if self.daily_start_balance > 0 and self.current_var > 0:
             current_dd_usd = self.daily_start_balance - acc['equity']
@@ -1259,8 +1241,6 @@ class TradingBot:
             cvar_limit   = quant_params.get('cvar_limit', self.current_var * 1.29)
             var_limit    = quant_params.get('var_limit',  self.current_var)
 
-            # [SPRINT 19c FIX: ROLLOVER SHIELD]
-            # Protects the CVaR engine from phantom drawdowns caused by 5PM NY spread widening
             now_utc = datetime.utcnow()
             h = now_utc.hour
             m = now_utc.minute
@@ -1285,7 +1265,6 @@ class TradingBot:
         self.evaluate_pending_orders() 
         self.evaluate_open_positions(current_positions) 
 
-        # Session End Profit Anchor
         try:
             now_utc = datetime.utcnow()
             hour    = now_utc.hour
@@ -1326,7 +1305,6 @@ class TradingBot:
                         long_runner  = (hours_open > 6.0 and _float_r >= 0.5)
 
                         if near_tp_sess or long_runner:
-                            # [SPRINT 18a] Close-Spam Lock
                             if _tick in self._closing_tickets: continue
                             self._closing_tickets.add(_tick)
 
@@ -1385,7 +1363,6 @@ class TradingBot:
                         for order in raw_orders:
                             if order.type in cancel_types:
                                 req = {"action": mt5.TRADE_ACTION_REMOVE, "order": order.ticket}
-                                # [SPRINT 18a] Threading Lock
                                 with self.mt5_lock:
                                     res = mt5.order_send(req)
                                 if res and res.retcode == mt5.TRADE_RETCODE_DONE:
@@ -1495,7 +1472,6 @@ class TradingBot:
                 profit_dist = (price_current - open_price) if is_buy else (open_price - price_current)
                 lock_price = 0.0
 
-                # [S12-P1A] Dynamic 1:1 RR trigger
                 sl_dist_dynamic = abs(open_price - current_sl) if current_sl and current_sl != 0.0 else 0.0
 
                 if sl_dist_dynamic <= 0:
@@ -1506,31 +1482,56 @@ class TradingBot:
                     elif "JPY" in symbol:
                         sl_dist_dynamic = 0.200
                     else:
-                        sl_dist_dynamic = 0.0050  # 5-pip floor for standard FX
+                        sl_dist_dynamic = 0.0050
 
-                # [BUG-39 FIX] scale_key must NOT include the ticket.
                 scale_key = f"{symbol}_{open_price}_{pos['type']}"
                 is_ready_to_scale = profit_dist >= sl_dist_dynamic  # true 1:1 RR
 
                 if is_ready_to_scale and scale_key not in self.scaled_positions:
-                    half_vol = current_vol / 2.0
-                    close_vol = round(half_vol / vol_step) * vol_step
+                    
+                    # [SPRINT 19e] Momentum-Aware Scale-Out (The Sniper Tape Reader)
+                    conf = self.trade_confidences.get(str(ticket), 0.77)
+                    
+                    # Fast M1 momentum check to see if the trade is stalling at 1:1 RR
+                    is_stalling = True
+                    try:
+                        _m1_rates = mt5.copy_rates_from_pos(self.gateway.find_symbol(symbol) or symbol, mt5.TIMEFRAME_M1, 0, 3)
+                        if _m1_rates is not None and len(_m1_rates) >= 2:
+                            _c1, _c2 = _m1_rates[-2], _m1_rates[-1]
+                            if is_buy:
+                                is_stalling = _c2['close'] <= _c2['open'] or _c1['close'] <= _c1['open']
+                            else:
+                                is_stalling = _c2['close'] >= _c2['open'] or _c1['close'] >= _c1['open']
+                    except:
+                        pass
+
+                    if conf >= 0.85:
+                        if is_stalling:
+                            scale_fraction = 0.80
+                            scale_label = "80% (Sniper Stalled)"
+                        else:
+                            scale_fraction = 0.20
+                            scale_label = "20% (Sniper Running)"
+                    else:
+                        scale_fraction = 0.50
+                        scale_label = "50% (Standard)"
+                        
+                    target_vol = current_vol * scale_fraction
+                    close_vol = round(target_vol / vol_step) * vol_step
                     
                     if close_vol >= min_lot:
-                        # [SPRINT 18a] Close-Spam protection for scale outs
                         if f"{ticket}_SCALE" not in self._closing_tickets:
                             self._closing_tickets.add(f"{ticket}_SCALE")
-                            self.log_info(f"⚖️ Scaling Out: {symbol} hit 1:1 RR. Closing {close_vol} Lots to secure cash.")
+                            self.log_info(f"⚖️ Scaling Out: {symbol} hit 1:1 RR. Closing {close_vol} Lots to secure {scale_label} cash.")
                             success = self.gateway.close_position(ticket, symbol, close_vol, pos['type'])
                             
                             if success:
                                 self.scaled_positions.add(scale_key)
                                 self._save_state()
-                                self.async_alert(f"⚖️ **Partial Take Profit:** {symbol}\nSecured 50% Volume. Moving SL to Breakeven.")
+                                self.async_alert(f"⚖️ **Partial Take Profit:** {symbol}\nSecured {scale_label} Volume. Moving SL to Breakeven.")
                                 breakeven_buffer = props['point'] * 5 
                                 lock_price = open_price + breakeven_buffer if is_buy else open_price - breakeven_buffer
 
-                                # [S15-P2] SECOND SCALE HARD TP
                                 try:
                                     two_r_tp = (open_price + sl_dist_dynamic * 2.0 if is_buy
                                                 else open_price - sl_dist_dynamic * 2.0)
@@ -1550,7 +1551,6 @@ class TradingBot:
                                             "sl":       lock_price,
                                             "tp":       two_r_tp,
                                         }
-                                        # [SPRINT 18a] MT5 Lock
                                         with self.mt5_lock:
                                             tp_res = mt5.order_send(tp_req)
                                         if tp_res and tp_res.retcode == mt5.TRADE_RETCODE_DONE:
@@ -1573,22 +1573,23 @@ class TradingBot:
                 else:
                     one_r  = sl_dist_dynamic
                     two_r  = sl_dist_dynamic * 2.0
+                    conf_mem = self.trade_confidences.get(str(ticket), 0.77)
 
-                    # [S15-L3] TP-PROXIMITY TRAIL TIGHTEN.
                     tp_price = pos.get('tp', 0.0)
                     tp_dist  = abs(tp_price - open_price) if tp_price else 0.0
                     near_tp  = (tp_dist > 0 and profit_dist >= tp_dist * 0.50)
 
+                    # [SPRINT 19e] Sniper Runner Aggressive Trail
                     if near_tp:
                         tight_trail = sl_dist_dynamic * 0.30
-                        lock_price = (price_current - tight_trail if is_buy
-                                      else price_current + tight_trail)
+                        lock_price = (price_current - tight_trail if is_buy else price_current + tight_trail)
+                    elif conf_mem >= 0.85 and profit_dist > one_r:
+                        lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                     elif profit_dist > two_r:
                         lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
                     elif profit_dist > one_r:
                         lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
 
-                    # [S15-P3] FLOATING TP RATCHET.
                     if profit_dist >= two_r and not near_tp:
                         try:
                             r_step  = 1.5 if ("XAU" in symbol or "XAG" in symbol) else 1.0
@@ -1613,7 +1614,6 @@ class TradingBot:
                                     "sl":       current_sl,
                                     "tp":       ratchet_tp,
                                 }
-                                # [SPRINT 18a] MT5 Lock
                                 with self.mt5_lock:
                                     r_res = mt5.order_send(ratchet_req)
                                 if r_res and r_res.retcode == mt5.TRADE_RETCODE_DONE:
@@ -1653,7 +1653,6 @@ class TradingBot:
                         "sl": lock_price, 
                         "tp": pos.get('tp', 0.0)
                     }
-                    # [SPRINT 18a] MT5 Lock
                     with self.mt5_lock:
                         res = mt5.order_send(req)
                     if res and res.retcode == mt5.TRADE_RETCODE_DONE:
@@ -1666,7 +1665,6 @@ class TradingBot:
         if upcoming_news is None: 
             upcoming_news = []
 
-        # [BUG-25 FIX] Replaced broken strptime logic with is_news_window
         in_news_window, news_reason = self.news_manager.is_news_window(now=now)
         if in_news_window:
             if now.second < 5:
@@ -1704,7 +1702,6 @@ class TradingBot:
         if df_micro.empty or df_macro.empty: 
             return
 
-        # [OPT-7] Per-asset-class regime
         symbol_regime = self.get_asset_regime(symbol)
 
         try:
@@ -1716,11 +1713,9 @@ class TradingBot:
             )
             
             result_status = "SKIPPED"
-            # [S14] TIERED CONFIDENCE THRESHOLDS
-            # [SPRINT 18d] VOLUME OPTIMIZATION: Reduced standard threshold to 0.77
             _is_micro_sig = "MICRO" in analysis.signal
             if is_sniper_mode:
-                required_conf = 0.75 if _is_micro_sig else 0.88 # Adjusted sniper slightly to maintain gap
+                required_conf = 0.75 if _is_micro_sig else 0.88 
             else:
                 required_conf = 0.65 if _is_micro_sig else 0.77
 
@@ -1740,7 +1735,6 @@ class TradingBot:
                      self.execute_signal(symbol, analysis, df_micro, props, regime=symbol_regime)
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
-                     # [BUG-67] Throttle "NY Lunch: Reaccumulation" spam
                      _reason_str = analysis.reason or ""
                      if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
                          _last = getattr(self, '_ny_lunch_last_log', {})
@@ -1763,7 +1757,6 @@ class TradingBot:
                  else:
                      self.log_debug(f"[{symbol}] {_reason_str}")
                  
-            # [OPT-6] Signal deduplication
             conf_bucket = round(analysis.confidence, 2)
             last        = self._last_logged_signal.get(symbol)
             should_log  = (
@@ -1816,7 +1809,6 @@ class TradingBot:
                 min_buffer = 10.0 if "BTC" in symbol else 2.0 if "ETH" in symbol else 0.50 if ("XAU" in symbol or "Oil" in symbol or "NGAS" in symbol) else 0.10 if "JPY" in symbol else 0.0010
                 volatility_buffer = max(structure_range, min_buffer)
 
-                # [S12] ATR-based buffer for Gold/Silver
                 if "XAU" in symbol or "XAG" in symbol:
                     atr_val = df['atr'].iloc[-1] if 'atr' in df.columns else volatility_buffer
                     volatility_buffer = max(atr_val * 0.5, volatility_buffer)
@@ -1838,7 +1830,6 @@ class TradingBot:
                 sl_atr_buf   = ict_cond.get('sl_atr_buffer', volatility_buffer * 0.1)
                 tp_target    = ict_cond.get('tp_target_level')   
 
-                # ── [S16] SCALP MODEL PRICE LEVELS ──
                 is_scalp_model = ict_cond.get('scalp_model', False)
                 if is_scalp_model:
                     tfvg_high  = ict_cond.get('tfvg_high')
@@ -1897,16 +1888,13 @@ class TradingBot:
                         tp_price = tick.ask + dynamic_nano_tp
                     else:
                         action = "BUY_LIMIT"
-                        # [S12-P0A] Entry: use OB body_low
                         raw_price = ob_entry or ob_zone_low or df.iloc[-2]['low']
 
-                        # [S12-P0B] SL: place below the swept swing low + ATR buffer.
                         if swing_sl_ref is not None:
                             sl_price = swing_sl_ref - sl_atr_buf
                         else:
                             sl_price = df.iloc[-3]['low'] - (volatility_buffer * 0.1)
 
-                        # [BUG-40 FIX] Enforce minimum SL distance from entry price.
                         _buy_min_sl_guard = (100.0  if "BTC"     in symbol else
                                              5.0    if "ETH"     in symbol else
                                              1.5    if "XAU"     in symbol else
@@ -1921,7 +1909,6 @@ class TradingBot:
                         if sl_price > _min_sl_from_entry_buy:
                             sl_price = _min_sl_from_entry_buy
 
-                        # [S12-P1B] TP: target the Asian High
                         if tp_target:
                             tp_price = tp_target
                         else:
@@ -1934,16 +1921,13 @@ class TradingBot:
                         tp_price = tick.bid - dynamic_nano_tp
                     else:
                         action = "SELL_LIMIT"
-                        # [S12-P0A] Entry: use OB body_high for SELL
                         raw_price = ob_entry or ob_zone_high or df.iloc[-2]['high']
 
-                        # [S12-P0B] SL: place above the swept swing high + ATR buffer.
                         if swing_sl_ref is not None:
                             sl_price = swing_sl_ref + sl_atr_buf
                         else:
                             sl_price = df.iloc[-3]['high'] + (volatility_buffer * 0.1)
 
-                        # [BUG-40 FIX] Min SL distance
                         _sell_min_sl_guard = (100.0  if "BTC"     in symbol else
                                               5.0    if "ETH"     in symbol else
                                               1.5    if "XAU"     in symbol else
@@ -1958,7 +1942,6 @@ class TradingBot:
                         if sl_price < _min_sl_from_entry_sell:
                             sl_price = _min_sl_from_entry_sell
 
-                        # [S12-P1B] TP: target Asian Low
                         if tp_target:
                             tp_price = tp_target
                         else:
@@ -1967,7 +1950,6 @@ class TradingBot:
                 price = self.gateway.normalize_price(symbol, raw_price)
                 sl = self.gateway.normalize_price(symbol, sl_price) 
 
-                # [S15-P1] AUTO TP CAP
                 sl_dist_check = abs(price - sl_price) if sl_price else 0
                 if sl_dist_check > 0 and tp_price:
                     tp_dist_check = abs(tp_price - price)
@@ -1982,7 +1964,6 @@ class TradingBot:
 
                 tp = self.gateway.normalize_price(symbol, tp_price)
 
-                # ── [S17] CANDLESTICK CONFLICT GUARD ──
                 if not is_nano:
                     try:
                         _s17_atr = df['atr'].iloc[-1] if 'atr' in df.columns else volatility_buffer
@@ -2004,14 +1985,12 @@ class TradingBot:
                     except Exception:
                         pass   
 
-                # ── LIMIT PRICE VALIDATION (BUG-27 FIX) ──
                 if not is_nano:
                     sym_info = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
                     if sym_info:
                         stops_pt = getattr(sym_info, 'stops_level', 0) * sym_info.point
                         min_dist = stops_pt + (sym_info.point * 2)
                         
-                        # [BUG-64] / [BUG-63]
                         _idx_syms = {"US SP 500", "US Tech 100", "Germany 40"}
                         _crypto_syms = {"BTCUSD", "ETHUSD"}
                         if symbol in _idx_syms:
@@ -2024,7 +2003,6 @@ class TradingBot:
                         else:
                             rejection_key = f"{symbol}_{round(price, 4)}"
                             
-                        # [BUG-60] Stale zone cooldown
                         stale_zone_key = (symbol, rejection_key)
                         if stale_zone_key in self._stale_zone_cooldowns:
                             elapsed = (datetime.utcnow() - self._stale_zone_cooldowns[stale_zone_key]).total_seconds()
@@ -2033,7 +2011,6 @@ class TradingBot:
                             else:
                                 self._stale_zone_cooldowns.pop(stale_zone_key, None)
                                 
-                        # [S15-L2] Consecutive rejection tracking
                         if is_buy and price >= (tick.bid - min_dist):
                             self._price_close_rejections[rejection_key] = \
                                 self._price_close_rejections.get(rejection_key, 0) + 1
@@ -2080,7 +2057,6 @@ class TradingBot:
 
                 sl_distance = abs(price - sl)
 
-                # [BUG-41 FIX] SL-to-current-price stops_level guard
                 if not is_nano:
                     try:
                         _sym_info_41 = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
@@ -2107,7 +2083,6 @@ class TradingBot:
                     except Exception:
                         pass   
 
-                # [BUG-35 FIX] Minimum SL distance guard
                 if not is_nano:
                     if "BTC" in symbol:
                         min_sl_guard = 100.0      
@@ -2140,14 +2115,12 @@ class TradingBot:
                 balance = acc_info['balance'] if acc_info else 10000.0
                 if acc_info and acc_info.get('margin_level', 0.0) > 0.0 and acc_info.get('margin_level', 0.0) < 300.0: return
                 
-                # [SPRINT 7] Kelly-informed dynamic risk scaling
                 quant_params = self.quant_engine.get_live_risk_params()
                 
                 conf_scale      = (analysis.confidence - 0.80) / (0.99 - 0.80)
                 conf_scale      = max(0.0, min(1.0, conf_scale))
                 base_risk_pct   = quant_params.get('risk_pct', 0.02) * (1.0 + 0.25 * conf_scale)
 
-                # [S14-P4] SNIPER GROWTH BONUS 
                 if analysis.confidence >= 0.92 and not is_nano:
                     base_risk_pct *= 1.25
 
@@ -2158,7 +2131,6 @@ class TradingBot:
                 elif is_micro:
                     risk_multiplier = risk_multiplier * 0.50   
 
-                # [S14-P1] REMOVED 50% haircut for Gold/Indices
                 if "XAU" in symbol or "XAG" in symbol:
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100
@@ -2175,19 +2147,16 @@ class TradingBot:
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "Oil" in symbol:
-                    # [BUG-43 FIX]
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 100.0  
                     min_lot  = 1.0     
                     vol_step = 1.0     
                 elif "NGAS" in symbol:
-                    # [BUG-42 FIX]
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 10000.0  
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif any(idx in symbol for idx in ["SP 500", "Tech 100", "Germany"]):
-                    # [SPRINT 19c FIX: INDEX CONTRACT SIZING]
                     contract_size = props.get('trade_contract_size', 10.0) if props else 10.0
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * contract_size
@@ -2210,11 +2179,10 @@ class TradingBot:
                 calculated_lot = _math.floor(raw_lot * step_inv) / step_inv
                 lot = max(min_lot, calculated_lot)
 
-                # HARD MAXIMUM LOT CAP
                 if "BTC" in symbol or "ETH" in symbol:
                     max_lot = max(0.5, round(balance / 20000, 2))
                 elif "XAU" in symbol or "XAG" in symbol:
-                    max_lot = 3.0 if "XAU" in symbol else 2.5 # [BUG-B FIX]
+                    max_lot = 3.0 if "XAU" in symbol else 2.5
                 elif "Oil" in symbol:
                     max_lot = max(1.0, min(10, int(round(balance / 1500, 0))))   
                 elif "NGAS" in symbol:
@@ -2228,19 +2196,17 @@ class TradingBot:
                 elif is_nano:
                     max_lot = 0.10
                 elif is_micro:
-                    max_lot = max(round(balance / 12000, 2), 0.30) # [S14-P2]   
+                    max_lot = max(round(balance / 12000, 2), 0.30)
                 else:
-                    max_lot = max(1.0, round(balance / 3500, 2)) # [S14-P5]    
+                    max_lot = max(1.0, round(balance / 3500, 2))
 
-                # [BUG-57 FIX]
                 if is_nano:
                     max_lot = min(max_lot, 0.10)
                 elif is_micro:
                     micro_cap = max(round(balance / 12000, 2), 0.30)
-                    max_lot   = min(max_lot, max(micro_cap, min_lot)) # [BUG-61 FIX] 
+                    max_lot   = min(max_lot, max(micro_cap, min_lot)) 
 
                 if lot > max_lot:
-                    # [BUG-65] Re-normalize
                     capped = _math.floor(max_lot * step_inv) / step_inv
                     capped = max(capped, min_lot)
                     self.log_info(
@@ -2257,7 +2223,6 @@ class TradingBot:
                 else:
                     type_filling = mt5.ORDER_FILLING_RETURN 
 
-                # [BUG-66] Pre-submission freshness
                 try:
                     _fresh_tick = mt5.symbol_info_tick(self.gateway.find_symbol(symbol) or symbol)
                     _sinfo = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
@@ -2291,7 +2256,6 @@ class TradingBot:
                 }
 
                 if not is_nano: 
-                    # [SPRINT 18d] VOLUME OPTIMIZATION: Extended expiration to 8 hours
                     request["expiration"] = int(time.time()) + (8 * 3600)
                 
                 if is_buy: 
@@ -2299,7 +2263,6 @@ class TradingBot:
                 else: 
                     request["type"] = mt5.ORDER_TYPE_SELL if is_nano else mt5.ORDER_TYPE_SELL_LIMIT
 
-                # ── SEND ORDER with filling-mode fallback (BUG-32 FIX) ────────
                 fill_order   = [mt5.ORDER_FILLING_FOK, mt5.ORDER_FILLING_IOC, mt5.ORDER_FILLING_RETURN]
                 fill_names   = ["FOK", "IOC", "RETURN"]
                 FILL_ERR     = 10038   
@@ -2308,7 +2271,6 @@ class TradingBot:
                 if is_nano:
                     for idx, fmode in enumerate(fill_order):
                         request["type_filling"] = fmode
-                        # [SPRINT 18a] MT5 Lock applied to execution
                         with self.mt5_lock:
                             result = mt5.order_send(request)
                         if result and result.retcode == mt5.TRADE_RETCODE_DONE:
@@ -2316,7 +2278,6 @@ class TradingBot:
                         if result and result.retcode != FILL_ERR:
                             break   
                 else:
-                    # [SPRINT 18a] MT5 Lock applied to execution
                     with self.mt5_lock:
                         result = mt5.order_send(request)
 
@@ -2327,10 +2288,8 @@ class TradingBot:
                     self.log_info(f"⚡ {'MARKET EXECUTION' if is_nano else 'TRAP SET'}: {symbol} {action} | Entry: {price} | Lot: {lot}{fill_label}")
                     self.async_alert(f"⚡ **SMC {safe_action}**: {symbol}\nTarget Entry: {price}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
                     
-                    # [BUG-33 FIX] Update signal record
                     DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
 
-                    # [S9] TRADE RECORDING 
                     acc_id = self._get_current_account_id()
                     if is_nano:
                         DBManager.save_trade(
@@ -2347,18 +2306,20 @@ class TradingBot:
                             model_type  = 'ICT_STANDARD',
                             model_sizing= 'STANDARD',
                         )
+                        self.trade_confidences[str(result.order)] = round(analysis.confidence, 3)
+                        self._save_state()
                     else:
                         self._pending_order_info[result.order] = {
                             'regime':       regime,
                             'account_id':   acc_id,
                             'model_type':   'ICT_STANDARD',
                             'model_sizing': 'STANDARD',
+                            'confidence':   round(analysis.confidence, 3) 
                         }
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
                     retcode = result.retcode if result else -1
                     self.log_info(f"❌ MT5 REJECTED {symbol}: {err_msg} (retcode={retcode})")
-                    # [BUG-31 FIX] Apply symbol cooldown
                     self.symbol_cooldowns[symbol] = datetime.utcnow()
                     DBManager.update_signal_result(symbol, analysis.signal, f"REJECTED: {err_msg}")
 
@@ -2393,7 +2354,6 @@ class TradingBot:
         try:
             import sqlite3
             con = sqlite3.connect("tradecore.db")
-            # [BUG FIX] Excluding ghost trades
             rows = con.execute("SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%' ORDER BY close_time ASC").fetchall()
             con.close()
             
@@ -2409,7 +2369,6 @@ class TradingBot:
             gross_loss = abs(sum(losses))
             pf = gross_win / gross_loss if gross_loss > 0 else 99.9
             
-            # [FIXED SYNTAX] Line continuation syntax bug resolved
             curve = [{"profit": p} for p in profits]
             
             return {
@@ -2424,7 +2383,6 @@ class TradingBot:
 
     def get_risk(self):
         try:
-            # Wire directly to live QuantEngine memory 
             quant_params = self.quant_engine.get_live_risk_params()
             return {
                 "kelly_fraction": quant_params.get('kelly_fraction', 0.0),
