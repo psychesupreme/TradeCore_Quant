@@ -3182,6 +3182,65 @@ def compute_mean_reversion_confluence(df: pd.DataFrame, symbol: str, current_atr
     reason = f"Mean Reversion [{symbol}] | Score:{score:.2f} | RSI:{c1['rsi']:.1f} | Pierced 2.5σ Band"
     return signal, score, reason, cond, "STATISTICAL_EXTREME"
 
+def compute_mean_reversion_confluence(df: pd.DataFrame, symbol: str, current_atr: float) -> tuple:
+    """
+    [S19g] Mean Reversion Model for DEAD MARKET regimes.
+    Bypasses structural ICT logic to trade statistical extremes in ranging markets.
+    Requires a pierce of the 2.5 Standard Deviation Bollinger Band + RSI confirmation.
+    """
+    empty_ret = ("NEUTRAL", 0.0, "Mean Reversion: No setup", {}, "N/A")
+    if len(df) < 30 or current_atr <= 0: 
+        return empty_ret
+
+    df = df.copy()
+    
+    # Calculate RSI (14-period)
+    delta = df['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / (loss + 1e-9)
+    df['rsi'] = 100 - (100 / (1 + rs))
+
+    # Calculate Bollinger Bands (20-period, 2.5 Standard Deviations)
+    df['bb_mid'] = df['close'].rolling(20).mean()
+    df['bb_std'] = df['close'].rolling(20).std()
+    df['bb_upper'] = df['bb_mid'] + (df['bb_std'] * 2.5)
+    df['bb_lower'] = df['bb_mid'] - (df['bb_std'] * 2.5)
+
+    c1 = df.iloc[-2] # Last closed candle
+    c0 = df.iloc[-1] # Current live candle
+
+    score = 0.0
+    signal = "NEUTRAL"
+    cond = {'mode': 'MEAN_REVERSION', 'poi_type': 'STATISTICAL_BAND'}
+
+    # Bullish Reversion: Pierced lower band + Oversold + Reversing
+    if c1['low'] < c1['bb_lower'] and c1['rsi'] < 30:
+        signal = "BUY_NANO"
+        score += 0.50
+        depth = (c1['bb_lower'] - c1['low']) / current_atr
+        score += min(0.20, depth * 0.10)       # Reward deeper pierces
+        if c1['rsi'] < 25: score += 0.10       # Extreme oversold bonus
+        if c0['close'] > c1['high']: score += 0.15 # Reversal confirmed by current candle
+        cond['ob_entry_price'] = c0['close']
+
+    # Bearish Reversion: Pierced upper band + Overbought + Reversing
+    elif c1['high'] > c1['bb_upper'] and c1['rsi'] > 70:
+        signal = "SELL_NANO"
+        score += 0.50
+        depth = (c1['high'] - c1['bb_upper']) / current_atr
+        score += min(0.20, depth * 0.10)       
+        if c1['rsi'] > 75: score += 0.10       
+        if c0['close'] < c1['low']: score += 0.15 
+        cond['ob_entry_price'] = c0['close']
+
+    score = min(0.99, round(score, 3))
+    if score < 0.70:
+        return empty_ret
+
+    reason = f"Mean Reversion [{symbol}] | Score:{score:.2f} | RSI:{c1['rsi']:.1f} | Pierced 2.5σ Band"
+    return signal, score, reason, cond, "STATISTICAL_EXTREME"
+
 
 # ── MAIN ENTRY POINT ──────────────────────────────────────────────────────────
 
@@ -3194,8 +3253,8 @@ def analyze_market_structure(
     df_ticks: pd.DataFrame = None,
 ) -> AnalysisResponse:
     """
-    [S19f] The entry point now actively accepts and processes raw tick data
-    to dynamically evaluate institutional liquidity absorption (CTD).
+    Entry point called by bot_engine.process_symbol().
+    [S19g] Integrates Regime Routing to bypass ICT during DEAD MARKET regimes.
     """
     df = pd.DataFrame([c.dict() for c in request.candles])
 
@@ -3209,6 +3268,7 @@ def analyze_market_structure(
 
     df['atr'] = calculate_atr(df)
 
+    # Per-asset dead-market check (OPT-1)
     sym = symbol or request.symbol
     dead_threshold = _dead_market_atr_threshold(sym)
     if df.iloc[-1]['atr'] < dead_threshold:
@@ -3217,17 +3277,19 @@ def analyze_market_structure(
     if utc_now is None:
         utc_now = datetime.utcnow()
 
-    # [S19g] The Regime Router: Bypass ICT if the market is dead
+    # ── [S19g] The Regime Router ──────────────────────────────────────────
     if market_regime == "DEAD MARKET":
+        # Bypass ICT -> Route to Statistical Fading
         signal, score, reason, conditions, kill_zone = compute_mean_reversion_confluence(df, sym, df.iloc[-1]['atr'])
         if signal == "NEUTRAL":
             return AnalysisResponse(symbol=request.symbol, signal="NEUTRAL", confidence=0.0, reason="DEAD MARKET: No mean reversion setup.")
     else:
-        # Normal trending/volatile market -> Route to ICT Engine
+        # Trending/Volatile -> Route to standard ICT Engine
         signal, score, reason, conditions, kill_zone = compute_ict_confluence(
             df, df_macro, sym, market_regime, utc_now, df_ticks
         )
 
+    # ── [S16] SILVER BULLET / TIME-FVG / PO3 SCALP ENGINE ──────────────
     if any(sym.upper().startswith(k) for k in _SILVER_BULLET_ASSETS) and market_regime != "DEAD MARKET":
         try:
             sc_sig, sc_score, sc_reason, sc_cond, sc_kz = compute_scalp_confluence(
