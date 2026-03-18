@@ -1,8 +1,17 @@
 # ============================================================
 # Kom v1.0 (formerly TradeCore) — analyst.py  
-# [SPRINT 19b: STRUCTURAL ROLLBACK (PURE MATH RESTORATION)]
+# [SPRINT 19f: TICK-LEVEL ORDER FLOW IMBALANCE]
 #
-# SPRINT 19b NOTES:
+# SPRINT 19f UPGRADES (Quantitative Order Flow):
+#   - Added `compute_tick_delta()` to process the last 1,000 raw market 
+#     ticks precisely at the point of interest (POI).
+#   - Calculates Cumulative Tick Delta (CTD) to identify whether buyers 
+#     (Ask hits) or sellers (Bid hits) are aggressively absorbing liquidity.
+#   - Applies an objective mathematical bonus (+0.08 for delta confirmation, 
+#     +0.05 for a sudden institutional volume surge) to elevate valid 0.70 
+#     structural setups over the 0.77 execution threshold.
+#
+# SPRINT 19b NOTES (Structural Rollback):
 #   - Rolled back all Discretionary Emulation (Sprint 19, Phases 1-3).
 #   - Removed Fuzzy Liquidity Zones (10% ATR padding).
 #   - Removed HTF Narrative Dominance (+0.12 bias score).
@@ -1520,6 +1529,52 @@ def wyckoff_spring_check(df: pd.DataFrame, manip_data: dict,
         return empty
 
 
+def compute_tick_delta(df_ticks: pd.DataFrame, direction: str) -> dict:
+    """
+    [S19f] Tick-Level Order Flow Imbalance (Cumulative Tick Delta).
+    Analyzes the last 1,000 micro-ticks to measure true buying vs. selling aggression.
+    
+    MT5 Tick Flags:
+      2 = TICK_FLAG_ASK (Buy order hitting the ask)
+      4 = TICK_FLAG_BID (Sell order hitting the bid)
+    """
+    empty = {'ctd': 0.0, 'tick_surge': False, 'delta_confirms': False}
+    if df_ticks is None or df_ticks.empty or 'flags' not in df_ticks.columns:
+        return empty
+
+    try:
+        # Isolate trades (ignore pure quote updates)
+        trades = df_ticks[(df_ticks['flags'] & 2) | (df_ticks['flags'] & 4)].copy()
+        if len(trades) < 50:
+            return empty
+
+        # Calculate volume delta: Ask hits (Buys) - Bid hits (Sells)
+        buy_vol  = trades[trades['flags'] & 2]['volume'].sum()
+        sell_vol = trades[trades['flags'] & 4]['volume'].sum()
+        ctd = buy_vol - sell_vol
+        
+        # Calculate recent momentum (last 20% of ticks vs historical 80%)
+        split_idx = int(len(trades) * 0.8)
+        recent_trades = trades.iloc[split_idx:]
+        recent_buy_vol = recent_trades[recent_trades['flags'] & 2]['volume'].sum()
+        recent_sell_vol = recent_trades[recent_trades['flags'] & 4]['volume'].sum()
+        
+        recent_delta = recent_buy_vol - recent_sell_vol
+        tick_surge = abs(recent_delta) > (abs(ctd) * 0.30)  # Sudden burst of delta
+
+        delta_confirms = (direction == 'BUY' and recent_delta > 0 and ctd > 0) or \
+                         (direction == 'SELL' and recent_delta < 0 and ctd < 0)
+
+        return {
+            'ctd': float(ctd),
+            'recent_delta': float(recent_delta),
+            'tick_surge': tick_surge,
+            'delta_confirms': delta_confirms
+        }
+    except Exception:
+        return empty
+
+
 # ── CORE ICT CONFLUENCE SCORER ────────────────────────────────────────────────
 
 # ── [S17] CANDLESTICK INTELLIGENCE LAYER ─────────────────────────────────────
@@ -1763,7 +1818,8 @@ def detect_candlestick_pattern(df: pd.DataFrame, direction: str,
 
 def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                             symbol: str, market_regime: str,
-                            utc_now: datetime = None) -> tuple:
+                            utc_now: datetime = None,
+                            df_ticks: pd.DataFrame = None) -> tuple:
     """
     [AMD] Phase-aware ICT confluence scorer.
 
@@ -1837,6 +1893,9 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     s13_profile = compute_volume_profile(df, lookback=200, atr=current_atr)
     s13_delta   = compute_delta_context(df)
     s13_wyckoff = wyckoff_spring_check(df, manip_data, avg_vol)
+    
+    # [S19f] Process Tick Data
+    s19f_ticks  = compute_tick_delta(df_ticks, 'BUY' if amd_dir == 'BULL' else 'SELL') 
 
     # ── S17 CANDLESTICK INTELLIGENCE — compute once, used in all paths ─────
     # Pre-compute both directions; each scoring path uses its own result.
@@ -2184,6 +2243,13 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['s13_wyckoff_vol_ratio'] = s13_wyckoff.get('test_vol_ratio', 1.0)
         if spring_ok: s13_bonus += 0.07
 
+        # [S19f] Tick-Level Order Flow Bonus
+        tick_confirm = s19f_ticks.get('delta_confirms', False)
+        tick_surge   = s19f_ticks.get('tick_surge', False)
+        cond['s19f_ctd'] = s19f_ticks.get('ctd', 0.0)
+        if tick_confirm: s13_bonus += 0.08
+        if tick_confirm and tick_surge: s13_bonus += 0.05  # Massive institutional absorption
+
         if s13_bonus > 0:
             score = min(0.99, score + s13_bonus)
 
@@ -2215,6 +2281,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
                    f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
                    f" Spring:{spring_ok}]") if s13_bonus > 0 else ""
+        s19f_tag = f" | Ticks:✅" if tick_confirm else ""
         s17_tag = (f" | S17[{cond['s17_candle_pattern']}+{s17_candle_bull['bonus']:.2f}]"
                    if cond.get('s17_candle_confirmed')
                    else (f" | S17[⚠️{cond['s17_conflict_pattern']}]"
@@ -2222,7 +2289,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         reason = (f"ICT Bullish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bull} "
                   f"Disc:{in_discount}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s17_tag}")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s19f_tag}{s17_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     # ── BEARISH MANIPULATION ───────────────────────────────────────
@@ -2344,6 +2411,13 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['s13_wyckoff_vol_ratio'] = s13_wyckoff.get('test_vol_ratio', 1.0)
         if upthrust_ok: s13_bonus += 0.07
 
+        # [S19f] Tick-Level Order Flow Bonus
+        tick_confirm = s19f_ticks.get('delta_confirms', False)
+        tick_surge   = s19f_ticks.get('tick_surge', False)
+        cond['s19f_ctd'] = s19f_ticks.get('ctd', 0.0)
+        if tick_confirm: s13_bonus += 0.08
+        if tick_confirm and tick_surge: s13_bonus += 0.05  # Massive institutional absorption
+
         if s13_bonus > 0:
             score = min(0.99, score + s13_bonus)
 
@@ -2375,6 +2449,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
                    f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
                    f" Upthrust:{upthrust_ok}]") if s13_bonus > 0 else ""
+        s19f_tag = f" | Ticks:✅" if tick_confirm else ""
         s17_tag = (f" | S17[{cond['s17_candle_pattern']}+{s17_candle_bear['bonus']:.2f}]"
                    if cond.get('s17_candle_confirmed')
                    else (f" | S17[⚠️{cond['s17_conflict_pattern']}]"
@@ -2382,7 +2457,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         reason = (f"ICT Bearish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bear} "
                   f"Prem:{in_premium}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s17_tag}")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s19f_tag}{s17_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     return "NEUTRAL", 0.0, f"[{amd_phase}] No sweep or displacement detected.", {}, kill_zone
@@ -3061,6 +3136,7 @@ def analyze_market_structure(
     market_regime: str = "NORMAL",
     symbol: str = "",
     utc_now: datetime = None,
+    df_ticks: pd.DataFrame = None,
 ) -> AnalysisResponse:
     """
     Entry point called by bot_engine.process_symbol().
@@ -3089,7 +3165,7 @@ def analyze_market_structure(
         utc_now = datetime.utcnow()
 
     signal, score, reason, conditions, kill_zone = compute_ict_confluence(
-        df, df_macro, sym, market_regime, utc_now
+        df, df_macro, sym, market_regime, utc_now, df_ticks
     )
 
     # ── [S16] SILVER BULLET / TIME-FVG / PO3 SCALP ENGINE ──────────────
