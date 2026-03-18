@@ -1,24 +1,18 @@
 # ============================================================
 # Kom v1.0 (formerly TradeCore) — analyst.py  
-# [SPRINT 19: DISCRETIONARY EMULATION (PHASES 1 & 2)]
+# [SPRINT 19b: STRUCTURAL ROLLBACK (PURE MATH RESTORATION)]
 #
-# SPRINT 19 UPGRADES (The Human Gestalt Layer):
-#   [S19-F1] Fuzzy Liquidity Zones (The 1-Pip Rule Fix):
-#            Introduced a 10% ATR "gravity well" to structural and session 
-#            boundaries (Asian H/L, London H/L, Swing H/L). If price comes 
-#            within this margin and violently displaces, it qualifies as a 
-#            valid liquidity sweep, preventing mathematical 1-pip near-misses.
-#   [S19-F2] HTF Narrative Dominance:
-#            Added a +0.12 confidence multiplier for M15 setups that perfectly 
-#            align with the H4/D1 Macro Trend. This effectively lowers the 
-#            execution threshold to 0.65 for pro-trend setups, allowing the 
-#            bot to aggressively emulate human discretionary bias.
-#   [S19-F3] Dynamic POI Matrix (Momentum-Weighted Entries):
-#            Upgraded FVG detection to map exact price coordinates. During 
-#            high-momentum environments (Volume Surge or Delta Confirmation), 
-#            the bot dynamically hijacks the entry coordinate and anchors it 
-#            to the proximal edge of the FVG to catch "runners." In low 
-#            momentum, it safely anchors to the deep Order Block.
+# SPRINT 19b NOTES:
+#   - Rolled back all Discretionary Emulation (Sprint 19, Phases 1-3).
+#   - Removed Fuzzy Liquidity Zones (10% ATR padding).
+#   - Removed HTF Narrative Dominance (+0.12 bias score).
+#   - Removed Dynamic POI Matrix (FVG proximal hijacks).
+#   - Removed SMT Divergence cross-asset correlation.
+#   - RATIONALE: The algorithmic edge relies on rigid mathematical 
+#     consistency for the Kelly Criterion and Machine Learning pipelines. 
+#     Introducing human fuzzy logic distorted the signal purity and 
+#     led to false positives/unpredictable live behavior. Restoring to
+#     the flawless Sprint 18 mathematical baseline.
 #
 # SPRINT 18 NOTES:
 #   - Rebranded to Kom v1.0.
@@ -26,99 +20,12 @@
 #     It retains zero memory between cycles, making it perfectly safe
 #     to be executed asynchronously by the new Heavy Analysis Loop without
 #     race conditions or state corruption.
-#   - All previous heuristic comments (Sprint 9-17c) are strictly preserved
-#     as they form the Feature Engineering baseline for the upcoming
-#     Quantitative Machine Learning (QML) phase.
 #
-# SPRINT 17c HOTFIX RETAINED:
-#   - Machine-gun loop paradox documentation preserved (bot_engine.py handles).
-#
-# SPRINT 13 ADDITIONS — MULTI-FRAMEWORK CONFLUENCE LAYER:
-#   [S13-F1] compute_vwap_context()
-#              VWAP + Z-score (|Z|>1.5 = extreme) + slope.
-#              Fixes: stale H4 macro trend blocked USDJPY 0.66 for 2h.
-#              VWAP slope now overrides H4 EMA as intraday bias in DISTRIBUTION.
-#              Score: +0.10 at VWAP extreme in signal direction.
-#
-#   [S13-F2] compute_volume_profile()
-#              POC / VAH / VAL / HVN / LVN from M15 last-200-bar window.
-#              Fixes: OB:True/False binary — no zone quality grading.
-#              Germany 40 5.1× vol at FVG scored 0.55 for 80 min; HVN fix.
-#              Score: +0.12 OB at HVN | +0.08 FVG in LVN.
-#
-#   [S13-F3] compute_delta_context()
-#              Proxy cumulative delta (bull/bear candle × volume).
-#              Fixes: 5× buy vol and 5× sell vol treated identically.
-#              Score: +0.08 delta confirms direction | +0.06 divergence.
-#
-#   [S13-F4] wyckoff_spring_check()
-#              Low-vol test at sweep candle = genuine Spring / Upthrust.
-#              Fixes: AMD MANIPULATION confirmed late (sweep+disp = 2 candles).
-#              Wyckoff: vol at sweep < 70% session avg = exhausted sellers.
-#              Score: +0.07 Spring (BUY) | +0.07 Upthrust (SELL).
-#
-#   Max S13 bonus: +0.61 | Score ceiling: 0.99 | Thresholds unchanged (0.80/0.90)
-#   Integration: additive bonuses in BULLISH MANIP, BEARISH MANIP, DISTRIBUTION
-#   Architecture: ICT core generates signal, S13 layer amplifies confidence.
-#
-# SPRINT 12 ADDITIONS — ENTRY/EXIT PRECISION:
-#   [S12-P0A] Structural entry: OB body_low/high (not live candle price)
-#   [S12-P0B] Structural SL: swing_sl_ref (swept level) + 0.3×ATR buffer
-#   [S12-P1B] Liquidity-pool TP: Asian High (bull) / Asian Low (bear)
-#   [S12-AMD-B] Judas bonus quality-scaled by accum confidence
-#   [S12-AMD-C] Session-bounded AMD lookback
-#   [S12-AMD-D] INDETERMINATE phase for trending/ambiguous markets
-#   [S12-AMD-E] Index-aware AMD priors (US indices vs DAX vs FX calendar)
-#   [S12-AMD-F] Gold/Silver ATR buffer: max(0.5×ATR, 0.50)
-#
-# SPRINT 9 ADDITIONS — AMD PHASE AWARENESS:
-#   [AMD-1] detect_amd_phase() — maps UTC hour to market cycle phase
-#            ACCUMULATION | MANIPULATION | NY_MANIPULATION | DISTRIBUTION | AVOID
-#   [AMD-2] detect_asian_range() — computes today's Asian High/Low (00:00-03:00 UTC)
-#            AH and AL are the structural reference levels for the Judas Swing
-#   [AMD-3] detect_judas_swing() — confirms sweep specifically targets AH or AL
-#            Judas Swing is the highest-probability ICT daily setup
-#   [AMD-4] detect_london_range() — tracks London session High/Low for NY Judas Swing
-#   [AMD-5] Phase-gated scoring in compute_ict_confluence():
-#            ACCUMULATION   → NEUTRAL always. Engine maps range, does not trade.
-#            MANIPULATION   → Full sweep+displacement scoring + Judas Swing bonus
-#            NY_MANIPULATION→ Same but targets London range (LH/LL) instead of AH/AL
-#            DISTRIBUTION   → Continuation scoring: OB/FVG retest in direction of
-#                             manipulation move. Sweep gate relaxed (CHoCH valid).
-#            AVOID          → NEUTRAL (NY Lunch equivalent)
-#
-# SPRINT 9 PRECISION FIXES (retained):
-#   [S9-FIX-1] Sweep: hybrid tier (structural pivot → rolling fallback)
-#   [S9-FIX-2] Displacement: 0.6 ATR body + 70% close quality (M15-calibrated)
-#   [S9-FIX-3] Volume: 1.3x threshold (empirically calibrated from live data)
-#   [S9-FIX-4] OB: body >= 0.5 ATR, freshness guard (< 15 bars), in-zone retest
-#   [S9-FIX-5] FVG: 10-bar scan, >= 0.3 ATR gap, unfilled validation
-#   [S9-FIX-6] BOS: 3-swing confirmation
-#   [S9-FIX-7] P/D: 100-bar lookback, deep zone scoring, H4 conflict check
-#
-# SCORE ARCHITECTURE:
-#   MANIPULATION MODE (primary):
-#     Sweep           +0.20  (mandatory gate)
-#     Displacement    +0.15  (mandatory gate)
-#     Kill Zone       +0.15 × session_weight
-#     Order Block     +0.15
-#     FVG             +0.10
-#     Premium/Discount+0.10 (deep) / +0.05 (shallow)
-#     BOS aligned     +0.08
-#     OTE zone        +0.07
-#     Judas Swing     +0.12  (bonus: sweep targets AH/AL or LH/LL specifically)
-#     Volume surge    ×1.10  (multiplier, capped 0.99)
-#
-#   DISTRIBUTION MODE (continuation):
-#     OB retest       +0.30  (primary signal — price returns to manipulation OB)
-#     FVG retest      +0.20  (imbalance fill in trend direction)
-#     BOS confirmed   +0.15  (structure confirms continuation)
-#     Kill Zone       +0.15 × session_weight
-#     OTE zone        +0.10  (optimal pullback depth)
-#     Volume surge    ×1.10  (multiplier)
-#     NOTE: Sweep not required. Entry is on RETRACEMENT, not new sweep.
-#
-#   Execution threshold = 0.80 standard / 0.90 sniper (bot_engine.py)
+# HISTORICAL PRESERVATION (Sprints 9 - 18):
+#   - [Sprint 18] Dual-Loop async safety confirmed. 100% Stateless.
+#   - [Sprint 16] Silver Bullet / Time-FVG / Power of 3 Scalp Engine.
+#   - [Sprint 13] VWAP, Volume Profile (HVN/LVN), Delta, Wyckoff Checks.
+#   - [Sprint  9] Core AMD (Accumulation, Manipulation, Distribution) mapping.
 # ============================================================
 
 import pandas as pd
@@ -732,24 +639,37 @@ def detect_judas_swing(c1_low: float, c1_high: float,
                        ref_high: float, ref_low: float,
                        atr: float) -> dict:
     """
-    [S19-F1] Fuzzy Liquidity Zones (The 1-Pip Rule Fix)
-    Determines whether the current sweep candle specifically targets the session
-    range boundary. Now includes a 10% ATR "gravity well" allowance to prevent 
-    near-misses from rejecting valid institutional liquidity grabs.
+    Determines whether the current sweep candle (c1) specifically targets
+    the session range boundary (AH/AL for London, LH/LL for NY).
+
+    A Judas Swing is NOT just any sweep. It is the deliberate sweep of a
+    known stop-order cluster at the boundary of the accumulation range.
+    This makes it structurally higher probability than a generic structural sweep.
+
+    Detection criteria:
+      Bullish Judas Swing: c1 sweeps BELOW ref_low within 1.0 ATR of that level.
+        The sweep must be meaningful (>= 0.2 ATR below ref_low) but not so deep
+        that it implies a real breakdown rather than a stop hunt (< 3.0 ATR below).
+      Bearish Judas Swing: c1 sweeps ABOVE ref_high within 1.0 ATR of that level.
+
+    Returns:
+      judas_bull:  True if bullish Judas Swing detected
+      judas_bear:  True if bearish Judas Swing detected
+      depth_bull:  how far below ref_low the sweep went (in ATR multiples)
+      depth_bear:  how far above ref_high the sweep went (in ATR multiples)
     """
-    fuzzy_pad = atr * 0.10 if atr > 0 else 0.0001
     bull_depth = (ref_low - c1_low) / atr if atr > 0 else 0
     bear_depth = (c1_high - ref_high) / atr if atr > 0 else 0
 
-    # Swept below AL: between -0.10 (fuzzy pad) and 3.0 ATR below the level
+    # Swept below AL: between 0.2 and 3.0 ATR below the level = stop hunt, not breakdown
     judas_bull = (ref_low is not None and
-                  c1_low <= (ref_low + fuzzy_pad) and
-                  -0.10 <= bull_depth <= 3.0)
+                  c1_low < ref_low and
+                  0.2 <= bull_depth <= 3.0)
 
-    # Swept above AH: between -0.10 (fuzzy pad) and 3.0 ATR above the level
+    # Swept above AH: between 0.2 and 3.0 ATR above the level
     judas_bear = (ref_high is not None and
-                  c1_high >= (ref_high - fuzzy_pad) and
-                  -0.10 <= bear_depth <= 3.0)
+                  c1_high > ref_high and
+                  0.2 <= bear_depth <= 3.0)
 
     return {
         'judas_bull':  judas_bull,
@@ -757,6 +677,7 @@ def detect_judas_swing(c1_low: float, c1_high: float,
         'depth_bull':  round(bull_depth, 2),
         'depth_bear':  round(bear_depth, 2),
     }
+
 
 
 def detect_order_blocks(df: pd.DataFrame, lookback: int = 20) -> dict:
@@ -1101,15 +1022,23 @@ def get_ote_zone(impulse_high: float, impulse_low: float,
 # ── ICT-5b: FVG DETECTION ────────────────────────────────────────────────────
 
 def detect_fvg(df: pd.DataFrame, direction: str, atr: float,
-               lookback: int = 10) -> dict:
+               lookback: int = 10) -> bool:
     """
-    [S19-F3] Dynamic POI Matrix Update.
-    No longer returns a simple boolean. Returns exact FVG coordinates so the 
-    engine can hijack the entry point dynamically if momentum is high.
+    [S9-PRECISION] Fair Value Gap: meaningful unfilled imbalance.
+
+    Prior version checked only candles c1/c2/c3 (last 3 bars), had no minimum
+    size, and no check if the gap had already been filled by subsequent price.
+
+    Upgrades:
+      - Scans last `lookback` bars for any still-open FVG
+      - Minimum gap size >= 0.3 ATR (real institutional imbalance)
+      - Validates the gap has NOT been re-entered since it formed — a filled
+        FVG is no longer an active target
+
+    Returns True if a qualifying unfilled FVG exists in the direction of trade.
     """
-    empty = {'found': False, 'fvg_high': None, 'fvg_low': None, 'fvg_mid': None}
     if len(df) < lookback + 2 or atr <= 0:
-        return empty
+        return False
 
     min_gap = atr * 0.3
     window  = df.tail(lookback + 2).reset_index(drop=True)
@@ -1120,34 +1049,25 @@ def detect_fvg(df: pd.DataFrame, direction: str, atr: float,
         c3 = window.iloc[i + 2]
 
         if direction == 'BUY':
-            gap_low  = float(c1['high'])
-            gap_high = float(c3['low'])
+            gap_low  = c1['high']
+            gap_high = c3['low']
             if gap_high <= gap_low or (gap_high - gap_low) < min_gap:
                 continue
+            # Gap still open if no subsequent candle's low entered it
             subsequent = window.iloc[i + 2:]
             if not (subsequent['low'] < gap_high).any():
-                return {
-                    'found': True, 
-                    'fvg_high': round(gap_high, 5), 
-                    'fvg_low': round(gap_low, 5), 
-                    'fvg_mid': round((gap_high + gap_low) / 2.0, 5)
-                }
+                return True
 
         else:  # SELL
-            gap_high = float(c1['low'])
-            gap_low  = float(c3['high'])
+            gap_high = c1['low']
+            gap_low  = c3['high']
             if gap_low >= gap_high or (gap_high - gap_low) < min_gap:
                 continue
             subsequent = window.iloc[i + 2:]
             if not (subsequent['high'] > gap_low).any():
-                return {
-                    'found': True, 
-                    'fvg_high': round(gap_high, 5), 
-                    'fvg_low': round(gap_low, 5), 
-                    'fvg_mid': round((gap_high + gap_low) / 2.0, 5)
-                }
+                return True
 
-    return empty
+    return False
 
 
 # ── ICT-6: EQUAL HIGHS / LOWS ────────────────────────────────────────────────
@@ -1212,10 +1132,23 @@ def _derive_macro_trend(df_macro: pd.DataFrame) -> str:
 def _score_distribution(df: pd.DataFrame, structure: dict, obs: dict,
                          pd_zone: dict, session_wt: float, kill_zone: str,
                          current_atr: float, vol_ratio: float,
-                         macro_trend: str, c3, s13_delta: dict) -> tuple:
+                         macro_trend: str, c3) -> tuple:
     """
     Distribution mode scoring — entered during DISTRIBUTION and NY_DISTRIBUTION.
-    [S19-F3] Dynamic POI Matrix added via s13_delta context injection.
+
+    In distribution, price is trending after the Manipulation sweep.
+    Entry model: OB or FVG retest in the direction of the trend.
+    Sweep+displacement is NOT required — we enter the pullback.
+
+    Score architecture:
+      OB retest in trend direction  +0.30
+      FVG retest in trend direction +0.20
+      BOS confirmed (trend)         +0.15
+      Kill zone session quality     +0.15 × weight
+      OTE pullback depth            +0.10
+      Volume surge                  ×1.10
+
+    Returns (signal, score, reason, conditions) or None if no setup.
     """
     if macro_trend not in ('BULLISH', 'BEARISH'):
         return None
@@ -1234,8 +1167,7 @@ def _score_distribution(df: pd.DataFrame, structure: dict, obs: dict,
     if ob_hit: score += 0.30
 
     fvg_dir = 'BUY' if is_bull else 'SELL'
-    fvg_data = detect_fvg(df, fvg_dir, current_atr)
-    fvg_hit = fvg_data['found']
+    fvg_hit = detect_fvg(df, fvg_dir, current_atr)
     cond['fvg'] = fvg_hit
     if fvg_hit: score += 0.20
 
@@ -1261,25 +1193,6 @@ def _score_distribution(df: pd.DataFrame, structure: dict, obs: dict,
     if vol_surge:
         score = min(0.99, score * 1.10)
 
-    # ── [S19-F3] Dynamic POI Matrix (Momentum-Weighted Entry) ────────
-    delta_confirm = s13_delta.get('delta_confirms_buy' if is_bull else 'delta_confirms_sell', False)
-    if fvg_hit and (vol_surge or delta_confirm):
-        cond['poi_type'] = 'FVG_PROXIMAL'
-        cond['ob_entry_price'] = fvg_data['fvg_high'] if is_bull else fvg_data['fvg_low']
-    else:
-        cond['poi_type'] = 'ORDER_BLOCK'
-        if ob_hit:
-            cond['ob_entry_price'] = ob.get('body_low') if is_bull else ob.get('body_high')
-            if cond['ob_entry_price'] is None:
-                cond['ob_entry_price'] = ob.get('low') if is_bull else ob.get('high')
-            cond['ob_zone_high']   = ob.get('high')
-            cond['ob_zone_low']    = ob.get('low')
-
-    # ── [S19-F2] HTF Narrative Dominance ────────────────────────
-    s19_htf_bonus = 0.12
-    score = min(0.99, score + s19_htf_bonus)
-    cond['s19_htf_bonus'] = s19_htf_bonus
-
     if not ob_hit and not fvg_hit:
         return None
     if score < 0.40:
@@ -1288,7 +1201,7 @@ def _score_distribution(df: pd.DataFrame, structure: dict, obs: dict,
     direction = 'BUY_MICRO' if is_bull else 'SELL_MICRO'
     reason = (f"DISTRIBUTION [{kill_zone}] | Score:{score:.2f} | "
               f"OB:{ob_hit} FVG:{fvg_hit} BOS:{bos} OTE:{ote_hit} "
-              f"Vol:{vol_ratio:.1f}x | POI:{cond['poi_type']} | HTF+{s19_htf_bonus}")
+              f"Vol:{vol_ratio:.1f}x | Trend:{macro_trend}")
     return direction, round(score, 3), reason, cond
 
 
@@ -1993,7 +1906,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
         result = _score_distribution(
             df, structure, obs, pd_zone, session_wt, kill_zone,
-            current_atr, vol_ratio, effective_macro, c3, s13_delta)
+            current_atr, vol_ratio, effective_macro, c3)
         if result:
             signal, score, reason, cond = result
             cond['amd_phase']         = amd_phase
@@ -2106,22 +2019,23 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     swing_lows  = structure.get('swing_lows', [])
     swing_highs = structure.get('swing_highs', [])
 
-    # [S19-F1] Fuzzy Liquidity Zones (10% ATR pad)
-    fuzzy_pad = current_atr * 0.10
-
     if len(swing_lows) >= 2:
         last_swing_low   = swing_lows[-1][1]
-        sweep_low        = (c1['low'] <= (last_swing_low + fuzzy_pad))
+        sweep_low        = (c1['low'] < last_swing_low and
+                            (last_swing_low - c1['low']) >= current_atr * 0.3)
     else:
         last_swing_low   = df['low'].rolling(20).min().shift(1).iloc[-1]
-        sweep_low        = (c1['low'] <= (last_swing_low + fuzzy_pad))
+        sweep_low        = (c1['low'] < last_swing_low and
+                            (last_swing_low - c1['low']) >= current_atr * 0.5)
 
     if len(swing_highs) >= 2:
         last_swing_high  = swing_highs[-1][1]
-        sweep_high       = (c1['high'] >= (last_swing_high - fuzzy_pad))
+        sweep_high       = (c1['high'] > last_swing_high and
+                            (c1['high'] - last_swing_high) >= current_atr * 0.3)
     else:
         last_swing_high  = df['high'].rolling(20).max().shift(1).iloc[-1]
-        sweep_high       = (c1['high'] >= (last_swing_high - fuzzy_pad))
+        sweep_high       = (c1['high'] > last_swing_high and
+                            (c1['high'] - last_swing_high) >= current_atr * 0.5)
 
     eq_low_sweep  = sweep_low  and any(abs(last_swing_low  - lvl) < current_atr * 0.3
                                        for lvl in eq_levels.get('equal_lows', []))
@@ -2174,11 +2088,16 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         bull_ob = obs.get('bullish')
         ob_hit  = bool(bull_ob and bull_ob.get('retested'))
         cond['order_block'] = ob_hit
+        # [S12-P0A] OB price levels for structural entry placement.
+        # BUY_LIMIT entry = ob_body_low (50% of OB body = best value zone).
+        # Fall back through: body_low → zone_low → None (engine uses ATR fallback).
+        if bull_ob:
+            cond['ob_entry_price'] = bull_ob.get('body_low') or bull_ob.get('low')
+            cond['ob_zone_high']   = bull_ob.get('high')
+            cond['ob_zone_low']    = bull_ob.get('low')
         if ob_hit: score += 0.15
 
-        # [S19-F3] Extract detailed FVG data
-        fvg_data = detect_fvg(df, 'BUY', current_atr)
-        fvg_bull = fvg_data['found']
+        fvg_bull = detect_fvg(df, 'BUY', current_atr)
         cond['fvg'] = fvg_bull
         if fvg_bull: score += 0.10
 
@@ -2220,28 +2139,6 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
             cond['amd_judas_bonus'] = True
             cond['amd_judas_bonus_value'] = amd_judas_bonus
 
-        # ── [S19-F3] Dynamic POI Matrix (Momentum-Weighted Entry) ────────
-        # If momentum is high (Volume > 1.3 OR Delta confirms), hijack the entry 
-        # and anchor it to the proximal edge of the FVG to catch runners.
-        delta_buy = s13_delta.get('delta_confirms_buy', False)
-        if fvg_bull and (vol_surge or delta_buy):
-            cond['poi_type'] = 'FVG_PROXIMAL'
-            cond['ob_entry_price'] = fvg_data['fvg_high'] 
-        else:
-            cond['poi_type'] = 'ORDER_BLOCK'
-            # [S12-P0A] OB price levels for structural entry placement.
-            # BUY_LIMIT entry = ob_body_low (50% of OB body = best value zone).
-            if bull_ob:
-                cond['ob_entry_price'] = bull_ob.get('body_low') or bull_ob.get('low')
-                cond['ob_zone_high']   = bull_ob.get('high')
-                cond['ob_zone_low']    = bull_ob.get('low')
-
-        # ── [S19-F2] HTF Narrative Dominance ────────────────────────
-        if macro_trend == "BULLISH":
-            s19_htf_bonus = 0.12
-            score = min(0.99, score + s19_htf_bonus)
-            cond['s19_htf_bonus'] = s19_htf_bonus
-
         if enforce_macro and macro_trend == "BEARISH":
             return "NEUTRAL", 0.0, f"BUY blocked by Bearish H4 (score={score:.2f})", cond, kill_zone
 
@@ -2273,6 +2170,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
         # [S13-F3] Cumulative Delta — confirms BUY direction (+0.08)
         # Delta divergence = hidden demand below price (+0.06)
+        delta_buy = s13_delta.get('delta_confirms_buy', False)
         delta_div = s13_delta.get('divergence', False)
         cond['s13_delta']          = s13_delta.get('cum_delta_slope', 0.0)
         cond['s13_delta_confirm']  = delta_buy
@@ -2314,7 +2212,6 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         else:                                    signal = "BUY_MICRO"
 
         tag = f" ⚡JUDAS({ref_label})" if is_judas else ""
-        s19_tag = " | HTF+0.12" if cond.get('s19_htf_bonus') else ""
         s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
                    f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
                    f" Spring:{spring_ok}]") if s13_bonus > 0 else ""
@@ -2325,7 +2222,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         reason = (f"ICT Bullish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bull} "
                   f"Disc:{in_discount}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x | POI:{cond['poi_type']}{s19_tag}{s13_tag}{s17_tag}")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s17_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     # ── BEARISH MANIPULATION ───────────────────────────────────────
@@ -2358,11 +2255,15 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         bear_ob = obs.get('bearish')
         ob_hit  = bool(bear_ob and bear_ob.get('retested'))
         cond['order_block'] = ob_hit
+        # [S12-P0A] OB price levels for structural SELL entry.
+        # SELL_LIMIT entry = ob_body_high (top of OB body = best value zone).
+        if bear_ob:
+            cond['ob_entry_price'] = bear_ob.get('body_high') or bear_ob.get('high')
+            cond['ob_zone_high']   = bear_ob.get('high')
+            cond['ob_zone_low']    = bear_ob.get('low')
         if ob_hit: score += 0.15
 
-        # [S19-F3] Extract detailed FVG data
-        fvg_data = detect_fvg(df, 'SELL', current_atr)
-        fvg_bear = fvg_data['found']
+        fvg_bear = detect_fvg(df, 'SELL', current_atr)
         cond['fvg'] = fvg_bear
         if fvg_bear: score += 0.10
 
@@ -2401,26 +2302,6 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
             cond['amd_judas_bonus'] = True
             cond['amd_judas_bonus_value'] = amd_judas_bonus
 
-        # ── [S19-F3] Dynamic POI Matrix (Momentum-Weighted Entry) ────────
-        delta_sell = s13_delta.get('delta_confirms_sell', False)
-        if fvg_bear and (vol_surge or delta_sell):
-            cond['poi_type'] = 'FVG_PROXIMAL'
-            cond['ob_entry_price'] = fvg_data['fvg_low'] 
-        else:
-            cond['poi_type'] = 'ORDER_BLOCK'
-            # [S12-P0A] OB price levels for structural SELL entry.
-            # SELL_LIMIT entry = ob_body_high (top of OB body = best value zone).
-            if bear_ob:
-                cond['ob_entry_price'] = bear_ob.get('body_high') or bear_ob.get('high')
-                cond['ob_zone_high']   = bear_ob.get('high')
-                cond['ob_zone_low']    = bear_ob.get('low')
-
-        # ── [S19-F2] HTF Narrative Dominance ────────────────────────
-        if macro_trend == "BEARISH":
-            s19_htf_bonus = 0.12
-            score = min(0.99, score + s19_htf_bonus)
-            cond['s19_htf_bonus'] = s19_htf_bonus
-
         if enforce_macro and macro_trend == "BULLISH":
             return "NEUTRAL", 0.0, f"SELL blocked by Bullish H4 (score={score:.2f})", cond, kill_zone
 
@@ -2449,6 +2330,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
         # [S13-F3] Cumulative Delta — confirms SELL direction (+0.08)
         # Delta divergence = hidden supply above price (+0.06)
+        delta_sell = s13_delta.get('delta_confirms_sell', False)
         delta_div  = s13_delta.get('divergence', False)
         cond['s13_delta']         = s13_delta.get('cum_delta_slope', 0.0)
         cond['s13_delta_confirm'] = delta_sell
@@ -2490,7 +2372,6 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         else:                                    signal = "SELL_MICRO"
 
         tag = f" ⚡JUDAS({ref_label})" if is_judas else ""
-        s19_tag = " | HTF+0.12" if cond.get('s19_htf_bonus') else ""
         s13_tag = (f" | S13[Z:{s13_vwap.get('vwap_z',0):.2f}"
                    f" HVN:{ob_at_hvn} Δ:{s13_delta.get('cum_delta_slope',0):.0f}"
                    f" Upthrust:{upthrust_ok}]") if s13_bonus > 0 else ""
@@ -2501,7 +2382,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         reason = (f"ICT Bearish [{kill_zone}]{tag} | AMD:{amd_phase} | "
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bear} "
                   f"Prem:{in_premium}(deep:{deep_pd}) BOS:{bos_aligned} "
-                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x | POI:{cond['poi_type']}{s19_tag}{s13_tag}{s17_tag}")
+                  f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s17_tag}")
         return signal, round(score, 3), reason, cond, kill_zone
 
     return "NEUTRAL", 0.0, f"[{amd_phase}] No sweep or displacement detected.", {}, kill_zone
