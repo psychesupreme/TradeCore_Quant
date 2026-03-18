@@ -2678,17 +2678,6 @@ def detect_time_fvg(df: pd.DataFrame, direction: str, symbol: str,
 
     Scans last `lookback` bars. For each c1-c2-c3 FVG triplet, checks if the
     bar time falls within any Silver Bullet window for the asset.
-
-    Returns dict:
-      found:          bool
-      fvg_high:       float — top of gap
-      fvg_low:        float — bottom of gap
-      fvg_mid:        float — midpoint (ideal entry for scalp)
-      fvg_size:       float — gap size in price units
-      fvg_size_atr:   float — gap size / ATR
-      window_name:    str   — which SB window created it
-      bars_ago:       int   — how many bars since formation (freshness)
-      filled_pct:     float — 0.0 if untouched, 1.0 if fully filled
     """
     empty = {'found': False, 'fvg_high': None, 'fvg_low': None,
              'fvg_mid': None, 'fvg_size': 0.0, 'fvg_size_atr': 0.0,
@@ -2710,8 +2699,8 @@ def detect_time_fvg(df: pd.DataFrame, direction: str, symbol: str,
 
     for i in range(n - 2):
         c1 = win.iloc[i]
-        c3 = window.iloc[i + 2]
-        subsequent = window.iloc[i + 2:]
+        c3 = win.iloc[i + 2]           # [FIXED: changed 'window' to 'win']
+        subsequent = win.iloc[i + 2:]  # [FIXED: changed 'window' to 'win']
 
         # Determine window membership if timestamps available
         w_name = ''
