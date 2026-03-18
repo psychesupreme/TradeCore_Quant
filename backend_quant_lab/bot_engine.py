@@ -44,6 +44,10 @@ if not logger.handlers:
     logger.addHandler(f_handler)
 
 # ============================================================
+# [SPRINT 19f: TICK-LEVEL ORDER FLOW]
+#   - Injected raw tick fetching (`copy_ticks_from`) to feed micro-order
+#     flow data directly into analyst.py for CTD (Cumulative Tick Delta) scoring.
+# ============================================================
 # [SPRINT 19e: MOMENTUM-AWARE TRAILING]
 #   - Dynamic Tape Reading: M1 timeframe checks immediate momentum at 1:1 RR.
 #   - Sniper Runner Rule (>= 0.85 Conf): Scales 20% if momentum is strong, trails 80%.
@@ -1704,12 +1708,16 @@ class TradingBot:
 
         symbol_regime = self.get_asset_regime(symbol)
 
+        # [S19f] Fetch raw micro-ticks for Order Flow analysis
+        raw_ticks = mt5.copy_ticks_from(symbol, datetime.utcnow(), 1000, mt5.COPY_TICKS_ALL)
+        df_ticks = pd.DataFrame(raw_ticks) if raw_ticks is not None else pd.DataFrame()
+
         try:
             candles_micro = [Candle(**row) for row in df_micro.to_dict('records') if hasattr(row['time'], 'year')]
             req = AnalysisRequest(symbol=symbol, candles=candles_micro, daily_trend="NEUTRAL")
             
             analysis = analyze_market_structure(
-                req, df_macro=df_macro, market_regime=symbol_regime, symbol=symbol
+                req, df_macro=df_macro, market_regime=symbol_regime, symbol=symbol, df_ticks=df_ticks
             )
             
             result_status = "SKIPPED"
