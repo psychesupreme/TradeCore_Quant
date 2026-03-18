@@ -1,6 +1,12 @@
 # ============================================================
 # Kom v1.0 (formerly TradeCore) — analyst.py  
-# [SPRINT 19f: TICK-LEVEL ORDER FLOW IMBALANCE]
+# [SPRINT 19g: REGIME ROUTER & MEAN REVERSION]
+#
+# SPRINT 19g UPGRADES:
+#   - Added `compute_mean_reversion_confluence()` for DEAD MARKET regimes.
+#   - Implemented the Regime Router in `analyze_market_structure()` to 
+#     bypass ICT and trade statistical Bollinger Band/RSI extremes 
+#     when ATR indicates a flat market.
 #
 # SPRINT 19f UPGRADES (Quantitative Order Flow):
 #   - Added `compute_tick_delta()` to process the last 1,000 raw market 
@@ -2704,8 +2710,8 @@ def detect_time_fvg(df: pd.DataFrame, direction: str, symbol: str,
 
     for i in range(n - 2):
         c1 = win.iloc[i]
-        c3 = win.iloc[i + 2]
-        subsequent = win.iloc[i + 2:]
+        c3 = window.iloc[i + 2]
+        subsequent = window.iloc[i + 2:]
 
         # Determine window membership if timestamps available
         w_name = ''
@@ -3120,12 +3126,72 @@ def compute_scalp_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                  f"tight={asian.get('is_tight')}]" if asian.get('valid') else "Asian[?]")
     s17_scalp_tag = (f" | S17[{cond.get('s17_candle_pattern')}+{cond.get('score_s17_candle', 0):.2f}]"
                      if cond.get('s17_candle_confirmed')
-                     else (f" | S17[⚠️{cond.get('s17_conflict_pattern')}]"
+                     else (f" | S17[⚠️{cond['s17_conflict_pattern']}]"
                            if cond.get('s17_candle_conflict') else ""))
     reason = (f"SCALP {direction} [{symbol}] Score:{score:.3f} | "
               f"{sb_tag} | {po3_tag} | {fvg_tag} | {asian_tag} | Macro:{macro_trend}{s17_scalp_tag}")
 
     return sig, score, reason, cond, kill_zone
+
+
+def compute_mean_reversion_confluence(df: pd.DataFrame, symbol: str, current_atr: float) -> tuple:
+    """
+    [S19g] Mean Reversion Model for DEAD MARKET regimes.
+    Bypasses structural ICT logic to trade statistical extremes in ranging markets.
+    Requires a pierce of the 2.5 Standard Deviation Bollinger Band + RSI confirmation.
+    """
+    empty_ret = ("NEUTRAL", 0.0, "Mean Reversion: No setup", {}, "N/A")
+    if len(df) < 30 or current_atr <= 0: 
+        return empty_ret
+
+    df = df.copy()
+    
+    # Calculate RSI (14-period)
+    delta = df['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / (loss + 1e-9)
+    df['rsi'] = 100 - (100 / (1 + rs))
+
+    # Calculate Bollinger Bands (20-period, 2.5 Standard Deviations)
+    df['bb_mid'] = df['close'].rolling(20).mean()
+    df['bb_std'] = df['close'].rolling(20).std()
+    df['bb_upper'] = df['bb_mid'] + (df['bb_std'] * 2.5)
+    df['bb_lower'] = df['bb_mid'] - (df['bb_std'] * 2.5)
+
+    c1 = df.iloc[-2] # Last closed candle
+    c0 = df.iloc[-1] # Current live candle
+
+    score = 0.0
+    signal = "NEUTRAL"
+    cond = {'mode': 'MEAN_REVERSION', 'poi_type': 'STATISTICAL_BAND'}
+
+    # Bullish Reversion: Pierced lower band + Oversold + Reversing
+    if c1['low'] < c1['bb_lower'] and c1['rsi'] < 30:
+        signal = "BUY_NANO"
+        score += 0.50
+        depth = (c1['bb_lower'] - c1['low']) / current_atr
+        score += min(0.20, depth * 0.10)       # Reward deeper pierces
+        if c1['rsi'] < 25: score += 0.10       # Extreme oversold bonus
+        if c0['close'] > c1['high']: score += 0.15 # Reversal confirmed by current candle
+        cond['ob_entry_price'] = c0['close']
+
+    # Bearish Reversion: Pierced upper band + Overbought + Reversing
+    elif c1['high'] > c1['bb_upper'] and c1['rsi'] > 70:
+        signal = "SELL_NANO"
+        score += 0.50
+        depth = (c1['high'] - c1['bb_upper']) / current_atr
+        score += min(0.20, depth * 0.10)       
+        if c1['rsi'] > 75: score += 0.10       
+        if c0['close'] < c1['low']: score += 0.15 
+        cond['ob_entry_price'] = c0['close']
+
+    score = min(0.99, round(score, 3))
+    if score < 0.70:
+        return empty_ret
+
+    reason = f"Mean Reversion [{symbol}] | Score:{score:.2f} | RSI:{c1['rsi']:.1f} | Pierced 2.5σ Band"
+    return signal, score, reason, cond, "STATISTICAL_EXTREME"
 
 
 # ── MAIN ENTRY POINT ──────────────────────────────────────────────────────────
@@ -3139,9 +3205,8 @@ def analyze_market_structure(
     df_ticks: pd.DataFrame = None,
 ) -> AnalysisResponse:
     """
-    Entry point called by bot_engine.process_symbol().
-    Returns AnalysisResponse with signal, confidence (ICT score), reason.
-    Also returns conditions dict attached as extra attribute for DB logging.
+    [S19f] The entry point now actively accepts and processes raw tick data
+    to dynamically evaluate institutional liquidity absorption (CTD).
     """
     df = pd.DataFrame([c.dict() for c in request.candles])
 
@@ -3155,7 +3220,6 @@ def analyze_market_structure(
 
     df['atr'] = calculate_atr(df)
 
-    # Per-asset dead-market check (OPT-1)
     sym = symbol or request.symbol
     dead_threshold = _dead_market_atr_threshold(sym)
     if df.iloc[-1]['atr'] < dead_threshold:
@@ -3164,20 +3228,18 @@ def analyze_market_structure(
     if utc_now is None:
         utc_now = datetime.utcnow()
 
-    signal, score, reason, conditions, kill_zone = compute_ict_confluence(
-        df, df_macro, sym, market_regime, utc_now, df_ticks
-    )
+    # [S19g] The Regime Router: Bypass ICT if the market is dead
+    if market_regime == "DEAD MARKET":
+        signal, score, reason, conditions, kill_zone = compute_mean_reversion_confluence(df, sym, df.iloc[-1]['atr'])
+        if signal == "NEUTRAL":
+            return AnalysisResponse(symbol=request.symbol, signal="NEUTRAL", confidence=0.0, reason="DEAD MARKET: No mean reversion setup.")
+    else:
+        # Normal trending/volatile market -> Route to ICT Engine
+        signal, score, reason, conditions, kill_zone = compute_ict_confluence(
+            df, df_macro, sym, market_regime, utc_now, df_ticks
+        )
 
-    # ── [S16] SILVER BULLET / TIME-FVG / PO3 SCALP ENGINE ──────────────
-    # For Gold, Silver and Crypto, run the dedicated scalp model in parallel.
-    # If the scalp model produces a higher-confidence signal than the ICT
-    # engine, it wins. The winning model is tagged in the conditions dict.
-    # Rationale: time-based FVGs on XAU/XAG/BTC/ETH have a different fill
-    # expectation profile than standard ICT setups — same-session mitigation
-    # is near-mechanical during Silver Bullet windows. Running both models
-    # and taking the higher score ensures we never miss a high-quality scalp
-    # setup just because the ICT swing model didn't trigger.
-    if any(sym.upper().startswith(k) for k in _SILVER_BULLET_ASSETS):
+    if any(sym.upper().startswith(k) for k in _SILVER_BULLET_ASSETS) and market_regime != "DEAD MARKET":
         try:
             sc_sig, sc_score, sc_reason, sc_cond, sc_kz = compute_scalp_confluence(
                 df, df_macro, sym, utc_now
