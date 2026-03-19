@@ -89,9 +89,13 @@ class TradingBot:
         self._closing_tickets = set()
         
         # --- STATE PERSISTENCE ---
+        # [S21-A] Per-account state files. The filename is set to the generic
+        # fallback here; start_service() overwrites it with the MT5 login ID
+        # once the gateway is connected, so each MT5 account has an isolated
+        # state file and a full account switch never silently wipes live state.
         self.state_file = "logs/tradecore_state.json"
-        self.scaled_positions = set()  
-        self.trade_confidences = {} 
+        self.scaled_positions = set()
+        self.trade_confidences = {}
         
         self.daily_start_balance = 0.0
         self.last_trade_day = -1
@@ -152,7 +156,9 @@ class TradingBot:
 
     def _save_state(self):
         try:
-            account_id = self._get_current_account_id()
+            # [S21-B] Use cached self.account_id — _get_current_account_id()
+            # makes a live MT5 call which can return None under load.
+            account_id = self.account_id
             dedup_serializable = {
                 k: list(v) for k, v in self._last_logged_signal.items()
             }
@@ -273,7 +279,7 @@ class TradingBot:
                 rows = con.execute("""
                     SELECT profit FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
-                      AND comment NOT LIKE '%ghost%'
+                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
                 """).fetchall()
                 con.close()
                 profits = [r[0] for r in rows]
@@ -317,7 +323,7 @@ class TradingBot:
                 rows = con.execute("""
                     SELECT symbol, type, profit, volume, close_time FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
-                      AND comment NOT LIKE '%ghost%'
+                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
                     ORDER BY close_time DESC LIMIT ?
                 """, (n,)).fetchall()
                 con.close()
@@ -457,12 +463,12 @@ class TradingBot:
                 today = datetime.utcnow().strftime('%Y-%m-%d')
                 
                 rows_today = con.execute(
-                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND comment NOT LIKE '%ghost%'",
+                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
                     (f"{today}%",)
                 ).fetchone()
                 
                 all_profits = con.execute(
-                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
+                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')"
                 ).fetchall()
                 con.close()
                 
@@ -615,15 +621,15 @@ class TradingBot:
             week_start_str = (datetime.utcnow() - _td(days=datetime.utcnow().weekday())).strftime('%Y-%m-%d')
             con = _sl.connect("tradecore.db")
             today_rows  = con.execute(
-                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
+                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
                 (f"{today_str}%",)
             ).fetchall()
             week_rows   = con.execute(
-                "SELECT profit FROM trades WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
+                "SELECT profit FROM trades WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
                 (week_start_str,)
             ).fetchall()
             all_rows    = con.execute(
-                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
+                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')"
             ).fetchone()
             con.close()
             today_pnl    = sum(r[0] for r in today_rows)
@@ -740,7 +746,7 @@ class TradingBot:
                 week_trades = con2.execute("""
                     SELECT profit FROM trades
                     WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0
-                      AND comment NOT LIKE '%ghost%'
+                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
                 """, (week_start_str,)).fetchall()
                 con2.close()
                 weekly_pnl = sum(r[0] for r in week_trades)
@@ -841,7 +847,25 @@ class TradingBot:
         self.is_running = True
         self.execution_lock.clear()
         self.account_id = self._get_current_account_id()
+
+        # [S21-A] Now that the MT5 login is known, bind the state file to this
+        # specific account. If the bot is later pointed at a different account,
+        # _load_state() detects the mismatch and loads the correct file instead
+        # of clearing state silently.
+        if self.account_id:
+            self.state_file = f"logs/tradecore_state_{self.account_id}.json"
+            self.log_info(f"📂 State file bound to account {self.account_id}: {self.state_file}")
+        else:
+            self.log_info("⚠️  account_id unavailable — using generic state file. "
+                          "MT5 connection may be degraded.")
+
         self.scaled_positions = self._load_state()
+
+        # [S21-A] Bind QuantEngine to this account so all risk math is
+        # filtered to current account data only, never cross-contaminated
+        # with old demo / live account history.
+        self.quant_engine.set_account(self.account_id)
+
         self.log_info(f"✅ Kom v1.0: Engine Active. Monitoring {len(self.active_symbols)} Elite Assets.")
         
         self.news_manager.fetch_calendar()
@@ -943,32 +967,46 @@ class TradingBot:
     def evaluate_open_positions(self, positions):
         for pos in positions:
             try:
-                symbol = pos['symbol']
-                ticket = pos['ticket']
-                is_buy = pos['type'] == 'BUY'
-                
+                symbol       = pos['symbol']
+                ticket       = pos['ticket']
+                is_buy       = pos['type'] == 'BUY'
                 duration_hours = (time.time() - pos['time']) / 3600.0
-                profit = pos['profit']
-                
+                profit       = pos['profit']
+
                 tick = mt5.symbol_info_tick(symbol)
                 if tick:
                     open_price = pos.get('open_price', 0.0)
-                    is_buy     = pos['type'] == 'BUY'
-                    if is_buy:
-                        adverse   = max(0.0, open_price - tick.bid)
-                        favorable = max(0.0, tick.bid - open_price)
-                    else:
-                        adverse   = max(0.0, tick.ask - open_price)
-                        favorable = max(0.0, open_price - tick.ask)
-                    DBManager.update_mae_mfe(ticket, adverse, favorable)
+                    if open_price and open_price > 0:
+                        # [S21-C] MAE/MFE stored in price units (same units as
+                        # open_price, sl, tp). Raw price delta is the correct
+                        # unit — it matches how sl_dist is computed everywhere
+                        # else in the system. The previous code was correct but
+                        # we now guard against open_price=0 which produced
+                        # phantom adverse/favorable values on unrecorded fills.
+                        if is_buy:
+                            adverse   = max(0.0, open_price - tick.bid)
+                            favorable = max(0.0, tick.bid   - open_price)
+                        else:
+                            adverse   = max(0.0, tick.ask - open_price)
+                            favorable = max(0.0, open_price - tick.ask)
+                        # Only write if at least one value is meaningful (> 0)
+                        # to avoid hammering the DB with zero-updates every 10s.
+                        if adverse > 0 or favorable > 0:
+                            DBManager.update_mae_mfe(ticket, adverse, favorable)
 
                 if duration_hours > 12.0 and profit < 0:
-                    if ticket in self._closing_tickets: continue
+                    if ticket in self._closing_tickets:
+                        continue
                     self._closing_tickets.add(ticket)
-                    
-                    self.log_info(f"⏳ Time Decay Killswitch: {symbol} stuck in dead momentum for >12H. Liquidating.")
+                    self.log_info(
+                        f"⏳ Time Decay Killswitch: {symbol} stuck in dead "
+                        f"momentum for >12H. Liquidating."
+                    )
                     self.gateway.close_position(ticket, symbol, pos['volume'], pos['type'])
-                    self.async_alert(f"⏳ **Dead Momentum Liquidated:** {symbol}\nTrade closed early to free up margin.")
+                    self.async_alert(
+                        f"⏳ **Dead Momentum Liquidated:** {symbol}\n"
+                        f"Trade closed early to free up margin."
+                    )
                     self.symbol_cooldowns[symbol] = datetime.utcnow()
                     continue
 
@@ -1404,7 +1442,7 @@ class TradingBot:
             pass
 
     def run_analysis_cycle(self):
-        if not self.is_running: 
+        if not self.is_running:
             return
 
         _is_manually_paused = (
@@ -1413,8 +1451,27 @@ class TradingBot:
         )
 
         acc = self.gateway.get_account_info()
-        if not acc: 
+        if not acc:
             return
+
+        # [S21-B] Keep cached account_id fresh. Using self.account_id everywhere
+        # rather than calling _get_current_account_id() per-trade removes N live
+        # MT5 roundtrips per cycle and eliminates the race where a slow response
+        # returns None and the trade record gets a NULL account_id.
+        live_account_id = acc.get('account_id')
+        if live_account_id and live_account_id != self.account_id:
+            self.log_info(
+                f"⚠️  Account switch detected mid-run: "
+                f"{self.account_id} → {live_account_id}. "
+                f"Updating state binding."
+            )
+            self.account_id = live_account_id
+            self.state_file = f"logs/tradecore_state_{self.account_id}.json"
+            self.quant_engine.set_account(self.account_id)
+        elif live_account_id and not self.account_id:
+            self.account_id = live_account_id
+            self.state_file = f"logs/tradecore_state_{self.account_id}.json"
+            self.quant_engine.set_account(self.account_id)
             
         DBManager.log_snapshot(acc['balance'], acc['equity'], acc['margin_level'], acc['free_margin'],
                                account_id=acc.get('account_id'))
@@ -1872,7 +1929,9 @@ class TradingBot:
                                      ict_conditions=ict_conditions,
                                      model_type="ICT_STANDARD",
                                      model_sizing="STANDARD",
-                                     account_id=self._get_current_account_id())
+                                     # [S21-B] Use cached account_id — avoids live
+                                     # MT5 call on every signal log (60s cycle × N assets).
+                                     account_id=self.account_id)
                 self._last_logged_signal[symbol] = (analysis.signal, conf_bucket, result_status)
 
         except Exception as e: 
@@ -2222,80 +2281,112 @@ class TradingBot:
                 elif is_micro:
                     risk_multiplier = risk_multiplier * 0.50   
 
+                # [S22-A] Balance-aware dynamic lot sizing.
+                # Previously, FX/JPY used a hardcoded min_lot of 0.30, which
+                # forces $150 minimum risk at $7,618 balance regardless of Kelly
+                # output. At a 100-pip SL that becomes $300 = 3.9% — dangerous
+                # during the ML data-collection phase (N < 30 trades).
+                #
+                # New rule:  min_lot = max(broker_minimum, balance / 75000)
+                #   $7,618 → 0.10   $20k → 0.27   $50k → 0.67  $100k → 1.00
+                # This scales the minimum naturally with account size.
+                #
+                # Hard absolute dollar cap: during the N<30 ML collection phase,
+                # no single trade can risk more than min(1.5% of balance, $150).
+                # This overrides Kelly upward drift from small-sample outliers.
+                quant_n = self.quant_engine.get_live_risk_params().get('n_trades', 0)
+                _ml_collection_phase = quant_n < 30
+
+                # Absolute dollar risk cap (tighter during collection phase)
+                _abs_risk_cap = min(balance * 0.015, 150.0) if _ml_collection_phase \
+                                else balance * 0.03
+
                 if "XAU" in symbol or "XAG" in symbol:
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
+                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
                     capital_per_lot = sl_distance * 100
-                    min_lot  = 0.10
+                    min_lot  = max(0.01, round(balance / 75000, 2))
                     vol_step = 0.01
                 elif "BTC" in symbol:
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
                     capital_per_lot = sl_distance * 1
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "ETH" in symbol:
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
                     capital_per_lot = sl_distance * 1
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "Oil" in symbol:
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 100.0  
-                    min_lot  = 1.0     
-                    vol_step = 1.0     
+                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
+                    capital_per_lot = sl_distance * 100.0
+                    min_lot  = 1.0
+                    vol_step = 1.0
                 elif "NGAS" in symbol:
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 10000.0  
+                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
+                    capital_per_lot = sl_distance * 10000.0
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif any(idx in symbol for idx in ["SP 500", "Tech 100", "Germany"]):
-                    contract_size = props.get('trade_contract_size', 10.0) if props else 10.0
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
+                    contract_size   = props.get('trade_contract_size', 10.0) if props else 10.0
+                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
                     capital_per_lot = sl_distance * contract_size
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "JPY" in symbol:
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
+                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
                     capital_per_lot = sl_distance * 1000
-                    min_lot  = 0.30
+                    min_lot  = max(0.01, round(balance / 75000, 2))
                     vol_step = 0.01
                 else:
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
+                    # Standard FX pairs (EURUSD, GBPUSD, etc.)
+                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
                     capital_per_lot = sl_distance * 100000
-                    min_lot  = 0.30
+                    min_lot  = max(0.01, round(balance / 75000, 2))
                     vol_step = 0.01
 
-                raw_lot        = risk_capital / capital_per_lot
                 import math as _math
+                raw_lot        = risk_capital / capital_per_lot if capital_per_lot > 0 else min_lot
                 step_inv       = round(1.0 / vol_step)
                 calculated_lot = _math.floor(raw_lot * step_inv) / step_inv
                 lot = max(min_lot, calculated_lot)
 
+                # [S22-A] max_lot caps: balance-proportional, tighter during N<30 phase.
+                # micro_cap was balance/12000 → 0.63 at $7,618. Now balance/20000 → 0.38
+                # during collection phase, relaxing to balance/12000 once N>=30.
+                _micro_divisor = 20000 if _ml_collection_phase else 12000
+
                 if "BTC" in symbol or "ETH" in symbol:
-                    max_lot = max(0.5, round(balance / 20000, 2))
+                    max_lot = round(min(balance / 20000, 0.50), 2) if _ml_collection_phase \
+                              else max(0.5, round(balance / 20000, 2))
                 elif "XAU" in symbol or "XAG" in symbol:
-                    max_lot = 3.0 if "XAU" in symbol else 2.5
+                    max_lot = (1.5 if "XAU" in symbol else 1.0) if _ml_collection_phase \
+                              else (3.0 if "XAU" in symbol else 2.5)
                 elif "Oil" in symbol:
-                    max_lot = max(1.0, min(10, int(round(balance / 1500, 0))))   
+                    max_lot = max(1.0, min(5, int(round(balance / 2000, 0)))) if _ml_collection_phase \
+                              else max(1.0, min(10, int(round(balance / 1500, 0))))
                 elif "NGAS" in symbol:
-                    max_lot = 5.0    
+                    max_lot = 2.0 if _ml_collection_phase else 5.0
                 elif "SP 500" in symbol:
-                    max_lot = max(0.1, min(30, round(balance / 500, 1)))   
+                    max_lot = max(0.1, min(10, round(balance / 1000, 1))) if _ml_collection_phase \
+                              else max(0.1, min(30, round(balance / 500, 1)))
                 elif "Tech 100" in symbol:
-                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
+                    max_lot = max(0.1, min(8, round(balance / 1000, 1))) if _ml_collection_phase \
+                              else max(0.1, min(20, round(balance / 500, 1)))
                 elif "Germany" in symbol:
-                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
+                    max_lot = max(0.1, min(8, round(balance / 1000, 1))) if _ml_collection_phase \
+                              else max(0.1, min(20, round(balance / 500, 1)))
                 elif is_nano:
                     max_lot = 0.10
                 elif is_micro:
-                    max_lot = max(round(balance / 12000, 2), 0.30)
+                    max_lot = max(round(balance / _micro_divisor, 2), min_lot)
                 else:
                     max_lot = max(1.0, round(balance / 3500, 2))
 
                 if is_nano:
                     max_lot = min(max_lot, 0.10)
                 elif is_micro:
-                    micro_cap = max(round(balance / 12000, 2), 0.30)
-                    max_lot   = min(max_lot, max(micro_cap, min_lot)) 
+                    micro_cap = max(round(balance / _micro_divisor, 2), min_lot)
+                    max_lot   = min(max_lot, micro_cap)
 
                 if lot > max_lot:
                     capped = _math.floor(max_lot * step_inv) / step_inv
@@ -2381,7 +2472,18 @@ class TradingBot:
                     
                     DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
 
-                    acc_id = self._get_current_account_id()
+                    # [S21-B] Use cached self.account_id (set at startup and refreshed
+                    # each analysis cycle) instead of a live MT5 call here. Calling
+                    # _get_current_account_id() during order execution creates a race
+                    # where a momentarily slow MT5 response returns None and the trade
+                    # record gets written with a NULL account_id.
+                    acc_id = self.account_id
+                    if not acc_id:
+                        self.log_info(
+                            f"⚠️  [S21-B] account_id is None during execution of "
+                            f"{symbol} — trade will be recorded without account tag. "
+                            f"Check MT5 connection."
+                        )
                     if is_nano:
                         DBManager.save_trade(
                             ticket      = result.order,
@@ -2459,7 +2561,7 @@ class TradingBot:
         try:
             import sqlite3
             con = sqlite3.connect("tradecore.db")
-            rows = con.execute("SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%' ORDER BY close_time ASC").fetchall()
+            rows = con.execute("SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%') ORDER BY close_time ASC").fetchall()
             con.close()
             
             profits = [r[0] for r in rows]

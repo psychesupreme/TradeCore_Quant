@@ -57,6 +57,24 @@ class QuantEngine:
         self._cache: dict   = {}
         self._cache_time    = None
         self._cache_ttl     = timedelta(minutes=5)
+        # [S21-A] Account ID binding. Set via set_account() from bot_engine
+        # start_service(). All DB reads filter to this account so that the
+        # quant math is never contaminated by data from a different MT5 login
+        # (e.g. the old $100k demo account that shares the same tradecore.db).
+        self._account_id: str | None = None
+
+    def set_account(self, account_id: str | None):
+        """
+        [S21-A] Bind this engine to a specific MT5 account.
+        Invalidates the cache so the next get_live_risk_params() call
+        reads fresh data filtered to the new account.
+        Called from TradingBot.start_service() and whenever an account
+        switch is detected in run_analysis_cycle().
+        """
+        if account_id != self._account_id:
+            self._account_id = account_id
+            self._cache      = {}
+            self._cache_time = None
 
     # ─────────────────────────────────────────────────────────
     # LIVE RISK PARAMS — called by bot_engine every cycle
@@ -81,8 +99,12 @@ class QuantEngine:
         if self._cache_time and (now - self._cache_time) < self._cache_ttl:
             return self._cache
 
-        df    = DBManager.get_closed_trades()
-        eq    = DBManager.get_equity_curve()
+        # [S21-A] Filter all data reads to the current account. Without this
+        # filter, get_closed_trades() returns all 179 rows including the 138
+        # ghost trades and old $100k account data, producing an inflated Kelly
+        # fraction (1.67 PF from 7 trades vs reality of a losing account).
+        df    = DBManager.get_closed_trades(account_id=self._account_id)
+        eq    = DBManager.get_equity_curve(account_id=self._account_id)
         n     = len(df)
         valid = n >= 30
 
@@ -104,14 +126,17 @@ class QuantEngine:
         risk_pct = kelly_frac if valid else min(0.02, kelly_frac)
 
         result = {
-            'risk_pct':           round(risk_pct, 4),
-            'var_limit':          round(var_limit, 2),
-            'cvar_limit':         round(cvar_limit, 2),
-            'kelly_fraction':     round(kelly_frac, 4),
-            'regime_gate':        regime_gate,
-            'regime_multiplier':  regime_mult,
-            'n_trades':           n,
-            'statistically_valid': valid,
+            'risk_pct':             round(risk_pct, 4),
+            'var_limit':            round(var_limit, 2),
+            'cvar_limit':           round(cvar_limit, 2),
+            'kelly_fraction':       round(kelly_frac, 4),
+            'regime_gate':          regime_gate,
+            'regime_multiplier':    regime_mult,
+            'n_trades':             n,
+            'statistically_valid':  valid,
+            # [S22-B] Explicit ML collection phase flag consumed by bot_engine
+            # sizing logic. True until N>=30 clean account-filtered trades exist.
+            'ml_collection_phase':  not valid,
         }
         self._cache      = result
         self._cache_time = now
@@ -126,8 +151,9 @@ class QuantEngine:
         Runs all metrics and returns a single structured dict.
         Use this for the Flutter dashboard performance panel.
         """
-        df  = DBManager.get_closed_trades()
-        eq  = DBManager.get_equity_curve()
+        # [S21-A] Always filter to the bound account.
+        df  = DBManager.get_closed_trades(account_id=self._account_id)
+        eq  = DBManager.get_equity_curve(account_id=self._account_id)
         n   = len(df)
 
         report = {
@@ -161,7 +187,7 @@ class QuantEngine:
         Grading: A >= 0.50/dollar, B >= 0.30, C >= 0.10, D < 0.10
         """
         if df is None:
-            df = DBManager.get_closed_trades()
+            df = DBManager.get_closed_trades(account_id=self._account_id)
         if df.empty:
             return {'value': 0.0, 'per_dollar': 0.0, 'grade': 'N/A', 'n': 0}
 
@@ -201,7 +227,7 @@ class QuantEngine:
         Note: punishes ALL volatility equally — use Sortino for asymmetric profiles.
         """
         if eq is None:
-            eq = DBManager.get_equity_curve()
+            eq = DBManager.get_equity_curve(account_id=self._account_id)
         daily = self._daily_returns(eq)
         if daily is None or len(daily) < 5:
             return {'ratio': None, 'grade': 'N/A (< 5 days data)',
@@ -233,7 +259,7 @@ class QuantEngine:
         Grading: A >= 3.0, B >= 2.0, C >= 1.5, D < 1.5
         """
         if eq is None:
-            eq = DBManager.get_equity_curve()
+            eq = DBManager.get_equity_curve(account_id=self._account_id)
         daily = self._daily_returns(eq)
         if daily is None or len(daily) < 5:
             return {'ratio': None, 'grade': 'N/A (< 5 days data)',
@@ -263,7 +289,7 @@ class QuantEngine:
         Grading: A >= 10, B >= 3, C >= 1, D < 1
         """
         if eq is None:
-            eq = DBManager.get_equity_curve()
+            eq = DBManager.get_equity_curve(account_id=self._account_id)
         dd = self._drawdown_stats(eq)
         if dd['max_dd_pct'] is None or dd['max_dd_pct'] == 0:
             return {'ratio': None, 'grade': 'N/A', 'cagr': None,
@@ -297,11 +323,21 @@ class QuantEngine:
         Falls back to parametric (ATR-based) when insufficient data.
         """
         if eq is None:
-            eq = DBManager.get_equity_curve()
+            eq = DBManager.get_equity_curve(account_id=self._account_id)
 
         daily  = self._daily_returns(eq)
-        latest = eq.tail(1)
-        balance = float(latest['balance'].iloc[0]) if not latest.empty else 10000.0
+
+        # [S22-B] When the equity curve is empty (e.g. first run on a new
+        # account before any snapshots are recorded), fall back to the live
+        # MT5 balance via account_snapshots latest row, or use the conservative
+        # parametric default. This prevents division-by-zero and NaN propagation
+        # through VaR → kill-switch logic in bot_engine.
+        if eq.empty or len(eq) == 0:
+            latest_balance = 10000.0
+        else:
+            latest = eq.tail(1)
+            latest_balance = float(latest['balance'].iloc[0]) if not latest.empty else 10000.0
+        balance = latest_balance
 
         if daily is not None and len(daily) >= 20:
             # Historical simulation VaR (non-parametric, preferred)
@@ -359,7 +395,7 @@ class QuantEngine:
             IDEAL:  0.80–1.20
         """
         if df is None:
-            df = DBManager.get_closed_trades()
+            df = DBManager.get_closed_trades(account_id=self._account_id)
         if df.empty or 'mae' not in df.columns:
             return {'available': False, 'n': 0}
 
@@ -428,7 +464,7 @@ class QuantEngine:
           N >= 100: use half-Kelly, capped at 4%
         """
         if df is None:
-            df = DBManager.get_closed_trades()
+            df = DBManager.get_closed_trades(account_id=self._account_id)
         n = len(df)
 
         if n < 5:
@@ -496,7 +532,7 @@ class QuantEngine:
         pretend to have more certainty than the data supports.
         """
         if df is None:
-            df = DBManager.get_closed_trades()
+            df = DBManager.get_closed_trades(account_id=self._account_id)
         n = len(df)
 
         if n < 5:
@@ -507,7 +543,7 @@ class QuantEngine:
             }
 
         profits     = df['profit'].values
-        latest_bal  = DBManager.get_equity_curve()
+        latest_bal  = DBManager.get_equity_curve(account_id=self._account_id)
         start_bal   = float(latest_bal['balance'].iloc[-1]) if not latest_bal.empty else 10000.0
 
         rng         = np.random.default_rng(seed=42)
@@ -570,7 +606,7 @@ class QuantEngine:
         With limited data (< 3 days): returns NORMAL with low confidence.
         """
         if eq is None:
-            eq = DBManager.get_equity_curve()
+            eq = DBManager.get_equity_curve(account_id=self._account_id)
 
         if eq.empty or len(eq) < 30:
             return {
@@ -671,7 +707,7 @@ class QuantEngine:
         the execution threshold comparison.
         """
         if df is None:
-            df = DBManager.get_closed_trades()
+            df = DBManager.get_closed_trades(account_id=self._account_id)
         n = len(df)
 
         if n < 30:

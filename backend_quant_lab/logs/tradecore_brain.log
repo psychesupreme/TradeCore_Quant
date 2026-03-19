@@ -19198,3 +19198,1611 @@
 2026-03-19 10:37:51 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
 2026-03-19 10:37:51 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
 2026-03-19 10:37:51 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:38:49 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:38:49 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:38:49 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:38:49 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:38:49 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:38:49 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:38:49 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:38:49 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:38:49 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:39:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:39:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:39:45 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:39:45 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:39:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:39:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:39:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:39:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:39:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:05 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:05 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:41:05 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:41:05 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:41:05 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:05 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:41:05 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:05 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:05 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:44 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:41:44 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:41:44 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:41:44 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:44 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:41:44 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:44 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:41:44 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:42:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:42:44 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:42:44 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:42:44 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:42:44 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:42:44 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:42:44 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:42:44 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:42:44 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:43:49 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:43:49 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:43:49 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:43:49 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:43:49 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:43:49 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:43:49 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:43:49 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:43:49 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:44:46 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:44:46 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:44:46 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:44:46 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:44:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:44:46 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:44:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:44:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:44:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:46:04 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:46:04 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:46:04 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:46:04 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:46:04 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:46:04 [INFO] 🔎 MTF Confluence Locked: US Oil BUY (Conf: 99%)
+2026-03-19 10:46:05 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:46:05 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:46:05 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:47:30 [INFO] ⚡ TRAP SET: US Oil BUY_LIMIT | Entry: 95.426 | Lot: 1.0
+2026-03-19 10:47:35 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:47:36 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:47:36 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:47:36 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:47:36 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:47:36 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:47:36 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:47:36 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:48:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:48:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:48:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:48:45 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:48:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:48:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:48:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:48:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:49:46 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:49:46 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:49:46 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:49:47 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:49:47 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:49:47 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:49:47 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:49:47 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:50:47 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:50:47 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 10:50:47 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:50:47 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:50:47 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:50:47 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:50:47 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:50:47 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:52:21 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:52:21 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:52:21 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:52:21 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:52:21 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:52:21 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:52:21 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:52:21 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:53:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:53:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:53:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:53:45 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:53:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:53:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:53:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:53:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:54:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:54:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:54:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:54:45 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:54:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:54:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:54:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:54:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:55:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:55:44 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:55:44 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:55:44 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:55:44 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:55:44 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:55:44 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:55:44 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:57:13 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:57:13 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:57:13 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:57:13 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:57:13 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:57:13 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:57:13 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:57:14 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:58:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:58:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:58:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:58:45 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:58:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:58:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:58:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:58:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:59:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:59:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:59:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:59:45 [DEBUG] [XAUUSD] NANO LOCK: Skipped (Spread drag too high).
+2026-03-19 10:59:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:59:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:59:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 10:59:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:00:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:01 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:56 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:56 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:56 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:57 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:57 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:57 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:57 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:02:57 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:03:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:44 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:44 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:44 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:44 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:44 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:04:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:05:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:24 [INFO] 📩 Received Command: /risk
+2026-03-19 11:06:40 [INFO] 📩 Received Command: /status
+2026-03-19 11:06:46 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:46 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:46 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:46 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:47 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:47 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:06:47 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:48 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:48 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:49 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:49 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:49 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:49 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:49 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:07:49 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:08:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:09:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:10:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:11:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:12:59 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:13:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:14:44 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:15:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:16:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:10 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:18:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.06 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:19:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:20:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:21:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:23:20 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:24:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:25:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:26:44 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:28:22 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:29:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:30:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:31:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:20 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:20 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:20 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:21 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:21 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:21 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:21 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:33:21 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:34:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:35:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:36:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:09 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:09 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:09 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:09 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:09 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:10 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:10 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:10 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:51 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:51 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:51 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:51 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:51 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:52 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:52 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:38:52 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:39:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:40:44 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:41:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:42:58 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:43:50 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.07 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:44:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:45:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:46:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.09 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:47:59 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:48:51 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:49:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:50:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:51:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:52:58 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:50 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:50 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:50 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:50 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:50 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:51 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:51 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:53:51 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:54:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:55:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:46 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:46 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:46 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:56:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:57:46 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:58:48 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [EURUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [GBPUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [USDJPY] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [XAUUSD] INDETERMINATE [London] | conf:0.10 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [XAGUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [US SP 500] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [US Tech 100] INDETERMINATE [London] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 11:59:45 [DEBUG] [BTCUSD] INDETERMINATE [London] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:00:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:01:44 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:01:44 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:01:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:01:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:01:44 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:01:44 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:01:44 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:01:44 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:02:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:02:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:02:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:02:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:02:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:02:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:02:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:02:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:03:59 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:03:59 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:03:59 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:03:59 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:03:59 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:03:59 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:03:59 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:03:59 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:04:44 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:04:44 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:04:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:04:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:04:44 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:04:44 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:04:44 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:04:44 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:05:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:05:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:05:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:05:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:05:46 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:05:46 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:05:46 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:05:46 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:06:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:06:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:06:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:06:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:06:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:06:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:06:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:06:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:07:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:07:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:07:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:07:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:07:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:07:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:07:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:07:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:09 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:09:09 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:09:09 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:09 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:09 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:09 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:09 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:09 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:46 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:09:46 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:09:46 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:46 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:46 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:46 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:09:46 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:09:46 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:10:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:10:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:10:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:10:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:10:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:10:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:10:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:10:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:11:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:11:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:11:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:11:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:11:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:11:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:11:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:11:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:12:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:12:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:12:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:12:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:12:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:12:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:12:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:12:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:14:21 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:14:21 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:14:21 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:14:21 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:14:21 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:14:22 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:14:22 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:14:22 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:15:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:15:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:15:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:15:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:15:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:15:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:15:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:15:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:16:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:16:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:16:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:16:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:16:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:16:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:16:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:16:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:17:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:17:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:17:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:17:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:17:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:17:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:17:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:17:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:19:23 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:19:23 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:19:23 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:19:23 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:19:23 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:19:23 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:19:23 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:19:23 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:20:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:20:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:20:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:20:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:20:46 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:20:46 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:20:46 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:20:46 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:21:46 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:21:46 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:21:46 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:21:46 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:21:46 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:21:46 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:21:46 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:21:46 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:22:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:22:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:22:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:22:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:22:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:22:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:22:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:22:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:24:21 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:24:21 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:24:21 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:24:21 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:24:21 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:24:21 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:24:21 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:24:21 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:25:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:25:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:25:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:25:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:25:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:25:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:25:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:25:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:25:53 [INFO] 🗑️ Stale Trap Avoided: Cancelled US Oil limit order. (Target reached before entry (Stale Trap))
+2026-03-19 12:25:53 [DEBUG] ⚠️ Stale trap #1/3 for US Oil @ 95.426.
+2026-03-19 12:26:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:26:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:26:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:26:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:26:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:26:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:26:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:26:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:26:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:27:45 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:27:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:27:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:27:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:27:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:27:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:27:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:27:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:27:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:29:23 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:29:23 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:29:23 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:29:23 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:29:23 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:29:23 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:29:23 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:29:23 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:29:23 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:30:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:30:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:30:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:30:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:30:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:30:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:30:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:30:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:30:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:31:47 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:31:47 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:31:47 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:31:47 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:31:47 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:31:47 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:31:47 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:31:47 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:31:47 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:32:46 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:32:46 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:32:46 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:32:46 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:32:46 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:32:46 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:32:46 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:32:46 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:32:46 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:10 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:34:10 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:34:10 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:10 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:10 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:10 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:34:10 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:10 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:10 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:53 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:34:53 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:34:53 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:53 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:53 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:53 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:34:53 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:53 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:34:53 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:35:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:35:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:35:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:35:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:35:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:35:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:35:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:35:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:35:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:36:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:36:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:36:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:36:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:36:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:36:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:36:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:36:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:36:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:37:44 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:37:44 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:37:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:37:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:37:44 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:37:44 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:37:44 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:37:44 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:37:44 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:38:59 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:38:59 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:38:59 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:38:59 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:38:59 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:38:59 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:38:59 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:38:59 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:38:59 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:39:51 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:39:51 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:39:52 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:39:52 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:39:52 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:39:52 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:39:52 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:39:52 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:39:52 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:40:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:40:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:40:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:40:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:40:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:40:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:40:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:40:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:40:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:41:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:41:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:41:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:41:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:41:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:41:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:41:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:41:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:41:45 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:42:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:42:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:42:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:42:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:42:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:42:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:42:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:42:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:42:46 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:43:47 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:43:47 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:43:47 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:43:47 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:43:47 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:43:47 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:43:47 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:43:47 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:43:47 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:44:48 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:44:48 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:44:48 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:44:48 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:44:48 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:44:48 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:44:48 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:44:48 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:44:48 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:45:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:45:46 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:45:46 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:45:46 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:45:46 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:45:46 [DEBUG] [US Oil] SELL blocked by Bullish H4 (score=0.90)
+2026-03-19 12:45:46 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:45:46 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:45:46 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:46:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:46:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:46:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:46:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:46:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:46:45 [DEBUG] [US Oil] SELL blocked by Bullish H4 (score=0.68)
+2026-03-19 12:46:45 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:46:45 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:46:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:47:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:47:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:47:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:47:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:47:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:47:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.9x | S13[Z:-2.21 HVN:True Δ:-9562 Upthrust:False]
+2026-03-19 12:47:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:47:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:47:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:48:52 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:48:52 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:48:52 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:48:52 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:48:52 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:48:52 [DEBUG] [US Oil] SELL blocked by Bullish H4 (score=0.68)
+2026-03-19 12:48:52 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:48:52 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:48:52 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:49:54 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:49:54 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:49:54 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:49:54 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:49:54 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:49:54 [DEBUG] [US Oil] SELL blocked by Bullish H4 (score=0.68)
+2026-03-19 12:49:54 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:49:54 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:49:54 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:50:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:50:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:50:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:50:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:50:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:50:45 [DEBUG] [US Oil] SELL blocked by Bullish H4 (score=0.68)
+2026-03-19 12:50:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:50:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:50:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:51:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:51:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:51:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:51:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:51:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:51:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.8x | S13[Z:-2.66 HVN:False Δ:-11555 Upthrust:False]
+2026-03-19 12:51:46 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:51:46 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:51:46 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:52:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:52:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:52:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:52:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:52:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:52:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.8x | S13[Z:-2.69 HVN:False Δ:-12071 Upthrust:False]
+2026-03-19 12:52:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:52:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:52:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:53:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:53:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:53:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:53:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:53:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:53:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.8x | S13[Z:-2.70 HVN:False Δ:-12419 Upthrust:False]
+2026-03-19 12:53:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:53:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:53:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:54:58 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:54:58 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:54:58 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:54:58 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:54:58 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:54:58 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.8x | S13[Z:-2.57 HVN:False Δ:-12793 Upthrust:False]
+2026-03-19 12:54:58 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:54:58 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:54:58 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:55:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:55:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:55:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:55:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:55:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:55:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.8x | S13[Z:-2.72 HVN:False Δ:-13082 Upthrust:False]
+2026-03-19 12:55:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:55:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:55:46 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:56:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:56:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:56:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:56:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:56:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:56:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.8x | S13[Z:-2.66 HVN:False Δ:-13351 Upthrust:False]
+2026-03-19 12:56:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:56:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:56:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:57:44 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:57:44 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:57:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:57:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:57:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:57:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.8x | S13[Z:-3.02 HVN:False Δ:-13746 Upthrust:False]
+2026-03-19 12:57:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:57:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:57:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 12:58:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:58:45 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:58:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:58:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:58:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 12:58:45 [DEBUG] [US Oil] ICT Bearish [London_PM] ⚡JUDAS(AH/AL) | AMD:MANIPULATION | Score:0.76 | OB:False FVG:False Prem:False(deep:False) BOS:False OTE:False Vol:1.7x | S13[Z:-2.94 HVN:False Δ:-14240 Upthrust:False]
+2026-03-19 12:58:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:58:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 12:58:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:00:09 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:09 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:09 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:10 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:10 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:10 [INFO] 🔎 MTF Confluence Locked: US Oil SELL (Conf: 87%)
+2026-03-19 13:00:10 [INFO] ⚡ TRAP SET: US Oil SELL_LIMIT | Entry: 97.84 | Lot: 1.0
+2026-03-19 13:00:10 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:00:10 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY_MICRO (Conf: 99%)
+2026-03-19 13:00:10 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 45.0R → capped at 3.0R (24352.75000)
+2026-03-19 13:00:10 [INFO] ⚠️ Lot Cap: US Tech 100 calculated 49.3 lots → capped at 0.6 (MICRO)
+2026-03-19 13:00:10 [INFO] ⚡ TRAP SET: US Tech 100 BUY_LIMIT | Entry: 24345.55 | Lot: 0.6
+2026-03-19 13:00:10 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:00:13 [INFO] 🗑️ Stale Trap Avoided: Cancelled US Oil limit order. (Target reached before entry (Stale Trap))
+2026-03-19 13:00:13 [DEBUG] ⚠️ Stale trap #1/3 for US Oil @ 97.84.
+2026-03-19 13:00:13 [INFO] 🗑️ Stale Trap Avoided: Cancelled US Tech 100 limit order. (Target reached before entry (Stale Trap))
+2026-03-19 13:00:13 [DEBUG] ⚠️ Stale trap #1/3 for US Tech 100 @ 24345.55.
+2026-03-19 13:00:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:00:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:00:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:00:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:01:44 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:01:44 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:01:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:01:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:01:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:01:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:01:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:02:44 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.12 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:02:44 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:02:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:02:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:02:44 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:02:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:02:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:03:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:03:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.15 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:03:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:03:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:03:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:03:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:03:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:05:10 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:05:10 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:10 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:10 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:10 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:10 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:05:10 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:05:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:05:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:05:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:05:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:06:44 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:06:44 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:06:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:06:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:06:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:06:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:06:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:07:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:07:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:07:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:07:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:07:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:07:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:07:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:08:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:08:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:08:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:08:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:08:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:08:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:08:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:10:22 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:10:22 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:10:22 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:10:22 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:10:22 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:10:22 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:10:22 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:11:44 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:11:44 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:11:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:11:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:11:44 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:11:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:11:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:12:44 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:12:44 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:12:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:12:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:12:44 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:12:44 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:12:44 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:13:44 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:13:44 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.13 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:13:44 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:13:44 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:13:44 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:13:44 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:13:44 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:15:19 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:15:20 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:15:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:15:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:15:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:15:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:15:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:15:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:15:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:16:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:16:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:16:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:16:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:16:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:16:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:16:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:16:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:16:45 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:17:45 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:17:45 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:17:45 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:17:45 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:17:45 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:17:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:17:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:17:45 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:17:46 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:18:48 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:18:48 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:18:48 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:18:48 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:18:48 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:18:48 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:18:48 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:18:49 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:18:49 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:20:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:20:21 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:20:21 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:20:21 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:20:21 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:20:21 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:20:21 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:20:21 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:20:21 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:21:47 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:21:47 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:21:47 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:21:47 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:21:47 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:21:47 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:21:47 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:21:47 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:21:47 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:22:48 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:22:48 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:22:48 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:22:48 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:22:48 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:22:48 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:22:48 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:22:48 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:22:48 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:24:18 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:24:18 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:24:18 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:24:18 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:24:18 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:24:19 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:24:19 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:24:19 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:24:19 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:25:55 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:25:55 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:25:55 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:25:55 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:25:55 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:25:56 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:25:56 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:25:56 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:25:56 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:26:49 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:26:49 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:26:49 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:26:49 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:26:49 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:26:49 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:26:49 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:26:49 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:26:49 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:26:49 [INFO] Stopped.
+2026-03-19 13:26:52 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:26:52 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:26:58 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:26:58 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:26:58 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 13:27:06 [INFO] Stopped.
+2026-03-19 13:27:07 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:27:07 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:27:07 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 13:27:18 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-19 13:28:17 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:28:17 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:28:18 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:28:18 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:28:18 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:28:18 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:28:18 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:28:18 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:28:18 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:29:18 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:29:18 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:29:19 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:29:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:29:19 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:29:19 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:29:19 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:29:19 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:29:19 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:30:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:30:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:30:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:30:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:30:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:30:20 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:30:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:30:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:30:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:31:19 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:31:19 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:31:19 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:31:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:31:19 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:31:19 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:31:19 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:31:19 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:31:19 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:32:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:32:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:32:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:32:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:32:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:32:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:32:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:32:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:32:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:33:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:33:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:33:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:33:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:33:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:33:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:33:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:33:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:33:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:34:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:34:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:34:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:34:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:34:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:34:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:34:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:34:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:34:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:35:19 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:35:19 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:35:19 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:35:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:35:19 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:35:19 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:35:19 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:35:19 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:35:19 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:36:18 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:36:18 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:36:18 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:36:18 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:36:18 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:36:18 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:36:18 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:36:18 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:36:18 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:37:19 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:37:19 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:37:19 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:37:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:37:19 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:37:19 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:37:19 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:37:19 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:37:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:38:18 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:38:19 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:38:19 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:38:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:38:19 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:38:19 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:38:19 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:38:19 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:38:19 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:39:19 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:39:19 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:39:19 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:39:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:39:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:39:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:39:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:39:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:39:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:40:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:40:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:40:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:40:21 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:40:21 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:40:21 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:40:21 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:40:21 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:40:21 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:41:22 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:41:22 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:41:22 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:41:22 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:41:22 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:41:22 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:41:22 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:41:22 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:41:22 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:42:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:42:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:42:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:42:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:42:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:42:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:42:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:42:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:42:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:43:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:43:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:43:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:43:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:43:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:43:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:43:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:43:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:43:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:44:20 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:44:20 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:44:20 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:44:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:44:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:44:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:44:20 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:44:20 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-19 13:44:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:45:19 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:45:19 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:45:19 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:45:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:45:19 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:45:19 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:45:19 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:45:19 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.25 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:45:19 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:46:18 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:46:18 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:46:18 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:46:18 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:46:18 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:46:18 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:46:18 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:46:18 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:46:18 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:47:17 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:47:17 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:47:17 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:47:18 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:47:18 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:47:18 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:47:18 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:47:18 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:47:18 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:48:20 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:48:20 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:48:20 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:48:20 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:48:20 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:48:20 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:48:20 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:48:20 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:48:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:49:19 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:49:19 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:49:19 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:49:19 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:49:19 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:49:19 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:49:19 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:49:20 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:49:20 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:50:18 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:50:18 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:50:18 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:50:18 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:50:18 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:50:18 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:50:18 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:50:18 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:50:19 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:50:39 [INFO] Stopped.
+2026-03-19 13:50:41 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:50:41 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:50:41 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 13:50:49 [INFO] Stopped.
+2026-03-19 13:50:51 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:50:51 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:50:51 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 13:51:00 [INFO] Stopped.
+2026-03-19 13:51:02 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:51:02 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:51:02 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 13:51:09 [INFO] Stopped.
+2026-03-19 13:51:11 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:51:11 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:51:11 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 13:51:22 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-19 13:52:22 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:52:22 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:52:22 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:52:23 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:52:23 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:52:23 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:52:23 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:52:23 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:52:23 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:53:22 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:53:22 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:53:22 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:53:22 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:53:22 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:53:22 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:53:22 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:53:22 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:53:22 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:54:22 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:54:22 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:54:22 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:54:22 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:54:22 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:54:22 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:54:22 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:54:22 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:54:22 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:55:23 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:55:23 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:55:23 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:55:23 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:55:23 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:55:23 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:55:23 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:55:23 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:55:23 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:56:24 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:56:24 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:56:24 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:56:24 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:56:24 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:56:24 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:56:24 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:56:24 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:56:24 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:57:23 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:57:23 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:57:24 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:57:24 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:57:24 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:57:24 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:57:24 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:57:24 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:57:24 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:58:23 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:58:23 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:58:23 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:58:23 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:58:23 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:58:23 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:58:23 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:58:23 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:58:23 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:59:22 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:59:22 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:59:22 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:59:22 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:59:23 [DEBUG] [XAGUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:59:23 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.19 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:59:23 [DEBUG] [US SP 500] INDETERMINATE [London_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:59:23 [DEBUG] [US Tech 100] INDETERMINATE [London_PM] | conf:0.23 | Price trending, no clean AMD range — skipping.
+2026-03-19 13:59:23 [DEBUG] [BTCUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 13:59:53 [INFO] Stopped.
+2026-03-19 13:59:55 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 13:59:55 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 13:59:55 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 14:00:05 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-19 14:00:09 [INFO] Stopped.
+2026-03-19 14:00:10 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 14:00:10 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 14:00:10 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 14:00:17 [INFO] Stopped.

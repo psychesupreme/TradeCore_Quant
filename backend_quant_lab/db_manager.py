@@ -279,7 +279,7 @@ class DBManager:
                            ROUND((julianday(close_time)-julianday(open_time))*1440,1) AS hold_min
                     FROM trades
                     WHERE close_time IS NOT NULL
-                      AND comment != 'ghost_cleanup'
+                      AND (comment IS NULL OR comment != 'ghost_cleanup')
                       AND profit IS NOT NULL
                       AND (account_id = ? OR account_id IS NULL)
                     ORDER BY close_time ASC
@@ -294,7 +294,7 @@ class DBManager:
                            ROUND((julianday(close_time)-julianday(open_time))*1440,1) AS hold_min
                     FROM trades
                     WHERE close_time IS NOT NULL
-                      AND comment != 'ghost_cleanup'
+                      AND (comment IS NULL OR comment != 'ghost_cleanup')
                       AND profit IS NOT NULL
                     ORDER BY close_time ASC
                 ''', conn)
@@ -308,14 +308,28 @@ class DBManager:
             conn.close()
 
     @staticmethod
-    def get_equity_curve() -> pd.DataFrame:
-        """Returns timestamped balance snapshots for Sharpe/Sortino/Calmar."""
+    def get_equity_curve(account_id: str | None = None) -> pd.DataFrame:
+        """
+        Returns timestamped balance snapshots for Sharpe/Sortino/Calmar.
+        [S21-A] account_id filter ensures the equity curve reflects only
+        the current trading account. Without it, the $100k demo history
+        and $10k demo history are merged, producing Sharpe/Calmar ratios
+        that don't correspond to any real trading period.
+        """
         conn = get_db_connection()
         try:
-            df = pd.read_sql_query('''
-                SELECT timestamp, balance, equity
-                FROM account_snapshots ORDER BY timestamp ASC
-            ''', conn)
+            if account_id:
+                df = pd.read_sql_query('''
+                    SELECT timestamp, balance, equity
+                    FROM account_snapshots
+                    WHERE account_id = ?
+                    ORDER BY timestamp ASC
+                ''', conn, params=(account_id,))
+            else:
+                df = pd.read_sql_query('''
+                    SELECT timestamp, balance, equity
+                    FROM account_snapshots ORDER BY timestamp ASC
+                ''', conn)
             df['timestamp'] = pd.to_datetime(df['timestamp'])
             return df
         except Exception as e:

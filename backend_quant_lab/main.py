@@ -174,3 +174,39 @@ def get_risk():
 @app.get("/bot/news")
 def get_news():
     return bot.get_news()
+
+# ==========================================
+# QUANT / AUDIT ENDPOINTS
+# ==========================================
+
+@app.get("/quant/status")
+def get_quant_status():
+    """Returns live risk params and ML readiness flag for the dashboard."""
+    return bot.quant_engine.get_live_risk_params()
+
+@app.get("/quant/export_report")
+def export_report():
+    """
+    [S22-C] Generates a per-account audit report and returns it as a
+    downloadable CSV. Called by the Flutter dashboard audit button.
+    """
+    from audit_db import audit_database
+    from fastapi.responses import FileResponse
+    import os
+
+    try:
+        result = audit_database(export_csv=True)
+        csv_path = result.get('csv_path')
+
+        if not csv_path or not os.path.exists(csv_path):
+            # No trades yet — return the JSON report instead
+            return result
+
+        return FileResponse(
+            path=csv_path,
+            media_type='text/csv',
+            filename=os.path.basename(csv_path)
+        )
+    except Exception as e:
+        logger.error(f"Audit export error: {e}")
+        return {"error": str(e)}
