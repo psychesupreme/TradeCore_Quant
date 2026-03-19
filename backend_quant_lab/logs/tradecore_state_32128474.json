@@ -1,0 +1,74 @@
+{
+  "account_id": "32128474",
+  "scaled_positions": [],
+  "last_logged_signal": {
+    "EURUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "GBPUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "USDJPY": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "XAUUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "XAGUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "US Oil": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "US SP 500": [
+      "BUY_MICRO",
+      0.99,
+      "ATTEMPTED"
+    ],
+    "US Tech 100": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
+    ],
+    "BTCUSD": [
+      "BUY_MICRO",
+      0.99,
+      "ATTEMPTED"
+    ]
+  },
+  "trade_confidences": {},
+  "pending_order_info": {
+    "8587693595": {
+      "regime": "NORMAL (TRENDING)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.99,
+      "sl": 69087.697,
+      "tp": 69567.697,
+      "symbol": "BTCUSD"
+    },
+    "8587705889": {
+      "regime": "NORMAL (TRENDING)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.99,
+      "sl": 6576.62,
+      "tp": 6581.41,
+      "symbol": "US SP 500"
+    }
+  }
+}
