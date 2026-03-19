@@ -181,8 +181,61 @@ def get_news():
 
 @app.get("/quant/status")
 def get_quant_status():
-    """Returns live risk params and ML readiness flag for the dashboard."""
-    return bot.quant_engine.get_live_risk_params()
+    """
+    [S24] Comprehensive quant intelligence endpoint for the dashboard.
+    Returns risk params, signal funnel, and ML model status in one call.
+    """
+    import sqlite3, json, os
+
+    result = bot.quant_engine.get_live_risk_params()
+
+    # Signal funnel counts from DB
+    try:
+        con = sqlite3.connect("tradecore.db")
+        funnel_rows = con.execute(
+            "SELECT result, COUNT(*) FROM signals GROUP BY result"
+        ).fetchall()
+        con.close()
+        funnel = {r[0]: r[1] for r in funnel_rows}
+        result['signal_funnel'] = {
+            'filled':           funnel.get('FILLED', 0),
+            'executed':         funnel.get('EXECUTED', 0),
+            'attempted':        funnel.get('ATTEMPTED', 0),
+            'orphaned_pre_s20': funnel.get('ORPHANED_PRE_S20', 0),
+            'low_confidence':   sum(v for k, v in funnel.items() if 'LOW_CONFIDENCE' in k),
+            'rejected':         sum(v for k, v in funnel.items() if 'REJECTED' in k),
+            'skipped':          funnel.get('SKIPPED', 0),
+        }
+        outcome_rows = con.execute(
+            "SELECT outcome, COUNT(*) FROM signals WHERE outcome IS NOT NULL GROUP BY outcome"
+        ) if False else sqlite3.connect("tradecore.db").execute(
+            "SELECT outcome, COUNT(*) FROM signals WHERE outcome IS NOT NULL GROUP BY outcome"
+        ).fetchall()
+        result['signal_outcomes'] = {r[0]: r[1] for r in outcome_rows}
+    except Exception:
+        result['signal_funnel']   = {}
+        result['signal_outcomes'] = {}
+
+    # ML model metadata
+    try:
+        meta_path = os.path.join("media", "kom_xgboost_v1_meta.json")
+        if os.path.exists(meta_path):
+            with open(meta_path) as f:
+                meta = json.load(f)
+            result['ml_model'] = {
+                'active':       meta.get('precision_gate') == 'ACTIVE',
+                'precision':    round(meta.get('cv_precision', 0) * 100, 1),
+                'accuracy':     round(meta.get('cv_accuracy',  0) * 100, 1),
+                'n_trained_on': meta.get('n_trades', 0),
+                'trained_at':   meta.get('trained_at', '')[:16],
+                'gate':         meta.get('precision_gate', 'DISABLED'),
+            }
+        else:
+            result['ml_model'] = {'active': False, 'gate': 'NOT_TRAINED'}
+    except Exception:
+        result['ml_model'] = {'active': False, 'gate': 'ERROR'}
+
+    return result
 
 @app.get("/quant/export_report")
 def export_report():

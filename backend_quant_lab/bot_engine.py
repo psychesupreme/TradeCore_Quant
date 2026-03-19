@@ -2610,32 +2610,59 @@ class TradingBot:
         try:
             import sqlite3
             con = sqlite3.connect("tradecore.db")
-            rows = con.execute("SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%') ORDER BY close_time ASC").fetchall()
+            # Full trade records for dashboard display
+            rows = con.execute("""
+                SELECT ticket, symbol, type, profit, close_time
+                FROM trades
+                WHERE profit IS NOT NULL AND profit != 0
+                  AND (comment IS NULL OR comment NOT LIKE '%ghost%')
+                ORDER BY close_time ASC
+            """).fetchall()
             con.close()
-            
-            profits = [r[0] for r in rows]
-            if not profits:
-                return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0, "curve": []}
-                
-            wins = [p for p in profits if p > 0]
-            losses = [p for p in profits if p < 0]
+
+            if not rows:
+                return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0,
+                        "net_pnl": 0.0, "avg_win": 0.0, "avg_loss": 0.0,
+                        "rr_ratio": 0.0, "curve": [], "recent_trades": []}
+
+            profits  = [r[2] for r in rows]
+            wins     = [p for p in profits if p > 0]
+            losses   = [p for p in profits if p < 0]
             win_rate = (len(wins) / len(profits)) * 100
-            
-            gross_win = sum(wins)
+            gross_win  = sum(wins)
             gross_loss = abs(sum(losses))
-            pf = gross_win / gross_loss if gross_loss > 0 else 99.9
-            
-            curve = [{"profit": p} for p in profits]
-            
+            pf       = gross_win / gross_loss if gross_loss > 0 else 99.9
+            avg_win  = gross_win  / len(wins)   if wins   else 0.0
+            avg_loss = gross_loss / len(losses) if losses else 0.0
+            rr       = avg_win / avg_loss if avg_loss > 0 else 0.0
+
+            # Cumulative P&L curve
+            curve, running = [], 0.0
+            for p in profits:
+                running += p
+                curve.append({"profit": p, "cumulative": round(running, 2)})
+
+            # Last 10 closed trades for trade history panel
+            recent = [{"ticket": r[0], "symbol": r[1], "type": r[2],
+                       "profit": round(r[2], 2), "close_time": str(r[3])[:16]}
+                      for r in rows[-10:]][::-1]
+
             return {
-                "win_rate": round(win_rate, 1),
+                "win_rate":     round(win_rate, 1),
                 "profit_factor": round(pf, 2),
                 "total_trades": len(profits),
-                "curve": curve
+                "net_pnl":      round(running, 2),
+                "avg_win":      round(avg_win, 2),
+                "avg_loss":     round(avg_loss, 2),
+                "rr_ratio":     round(rr, 2),
+                "curve":        curve,
+                "recent_trades": recent,
             }
         except Exception as e:
             self.log_debug(f"Performance API Error: {e}")
-            return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0, "curve": []}
+            return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0,
+                    "net_pnl": 0.0, "avg_win": 0.0, "avg_loss": 0.0,
+                    "rr_ratio": 0.0, "curve": [], "recent_trades": []}
 
     def get_risk(self):
         try:

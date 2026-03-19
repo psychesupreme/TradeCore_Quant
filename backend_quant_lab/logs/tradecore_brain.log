@@ -22924,3 +22924,54 @@
 2026-03-19 18:54:28 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
 2026-03-19 18:54:28 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
 2026-03-19 18:54:49 [INFO] Stopped.
+2026-03-19 18:54:53 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 18:54:53 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 18:54:53 [DEBUG] State Restored: 3 pending order(s) recovered — will record on next fill detection.
+2026-03-19 18:54:53 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 18:55:04 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-19 18:56:05 [DEBUG] [EURUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:56:05 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:56:05 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 18:56:05 [DEBUG] [XAUUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:56:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:56:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:56:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:56:05 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:57:04 [DEBUG] [EURUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:57:04 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:57:04 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 18:57:05 [DEBUG] [XAUUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:57:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:57:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:57:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:57:05 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:58:04 [DEBUG] [EURUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:58:04 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:58:04 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 18:58:04 [DEBUG] [XAUUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:58:04 [DEBUG] [US Oil] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:58:04 [DEBUG] [US SP 500] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:58:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:58:05 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:59:04 [DEBUG] [EURUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:59:04 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:59:05 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-19 18:59:05 [DEBUG] [XAUUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:59:05 [DEBUG] [US Oil] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:59:05 [DEBUG] [US SP 500] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:59:05 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-19 18:59:05 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-19 19:00:04 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:00:04 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:00:04 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:00:04 [DEBUG] [XAUUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:00:04 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:00:04 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:00:04 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:00:04 [DEBUG] [BTCUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:09:30 [INFO] Stopped.
+2026-03-19 19:09:33 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 19:09:33 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 19:09:33 [DEBUG] State Restored: 3 pending order(s) recovered — will record on next fill detection.
+2026-03-19 19:09:33 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 19:09:39 [INFO] Stopped.

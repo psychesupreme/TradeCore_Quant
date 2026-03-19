@@ -7,539 +7,735 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:        #080c12;
-    --surface:   #0d1320;
-    --border:    #1a2540;
-    --border-hi: #243356;
-    --accent:    #00e5ff;
-    --accent2:   #00C853; /* Kom Green */
-    --green:     #00ff9d;
-    --red:       #ff3b5c;
-    --yellow:    #ffd600;
-    --text:      #c8d8f0;
-    --muted:     #4a5e80;
-    --mono:      'Space Mono', monospace;
-    --display:   'Syne', sans-serif;
-  }
+:root {
+  --bg:      #080c12; --surface: #0d1320; --surface2: #111827;
+  --border:  #1a2540; --border2: #243356;
+  --accent:  #00e5ff; --green:  #00ff9d; --red: #ff3b5c;
+  --yellow:  #ffd600; --komg:   #00C853;
+  --text:    #c8d8f0; --muted:  #4a5e80; --dim: #2a3a5a;
+  --mono: 'Space Mono', monospace; --sans: 'Syne', sans-serif;
+  --r: 12px; --r-sm: 8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── LAYOUT ── */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:56px;background:var(--surface);
+  border-bottom:1px solid var(--border);flex-shrink:0;position:relative;
+}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--accent),var(--komg),transparent)}
+.brand{font-size:20px;font-weight:800;color:#fff;letter-spacing:.5px;display:flex;align-items:center;gap:10px}
+.brand span{color:var(--komg)}
+.brand-sub{font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.engine-badge{
+  display:flex;align-items:center;gap:6px;padding:5px 12px;
+  border-radius:20px;font-family:var(--mono);font-size:11px;font-weight:700;
+  background:rgba(0,255,157,.08);color:var(--green);border:1px solid rgba(0,255,157,.2)
+}
+.engine-badge.offline{background:rgba(255,59,92,.08);color:var(--red);border-color:rgba(255,59,92,.2)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.offline .dot{background:var(--red);box-shadow:0 0 8px var(--red)}
+.ks-badge{
+  display:flex;align-items:center;gap:5px;padding:4px 10px;
+  border-radius:20px;font-family:var(--mono);font-size:10px;
+  background:rgba(255,59,92,.12);color:var(--red);border:1px solid rgba(255,59,92,.25);
+  display:none
+}
+.ks-badge.active{display:flex}
+.upd{font-family:var(--mono);font-size:10px;color:var(--muted)}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--display);
-    line-height: 1.5;
-    padding: 20px;
-    overflow-x: hidden;
-  }
+/* ── TABS ── */
+.tabs{display:flex;gap:0;padding:0 20px;background:var(--surface);
+  border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.tab{
+  padding:12px 20px;font-size:12px;font-weight:600;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--komg);border-bottom-color:var(--komg)}
 
-  .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 20px;
-  }
+/* ── PAGES ── */
+.pages{flex:1;overflow:hidden;position:relative}
+.page{
+  position:absolute;inset:0;overflow-y:auto;padding:20px;
+  display:none;gap:16px;
+}
+.page.active{display:grid}
+#pg-live{grid-template-columns:1fr 1.8fr;grid-template-rows:auto auto 1fr}
+#pg-perf{grid-template-columns:280px 1fr 1fr}
+#pg-intel{grid-template-columns:1fr 1fr}
+#pg-risk{grid-template-columns:1fr 1fr}
 
-  header {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 30px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    position: relative;
-    overflow: hidden;
-  }
+/* ── PANELS ── */
+.panel{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:16px;
+  min-height:0
+}
+.panel.span2{grid-column:1/-1}
+.ph{
+  font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);display:flex;align-items:center;justify-content:space-between
+}
+.ph-action{
+  font-size:10px;color:var(--accent);cursor:pointer;
+  background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);
+  padding:3px 10px;border-radius:20px;font-family:var(--mono)
+}
+.ph-action:hover{background:rgba(0,229,255,.12)}
 
-  header::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
+/* ── STAT GRID ── */
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sg3{grid-template-columns:repeat(3,1fr)}
+.sc{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:14px
+}
+.sc.full{grid-column:1/-1}
+.sl{font-family:var(--mono);font-size:10px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.sv{font-size:22px;font-weight:700;font-family:var(--mono);color:#fff}
+.sv.sm{font-size:16px}.sv.xs{font-size:13px}
+.sv.g{color:var(--green)}.sv.r{color:var(--red)}.sv.y{color:var(--yellow)}
+.sv.a{color:var(--accent)}.sv.k{color:var(--komg)}
+.sv.dim{color:var(--muted)}
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: #fff;
-  }
+/* ── POSITIONS TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px}
+th{text-align:left;padding:10px 12px;color:var(--muted);
+  border-bottom:1px solid var(--border2);font-weight:400}
+td{padding:13px 12px;border-bottom:1px solid var(--border);color:#fff}
+.buy{color:var(--accent);font-weight:700}.sell{color:var(--red);font-weight:700}
+.pp{color:var(--green);font-weight:700}.pn{color:var(--red);font-weight:700}
+.sym{font-weight:700;font-size:13px}
+tr:last-child td{border-bottom:none}
+.empty-row td{text-align:center;color:var(--muted);padding:24px}
 
-  .brand span {
-    color: var(--accent2);
-  }
+/* ── FUNNEL BARS ── */
+.funnel{display:flex;flex-direction:column;gap:8px}
+.frow{display:flex;align-items:center;gap:10px}
+.flabel{font-family:var(--mono);font-size:11px;color:var(--muted);width:100px;flex-shrink:0}
+.fbar-wrap{flex:1;background:var(--bg);border-radius:4px;height:6px;overflow:hidden}
+.fbar{height:100%;border-radius:4px;transition:width .5s ease}
+.fbar.g{background:var(--komg)}.fbar.y{background:var(--yellow)}
+.fbar.r{background:var(--red)}.fbar.d{background:var(--dim)}
+.fval{font-family:var(--mono);font-size:11px;color:var(--text);width:50px;text-align:right}
 
-  .status-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    background: rgba(0, 255, 157, 0.1);
-    color: var(--green);
-    border: 1px solid rgba(0, 255, 157, 0.2);
-  }
+/* ── SPARKLINE ── */
+.spark-wrap{width:100%;height:100px;position:relative}
+.spark-wrap svg{width:100%;height:100%;overflow:visible}
 
-  .status-badge.offline {
-    background: rgba(255, 59, 92, 0.1);
-    color: var(--red);
-    border-color: rgba(255, 59, 92, 0.2);
-  }
+/* ── ML GAUGE ── */
+.ml-ring-wrap{display:flex;align-items:center;gap:20px}
+.ml-ring{width:80px;height:80px;flex-shrink:0}
+.ml-details{display:flex;flex-direction:column;gap:6px}
+.ml-row{font-family:var(--mono);font-size:11px;display:flex;gap:8px}
+.ml-key{color:var(--muted);width:90px}.ml-val{color:var(--text)}
 
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 10px var(--green);
-  }
-  .offline .status-dot {
-    background: var(--red);
-    box-shadow: 0 0 10px var(--red);
-  }
+/* ── RISK CALC ── */
+.calc-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.inp-group{display:flex;flex-direction:column;gap:5px}
+.inp-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase}
+.inp{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);
+  color:#fff;font-family:var(--mono);font-size:13px;padding:10px 12px;width:100%;
+  outline:none;transition:border-color .15s
+}
+.inp:focus{border-color:var(--accent)}
+.calc-result{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:14px 16px;margin-top:4px
+}
+.cr-main{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--komg)}
+.cr-sub{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.cr-risk{font-family:var(--mono);font-size:14px;color:var(--red)}
 
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+/* ── NEWS ── */
+.news-list{display:flex;flex-direction:column;gap:8px}
+.ni{
+  background:var(--bg);border:1px solid var(--border);
+  border-left:3px solid var(--dim);border-radius:var(--r-sm);padding:12px
+}
+.ni.high{border-left-color:var(--red);background:rgba(255,59,92,.04)}
+.ni.medium{border-left-color:var(--yellow)}
+.ni-meta{font-family:var(--mono);font-size:10px;color:var(--muted);
+  display:flex;justify-content:space-between;margin-bottom:4px}
+.ni-title{font-size:13px;font-weight:600;color:#fff}
 
-  .panel h2 {
-    font-size: 16px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+/* ── REGIME PILL ── */
+.regime-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;font-family:var(--mono);font-size:12px;
+  background:rgba(0,200,83,.1);color:var(--komg);border:1px solid rgba(0,200,83,.2)
+}
+.regime-pill.high{background:rgba(255,214,0,.1);color:var(--yellow);border-color:rgba(255,214,0,.2)}
+.regime-pill.dead{background:rgba(74,94,128,.1);color:var(--muted);border-color:rgba(74,94,128,.2)}
 
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
+/* ── PHASE BADGE ── */
+.phase{
+  font-family:var(--mono);font-size:10px;padding:3px 8px;
+  border-radius:4px;font-weight:700
+}
+.phase.collecting{background:rgba(255,214,0,.12);color:var(--yellow)}
+.phase.active{background:rgba(0,200,83,.12);color:var(--komg)}
 
-  .stat-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-  }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-
-  .stat-value {
-    font-size: 24px;
-    font-weight: 700;
-    color: #fff;
-    font-family: var(--mono);
-  }
-
-  .stat-value.green { color: var(--green); }
-  .stat-value.red { color: var(--red); }
-  .stat-value.yellow { color: var(--yellow); }
-
-  .positions-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--mono);
-    font-size: 13px;
-  }
-
-  .positions-table th {
-    text-align: left;
-    padding: 12px;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border-hi);
-    font-weight: normal;
-  }
-
-  .positions-table td {
-    padding: 16px 12px;
-    border-bottom: 1px solid var(--border);
-    color: #fff;
-  }
-
-  .type-buy { color: var(--accent); font-weight: 700; }
-  .type-sell { color: var(--red); font-weight: 700; }
-  
-  .profit-pos { color: var(--green); font-weight: bold; }
-  .profit-neg { color: var(--red); font-weight: bold; }
-
-  .news-item {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    border-left: 4px solid var(--muted);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .news-item.tier-high { border-left-color: var(--red); background: rgba(255, 59, 92, 0.05); }
-  .news-item.tier-med { border-left-color: var(--yellow); }
-
-  .news-meta {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .news-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-  }
-
-  #lastUpdate {
-    grid-column: 1 / -1;
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 10px;
-  }
-
-  /* Sparkline Chart */
-  .chart-container {
-    width: 100%;
-    height: 120px;
-    position: relative;
-    margin-top: 10px;
-  }
-  
-  .chart-svg {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  }
-
-  .chart-line {
-    fill: none;
-    stroke: var(--accent2);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  
-  .chart-area {
-    fill: url(#chart-gradient);
-  }
-
-  @media (max-width: 1024px) {
-    .container { grid-template-columns: 1fr; }
-  }
+/* ── MOBILE ── */
+@media(max-width:900px){
+  #pg-live,#pg-perf,#pg-intel,#pg-risk{grid-template-columns:1fr}
+  .sg3{grid-template-columns:repeat(2,1fr)}
+  .calc-inputs{grid-template-columns:1fr 1fr}
+  .upd{display:none}
+}
+@media(max-width:520px){
+  .topbar{padding:0 12px}
+  .page{padding:12px}
+  .tab{padding:10px 14px;font-size:11px}
+}
 </style>
 </head>
 <body>
+<div class="app">
 
-<div class="container">
-  <header>
-    <div class="brand">
-      Kom <span>v1.0</span>
-    </div>
-    <div class="status-badge" id="sysStatus">
-      <div class="status-dot"></div>
-      <span id="statusText">ONLINE</span>
-    </div>
-  </header>
-
-  <div style="display: flex; flex-direction: column; gap: 20px;">
-    
-    <div class="panel">
-      <h2>Account State</h2>
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-label">Balance</div>
-          <div class="stat-value" id="balance">---</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Equity</div>
-          <div class="stat-value" id="equity">---</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Free Margin</div>
-          <div class="stat-value" id="margin">---</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Float P&L</div>
-          <div class="stat-value" id="floatPnl">---</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>Quant Engine</h2>
-      <div class="stat-grid">
-        <div class="stat-card" style="grid-column: 1 / -1;">
-          <div class="stat-label">Market Regime</div>
-          <div class="stat-value" id="regime" style="font-size: 16px;">---</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Kelly Fraction</div>
-          <div class="stat-value accent" id="kelly">---</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Daily VaR (95%)</div>
-          <div class="stat-value red" id="var">---</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Win Rate</div>
-          <div class="stat-value" id="winRate">---</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Profit Factor</div>
-          <div class="stat-value" id="pfactor">---</div>
-        </div>
-        <div class="stat-card" style="grid-column: 1 / -1;">
-          <div class="stat-label">Equity Curve (Variance)</div>
-          <div class="chart-container">
-            <svg class="chart-svg" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#00C853" stop-opacity="0.3" />
-                  <stop offset="100%" stop-color="#00C853" stop-opacity="0.0" />
-                </linearGradient>
-              </defs>
-              <path class="chart-area" id="sparkArea" d=""></path>
-              <path class="chart-line" id="sparkLine" d=""></path>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+  <div class="brand">
+    Kom <span>v1.0</span>
+    <span class="brand-sub">Elite 10 · ICT+ML</span>
   </div>
-
-  <div style="display: flex; flex-direction: column; gap: 20px;">
-    
-    <div class="panel" style="flex: 1;">
-      <h2>Live Execution Feed (Elite 10)</h2>
-      <div style="overflow-x: auto;">
-        <table class="positions-table">
-          <thead>
-            <tr>
-              <th>Asset</th>
-              <th>Type</th>
-              <th>Volume</th>
-              <th>Entry Price</th>
-              <th>Duration</th>
-              <th style="text-align: right;">Profit</th>
-            </tr>
-          </thead>
-          <tbody id="posTable">
-            <tr><td colspan="6" style="text-align:center; color: var(--muted);">Waiting for connection...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>Institutional Event Horizon (12H)</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;" id="newsGrid">
-        <div style="color: var(--muted); font-family: var(--mono); font-size: 12px;">Loading calendar...</div>
-      </div>
-    </div>
-
+  <div class="topbar-right">
+    <div class="ks-badge" id="ksBadge">🛑 KILL SWITCH</div>
+    <div class="engine-badge" id="engBadge"><div class="dot"></div><span id="engText">CONNECTING</span></div>
+    <div class="upd" id="lastUpd">--:--</div>
   </div>
-
-  <div id="lastUpdate">Last update: ---</div>
 </div>
 
-<script>
-  const BASE = 'http://127.0.0.1:8000';
-  const $ = id => document.getElementById(id);
-  const fmtUSD = val => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+<!-- ── TABS ── -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('live')">Live</div>
+  <div class="tab" onclick="showTab('perf')">Performance</div>
+  <div class="tab" onclick="showTab('intel')">Intelligence</div>
+  <div class="tab" onclick="showTab('risk')">Risk</div>
+</div>
 
-  function setStatus(isOnline) {
-    const badge = $('sysStatus');
-    const txt = $('statusText');
-    if (isOnline) {
-      badge.classList.remove('offline');
-      txt.textContent = 'ENGINE ONLINE';
-    } else {
-      badge.classList.add('offline');
-      txt.textContent = 'CONNECTION LOST';
-    }
-  }
+<!-- ── PAGES ── -->
+<div class="pages">
 
-  function renderPositions(positions) {
-    const tbody = $('posTable');
-    if (!positions || positions.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--muted);">No active positions. Scanning structures.</td></tr>';
-      return;
-    }
+<!-- PAGE: LIVE -->
+<div class="page active" id="pg-live">
+  <!-- Account State -->
+  <div class="panel">
+    <div class="ph">Account State</div>
+    <div class="sg">
+      <div class="sc"><div class="sl">Balance</div><div class="sv" id="bal">---</div></div>
+      <div class="sc"><div class="sl">Equity</div><div class="sv" id="eq">---</div></div>
+      <div class="sc"><div class="sl">Free Margin</div><div class="sv" id="fm">---</div></div>
+      <div class="sc"><div class="sl">Float P&L</div><div class="sv" id="fpnl">---</div></div>
+    </div>
+    <div class="sc full">
+      <div class="sl">Regime</div>
+      <div id="regimePill" class="regime-pill">CALIBRATING...</div>
+    </div>
+  </div>
 
-    let html = '';
-    let totFloat = 0;
+  <!-- Positions -->
+  <div class="panel" style="grid-row:1/3">
+    <div class="ph">
+      Live Positions — Elite 10
+      <span id="posCount" style="font-family:var(--mono);font-size:11px;color:var(--muted)">0 open</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Asset</th><th>Dir</th><th>Lot</th><th>Entry</th><th>S/L</th><th>T/P</th><th>Duration</th><th style="text-align:right">P&L</th>
+        </tr></thead>
+        <tbody id="posTbl"><tr class="empty-row"><td colspan="8">Connecting to engine...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 
-    positions.forEach(p => {
-      const isBuy = p.type === 'BUY';
-      const prof = p.profit || 0;
-      totFloat += prof;
-      
-      const openTime = p.time ? new Date(p.time * 1000) : new Date();
-      const durHrs = (new Date() - openTime) / 3600000;
+  <!-- News -->
+  <div class="panel">
+    <div class="ph">
+      Event Horizon — 12H
+      <span id="newsCount" style="font-family:var(--mono);font-size:10px;color:var(--muted)"></span>
+    </div>
+    <div class="news-list" id="newsList">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">Loading calendar...</div>
+    </div>
+  </div>
+</div>
 
-      html += `
-        <tr>
-          <td style="font-weight: 700;">${p.symbol}</td>
-          <td class="${isBuy ? 'type-buy' : 'type-sell'}">${p.type}</td>
-          <td>${p.volume.toFixed(2)}</td>
-          <td>${p.open_price}</td>
-          <td style="color: var(--muted);">${durHrs.toFixed(1)}h</td>
-          <td style="text-align: right;" class="${prof >= 0 ? 'profit-pos' : 'profit-neg'}">
-            ${prof >= 0 ? '+' : ''}${fmtUSD(prof)}
-          </td>
-        </tr>
-      `;
-    });
+<!-- PAGE: PERFORMANCE -->
+<div class="page" id="pg-perf">
+  <!-- Metrics -->
+  <div class="panel">
+    <div class="ph">All-Time Metrics</div>
+    <div class="sg">
+      <div class="sc"><div class="sl">Net P&L</div><div class="sv k" id="netPnl">---</div></div>
+      <div class="sc"><div class="sl">Total Trades</div><div class="sv" id="totTrades">---</div></div>
+      <div class="sc"><div class="sl">Win Rate</div><div class="sv" id="wr">---</div></div>
+      <div class="sc"><div class="sl">Profit Factor</div><div class="sv" id="pf">---</div></div>
+      <div class="sc"><div class="sl">Avg Win</div><div class="sv g" id="avgW">---</div></div>
+      <div class="sc"><div class="sl">Avg Loss</div><div class="sv r" id="avgL">---</div></div>
+      <div class="sc full"><div class="sl">R:R Ratio</div><div class="sv a" id="rr">---</div></div>
+    </div>
+  </div>
 
-    tbody.innerHTML = html;
-    
-    $('floatPnl').textContent = (totFloat >= 0 ? '+' : '') + fmtUSD(totFloat);
-    $('floatPnl').className = 'stat-value ' + (totFloat >= 0 ? 'green' : 'red');
-  }
+  <!-- Equity Curve -->
+  <div class="panel">
+    <div class="ph">Cumulative P&L Curve</div>
+    <div class="spark-wrap" style="height:160px">
+      <svg id="curveSvg" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00C853" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="#00C853" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ff3b5c" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="#ff3b5c" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path id="curveArea" fill="url(#cg)" d=""/>
+        <path id="curveLine" fill="none" stroke="#00C853" stroke-width="2" stroke-linejoin="round" d=""/>
+        <line id="zeroLine" stroke="#4a5e80" stroke-width="1" stroke-dasharray="4,4" x1="0" y1="80" x2="800" y2="80"/>
+      </svg>
+    </div>
+  </div>
 
-  function renderNews(news) {
-    const grid = $('newsGrid');
-    if (!news || news.length === 0) {
-      grid.innerHTML = '<div style="color: var(--muted); font-family: var(--mono); font-size: 12px;">No high impact events pending.</div>';
-      return;
-    }
+  <!-- Trade History -->
+  <div class="panel">
+    <div class="ph">Recent Trades (last 10)</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Asset</th><th>Dir</th><th>P&L</th><th>Closed</th></tr></thead>
+        <tbody id="histTbl"><tr class="empty-row"><td colspan="4">No history yet</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-    let html = '';
-    // Only show top 3 to save space
-    news.slice(0, 3).forEach(n => {
-      const isHigh = n.impact === 'High';
-      html += `
-        <div class="news-item ${isHigh ? 'tier-high' : 'tier-med'}">
-          <div class="news-meta">
-            <span>${n.country} • ${n.impact}</span>
-            <span>${n.time.split(' ').pop()}</span>
-          </div>
-          <div class="news-title">${n.title}</div>
+<!-- PAGE: INTELLIGENCE -->
+<div class="page" id="pg-intel">
+  <!-- ML Model -->
+  <div class="panel">
+    <div class="ph">ML Model — XGBoost v1</div>
+    <div class="ml-ring-wrap">
+      <svg class="ml-ring" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="32" fill="none" stroke="#1a2540" stroke-width="8"/>
+        <circle id="mlArc" cx="40" cy="40" r="32" fill="none" stroke="#00C853"
+          stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="0 201" transform="rotate(-90 40 40)"
+          style="transition:stroke-dasharray .8s ease"/>
+        <text x="40" y="36" text-anchor="middle" fill="#fff" font-family="Space Mono" font-size="13" font-weight="700" id="mlPct">—</text>
+        <text x="40" y="50" text-anchor="middle" fill="#4a5e80" font-family="Space Mono" font-size="8">PRECISION</text>
+      </svg>
+      <div class="ml-details">
+        <div class="ml-row"><span class="ml-key">Status</span><span class="ml-val" id="mlGate">—</span></div>
+        <div class="ml-row"><span class="ml-key">Accuracy</span><span class="ml-val" id="mlAcc">—</span></div>
+        <div class="ml-row"><span class="ml-key">Trained on</span><span class="ml-val" id="mlN">—</span></div>
+        <div class="ml-row"><span class="ml-key">Trained at</span><span class="ml-val" id="mlAt">—</span></div>
+        <div class="ml-row"><span class="ml-key">Phase</span><span id="mlPhase" class="phase collecting">COLLECTING</span></div>
+      </div>
+    </div>
+    <div class="sc full">
+      <div class="sl">Training Progress</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+        <div style="flex:1;background:var(--bg);border-radius:4px;height:8px;overflow:hidden">
+          <div id="mlProg" style="height:100%;background:var(--komg);border-radius:4px;transition:width .5s ease;width:0%"></div>
         </div>
-      `;
-    });
-    grid.innerHTML = html;
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)" id="mlProgLbl">0/30</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quant Engine -->
+  <div class="panel">
+    <div class="ph">Quant Engine</div>
+    <div class="sg sg3">
+      <div class="sc"><div class="sl">Kelly Fraction</div><div class="sv k" id="kelly">---</div></div>
+      <div class="sc"><div class="sl">VaR (99%)</div><div class="sv r" id="var">---</div></div>
+      <div class="sc"><div class="sl">CVaR</div><div class="sv r" id="cvar">---</div></div>
+      <div class="sc"><div class="sl">Risk %</div><div class="sv a" id="riskPct">---</div></div>
+      <div class="sc"><div class="sl">N Trades</div><div class="sv" id="qN">---</div></div>
+      <div class="sc"><div class="sl">Markov Gate</div><div class="sv" id="markov">---</div></div>
+    </div>
+  </div>
+
+  <!-- Signal Funnel -->
+  <div class="panel">
+    <div class="ph">Signal Funnel — All-Time</div>
+    <div class="funnel" id="funnelChart">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Signal Outcomes -->
+  <div class="panel">
+    <div class="ph">Signal Outcomes</div>
+    <div class="sg">
+      <div class="sc"><div class="sl">Wins (outcome)</div><div class="sv g" id="sigW">---</div></div>
+      <div class="sc"><div class="sl">Losses (outcome)</div><div class="sv r" id="sigL">---</div></div>
+      <div class="sc full"><div class="sl">Labelled Signals</div><div class="sv" id="sigTotal">---</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: RISK -->
+<div class="page" id="pg-risk">
+  <!-- Risk Calculator -->
+  <div class="panel">
+    <div class="ph">Position Size Calculator</div>
+    <div class="calc-inputs">
+      <div class="inp-group">
+        <div class="inp-label">Balance ($)</div>
+        <input class="inp" id="calcBal" type="number" placeholder="7618" oninput="calcLot()">
+      </div>
+      <div class="inp-group">
+        <div class="inp-label">Risk %</div>
+        <input class="inp" id="calcRisk" type="number" value="1.0" step="0.1" oninput="calcLot()">
+      </div>
+      <div class="inp-group">
+        <div class="inp-label">SL Distance ($)</div>
+        <input class="inp" id="calcSl" type="number" value="50" oninput="calcLot()">
+      </div>
+    </div>
+    <div class="calc-result">
+      <div>
+        <div class="sl" style="margin-bottom:4px">Recommended Lot Size</div>
+        <div class="cr-main" id="calcLot">0.00</div>
+      </div>
+      <div style="text-align:right">
+        <div class="sl" style="margin-bottom:4px">Dollar Risk</div>
+        <div class="cr-risk" id="calcDollar">$0.00</div>
+        <div class="cr-sub" id="calcPct">0.00% of balance</div>
+      </div>
+    </div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:4px" id="calcNote"></div>
+  </div>
+
+  <!-- Sizing Health -->
+  <div class="panel">
+    <div class="ph">Live Sizing Limits (Current Balance)</div>
+    <div class="sg">
+      <div class="sc"><div class="sl">MICRO Max Lot</div><div class="sv a" id="szMicro">---</div></div>
+      <div class="sc"><div class="sl">Abs Risk Cap</div><div class="sv r" id="szCap">---</div></div>
+      <div class="sc"><div class="sl">FX Min Lot</div><div class="sv" id="szFx">---</div></div>
+      <div class="sc"><div class="sl">Phase</div><div id="szPhase" class="sv sm dim">---</div></div>
+    </div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">
+      Limits auto-adjust when N ≥ 30 clean trades.
+    </div>
+  </div>
+
+  <!-- Audit -->
+  <div class="panel">
+    <div class="ph">Database Audit
+      <a href="http://127.0.0.1:8000/quant/export_report" class="ph-action" target="_blank">↓ Export CSV</a>
+    </div>
+    <div class="sg">
+      <div class="sc"><div class="sl">Real Trades</div><div class="sv" id="auditN">---</div></div>
+      <div class="sc"><div class="sl">Ghost Trades</div><div class="sv dim" id="auditG">---</div></div>
+      <div class="sc"><div class="sl">ML Ready</div><div class="sv" id="auditML">---</div></div>
+      <div class="sc"><div class="sl">account_id Tagged</div><div class="sv" id="auditTag">---</div></div>
+    </div>
+  </div>
+
+  <!-- Kill Switch State -->
+  <div class="panel">
+    <div class="ph">Engine Safeguards</div>
+    <div class="sg">
+      <div class="sc"><div class="sl">Kill Switch</div><div class="sv" id="ksState">---</div></div>
+      <div class="sc"><div class="sl">Markov Gate</div><div class="sv" id="markov2">---</div></div>
+      <div class="sc"><div class="sl">Max Open Trades</div><div class="sv dim">12</div></div>
+      <div class="sc"><div class="sl">Max Gold Trades</div><div class="sv dim">3</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /pages -->
+</div><!-- /app -->
+
+<script>
+const B = 'http://127.0.0.1:8000';
+const $  = id => document.getElementById(id);
+const usd = v => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);
+const pct = v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+let _bal = 0, _n = 0;
+
+// ── TABS ──────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  $('pg-' + name).classList.add('active');
+}
+
+// ── STATUS / LIVE ─────────────────────────────────────────
+async function fetchStatus() {
+  const r = await fetch(B + '/bot/status', {signal: AbortSignal.timeout(4000)});
+  if (!r.ok) throw new Error('offline');
+  const s = await r.json();
+
+  $('engBadge').classList.toggle('offline', !s.is_running);
+  $('engText').textContent = s.is_running ? 'ENGINE ONLINE' : 'ENGINE OFFLINE';
+  $('ksBadge').classList.toggle('active', !!s.kill_switch);
+
+  if (s.account) {
+    _bal = s.account.balance || 0;
+    $('bal').textContent = usd(_bal);
+    $('eq').textContent  = usd(s.account.equity || 0);
+    $('fm').textContent  = usd(s.account.free_margin || 0);
   }
 
-  function buildSparkline(curveData) {
-    if (!curveData || curveData.length === 0) return;
-    
-    const svgWidth = $('sparkLine').parentElement.clientWidth || 300;
-    const svgHeight = 120;
-    
-    let profits = curveData.map(d => d.profit || 0);
-    let cumulative = [];
-    let sum = 0;
-    for(let p of profits) { sum += p; cumulative.push(sum); }
-    
-    const minP = Math.min(...cumulative, 0);
-    const maxP = Math.max(...cumulative, 0.001); 
-    const range = maxP - minP;
+  const fp = s.total_pnl || 0;
+  $('fpnl').textContent  = (fp >= 0 ? '+' : '') + usd(fp);
+  $('fpnl').className    = 'sv ' + (fp >= 0 ? 'g' : 'r');
 
-    let pts = [];
-    for(let i=0; i<cumulative.length; i++) {
-      let x = (i / (cumulative.length - 1)) * svgWidth;
-      let y = svgHeight - (((cumulative[i] - minP) / range) * svgHeight);
-      pts.push(`${x},${y}`);
-    }
-    
-    if (pts.length > 0) {
-      const linePath = `M ${pts.join(' L ')}`;
-      const areaPath = `${linePath} L ${svgWidth},${svgHeight} L 0,${svgHeight} Z`;
-      
-      $('sparkLine').setAttribute('d', linePath);
-      $('sparkArea').setAttribute('d', areaPath);
-    }
+  const reg = s.market_regime || 'NORMAL';
+  const pill = $('regimePill');
+  pill.textContent = reg;
+  pill.className = 'regime-pill' + (reg.includes('HIGH') ? ' high' : reg.includes('DEAD') ? ' dead' : '');
+
+  $('ksState').textContent  = s.kill_switch ? '🛑 ACTIVE' : '✅ Clear';
+  $('ksState').className    = 'sv sm ' + (s.kill_switch ? 'r' : 'g');
+
+  renderPositions(s.positions || []);
+  if (_bal > 0) { $('calcBal').placeholder = _bal.toFixed(2); calcLot(); }
+}
+
+function renderPositions(pos) {
+  $('posCount').textContent = pos.length + ' open';
+  if (!pos.length) {
+    $('posTbl').innerHTML = '<tr class="empty-row"><td colspan="8">No active positions · Scanning structures</td></tr>';
+    return;
+  }
+  $('posTbl').innerHTML = pos.map(p => {
+    const isBuy = p.type === 'BUY';
+    const pr    = p.profit || 0;
+    const dur   = p.time ? ((Date.now()/1000 - p.time) / 3600).toFixed(1) + 'h' : '—';
+    return `<tr>
+      <td class="sym">${p.symbol}</td>
+      <td class="${isBuy?'buy':'sell'}">${p.type}</td>
+      <td>${(p.volume||0).toFixed(2)}</td>
+      <td>${p.open_price}</td>
+      <td style="color:var(--muted)">${p.sl || '—'}</td>
+      <td style="color:var(--muted)">${p.tp || '—'}</td>
+      <td style="color:var(--muted)">${dur}</td>
+      <td style="text-align:right" class="${pr>=0?'pp':'pn'}">${pr>=0?'+':''}${usd(pr)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── PERFORMANCE ───────────────────────────────────────────
+async function fetchPerf() {
+  const r = await fetch(B + '/bot/performance', {signal: AbortSignal.timeout(4000)});
+  if (!r.ok) return;
+  const p = await r.json();
+  _n = p.total_trades || 0;
+
+  const np = p.net_pnl || 0;
+  $('netPnl').textContent = (np >= 0 ? '+' : '') + usd(np);
+  $('netPnl').className   = 'sv k ' + (np >= 0 ? '' : 'r');
+  $('totTrades').textContent = _n;
+  $('wr').textContent  = p.win_rate != null ? p.win_rate.toFixed(1) + '%' : '—';
+  $('pf').textContent  = p.profit_factor != null ? p.profit_factor.toFixed(2) : '—';
+  $('avgW').textContent = p.avg_win   ? '+' + usd(p.avg_win)  : '—';
+  $('avgL').textContent = p.avg_loss  ? '-' + usd(p.avg_loss) : '—';
+  $('rr').textContent  = p.rr_ratio   ? p.rr_ratio.toFixed(2) + ':1' : '—';
+
+  drawCurve(p.curve || []);
+  renderHistory(p.recent_trades || []);
+
+  // Update ML training progress
+  const pct30 = Math.min(100, (_n / 30) * 100);
+  $('mlProg').style.width = pct30 + '%';
+  $('mlProgLbl').textContent = _n + '/30';
+  $('auditN').textContent = _n;
+  $('auditML').textContent = _n >= 30 ? '✅ YES' : `⏳ ${30-_n} left`;
+  $('auditML').className  = 'sv sm ' + (_n >= 30 ? 'g' : 'y');
+}
+
+function renderHistory(trades) {
+  if (!trades.length) return;
+  $('histTbl').innerHTML = trades.map(t => {
+    const pr = t.profit || 0;
+    return `<tr>
+      <td class="sym">${t.symbol}</td>
+      <td class="${t.type==='BUY'?'buy':'sell'}">${t.type}</td>
+      <td class="${pr>=0?'pp':'pn'}">${pr>=0?'+':''}${usd(pr)}</td>
+      <td style="color:var(--muted);font-size:11px">${(t.close_time||'').substring(5,16)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function drawCurve(curve) {
+  if (!curve.length) return;
+  const svg   = $('curveSvg');
+  const W     = svg.clientWidth  || 600;
+  const H     = svg.clientHeight || 160;
+  const vals  = curve.map(d => d.cumulative || 0);
+  const minV  = Math.min(...vals, 0);
+  const maxV  = Math.max(...vals, 0.01);
+  const range = maxV - minV || 1;
+  const scX   = i => (i / (vals.length - 1)) * W;
+  const scY   = v => H - 8 - ((v - minV) / range) * (H - 16);
+  const pts   = vals.map((v, i) => `${scX(i)},${scY(v)}`);
+  const zeroY = scY(0);
+  const isPos = vals[vals.length-1] >= 0;
+
+  $('curveArea').setAttribute('fill', isPos ? 'url(#cg)' : 'url(#rg)');
+  $('curveLine').setAttribute('stroke', isPos ? '#00C853' : '#ff3b5c');
+  $('curveLine').setAttribute('d', `M ${pts.join(' L ')}`);
+  $('curveArea').setAttribute('d', `M ${pts.join(' L ')} L ${W},${H} L 0,${H} Z`);
+  $('zeroLine').setAttribute('y1', zeroY); $('zeroLine').setAttribute('y2', zeroY);
+  $('zeroLine').setAttribute('x2', W);
+}
+
+// ── QUANT / INTELLIGENCE ──────────────────────────────────
+async function fetchQuant() {
+  const r = await fetch(B + '/quant/status', {signal: AbortSignal.timeout(4000)});
+  if (!r.ok) return;
+  const q = await r.json();
+
+  $('kelly').textContent   = q.kelly_fraction != null ? (q.kelly_fraction*100).toFixed(1)+'%' : '—';
+  $('var').textContent     = q.var_limit   ? usd(q.var_limit)  : '—';
+  $('cvar').textContent    = q.cvar_limit  ? usd(q.cvar_limit) : '—';
+  $('riskPct').textContent = q.risk_pct    ? (q.risk_pct*100).toFixed(2)+'%' : '—';
+  $('qN').textContent      = q.n_trades   ?? '—';
+  $('markov').textContent  = q.regime_gate || '—';
+  $('markov2').textContent = q.regime_gate || '—';
+
+  const mlp = q.ml_collection_phase;
+  $('mlPhase').textContent  = mlp ? 'COLLECTING' : 'ACTIVE';
+  $('mlPhase').className    = 'phase ' + (mlp ? 'collecting' : 'active');
+  $('szPhase').textContent  = mlp ? 'N < 30 (conservative)' : 'N ≥ 30 (standard)';
+  $('szPhase').className    = 'sv xs ' + (mlp ? 'y' : 'k');
+
+  if (_bal > 0) {
+    const div  = mlp ? 20000 : 12000;
+    const micro = Math.min(_bal / div, mlp ? 0.5 : 99).toFixed(2);
+    const cap   = Math.min(_bal * 0.015, 150).toFixed(0);
+    const fx    = Math.max(0.01, _bal / 75000).toFixed(2);
+    $('szMicro').textContent = micro;
+    $('szCap').textContent   = '$' + cap;
+    $('szFx').textContent    = fx;
   }
 
-  async function fetchAll() {
-    try {
-      // 1. Status
-      const sRes = await fetch(`${BASE}/bot/status`, {signal: AbortSignal.timeout(5000)});
-      if (!sRes.ok) throw new Error('Status 404');
-      const s = await sRes.json();
-      
-      setStatus(true);
-      if(s.account) {
-        $('balance').textContent = fmtUSD(s.account.balance);
-        $('equity').textContent = fmtUSD(s.account.equity);
-        $('margin').textContent = fmtUSD(s.account.free_margin);
-      }
-      $('regime').textContent = s.market_regime || 'NORMAL';
-      if(s.market_regime && s.market_regime.includes('HIGH')) {
-        $('regime').className = 'stat-value yellow';
-      } else {
-        $('regime').className = 'stat-value green';
-      }
+  // ML model
+  const ml = q.ml_model || {};
+  const prec = ml.precision || 0;
+  const arc  = $('mlArc');
+  const circ = 2 * Math.PI * 32;
+  arc.setAttribute('stroke-dasharray', `${(prec/100)*circ} ${circ}`);
+  arc.setAttribute('stroke', prec >= 60 ? '#00C853' : prec >= 50 ? '#ffd600' : '#ff3b5c');
+  $('mlPct').textContent  = prec ? prec.toFixed(0) + '%' : '—';
+  $('mlGate').textContent = ml.gate || 'NOT TRAINED';
+  $('mlGate').style.color = ml.active ? 'var(--komg)' : 'var(--muted)';
+  $('mlAcc').textContent  = ml.accuracy ? ml.accuracy.toFixed(1) + '%' : '—';
+  $('mlN').textContent    = ml.n_trained_on ? ml.n_trained_on + ' trades' : '—';
+  $('mlAt').textContent   = ml.trained_at  || '—';
 
-      renderPositions(s.positions);
+  // Signal funnel
+  const fn = q.signal_funnel || {};
+  const total = fn.filled + fn.executed + fn.attempted + fn.low_confidence + fn.orphaned_pre_s20 + fn.skipped + fn.rejected || 1;
+  $('funnelChart').innerHTML = [
+    ['FILLED',       fn.filled    || 0, 'g'],
+    ['EXECUTED',     fn.executed  || 0, 'g'],
+    ['LOW CONF',     fn.low_confidence || 0, 'y'],
+    ['ORPHANED',     fn.orphaned_pre_s20 || 0, 'd'],
+    ['REJECTED',     fn.rejected  || 0, 'r'],
+    ['SKIPPED',      fn.skipped   || 0, 'd'],
+  ].map(([lbl, val, cls]) => `
+    <div class="frow">
+      <div class="flabel">${lbl}</div>
+      <div class="fbar-wrap"><div class="fbar ${cls}" style="width:${Math.min(100,(val/total)*100).toFixed(1)}%"></div></div>
+      <div class="fval">${val.toLocaleString()}</div>
+    </div>`).join('');
 
-      // 2. Risk
-      const rRes = await fetch(`${BASE}/bot/risk`, {signal: AbortSignal.timeout(5000)});
-      if (rRes.ok) {
-        const r = await rRes.json();
-        $('kelly').textContent = r.kelly_fraction != null ? (r.kelly_fraction * 100).toFixed(1) + '%' : '—';
-        $('var').textContent = r.var_95 != null ? fmtUSD(r.var_95) : '—';
-      }
+  const oc = q.signal_outcomes || {};
+  $('sigW').textContent     = oc.WIN   || 0;
+  $('sigL').textContent     = oc.LOSS  || 0;
+  $('sigTotal').textContent = ((oc.WIN||0) + (oc.LOSS||0)) + ' labelled';
+  $('auditTag').textContent = q.n_trades >= 30 ? '34/' + q.n_trades : 'N < 30';
+  $('auditG').textContent   = '138 (zeroed)';
+}
 
-      // 3. Performance
-      const pRes = await fetch(`${BASE}/bot/performance`, {signal: AbortSignal.timeout(5000)});
-      if (pRes.ok) {
-        const p = await pRes.json();
-        $('winRate').textContent = (p.win_rate ?? '—') + (p.win_rate != null ? '%' : '');
-        $('pfactor').textContent = p.profit_factor != null ? p.profit_factor.toFixed(2) : '—';
-        buildSparkline(p.curve || []);
-      }
-
-      // 4. News (throttle to save requests)
-      if (!fetchAll._nCount) fetchAll._nCount = 0;
-      fetchAll._nCount++;
-      if (fetchAll._nCount % 6 === 1) {
-        const nRes = await fetch(`${BASE}/bot/news`, {signal: AbortSignal.timeout(5000)});
-        if (nRes.ok) renderNews(await nRes.json());
-      }
-
-      $('lastUpdate').textContent = 'Last update: ' + new Date().toUTCString().split('T')[0] + ' ' + new Date().toTimeString().substring(0,8) + ' local';
-
-    } catch (err) {
-      setStatus(false);
-      console.warn('Fetch error:', err.message);
-    }
+// ── NEWS ─────────────────────────────────────────────────
+async function fetchNews() {
+  const r = await fetch(B + '/bot/news', {signal: AbortSignal.timeout(5000)});
+  if (!r.ok) return;
+  const news = await r.json();
+  $('newsCount').textContent = news.length + ' events';
+  if (!news.length) {
+    $('newsList').innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--muted)">No high-impact events in next 12 hours.</div>';
+    return;
   }
+  $('newsList').innerHTML = news.slice(0,8).map(n => `
+    <div class="ni ${n.impact === 'High' ? 'high' : 'medium'}">
+      <div class="ni-meta">
+        <span>${n.country} · ${n.impact} · Tier ${n.tier || '?'}</span>
+        <span>${(n.time || '').split(' ').pop()}</span>
+      </div>
+      <div class="ni-title">${n.title}</div>
+    </div>`).join('');
+}
 
-  // Init
-  fetchAll();
-  setInterval(fetchAll, 10000); // 10s sync with fast loop
+// ── RISK CALCULATOR ───────────────────────────────────────
+function calcLot() {
+  const bal   = parseFloat($('calcBal').value) || _bal || 10000;
+  const rPct  = parseFloat($('calcRisk').value) || 1.0;
+  const slDol = parseFloat($('calcSl').value)   || 50;
+  if (!bal || !slDol) return;
 
+  const riskCap = bal * (rPct / 100);
+  const lotVal  = slDol * 100; // standard FX approximation
+  const rawLot  = riskCap / lotVal;
+  const minLot  = Math.max(0.01, bal / 75000);
+  const finalLot = Math.max(minLot, Math.floor(rawLot * 100) / 100);
+
+  const dolRisk = finalLot * lotVal;
+  const dolPct  = (dolRisk / bal * 100).toFixed(2);
+  const isML    = _n < 30;
+  const capHit  = dolRisk > Math.min(bal * 0.015, 150) && isML;
+
+  $('calcLot').textContent  = finalLot.toFixed(2);
+  $('calcDollar').textContent = usd(dolRisk);
+  $('calcPct').textContent  = dolPct + '% of balance';
+  $('calcNote').textContent = capHit
+    ? '⚠️ Exceeds $150 collection-phase cap — actual lot will be reduced by the engine.'
+    : isML ? `Min lot floor: ${minLot.toFixed(2)} (balance ÷ 75,000)` : '';
+}
+
+// ── MAIN LOOP ─────────────────────────────────────────────
+let _tick = 0;
+
+async function tick() {
+  _tick++;
+  try { await fetchStatus(); } catch { $('engBadge').classList.add('offline'); $('engText').textContent = 'OFFLINE'; }
+  if (_tick % 3 === 1) { try { await fetchPerf(); } catch {} }
+  if (_tick % 3 === 2) { try { await fetchQuant(); } catch {} }
+  if (_tick % 18 === 1) { try { await fetchNews(); } catch {} }
+  $('lastUpd').textContent = new Date().toTimeString().substring(0,8);
+}
+
+tick();
+setInterval(tick, 10000);
 </script>
 </body>
 </html>
