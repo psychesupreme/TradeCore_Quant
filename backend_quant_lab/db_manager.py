@@ -298,8 +298,12 @@ class DBManager:
                       AND profit IS NOT NULL
                     ORDER BY close_time ASC
                 ''', conn)
-            df['open_time']  = pd.to_datetime(df['open_time'])
-            df['close_time'] = pd.to_datetime(df['close_time'])
+            # [BUG-FIX] Mixed timestamp formats in DB: some rows have microseconds
+            # (e.g. "2026-03-06 03:45:05.480515" from pre-S20 fills) and some
+            # do not (e.g. "2026-03-11 00:21:39" from S20 orphan recovery).
+            # format='mixed' infers the format per-element without raising.
+            df['open_time']  = pd.to_datetime(df['open_time'],  format='mixed')
+            df['close_time'] = pd.to_datetime(df['close_time'], format='mixed')
             return df
         except Exception as e:
             print(f"⚠️ DB Error (get_closed_trades): {e}")

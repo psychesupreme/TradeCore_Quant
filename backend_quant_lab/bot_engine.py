@@ -15,6 +15,14 @@ from news_manager import NewsManager
 import threading
 import math
 
+# [S23-C] ML live scorer — loads the XGBoost model lazily on first call.
+# Guarded import so the bot starts cleanly before the model is trained.
+try:
+    from model_trainer import LiveScorer
+    _live_scorer = LiveScorer()
+except ImportError:
+    _live_scorer = None
+
 # ==========================================
 # ADVANCED TIERED LOGGING SETUP
 # ==========================================
@@ -1873,16 +1881,57 @@ class TradingBot:
                      self.log_debug(f"[{symbol}] NANO LOCK: Skipped (Spread drag too high).")
                      return
 
-                 if analysis.confidence >= required_conf:
+                 # [S23-C] ML confidence adjustment.
+                 # LiveScorer nudges the raw ICT score by −0.05 to +0.05
+                 # based on the XGBoost model's win probability for this
+                 # trade's feature profile. The adjustment is small by design —
+                 # the ML layer adds signal, it does not replace ICT logic.
+                 # Falls back to 0.0 (no change) if the model is not yet
+                 # trained or precision is below the 50% gate.
+                 _ml_adj = 0.0
+                 if _live_scorer and _live_scorer.is_active():
+                     try:
+                         ict_cond    = getattr(analysis, 'ict_conditions', {}) or {}
+                         _sym_regime = symbol_regime or "NORMAL (TRENDING)"
+                         _feat = {
+                             'is_buy':       1 if 'BUY' in analysis.signal else 0,
+                             'ict_score':    analysis.confidence,
+                             'signal_conf':  analysis.confidence,
+                             'hour_sin':     __import__('math').sin(2 * 3.14159 * datetime.utcnow().hour / 24),
+                             'hour_cos':     __import__('math').cos(2 * 3.14159 * datetime.utcnow().hour / 24),
+                             'dow_sin':      __import__('math').sin(2 * 3.14159 * datetime.utcnow().weekday() / 5),
+                             'dow_cos':      __import__('math').cos(2 * 3.14159 * datetime.utcnow().weekday() / 5),
+                             'asset_Commodity': 1 if any(x in symbol for x in ['XAU','XAG','Oil','NGAS']) else 0,
+                             'asset_Crypto':    1 if any(x in symbol for x in ['BTC','ETH']) else 0,
+                             'asset_Index':     1 if any(x in symbol for x in ['SP 500','Tech 100','Germany']) else 0,
+                             'asset_Forex':     1 if not any(x in symbol for x in ['XAU','XAG','Oil','NGAS','BTC','ETH','SP 500','Tech 100','Germany']) else 0,
+                             'regime_NORMAL':   1 if 'NORMAL' in _sym_regime else 0,
+                             'regime_HIGH':     1 if 'HIGH' in _sym_regime else 0,
+                             'regime_DEAD':     1 if 'DEAD' in _sym_regime else 0,
+                             'regime_UNKNOWN':  0,
+                         }
+                         _ml_adj = _live_scorer.score_trade(_feat)
+                         if _ml_adj != 0.0:
+                             self.log_debug(
+                                 f"[{symbol}] ML adjustment: {_ml_adj:+.2f} "
+                                 f"(ICT:{analysis.confidence:.3f} → {analysis.confidence+_ml_adj:.3f})"
+                             )
+                     except Exception as _ml_e:
+                         self.log_debug(f"ML scorer error on {symbol}: {_ml_e}")
+                         _ml_adj = 0.0
+
+                 adjusted_conf = analysis.confidence + _ml_adj
+
+                 if adjusted_conf >= required_conf:
                      if is_sniper_mode:
-                         self.log_info(f"🎯 GLOBAL SNIPER OVERRIDE: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
+                         self.log_info(f"🎯 GLOBAL SNIPER OVERRIDE: {symbol} {analysis.signal} (Conf: {adjusted_conf*100:.0f}%)")
                      else:
-                         self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
+                         self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {adjusted_conf*100:.0f}%)")
                      
                      result_status = "ATTEMPTED"
                      self.execute_signal(symbol, analysis, df_micro, props, regime=symbol_regime)
                  else:
-                     result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
+                     result_status = f"LOW_CONFIDENCE ({adjusted_conf*100:.0f}%)"
                      _reason_str = analysis.reason or ""
                      if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
                          _last = getattr(self, '_ny_lunch_last_log', {})

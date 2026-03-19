@@ -23,9 +23,9 @@
       "SKIPPED"
     ],
     "XAGUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.7,
+      "ATTEMPTED"
     ],
     "US Oil": [
       "NEUTRAL",
@@ -33,9 +33,9 @@
       "SKIPPED"
     ],
     "US SP 500": [
-      "BUY_MICRO",
-      0.99,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "US Tech 100": [
       "NEUTRAL",
@@ -43,9 +43,9 @@
       "SKIPPED"
     ],
     "BTCUSD": [
-      "BUY_MICRO",
-      0.99,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ]
   },
   "trade_confidences": {},
@@ -69,6 +69,16 @@
       "sl": 6576.62,
       "tp": 6581.41,
       "symbol": "US SP 500"
+    },
+    "8587829010": {
+      "regime": "HIGH VOLATILITY (GARCH)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.7,
+      "sl": 67.742,
+      "tp": 71.956,
+      "symbol": "XAGUSD"
     }
   }
 }
