@@ -22975,3 +22975,22 @@
 2026-03-19 19:09:33 [DEBUG] State Restored: 3 pending order(s) recovered — will record on next fill detection.
 2026-03-19 19:09:33 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
 2026-03-19 19:09:39 [INFO] Stopped.
+2026-03-19 19:09:42 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-19 19:09:42 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-19 19:09:42 [DEBUG] State Restored: 3 pending order(s) recovered — will record on next fill detection.
+2026-03-19 19:09:42 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-19 19:09:53 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-19 19:10:55 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:10:55 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:10:55 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:10:55 [DEBUG] [XAUUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:10:55 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:10:55 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:10:55 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:10:55 [DEBUG] [BTCUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-19 19:11:01 [DEBUG] Performance API Error: '>' not supported between instances of 'str' and 'int'
+2026-03-19 19:11:31 [DEBUG] Performance API Error: '>' not supported between instances of 'str' and 'int'
+2026-03-19 19:12:01 [DEBUG] Performance API Error: '>' not supported between instances of 'str' and 'int'
+2026-03-19 19:12:31 [DEBUG] Performance API Error: '>' not supported between instances of 'str' and 'int'
+2026-03-19 19:13:01 [DEBUG] Performance API Error: '>' not supported between instances of 'str' and 'int'
+2026-03-19 19:13:32 [DEBUG] Performance API Error: '>' not supported between instances of 'str' and 'int'
