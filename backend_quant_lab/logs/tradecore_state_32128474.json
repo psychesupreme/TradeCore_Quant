@@ -18,9 +18,9 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.7,
+      "ATTEMPTED"
     ],
     "XAGUSD": [
       "BUY_MICRO",
@@ -79,6 +79,66 @@
       "sl": 67.742,
       "tp": 71.956,
       "symbol": "XAGUSD"
+    },
+    "8587985457": {
+      "regime": "NORMAL (TRENDING)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.79,
+      "sl": 6603.82,
+      "tp": 6599.02,
+      "symbol": "US SP 500"
+    },
+    "8587985488": {
+      "regime": "HIGH VOLATILITY (GARCH)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.79,
+      "sl": 24331.3,
+      "tp": 24321.69,
+      "symbol": "US Tech 100"
+    },
+    "8588038571": {
+      "regime": "HIGH VOLATILITY (GARCH)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.7,
+      "sl": 70.221,
+      "tp": 71.168,
+      "symbol": "XAGUSD"
+    },
+    "8588051022": {
+      "regime": "NORMAL (TRENDING)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.747,
+      "sl": 6647.32,
+      "tp": 6642.52,
+      "symbol": "US SP 500"
+    },
+    "8588053785": {
+      "regime": "HIGH VOLATILITY (GARCH)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.7,
+      "sl": 70.314,
+      "tp": 71.168,
+      "symbol": "XAGUSD"
+    },
+    "8588068484": {
+      "regime": "HIGH VOLATILITY (GARCH)",
+      "account_id": "32128474",
+      "model_type": "ICT_STANDARD",
+      "model_sizing": "STANDARD",
+      "confidence": 0.7,
+      "sl": 4597.96,
+      "tp": 4675.96,
+      "symbol": "XAUUSD"
     }
   }
 }
