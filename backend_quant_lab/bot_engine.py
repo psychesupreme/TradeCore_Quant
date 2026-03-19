@@ -135,7 +135,16 @@ class TradingBot:
                     return set()
                 raw_dedup = data.get("last_logged_signal", {})
                 self._last_logged_signal = {k: tuple(v) for k, v in raw_dedup.items()}
-                self.trade_confidences = data.get("trade_confidences", {}) 
+                self.trade_confidences = data.get("trade_confidences", {})
+                # [S20-C] Restore pending order metadata that survived a restart.
+                # Keys are stored as strings in JSON; convert back to int ticket numbers.
+                raw_pending = data.get("pending_order_info", {})
+                if raw_pending:
+                    self._pending_order_info = {int(k): v for k, v in raw_pending.items()}
+                    self.log_debug(
+                        f"State Restored: {len(self._pending_order_info)} pending "
+                        f"order(s) recovered — will record on next fill detection."
+                    )
                 return set(data.get("scaled_positions", []))
         except Exception as e:
             self.log_debug(f"State Load Error: {e}")
@@ -147,12 +156,20 @@ class TradingBot:
             dedup_serializable = {
                 k: list(v) for k, v in self._last_logged_signal.items()
             }
+            # [S20-C] Serialize _pending_order_info so pending limit metadata
+            # (regime, account_id, model_type, sl, tp) survives a bot restart.
+            # Without this, any pending order placed before a restart has no
+            # metadata and can never be properly recorded when it fills.
+            pending_serializable = {
+                str(k): v for k, v in self._pending_order_info.items()
+            }
             with open(self.state_file, "w") as f:
                 json.dump({
                     "account_id":          account_id,
                     "scaled_positions":    list(self.scaled_positions),
                     "last_logged_signal":  dedup_serializable,
-                    "trade_confidences":   self.trade_confidences, 
+                    "trade_confidences":   self.trade_confidences,
+                    "pending_order_info":  pending_serializable,
                 }, f, indent=2)
         except Exception as e:
             self.log_debug(f"State Save Error: {e}")
@@ -1120,6 +1137,68 @@ class TradingBot:
                     except Exception as e:
                         self.log_debug(f"Fill Record Error ({ticket}): {e}")
 
+            # [S20-B] Orphan reconciliation: catches pending orders that filled
+            # AND closed before the next execution cycle (e.g. fast momentum moves
+            # where SL is hit within the 10s window). These tickets are gone from
+            # both mt5.positions_get() and mt5.orders_get() but we still have their
+            # metadata. We look them up in MT5 history to reconstruct the full record.
+            live_order_tickets = {o.ticket for o in (mt5.orders_get() or [])}
+            for orphan_ticket in list(self._pending_order_info.keys()):
+                if orphan_ticket in live_tickets or orphan_ticket in live_order_tickets:
+                    continue
+                history = mt5.history_deals_get(position=orphan_ticket)
+                if not history:
+                    continue
+                info = self._pending_order_info.pop(orphan_ticket)
+                try:
+                    open_deal  = next((d for d in history
+                                       if getattr(d, 'entry', -1) == mt5.DEAL_ENTRY_IN), None)
+                    close_deal = next((d for d in reversed(history)
+                                       if getattr(d, 'entry', -1) == mt5.DEAL_ENTRY_OUT), None)
+                    if not open_deal:
+                        continue
+                    open_time = datetime.utcfromtimestamp(open_deal.time).strftime('%Y-%m-%d %H:%M:%S')
+                    DBManager.save_trade(
+                        ticket       = orphan_ticket,
+                        symbol       = open_deal.symbol,
+                        type_op      = 'BUY' if open_deal.type == 0 else 'SELL',
+                        vol          = open_deal.volume,
+                        open_price   = open_deal.price,
+                        sl           = info.get('sl', 0.0),
+                        tp           = info.get('tp', 0.0),
+                        time         = open_time,
+                        regime       = info.get('regime'),
+                        account_id   = info.get('account_id'),
+                        model_type   = info.get('model_type'),
+                        model_sizing = info.get('model_sizing'),
+                    )
+                    if close_deal:
+                        close_time = datetime.utcfromtimestamp(close_deal.time).strftime('%Y-%m-%d %H:%M:%S')
+                        net_profit = (close_deal.profit
+                                      + getattr(close_deal, 'swap', 0.0)
+                                      + getattr(close_deal, 'commission', 0.0))
+                        DBManager.close_trade(
+                            ticket      = orphan_ticket,
+                            close_price = close_deal.price,
+                            close_time  = close_time,
+                            profit      = net_profit,
+                            commission  = getattr(close_deal, 'commission', 0.0),
+                        )
+                        outcome = "WIN" if net_profit > 0 else ("BREAK_EVEN" if net_profit == 0 else "LOSS")
+                        direction = 1 if open_deal.type == 0 else -1
+                        DBManager.update_signal_outcome(
+                            open_deal.symbol, outcome,
+                            (close_deal.price - open_deal.price) * direction
+                        )
+                        icon = "🟢" if net_profit > 0 else "🔴"
+                        self.log_info(
+                            f"{icon} [S20-B] Orphan recovered: "
+                            f"#{orphan_ticket} {open_deal.symbol} P&L: ${net_profit:+.2f}"
+                        )
+                    self._save_state()
+                except Exception as _orph_e:
+                    self.log_debug(f"Orphan Recovery Error ({orphan_ticket}): {_orph_e}")
+
         try:
             mt5_live_tickets = {p['ticket'] for p in current_positions}
             db_open_detail   = DBManager.get_open_trades_detail()
@@ -1165,6 +1244,10 @@ class TradingBot:
 
                 scale_key = f"{db_trade['symbol']}_{open_px}_{db_trade.get('type','BUY')}"
                 self.scaled_positions.discard(scale_key)
+                # [S20-C] Remove closed ticket from trade_confidences immediately.
+                # Previously this only happened during daily garbage collection,
+                # leaving stale tickets in tradecore_state.json until day rollover.
+                self.trade_confidences.pop(str(db_ticket), None)
                 self._save_state()
 
                 self.log_info(f"{icon} Trade Closed: #{db_ticket} {db_trade['symbol']} | P&L: ${net_profit:+.2f}")
@@ -2317,13 +2400,27 @@ class TradingBot:
                         self.trade_confidences[str(result.order)] = round(analysis.confidence, 3)
                         self._save_state()
                     else:
+                        # [S20-B] Store sl, tp, and symbol so orphan recovery
+                        # can reconstruct a complete trade record even if the
+                        # order fills and closes before the next execution cycle.
                         self._pending_order_info[result.order] = {
-                            'regime':       regime,
-                            'account_id':   acc_id,
-                            'model_type':   'ICT_STANDARD',
-                            'model_sizing': 'STANDARD',
-                            'confidence':   round(analysis.confidence, 3) 
+                            'regime':        regime,
+                            'account_id':    acc_id,
+                            'model_type':    'ICT_STANDARD',
+                            'model_sizing':  'STANDARD',
+                            'confidence':    round(analysis.confidence, 3),
+                            'sl':            float(sl),
+                            'tp':            float(tp),
+                            'symbol':        symbol,
                         }
+                        # [S20-C] Persist immediately so this metadata survives a restart.
+                        self._save_state()
+                        # [S20-A] Post-placement cooldown: blocks the 60s analysis loop
+                        # from placing duplicate limits while this one is live in MT5.
+                        # The existing mt5.orders_get() check in process_symbol() provides
+                        # a first layer; this cooldown is the safety net for fast fills
+                        # that close before the next cycle's pending-order query.
+                        self.symbol_cooldowns[symbol] = datetime.utcnow()
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
                     retcode = result.retcode if result else -1
