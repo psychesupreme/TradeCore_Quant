@@ -27,42 +27,124 @@ from datetime import datetime, timedelta
 import time
 import logging
 import re
+import json
+import os
 
 logger = logging.getLogger("Kom_News")
 
+# [S24-NEWS] Disk cache path — survives restarts so StatReload / server
+# restarts never hit ForexFactory again within the same calendar day.
+_CACHE_PATH = "logs/news_cache.json"
+# On 403, back off for 2 hours rather than retrying on the next restart.
+_CACHE_TTL_NORMAL  = 3600     # 1 hour on success
+_CACHE_TTL_BLOCKED = 7200     # 2 hours after 403
+
+
 class NewsManager:
     def __init__(self):
-        self.events = []
-        self.last_fetch = None
+        self.events      = []
+        self.last_fetch  = None
+        self._blocked_until = None   # set when ForexFactory returns 403
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/120.0.0.0 Safari/537.36'
         }
-        # [Sprint 14] Tier 1 events require a massive 4-hour pre-event blackout.
-        self.tier_1_keywords = ['CPI', 'FOMC', 'NFP', 'Non-Farm', 'Rate Decision', 'Interest Rate', 'GDP', 'Chair Powell Speaks']
+        self.tier_1_keywords = [
+            'CPI', 'FOMC', 'NFP', 'Non-Farm', 'Rate Decision',
+            'Interest Rate', 'GDP', 'Chair Powell Speaks'
+        ]
+        # [S24-NEWS] Warm the in-memory cache from disk on startup so the
+        # bot never makes a live HTTP request immediately after a restart.
+        self._load_disk_cache()
+
+    # ── DISK CACHE ────────────────────────────────────────────────────────
+
+    def _load_disk_cache(self):
+        """Load the last successful calendar from disk."""
+        try:
+            if not os.path.exists(_CACHE_PATH):
+                return
+            with open(_CACHE_PATH, 'r') as f:
+                data = json.load(f)
+            cached_at = datetime.fromisoformat(data.get('cached_at', '2000-01-01'))
+            age = (datetime.utcnow() - cached_at).total_seconds()
+            # Only use cache if it's less than 12 hours old
+            if age < 43200:
+                raw_events = data.get('events', [])
+                # Re-parse _event_dt strings back to datetime objects
+                for ev in raw_events:
+                    edt_str = ev.pop('_event_dt_iso', None)
+                    ev['_event_dt'] = datetime.fromisoformat(edt_str) if edt_str else None
+                self.events     = raw_events
+                self.last_fetch = cached_at
+                logger.info(
+                    f"📰 News: Loaded {len(self.events)} events from disk cache "
+                    f"(age: {age/3600:.1f}h)."
+                )
+        except Exception as e:
+            logger.debug(f"News disk cache load error: {e}")
+
+    def _save_disk_cache(self):
+        """Persist the current calendar to disk."""
+        try:
+            os.makedirs(os.path.dirname(_CACHE_PATH), exist_ok=True)
+            # Serialize datetime objects to ISO strings for JSON
+            serializable = []
+            for ev in self.events:
+                ev_copy = dict(ev)
+                edt = ev_copy.pop('_event_dt', None)
+                ev_copy['_event_dt_iso'] = edt.isoformat() if edt else None
+                serializable.append(ev_copy)
+            with open(_CACHE_PATH, 'w') as f:
+                json.dump({
+                    'cached_at': datetime.utcnow().isoformat(),
+                    'events':    serializable,
+                }, f)
+        except Exception as e:
+            logger.debug(f"News disk cache save error: {e}")
 
     def fetch_calendar(self):
         """
         Scrapes ForexFactory for high/medium impact events.
-        Implements Bug-68 Fix: Stateful inheritance of Time and Currency for grouped rows.
+        [S24-NEWS] Disk-cached: restarts never trigger a live request if
+        the on-disk cache is still fresh. 403 responses set a 2-hour
+        backoff so repeated restarts don't burn through the IP quota.
+        [BUG-68] Stateful inheritance of Time and Currency for grouped rows.
         """
         now = datetime.utcnow()
-        # [S18c] Hardened cache: 1 hour to prevent 403 IP bans from ForexFactory
-        if self.last_fetch and (now - self.last_fetch).total_seconds() < 3600:
+
+        # [S24-NEWS] Honour the 403 backoff window
+        if self._blocked_until and now < self._blocked_until:
+            mins_left = int((self._blocked_until - now).total_seconds() / 60)
+            logger.debug(f"📰 News: 403 backoff active — {mins_left}m remaining.")
             return self.events
+
+        # In-memory TTL (falls back to disk cache age on startup)
+        if self.last_fetch:
+            age = (now - self.last_fetch).total_seconds()
+            if age < _CACHE_TTL_NORMAL:
+                return self.events
 
         try:
             url = "https://www.forexfactory.com/calendar"
             response = requests.get(url, headers=self.headers, timeout=15)
-            
+
             if response.status_code == 403:
-                logger.error("🚫 News fetch failed: HTTP 403 (IP Blocked). Wait 10-15 minutes.")
+                self._blocked_until = now + timedelta(seconds=_CACHE_TTL_BLOCKED)
+                # Update last_fetch so in-memory TTL also backs off
+                self.last_fetch = now
+                logger.error(
+                    f"🚫 News: HTTP 403 (IP blocked). "
+                    f"Next attempt at {self._blocked_until.strftime('%H:%M')} UTC."
+                )
                 return self.events
-                
+
             if response.status_code != 200:
                 logger.error(f"News fetch failed: HTTP {response.status_code}")
                 return self.events
 
-            soup = BeautifulSoup(response.content, 'html.parser')
+            soup  = BeautifulSoup(response.content, 'html.parser')
             table = soup.find('table', class_='calendar__table')
             if not table:
                 logger.warning("ForexFactory table structure not found.")
@@ -133,9 +215,15 @@ class NewsManager:
                     '_event_dt': event_dt
                 })
 
-            self.events = parsed_events
+            self.events     = parsed_events
             self.last_fetch = now
-            logger.info(f"✅ News Pipeline: {len(self.events)} events synced (Stateful Parsing Active).")
+            self._blocked_until = None   # clear any prior backoff on success
+            # [S24-NEWS] Persist to disk so next restart uses cached data
+            self._save_disk_cache()
+            logger.info(
+                f"✅ News Pipeline: {len(self.events)} events synced "
+                f"(Stateful Parsing · Disk Cached)."
+            )
             return self.events
 
         except Exception as e:
