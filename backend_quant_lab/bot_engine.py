@@ -15,14 +15,6 @@ from news_manager import NewsManager
 import threading
 import math
 
-# [S23-C] ML live scorer — loads the XGBoost model lazily on first call.
-# Guarded import so the bot starts cleanly before the model is trained.
-try:
-    from model_trainer import LiveScorer
-    _live_scorer = LiveScorer()
-except ImportError:
-    _live_scorer = None
-
 # ==========================================
 # ADVANCED TIERED LOGGING SETUP
 # ==========================================
@@ -95,15 +87,16 @@ class TradingBot:
         self.execution_lock = set() 
         
         self._closing_tickets = set()
-        
+
+        # [S25-F3] Per-symbol H4 ATR cache — populated at signal time from
+        # ict_conditions[h4_atr], consumed by apply_trailing_stop() to set
+        # a wider trail on confirmed H4 continuation moves.
+        self._h4_atr_cache = {}
+
         # --- STATE PERSISTENCE ---
-        # [S21-A] Per-account state files. The filename is set to the generic
-        # fallback here; start_service() overwrites it with the MT5 login ID
-        # once the gateway is connected, so each MT5 account has an isolated
-        # state file and a full account switch never silently wipes live state.
         self.state_file = "logs/tradecore_state.json"
-        self.scaled_positions = set()
-        self.trade_confidences = {}
+        self.scaled_positions = set()  
+        self.trade_confidences = {} 
         
         self.daily_start_balance = 0.0
         self.last_trade_day = -1
@@ -147,16 +140,7 @@ class TradingBot:
                     return set()
                 raw_dedup = data.get("last_logged_signal", {})
                 self._last_logged_signal = {k: tuple(v) for k, v in raw_dedup.items()}
-                self.trade_confidences = data.get("trade_confidences", {})
-                # [S20-C] Restore pending order metadata that survived a restart.
-                # Keys are stored as strings in JSON; convert back to int ticket numbers.
-                raw_pending = data.get("pending_order_info", {})
-                if raw_pending:
-                    self._pending_order_info = {int(k): v for k, v in raw_pending.items()}
-                    self.log_debug(
-                        f"State Restored: {len(self._pending_order_info)} pending "
-                        f"order(s) recovered — will record on next fill detection."
-                    )
+                self.trade_confidences = data.get("trade_confidences", {}) 
                 return set(data.get("scaled_positions", []))
         except Exception as e:
             self.log_debug(f"State Load Error: {e}")
@@ -164,26 +148,16 @@ class TradingBot:
 
     def _save_state(self):
         try:
-            # [S21-B] Use cached self.account_id — _get_current_account_id()
-            # makes a live MT5 call which can return None under load.
-            account_id = self.account_id
+            account_id = self._get_current_account_id()
             dedup_serializable = {
                 k: list(v) for k, v in self._last_logged_signal.items()
-            }
-            # [S20-C] Serialize _pending_order_info so pending limit metadata
-            # (regime, account_id, model_type, sl, tp) survives a bot restart.
-            # Without this, any pending order placed before a restart has no
-            # metadata and can never be properly recorded when it fills.
-            pending_serializable = {
-                str(k): v for k, v in self._pending_order_info.items()
             }
             with open(self.state_file, "w") as f:
                 json.dump({
                     "account_id":          account_id,
                     "scaled_positions":    list(self.scaled_positions),
                     "last_logged_signal":  dedup_serializable,
-                    "trade_confidences":   self.trade_confidences,
-                    "pending_order_info":  pending_serializable,
+                    "trade_confidences":   self.trade_confidences, 
                 }, f, indent=2)
         except Exception as e:
             self.log_debug(f"State Save Error: {e}")
@@ -287,7 +261,7 @@ class TradingBot:
                 rows = con.execute("""
                     SELECT profit FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
-                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
+                      AND comment NOT LIKE '%ghost%'
                 """).fetchall()
                 con.close()
                 profits = [r[0] for r in rows]
@@ -331,7 +305,7 @@ class TradingBot:
                 rows = con.execute("""
                     SELECT symbol, type, profit, volume, close_time FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
-                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
+                      AND comment NOT LIKE '%ghost%'
                     ORDER BY close_time DESC LIMIT ?
                 """, (n,)).fetchall()
                 con.close()
@@ -471,12 +445,12 @@ class TradingBot:
                 today = datetime.utcnow().strftime('%Y-%m-%d')
                 
                 rows_today = con.execute(
-                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
+                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND comment NOT LIKE '%ghost%'",
                     (f"{today}%",)
                 ).fetchone()
                 
                 all_profits = con.execute(
-                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')"
+                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
                 ).fetchall()
                 con.close()
                 
@@ -629,15 +603,15 @@ class TradingBot:
             week_start_str = (datetime.utcnow() - _td(days=datetime.utcnow().weekday())).strftime('%Y-%m-%d')
             con = _sl.connect("tradecore.db")
             today_rows  = con.execute(
-                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
+                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
                 (f"{today_str}%",)
             ).fetchall()
             week_rows   = con.execute(
-                "SELECT profit FROM trades WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
+                "SELECT profit FROM trades WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
                 (week_start_str,)
             ).fetchall()
             all_rows    = con.execute(
-                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')"
+                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
             ).fetchone()
             con.close()
             today_pnl    = sum(r[0] for r in today_rows)
@@ -754,7 +728,7 @@ class TradingBot:
                 week_trades = con2.execute("""
                     SELECT profit FROM trades
                     WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0
-                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
+                      AND comment NOT LIKE '%ghost%'
                 """, (week_start_str,)).fetchall()
                 con2.close()
                 weekly_pnl = sum(r[0] for r in week_trades)
@@ -855,25 +829,7 @@ class TradingBot:
         self.is_running = True
         self.execution_lock.clear()
         self.account_id = self._get_current_account_id()
-
-        # [S21-A] Now that the MT5 login is known, bind the state file to this
-        # specific account. If the bot is later pointed at a different account,
-        # _load_state() detects the mismatch and loads the correct file instead
-        # of clearing state silently.
-        if self.account_id:
-            self.state_file = f"logs/tradecore_state_{self.account_id}.json"
-            self.log_info(f"📂 State file bound to account {self.account_id}: {self.state_file}")
-        else:
-            self.log_info("⚠️  account_id unavailable — using generic state file. "
-                          "MT5 connection may be degraded.")
-
         self.scaled_positions = self._load_state()
-
-        # [S21-A] Bind QuantEngine to this account so all risk math is
-        # filtered to current account data only, never cross-contaminated
-        # with old demo / live account history.
-        self.quant_engine.set_account(self.account_id)
-
         self.log_info(f"✅ Kom v1.0: Engine Active. Monitoring {len(self.active_symbols)} Elite Assets.")
         
         self.news_manager.fetch_calendar()
@@ -975,46 +931,32 @@ class TradingBot:
     def evaluate_open_positions(self, positions):
         for pos in positions:
             try:
-                symbol       = pos['symbol']
-                ticket       = pos['ticket']
-                is_buy       = pos['type'] == 'BUY'
+                symbol = pos['symbol']
+                ticket = pos['ticket']
+                is_buy = pos['type'] == 'BUY'
+                
                 duration_hours = (time.time() - pos['time']) / 3600.0
-                profit       = pos['profit']
-
+                profit = pos['profit']
+                
                 tick = mt5.symbol_info_tick(symbol)
                 if tick:
                     open_price = pos.get('open_price', 0.0)
-                    if open_price and open_price > 0:
-                        # [S21-C] MAE/MFE stored in price units (same units as
-                        # open_price, sl, tp). Raw price delta is the correct
-                        # unit — it matches how sl_dist is computed everywhere
-                        # else in the system. The previous code was correct but
-                        # we now guard against open_price=0 which produced
-                        # phantom adverse/favorable values on unrecorded fills.
-                        if is_buy:
-                            adverse   = max(0.0, open_price - tick.bid)
-                            favorable = max(0.0, tick.bid   - open_price)
-                        else:
-                            adverse   = max(0.0, tick.ask - open_price)
-                            favorable = max(0.0, open_price - tick.ask)
-                        # Only write if at least one value is meaningful (> 0)
-                        # to avoid hammering the DB with zero-updates every 10s.
-                        if adverse > 0 or favorable > 0:
-                            DBManager.update_mae_mfe(ticket, adverse, favorable)
+                    is_buy     = pos['type'] == 'BUY'
+                    if is_buy:
+                        adverse   = max(0.0, open_price - tick.bid)
+                        favorable = max(0.0, tick.bid - open_price)
+                    else:
+                        adverse   = max(0.0, tick.ask - open_price)
+                        favorable = max(0.0, open_price - tick.ask)
+                    DBManager.update_mae_mfe(ticket, adverse, favorable)
 
                 if duration_hours > 12.0 and profit < 0:
-                    if ticket in self._closing_tickets:
-                        continue
+                    if ticket in self._closing_tickets: continue
                     self._closing_tickets.add(ticket)
-                    self.log_info(
-                        f"⏳ Time Decay Killswitch: {symbol} stuck in dead "
-                        f"momentum for >12H. Liquidating."
-                    )
+                    
+                    self.log_info(f"⏳ Time Decay Killswitch: {symbol} stuck in dead momentum for >12H. Liquidating.")
                     self.gateway.close_position(ticket, symbol, pos['volume'], pos['type'])
-                    self.async_alert(
-                        f"⏳ **Dead Momentum Liquidated:** {symbol}\n"
-                        f"Trade closed early to free up margin."
-                    )
+                    self.async_alert(f"⏳ **Dead Momentum Liquidated:** {symbol}\nTrade closed early to free up margin.")
                     self.symbol_cooldowns[symbol] = datetime.utcnow()
                     continue
 
@@ -1183,68 +1125,6 @@ class TradingBot:
                     except Exception as e:
                         self.log_debug(f"Fill Record Error ({ticket}): {e}")
 
-            # [S20-B] Orphan reconciliation: catches pending orders that filled
-            # AND closed before the next execution cycle (e.g. fast momentum moves
-            # where SL is hit within the 10s window). These tickets are gone from
-            # both mt5.positions_get() and mt5.orders_get() but we still have their
-            # metadata. We look them up in MT5 history to reconstruct the full record.
-            live_order_tickets = {o.ticket for o in (mt5.orders_get() or [])}
-            for orphan_ticket in list(self._pending_order_info.keys()):
-                if orphan_ticket in live_tickets or orphan_ticket in live_order_tickets:
-                    continue
-                history = mt5.history_deals_get(position=orphan_ticket)
-                if not history:
-                    continue
-                info = self._pending_order_info.pop(orphan_ticket)
-                try:
-                    open_deal  = next((d for d in history
-                                       if getattr(d, 'entry', -1) == mt5.DEAL_ENTRY_IN), None)
-                    close_deal = next((d for d in reversed(history)
-                                       if getattr(d, 'entry', -1) == mt5.DEAL_ENTRY_OUT), None)
-                    if not open_deal:
-                        continue
-                    open_time = datetime.utcfromtimestamp(open_deal.time).strftime('%Y-%m-%d %H:%M:%S')
-                    DBManager.save_trade(
-                        ticket       = orphan_ticket,
-                        symbol       = open_deal.symbol,
-                        type_op      = 'BUY' if open_deal.type == 0 else 'SELL',
-                        vol          = open_deal.volume,
-                        open_price   = open_deal.price,
-                        sl           = info.get('sl', 0.0),
-                        tp           = info.get('tp', 0.0),
-                        time         = open_time,
-                        regime       = info.get('regime'),
-                        account_id   = info.get('account_id'),
-                        model_type   = info.get('model_type'),
-                        model_sizing = info.get('model_sizing'),
-                    )
-                    if close_deal:
-                        close_time = datetime.utcfromtimestamp(close_deal.time).strftime('%Y-%m-%d %H:%M:%S')
-                        net_profit = (close_deal.profit
-                                      + getattr(close_deal, 'swap', 0.0)
-                                      + getattr(close_deal, 'commission', 0.0))
-                        DBManager.close_trade(
-                            ticket      = orphan_ticket,
-                            close_price = close_deal.price,
-                            close_time  = close_time,
-                            profit      = net_profit,
-                            commission  = getattr(close_deal, 'commission', 0.0),
-                        )
-                        outcome = "WIN" if net_profit > 0 else ("BREAK_EVEN" if net_profit == 0 else "LOSS")
-                        direction = 1 if open_deal.type == 0 else -1
-                        DBManager.update_signal_outcome(
-                            open_deal.symbol, outcome,
-                            (close_deal.price - open_deal.price) * direction
-                        )
-                        icon = "🟢" if net_profit > 0 else "🔴"
-                        self.log_info(
-                            f"{icon} [S20-B] Orphan recovered: "
-                            f"#{orphan_ticket} {open_deal.symbol} P&L: ${net_profit:+.2f}"
-                        )
-                    self._save_state()
-                except Exception as _orph_e:
-                    self.log_debug(f"Orphan Recovery Error ({orphan_ticket}): {_orph_e}")
-
         try:
             mt5_live_tickets = {p['ticket'] for p in current_positions}
             db_open_detail   = DBManager.get_open_trades_detail()
@@ -1290,10 +1170,6 @@ class TradingBot:
 
                 scale_key = f"{db_trade['symbol']}_{open_px}_{db_trade.get('type','BUY')}"
                 self.scaled_positions.discard(scale_key)
-                # [S20-C] Remove closed ticket from trade_confidences immediately.
-                # Previously this only happened during daily garbage collection,
-                # leaving stale tickets in tradecore_state.json until day rollover.
-                self.trade_confidences.pop(str(db_ticket), None)
                 self._save_state()
 
                 self.log_info(f"{icon} Trade Closed: #{db_ticket} {db_trade['symbol']} | P&L: ${net_profit:+.2f}")
@@ -1450,7 +1326,7 @@ class TradingBot:
             pass
 
     def run_analysis_cycle(self):
-        if not self.is_running:
+        if not self.is_running: 
             return
 
         _is_manually_paused = (
@@ -1459,27 +1335,8 @@ class TradingBot:
         )
 
         acc = self.gateway.get_account_info()
-        if not acc:
+        if not acc: 
             return
-
-        # [S21-B] Keep cached account_id fresh. Using self.account_id everywhere
-        # rather than calling _get_current_account_id() per-trade removes N live
-        # MT5 roundtrips per cycle and eliminates the race where a slow response
-        # returns None and the trade record gets a NULL account_id.
-        live_account_id = acc.get('account_id')
-        if live_account_id and live_account_id != self.account_id:
-            self.log_info(
-                f"⚠️  Account switch detected mid-run: "
-                f"{self.account_id} → {live_account_id}. "
-                f"Updating state binding."
-            )
-            self.account_id = live_account_id
-            self.state_file = f"logs/tradecore_state_{self.account_id}.json"
-            self.quant_engine.set_account(self.account_id)
-        elif live_account_id and not self.account_id:
-            self.account_id = live_account_id
-            self.state_file = f"logs/tradecore_state_{self.account_id}.json"
-            self.quant_engine.set_account(self.account_id)
             
         DBManager.log_snapshot(acc['balance'], acc['equity'], acc['margin_level'], acc['free_margin'],
                                account_id=acc.get('account_id'))
@@ -1731,16 +1588,50 @@ class TradingBot:
                     tp_dist  = abs(tp_price - open_price) if tp_price else 0.0
                     near_tp  = (tp_dist > 0 and profit_dist >= tp_dist * 0.50)
 
-                    # [SPRINT 19e] Sniper Runner Aggressive Trail
+                    # [S25-F3] H4-proportional trailing stop for continuation trades.
+                    # The core problem: a 7pt XAUUSD SL with 1×SL-distance trail
+                    # exits a 280pt move in the first 7 points. When the H4 trend
+                    # is confirmed (h4_atr cached from signal time), trail by
+                    # 2×H4_ATR instead — keeping the trade alive through normal
+                    # H4 retracements while still protecting profits.
+                    # For assets without H4 data or non-continuation setups,
+                    # behaviour is identical to the previous logic.
+                    _h4_atr_sym    = self._h4_atr_cache.get(symbol, 0.0)
+                    _is_large_asset = any(x in symbol for x in
+                                          ['XAU','XAG','Oil','NGAS','BTC','ETH',
+                                           'SP 500','Tech 100','Germany'])
+                    _use_h4_trail  = (
+                        _is_large_asset and
+                        _h4_atr_sym > 0 and
+                        profit_dist >= one_r and          # only after at least 1R
+                        not near_tp                        # tight trail once near TP
+                    )
+
                     if near_tp:
+                        # Within 50% of TP: trail tightly to protect most of the gain
                         tight_trail = sl_dist_dynamic * 0.30
-                        lock_price = (price_current - tight_trail if is_buy else price_current + tight_trail)
+                        lock_price = (price_current - tight_trail if is_buy
+                                      else price_current + tight_trail)
+
+                    elif _use_h4_trail:
+                        # [S25-F3] H4 continuation trail: 2×H4_ATR behind price.
+                        # This is wide enough to survive an H4 retracement (typically
+                        # 0.5-1×H4_ATR) while still locking directional progress.
+                        h4_trail = _h4_atr_sym * 2.0
+                        lock_price = (price_current - h4_trail if is_buy
+                                      else price_current + h4_trail)
+                        # Never let the trail move the SL backwards
+                        # (ratchet enforcement happens below via should_modify)
+
                     elif conf_mem >= 0.85 and profit_dist > one_r:
-                        lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
+                        lock_price = (open_price + (profit_dist * 0.50) if is_buy
+                                      else open_price - (profit_dist * 0.50))
                     elif profit_dist > two_r:
-                        lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
+                        lock_price = (open_price + (profit_dist * 0.80) if is_buy
+                                      else open_price - (profit_dist * 0.80))
                     elif profit_dist > one_r:
-                        lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
+                        lock_price = (open_price + (profit_dist * 0.50) if is_buy
+                                      else open_price - (profit_dist * 0.50))
 
                     if profit_dist >= two_r and not near_tp:
                         try:
@@ -1881,57 +1772,16 @@ class TradingBot:
                      self.log_debug(f"[{symbol}] NANO LOCK: Skipped (Spread drag too high).")
                      return
 
-                 # [S23-C] ML confidence adjustment.
-                 # LiveScorer nudges the raw ICT score by −0.05 to +0.05
-                 # based on the XGBoost model's win probability for this
-                 # trade's feature profile. The adjustment is small by design —
-                 # the ML layer adds signal, it does not replace ICT logic.
-                 # Falls back to 0.0 (no change) if the model is not yet
-                 # trained or precision is below the 50% gate.
-                 _ml_adj = 0.0
-                 if _live_scorer and _live_scorer.is_active():
-                     try:
-                         ict_cond    = getattr(analysis, 'ict_conditions', {}) or {}
-                         _sym_regime = symbol_regime or "NORMAL (TRENDING)"
-                         _feat = {
-                             'is_buy':       1 if 'BUY' in analysis.signal else 0,
-                             'ict_score':    analysis.confidence,
-                             'signal_conf':  analysis.confidence,
-                             'hour_sin':     __import__('math').sin(2 * 3.14159 * datetime.utcnow().hour / 24),
-                             'hour_cos':     __import__('math').cos(2 * 3.14159 * datetime.utcnow().hour / 24),
-                             'dow_sin':      __import__('math').sin(2 * 3.14159 * datetime.utcnow().weekday() / 5),
-                             'dow_cos':      __import__('math').cos(2 * 3.14159 * datetime.utcnow().weekday() / 5),
-                             'asset_Commodity': 1 if any(x in symbol for x in ['XAU','XAG','Oil','NGAS']) else 0,
-                             'asset_Crypto':    1 if any(x in symbol for x in ['BTC','ETH']) else 0,
-                             'asset_Index':     1 if any(x in symbol for x in ['SP 500','Tech 100','Germany']) else 0,
-                             'asset_Forex':     1 if not any(x in symbol for x in ['XAU','XAG','Oil','NGAS','BTC','ETH','SP 500','Tech 100','Germany']) else 0,
-                             'regime_NORMAL':   1 if 'NORMAL' in _sym_regime else 0,
-                             'regime_HIGH':     1 if 'HIGH' in _sym_regime else 0,
-                             'regime_DEAD':     1 if 'DEAD' in _sym_regime else 0,
-                             'regime_UNKNOWN':  0,
-                         }
-                         _ml_adj = _live_scorer.score_trade(_feat)
-                         if _ml_adj != 0.0:
-                             self.log_debug(
-                                 f"[{symbol}] ML adjustment: {_ml_adj:+.2f} "
-                                 f"(ICT:{analysis.confidence:.3f} → {analysis.confidence+_ml_adj:.3f})"
-                             )
-                     except Exception as _ml_e:
-                         self.log_debug(f"ML scorer error on {symbol}: {_ml_e}")
-                         _ml_adj = 0.0
-
-                 adjusted_conf = analysis.confidence + _ml_adj
-
-                 if adjusted_conf >= required_conf:
+                 if analysis.confidence >= required_conf:
                      if is_sniper_mode:
-                         self.log_info(f"🎯 GLOBAL SNIPER OVERRIDE: {symbol} {analysis.signal} (Conf: {adjusted_conf*100:.0f}%)")
+                         self.log_info(f"🎯 GLOBAL SNIPER OVERRIDE: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
                      else:
-                         self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {adjusted_conf*100:.0f}%)")
+                         self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
                      
                      result_status = "ATTEMPTED"
                      self.execute_signal(symbol, analysis, df_micro, props, regime=symbol_regime)
                  else:
-                     result_status = f"LOW_CONFIDENCE ({adjusted_conf*100:.0f}%)"
+                     result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
                      _reason_str = analysis.reason or ""
                      if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
                          _last = getattr(self, '_ny_lunch_last_log', {})
@@ -1978,9 +1828,7 @@ class TradingBot:
                                      ict_conditions=ict_conditions,
                                      model_type="ICT_STANDARD",
                                      model_sizing="STANDARD",
-                                     # [S21-B] Use cached account_id — avoids live
-                                     # MT5 call on every signal log (60s cycle × N assets).
-                                     account_id=self.account_id)
+                                     account_id=self._get_current_account_id())
                 self._last_logged_signal[symbol] = (analysis.signal, conf_bucket, result_status)
 
         except Exception as e: 
@@ -2027,9 +1875,21 @@ class TradingBot:
                 ob_zone_high = ict_cond.get('ob_zone_high')      
                 swing_sl_ref = ict_cond.get('swing_sl_ref')      
                 sl_atr_buf   = ict_cond.get('sl_atr_buffer', volatility_buffer * 0.1)
-                tp_target    = ict_cond.get('tp_target_level')   
+                # [S25-F2] Use H4 structural target as primary TP.
+                # Asian session level is the minimum TP floor (ensures trade
+                # captures at least the intraday session target).
+                h4_tp_target  = ict_cond.get('h4_tp_target')
+                asian_tp_floor= ict_cond.get('asian_tp_floor')
+                # h4_atr used to calibrate trailing stop width (stored for use below)
+                _h4_atr       = ict_cond.get('h4_atr', volatility_buffer * 4)
+                tp_target     = h4_tp_target or ict_cond.get('tp_target_level')
 
                 is_scalp_model = ict_cond.get('scalp_model', False)
+                # [S25-F3] Store H4 ATR keyed by symbol for trailing stop calibration.
+                # apply_trailing_stop() reads this to trail H4 continuation trades
+                # at 2×H4_ATR instead of 1×SL-distance, keeping runners alive.
+                if _h4_atr and _h4_atr > 0:
+                    self._h4_atr_cache[symbol] = float(_h4_atr)
                 if is_scalp_model:
                     tfvg_high  = ict_cond.get('tfvg_high')
                     tfvg_low   = ict_cond.get('tfvg_low')
@@ -2153,12 +2013,28 @@ class TradingBot:
                 if sl_dist_check > 0 and tp_price:
                     tp_dist_check = abs(tp_price - price)
                     tp_r          = tp_dist_check / sl_dist_check
-                    if tp_r > 6.0 and "XAU" not in symbol and "XAG" not in symbol:
-                        capped_tp    = price + (sl_dist_check * 3.0) if is_buy else price - (sl_dist_check * 3.0)
-                        tp_price     = capped_tp
+
+                    # [S25-F2] Asian session level is the TP floor: if H4 target
+                    # is closer than the Asian level, use Asian level instead.
+                    if asian_tp_floor and tp_price:
+                        if is_buy and tp_price < asian_tp_floor:
+                            tp_price = asian_tp_floor
+                        elif not is_buy and tp_price > asian_tp_floor:
+                            tp_price = asian_tp_floor
+
+                    # [S25-F2] R:R cap raised: commodities/crypto have no cap
+                    # (H4 swings can be 10-30R from M15 SL), other assets capped
+                    # at 8R (previously 3R which was choking all large FX moves).
+                    _is_commodity_crypto = any(x in symbol for x in
+                                               ['XAU','XAG','Oil','NGAS','BTC','ETH'])
+                    _rr_cap = 99.0 if _is_commodity_crypto else 8.0
+                    if tp_r > _rr_cap:
+                        capped_tp = (price + (sl_dist_check * _rr_cap) if is_buy
+                                     else price - (sl_dist_check * _rr_cap))
+                        tp_price = capped_tp
                         self.log_info(
                             f"🎯 TP Cap Applied: {symbol} structural TP was {tp_r:.1f}R "
-                            f"→ capped at 3.0R ({tp_price:.5f})"
+                            f"→ capped at {_rr_cap:.0f}R ({tp_price:.5f})"
                         )
 
                 tp = self.gateway.normalize_price(symbol, tp_price)
@@ -2330,112 +2206,80 @@ class TradingBot:
                 elif is_micro:
                     risk_multiplier = risk_multiplier * 0.50   
 
-                # [S22-A] Balance-aware dynamic lot sizing.
-                # Previously, FX/JPY used a hardcoded min_lot of 0.30, which
-                # forces $150 minimum risk at $7,618 balance regardless of Kelly
-                # output. At a 100-pip SL that becomes $300 = 3.9% — dangerous
-                # during the ML data-collection phase (N < 30 trades).
-                #
-                # New rule:  min_lot = max(broker_minimum, balance / 75000)
-                #   $7,618 → 0.10   $20k → 0.27   $50k → 0.67  $100k → 1.00
-                # This scales the minimum naturally with account size.
-                #
-                # Hard absolute dollar cap: during the N<30 ML collection phase,
-                # no single trade can risk more than min(1.5% of balance, $150).
-                # This overrides Kelly upward drift from small-sample outliers.
-                quant_n = self.quant_engine.get_live_risk_params().get('n_trades', 0)
-                _ml_collection_phase = quant_n < 30
-
-                # Absolute dollar risk cap (tighter during collection phase)
-                _abs_risk_cap = min(balance * 0.015, 150.0) if _ml_collection_phase \
-                                else balance * 0.03
-
                 if "XAU" in symbol or "XAG" in symbol:
-                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100
-                    min_lot  = max(0.01, round(balance / 75000, 2))
+                    min_lot  = 0.10
                     vol_step = 0.01
                 elif "BTC" in symbol:
-                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 1
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "ETH" in symbol:
-                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
                     capital_per_lot = sl_distance * 1
                     min_lot  = 0.01
                     vol_step = 0.01
                 elif "Oil" in symbol:
-                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
-                    capital_per_lot = sl_distance * 100.0
-                    min_lot  = 1.0
-                    vol_step = 1.0
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 100.0  
+                    min_lot  = 1.0     
+                    vol_step = 1.0     
                 elif "NGAS" in symbol:
-                    risk_capital    = min((balance * base_risk_pct * 0.5) * risk_multiplier, _abs_risk_cap)
-                    capital_per_lot = sl_distance * 10000.0
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 10000.0  
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif any(idx in symbol for idx in ["SP 500", "Tech 100", "Germany"]):
-                    contract_size   = props.get('trade_contract_size', 10.0) if props else 10.0
-                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
+                    contract_size = props.get('trade_contract_size', 10.0) if props else 10.0
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * contract_size
                     min_lot  = 0.1
                     vol_step = 0.1
                 elif "JPY" in symbol:
-                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 1000
-                    min_lot  = max(0.01, round(balance / 75000, 2))
+                    min_lot  = 0.30
                     vol_step = 0.01
                 else:
-                    # Standard FX pairs (EURUSD, GBPUSD, etc.)
-                    risk_capital    = min((balance * base_risk_pct) * risk_multiplier, _abs_risk_cap)
+                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * 100000
-                    min_lot  = max(0.01, round(balance / 75000, 2))
+                    min_lot  = 0.30
                     vol_step = 0.01
 
+                raw_lot        = risk_capital / capital_per_lot
                 import math as _math
-                raw_lot        = risk_capital / capital_per_lot if capital_per_lot > 0 else min_lot
                 step_inv       = round(1.0 / vol_step)
                 calculated_lot = _math.floor(raw_lot * step_inv) / step_inv
                 lot = max(min_lot, calculated_lot)
 
-                # [S22-A] max_lot caps: balance-proportional, tighter during N<30 phase.
-                # micro_cap was balance/12000 → 0.63 at $7,618. Now balance/20000 → 0.38
-                # during collection phase, relaxing to balance/12000 once N>=30.
-                _micro_divisor = 20000 if _ml_collection_phase else 12000
-
                 if "BTC" in symbol or "ETH" in symbol:
-                    max_lot = round(min(balance / 20000, 0.50), 2) if _ml_collection_phase \
-                              else max(0.5, round(balance / 20000, 2))
+                    max_lot = max(0.5, round(balance / 20000, 2))
                 elif "XAU" in symbol or "XAG" in symbol:
-                    max_lot = (1.5 if "XAU" in symbol else 1.0) if _ml_collection_phase \
-                              else (3.0 if "XAU" in symbol else 2.5)
+                    max_lot = 3.0 if "XAU" in symbol else 2.5
                 elif "Oil" in symbol:
-                    max_lot = max(1.0, min(5, int(round(balance / 2000, 0)))) if _ml_collection_phase \
-                              else max(1.0, min(10, int(round(balance / 1500, 0))))
+                    max_lot = max(1.0, min(10, int(round(balance / 1500, 0))))   
                 elif "NGAS" in symbol:
-                    max_lot = 2.0 if _ml_collection_phase else 5.0
+                    max_lot = 5.0    
                 elif "SP 500" in symbol:
-                    max_lot = max(0.1, min(10, round(balance / 1000, 1))) if _ml_collection_phase \
-                              else max(0.1, min(30, round(balance / 500, 1)))
+                    max_lot = max(0.1, min(30, round(balance / 500, 1)))   
                 elif "Tech 100" in symbol:
-                    max_lot = max(0.1, min(8, round(balance / 1000, 1))) if _ml_collection_phase \
-                              else max(0.1, min(20, round(balance / 500, 1)))
+                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
                 elif "Germany" in symbol:
-                    max_lot = max(0.1, min(8, round(balance / 1000, 1))) if _ml_collection_phase \
-                              else max(0.1, min(20, round(balance / 500, 1)))
+                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
                 elif is_nano:
                     max_lot = 0.10
                 elif is_micro:
-                    max_lot = max(round(balance / _micro_divisor, 2), min_lot)
+                    max_lot = max(round(balance / 12000, 2), 0.30)
                 else:
                     max_lot = max(1.0, round(balance / 3500, 2))
 
                 if is_nano:
                     max_lot = min(max_lot, 0.10)
                 elif is_micro:
-                    micro_cap = max(round(balance / _micro_divisor, 2), min_lot)
-                    max_lot   = min(max_lot, micro_cap)
+                    micro_cap = max(round(balance / 12000, 2), 0.30)
+                    max_lot   = min(max_lot, max(micro_cap, min_lot)) 
 
                 if lot > max_lot:
                     capped = _math.floor(max_lot * step_inv) / step_inv
@@ -2521,18 +2365,7 @@ class TradingBot:
                     
                     DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
 
-                    # [S21-B] Use cached self.account_id (set at startup and refreshed
-                    # each analysis cycle) instead of a live MT5 call here. Calling
-                    # _get_current_account_id() during order execution creates a race
-                    # where a momentarily slow MT5 response returns None and the trade
-                    # record gets written with a NULL account_id.
-                    acc_id = self.account_id
-                    if not acc_id:
-                        self.log_info(
-                            f"⚠️  [S21-B] account_id is None during execution of "
-                            f"{symbol} — trade will be recorded without account tag. "
-                            f"Check MT5 connection."
-                        )
+                    acc_id = self._get_current_account_id()
                     if is_nano:
                         DBManager.save_trade(
                             ticket      = result.order,
@@ -2551,27 +2384,13 @@ class TradingBot:
                         self.trade_confidences[str(result.order)] = round(analysis.confidence, 3)
                         self._save_state()
                     else:
-                        # [S20-B] Store sl, tp, and symbol so orphan recovery
-                        # can reconstruct a complete trade record even if the
-                        # order fills and closes before the next execution cycle.
                         self._pending_order_info[result.order] = {
-                            'regime':        regime,
-                            'account_id':    acc_id,
-                            'model_type':    'ICT_STANDARD',
-                            'model_sizing':  'STANDARD',
-                            'confidence':    round(analysis.confidence, 3),
-                            'sl':            float(sl),
-                            'tp':            float(tp),
-                            'symbol':        symbol,
+                            'regime':       regime,
+                            'account_id':   acc_id,
+                            'model_type':   'ICT_STANDARD',
+                            'model_sizing': 'STANDARD',
+                            'confidence':   round(analysis.confidence, 3) 
                         }
-                        # [S20-C] Persist immediately so this metadata survives a restart.
-                        self._save_state()
-                        # [S20-A] Post-placement cooldown: blocks the 60s analysis loop
-                        # from placing duplicate limits while this one is live in MT5.
-                        # The existing mt5.orders_get() check in process_symbol() provides
-                        # a first layer; this cooldown is the safety net for fast fills
-                        # that close before the next cycle's pending-order query.
-                        self.symbol_cooldowns[symbol] = datetime.utcnow()
                 else:
                     err_msg = result.comment if result else "Unknown MT5 Error"
                     retcode = result.retcode if result else -1
@@ -2610,59 +2429,32 @@ class TradingBot:
         try:
             import sqlite3
             con = sqlite3.connect("tradecore.db")
-            # Full trade records for dashboard display
-            rows = con.execute("""
-                SELECT ticket, symbol, type, profit, close_time
-                FROM trades
-                WHERE profit IS NOT NULL AND profit != 0
-                  AND (comment IS NULL OR comment NOT LIKE '%ghost%')
-                ORDER BY close_time ASC
-            """).fetchall()
+            rows = con.execute("SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%' ORDER BY close_time ASC").fetchall()
             con.close()
-
-            if not rows:
-                return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0,
-                        "net_pnl": 0.0, "avg_win": 0.0, "avg_loss": 0.0,
-                        "rr_ratio": 0.0, "curve": [], "recent_trades": []}
-
-            profits  = [r[2] for r in rows]
-            wins     = [p for p in profits if p > 0]
-            losses   = [p for p in profits if p < 0]
+            
+            profits = [r[0] for r in rows]
+            if not profits:
+                return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0, "curve": []}
+                
+            wins = [p for p in profits if p > 0]
+            losses = [p for p in profits if p < 0]
             win_rate = (len(wins) / len(profits)) * 100
-            gross_win  = sum(wins)
+            
+            gross_win = sum(wins)
             gross_loss = abs(sum(losses))
-            pf       = gross_win / gross_loss if gross_loss > 0 else 99.9
-            avg_win  = gross_win  / len(wins)   if wins   else 0.0
-            avg_loss = gross_loss / len(losses) if losses else 0.0
-            rr       = avg_win / avg_loss if avg_loss > 0 else 0.0
-
-            # Cumulative P&L curve
-            curve, running = [], 0.0
-            for p in profits:
-                running += p
-                curve.append({"profit": p, "cumulative": round(running, 2)})
-
-            # Last 10 closed trades for trade history panel
-            recent = [{"ticket": r[0], "symbol": r[1], "type": r[2],
-                       "profit": round(r[2], 2), "close_time": str(r[3])[:16]}
-                      for r in rows[-10:]][::-1]
-
+            pf = gross_win / gross_loss if gross_loss > 0 else 99.9
+            
+            curve = [{"profit": p} for p in profits]
+            
             return {
-                "win_rate":     round(win_rate, 1),
+                "win_rate": round(win_rate, 1),
                 "profit_factor": round(pf, 2),
                 "total_trades": len(profits),
-                "net_pnl":      round(running, 2),
-                "avg_win":      round(avg_win, 2),
-                "avg_loss":     round(avg_loss, 2),
-                "rr_ratio":     round(rr, 2),
-                "curve":        curve,
-                "recent_trades": recent,
+                "curve": curve
             }
         except Exception as e:
             self.log_debug(f"Performance API Error: {e}")
-            return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0,
-                    "net_pnl": 0.0, "avg_win": 0.0, "avg_loss": 0.0,
-                    "rr_ratio": 0.0, "curve": [], "recent_trades": []}
+            return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0, "curve": []}
 
     def get_risk(self):
         try:

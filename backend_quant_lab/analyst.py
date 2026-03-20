@@ -131,8 +131,15 @@ def _session_amd_prior(utc_hour: int, utc_minute: int,
         return {'DISTRIBUTION': 1.1, 'MANIPULATION': 0.8, 'ACCUMULATION': 0.8}
 
     # ── FX, COMMODITIES, CRYPTO: standard session priors ─────────────
-    # NY Lunch is the only hard gate — liquidity genuinely absent
-    if 16*60 <= t < 17*60+30:
+    # [S25-F1] NY Lunch AVOID gate is FX-only.
+    # Gold, Silver, Oil, NGAS, BTC and ETH have continuous institutional
+    # flow through the NY session (ETF rebalancing, macro catalysts,
+    # equity-linked demand). The FX liquidity dry-up gate does not apply.
+    # Evidence: XAUUSD 5000→4600 breakdown on March 18 2026 occurred
+    # entirely within the 16:00-17:30 AVOID window — bot was silent.
+    _is_commodity_crypto = any(x in sym for x in
+                                ['XAU', 'XAG', 'OIL', 'NGAS', 'BTC', 'ETH'])
+    if 16*60 <= t < 17*60+30 and not _is_commodity_crypto:
         return {'AVOID': 1.0}
 
     # Asian (00-03 UTC): accumulation strongly favoured; manipulation possible
@@ -1822,6 +1829,131 @@ def detect_candlestick_pattern(df: pd.DataFrame, direction: str,
         return empty
 
 
+def _extract_h4_targets(df_macro: pd.DataFrame, current_price: float,
+                         direction: str, current_atr_m15: float) -> dict:
+    """
+    [S25-F2] Extract the nearest H4 structural target in the trade direction.
+
+    The Asian session TP formula sets targets 30-60pt away on Gold.
+    H4 AMD distribution targets are 150-400pt away — the real institutional
+    delivery zone. This function finds the nearest H4 swing low (for SELL)
+    or swing high (for BUY) as the primary TP, with the Asian session level
+    remaining as a minimum TP floor enforced in bot_engine.
+
+    Uses a 5-bar pivot to identify H4 swing points — deliberately simple to
+    avoid overfitting to recent micro noise on the H4 timeframe.
+
+    Returns:
+        h4_tp_target:    float | None — nearest H4 structural level in direction
+        h4_sl_buffer:    float        — 0.5×H4_ATR for use as SL reference width
+        h4_swing_count:  int          — number of confirmed H4 swing points
+        h4_atr:          float        — H4 ATR (for trailing stop calibration)
+        h4_macro_trend:  str          — BULLISH | BEARISH | NEUTRAL
+    """
+    empty = {'h4_tp_target': None, 'h4_sl_buffer': current_atr_m15,
+             'h4_swing_count': 0, 'h4_atr': current_atr_m15 * 4,
+             'h4_macro_trend': 'NEUTRAL'}
+    try:
+        if df_macro is None or len(df_macro) < 15:
+            return empty
+
+        df = df_macro.copy()
+
+        # H4 ATR (14-bar)
+        tr = pd.concat([
+            df['high'] - df['low'],
+            (df['high'] - df['close'].shift()).abs(),
+            (df['low']  - df['close'].shift()).abs(),
+        ], axis=1).max(axis=1)
+        h4_atr = float(tr.rolling(14).mean().iloc[-1])
+        if h4_atr <= 0:
+            h4_atr = current_atr_m15 * 4
+
+        # 5-bar pivot swing detection on H4
+        pivot = 2   # bars on each side
+        highs = df['high'].values
+        lows  = df['low'].values
+        swing_highs, swing_lows = [], []
+
+        for i in range(pivot, len(df) - pivot):
+            if all(highs[i] > highs[j] for j in range(i - pivot, i + pivot + 1) if j != i):
+                swing_highs.append(float(highs[i]))
+            if all(lows[i] < lows[j] for j in range(i - pivot, i + pivot + 1) if j != i):
+                swing_lows.append(float(lows[i]))
+
+        h4_swing_count = len(swing_highs) + len(swing_lows)
+
+        # H4 macro trend via EMA-20/50
+        df['ema20'] = df['close'].ewm(span=20, adjust=False).mean()
+        df['ema50'] = df['close'].ewm(span=50, adjust=False).mean()
+        last  = df.iloc[-1]
+        prev  = df.iloc[-2]
+        bull  = (last['close'] > last['ema20']) and (prev['close'] > prev['ema20']) and (last['ema20'] > last['ema50'])
+        bear  = (last['close'] < last['ema20']) and (prev['close'] < prev['ema20']) and (last['ema20'] < last['ema50'])
+        h4_macro_trend = 'BULLISH' if bull else ('BEARISH' if bear else 'NEUTRAL')
+
+        # Nearest H4 structural level in trade direction
+        h4_tp_target = None
+        is_sell = direction == 'SELL'
+
+        if is_sell and swing_lows:
+            # For SELL: target the nearest H4 swing low BELOW current price
+            candidates = [lvl for lvl in swing_lows if lvl < current_price - h4_atr * 0.3]
+            if candidates:
+                h4_tp_target = max(candidates)  # nearest swing low below price
+        elif not is_sell and swing_highs:
+            # For BUY: target the nearest H4 swing high ABOVE current price
+            candidates = [lvl for lvl in swing_highs if lvl > current_price + h4_atr * 0.3]
+            if candidates:
+                h4_tp_target = min(candidates)  # nearest swing high above price
+
+        return {
+            'h4_tp_target':   round(h4_tp_target, 5) if h4_tp_target else None,
+            'h4_sl_buffer':   round(h4_atr * 0.5, 5),
+            'h4_swing_count': h4_swing_count,
+            'h4_atr':         round(h4_atr, 5),
+            'h4_macro_trend': h4_macro_trend,
+        }
+    except Exception:
+        return empty
+
+
+def _h4_trend_strength(df_macro: pd.DataFrame) -> int:
+    """
+    [S25-F4] Count confirmed H4 swing structure points.
+
+    Returns the number of confirmed HH/HL (bull) or LL/LH (bear) swing
+    sequences on H4. Used to determine whether enforce_macro should activate
+    in NORMAL regime (it normally only fires in HIGH VOLATILITY).
+
+    A count >= 3 means the H4 trend has been confirmed by at least 3
+    structural touches — reliable enough to require sniper-threshold
+    confluence (0.88) before trading counter-trend on M15.
+    """
+    try:
+        if df_macro is None or len(df_macro) < 15:
+            return 0
+        pivot = 2
+        highs = df_macro['high'].values
+        lows  = df_macro['low'].values
+        sh, sl = [], []
+        for i in range(pivot, len(df_macro) - pivot):
+            if all(highs[i] > highs[j] for j in range(i - pivot, i + pivot + 1) if j != i):
+                sh.append(highs[i])
+            if all(lows[i] < lows[j]  for j in range(i - pivot, i + pivot + 1) if j != i):
+                sl.append(lows[i])
+        if len(sh) < 2 or len(sl) < 2:
+            return len(sh) + len(sl)
+        # Count HH sequences (each is a confirmed bullish swing point)
+        hh = sum(1 for i in range(1, len(sh)) if sh[i] > sh[i-1])
+        hl = sum(1 for i in range(1, len(sl)) if sl[i] > sl[i-1])
+        ll = sum(1 for i in range(1, len(sl)) if sl[i] < sl[i-1])
+        lh = sum(1 for i in range(1, len(sh)) if sh[i] < sh[i-1])
+        return max(hh + hl, ll + lh)
+    except Exception:
+        return 0
+
+
 def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                             symbol: str, market_regime: str,
                             utc_now: datetime = None,
@@ -1865,6 +1997,25 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     obs         = detect_order_blocks(df)
     pd_zone     = detect_premium_discount(df, df_macro=df_macro, lookback=100)
     eq_levels   = detect_equal_highs_lows(df)
+
+    # [S25-F2] Extract H4 structural targets for TP placement.
+    # Runs for both MANIPULATION and DISTRIBUTION paths so the full signal
+    # tuple always carries the H4 TP level for bot_engine to consume.
+    current_price_mid = float((c2['high'] + c2['low']) / 2)
+    _h4_bull = _extract_h4_targets(df_macro, current_price_mid, 'BUY',  current_atr)
+    _h4_bear = _extract_h4_targets(df_macro, current_price_mid, 'SELL', current_atr)
+    h4_atr        = _h4_bull['h4_atr']   # same value regardless of direction
+    h4_swing_count = _h4_bull['h4_swing_count']
+
+    # [S25-F4] Strengthen enforce_macro based on H4 structural trend depth.
+    # In NORMAL regime enforce_macro was always False — allowing the M15
+    # engine to trade counter-trend even when H4 had 3+ confirmed swing
+    # points (the root cause of GBPUSD/EURUSD 0-25% WR).
+    # New rule: enforce_macro = True whenever H4 trend has >= 3 structural
+    # swing confirmations, regardless of GARCH regime.
+    _strong_h4 = h4_swing_count >= 3
+    # Sniper override: 4+ swing points = require 0.88 score for counter-trend
+    _sniper_h4 = h4_swing_count >= 4
 
     # ── AMD Phase — STRUCTURAL detection (not clock-based) ─────────
     # The Asian range boundaries feed the manipulation detector as reference.
@@ -1950,7 +2101,11 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     elif "HIGH VOLATILITY" in market_regime:
         disp_atr_mult = 0.8;  enforce_macro = True
     else:
-        disp_atr_mult = 0.6;  enforce_macro = False
+        disp_atr_mult = 0.6
+        # [S25-F4] Enforce H4 macro direction when trend is structurally confirmed
+        # (3+ H4 swing points). Previously enforce_macro was False in NORMAL regime,
+        # allowing counter-trend M15 signals to execute against confirmed H4 trends.
+        enforce_macro = _strong_h4
 
     # ── DISTRIBUTION PATH ──────────────────────────────────────────
     if amd_phase == 'DISTRIBUTION':
@@ -2136,11 +2291,17 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['swing_sl_ref']    = round(float(last_swing_low), 5)  # structural level swept
         cond['sl_atr_buffer']   = round(float(current_atr * 0.3), 5)
 
-        # [S12-P1B] Asian range as natural TP target:
-        # For a bullish setup (swept the Asian Low), the natural target is the
-        # Asian High — smart money swept SSL, now distributes toward BSL (AH).
-        # Fall back to ref_high from London range if Asian not valid.
-        cond['tp_target_level'] = asian.get('asian_high') or ref_high
+        # [S12-P1B] TP target: H4 structural swing high as primary target;
+        # Asian High is the floor (minimum — trade must at least reach session high).
+        # [S25-F2] _h4_bull['h4_tp_target'] is the nearest H4 swing high above price.
+        # If no H4 target exists, fall back to Asian High → ref_high.
+        _asian_tp_bull  = asian.get('asian_high') or ref_high
+        _h4_tp_bull     = _h4_bull.get('h4_tp_target')
+        cond['tp_target_level'] = _h4_tp_bull if _h4_tp_bull else _asian_tp_bull
+        cond['asian_tp_floor']  = _asian_tp_bull     # floor: always shown
+        cond['h4_tp_target']    = _h4_tp_bull
+        cond['h4_atr']          = h4_atr
+        cond['h4_swing_count']  = h4_swing_count
         cond['asian_high']      = asian.get('asian_high')
         cond['asian_low']       = asian.get('asian_low')
 
@@ -2205,7 +2366,14 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
             cond['amd_judas_bonus_value'] = amd_judas_bonus
 
         if enforce_macro and macro_trend == "BEARISH":
-            return "NEUTRAL", 0.0, f"BUY blocked by Bearish H4 (score={score:.2f})", cond, kill_zone
+            if _sniper_h4 and score >= 0.88:
+                pass   # rare high-conviction counter-trend — allow through
+            else:
+                swing_note = f"{h4_swing_count} H4 swings" if _strong_h4 else "H4 macro"
+                return "NEUTRAL", 0.0, (
+                    f"BUY blocked by Bearish {swing_note} "
+                    f"(score={score:.2f}, need 0.88 for counter-trend)"
+                ), cond, kill_zone
 
         # ── [S13] CONFLUENCE AMPLIFIER — BULLISH MANIPULATION ──────
         # Applied AFTER all ICT checks and H4 enforcement, before signal emit.
@@ -2313,9 +2481,17 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['swing_sl_ref']    = round(float(last_swing_high), 5)
         cond['sl_atr_buffer']   = round(float(current_atr * 0.3), 5)
 
-        # [S12-P1B] Asian Low as natural TP target for bearish setups.
-        # Swept the Asian High (BSL cleared) → target the Asian Low (SSL below).
-        cond['tp_target_level'] = asian.get('asian_low') or ref_low
+        # [S12-P1B] TP target: H4 structural swing low as primary target;
+        # Asian Low is the floor (minimum — trade must at least reach session low).
+        # [S25-F2] _h4_bear['h4_tp_target'] is the nearest H4 swing low below price.
+        # If no H4 target exists, fall back to Asian Low → ref_low.
+        _asian_tp_bear  = asian.get('asian_low') or ref_low
+        _h4_tp_bear     = _h4_bear.get('h4_tp_target')
+        cond['tp_target_level'] = _h4_tp_bear if _h4_tp_bear else _asian_tp_bear
+        cond['asian_tp_floor']  = _asian_tp_bear
+        cond['h4_tp_target']    = _h4_tp_bear
+        cond['h4_atr']          = h4_atr
+        cond['h4_swing_count']  = h4_swing_count
         cond['asian_high']      = asian.get('asian_high')
         cond['asian_low']       = asian.get('asian_low')
 
@@ -2376,7 +2552,18 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
             cond['amd_judas_bonus_value'] = amd_judas_bonus
 
         if enforce_macro and macro_trend == "BULLISH":
-            return "NEUTRAL", 0.0, f"SELL blocked by Bullish H4 (score={score:.2f})", cond, kill_zone
+            # [S25-F4] If H4 has 4+ confirmed swing points, require sniper-level
+            # score (0.88) for a counter-trend SELL rather than hard-blocking it.
+            # This allows genuinely exceptional confluence to still execute while
+            # preventing routine counter-trend signals on confirmed bull trends.
+            if _sniper_h4 and score >= 0.88:
+                pass   # rare high-conviction counter-trend — allow through
+            else:
+                swing_note = f"{h4_swing_count} H4 swings" if _strong_h4 else "H4 macro"
+                return "NEUTRAL", 0.0, (
+                    f"SELL blocked by Bullish {swing_note} "
+                    f"(score={score:.2f}, need 0.88 for counter-trend)"
+                ), cond, kill_zone
 
         # ── [S13] CONFLUENCE AMPLIFIER — BEARISH MANIPULATION ──────
         s13_bonus = 0.0

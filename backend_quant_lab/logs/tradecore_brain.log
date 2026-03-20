@@ -24670,3 +24670,732 @@
 2026-03-19 23:43:14 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
 2026-03-19 23:43:14 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
 2026-03-19 23:43:21 [INFO] Stopped.
+2026-03-20 02:34:57 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-20 02:34:57 [INFO] 📂 State file bound to account 32128474: logs/tradecore_state_32128474.json
+2026-03-20 02:34:57 [DEBUG] State Restored: 9 pending order(s) recovered — will record on next fill detection.
+2026-03-20 02:34:57 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-20 02:35:09 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-20 02:36:10 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:36:10 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:36:10 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:36:11 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:36:11 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:36:12 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:36:12 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:36:13 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:37:11 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:37:11 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:37:11 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:37:11 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:37:11 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:37:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:37:11 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:37:11 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:38:11 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:38:11 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:38:11 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:38:11 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:38:11 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:38:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:38:11 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:38:11 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:39:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:39:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:39:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:39:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:39:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:39:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:39:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:39:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:40:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:40:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:40:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:40:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:40:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:40:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:40:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:40:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:41:11 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:41:11 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:41:11 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:41:11 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:41:11 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:41:11 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:41:11 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:41:11 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:42:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:42:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:42:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:42:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:42:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:42:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:42:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:42:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:43:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:43:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:43:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:43:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:43:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:43:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:43:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:43:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:44:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:44:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:44:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:44:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.533 AL:69.824
+2026-03-20 02:44:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:97.026 AL:91.778
+2026-03-20 02:44:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:44:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:44:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69510.054
+2026-03-20 02:45:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:45:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:45:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:45:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:45:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:45:10 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:45:10 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:45:10 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:46:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:46:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:46:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:46:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:46:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:46:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:46:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:46:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:47:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:47:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:47:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:47:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:47:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:47:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:47:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:47:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:48:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:48:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:48:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:48:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:48:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:48:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:48:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:48:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:49:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:49:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:49:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:49:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:49:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:49:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:49:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:49:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:50:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:50:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:50:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:50:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:50:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:50:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:50:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:50:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:51:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:51:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:51:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:51:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:51:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:51:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:51:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:51:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:52:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:52:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:52:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:52:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:52:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:52:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:52:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:52:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:53:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:53:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:53:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:53:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:53:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:53:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:53:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:53:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:54:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:54:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:54:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:54:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:54:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:54:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:54:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:54:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:55:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:55:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:55:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:55:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:55:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:55:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:55:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:55:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:56:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:56:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:56:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:56:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:56:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:56:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:56:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:56:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:56:44 [INFO] 📩 Received Command: /status
+2026-03-20 02:57:03 [INFO] 📩 Received Command: /risk
+2026-03-20 02:57:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:57:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:57:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:57:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:57:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:57:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:57:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:57:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:58:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:58:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:58:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:58:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:58:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:58:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:58:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:58:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 02:59:09 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:59:09 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 02:59:09 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 02:59:09 [DEBUG] [XAGUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:72.609 AL:70.076
+2026-03-20 02:59:09 [DEBUG] [US Oil] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:96.889 AL:91.778
+2026-03-20 02:59:09 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:59:09 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2_Late] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 02:59:09 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:70644.505 AL:69544.776
+2026-03-20 03:00:09 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-20 03:00:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:00:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.76 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:00:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:00:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.755 AL:70.17
+2026-03-20 03:00:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.68 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:00:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.29 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:00:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:00:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:01:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:01:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.79 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:01:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:01:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:01:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.40 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:01:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:01:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:01:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:02:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:02:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.70 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:02:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:02:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:02:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:02:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:02:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:02:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:03:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:03:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.68 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:03:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:03:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:03:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:03:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:03:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.27 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:03:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:04:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:04:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.74 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:04:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:04:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:04:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:04:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:04:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:04:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:05:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:05:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.71 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:05:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:05:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:05:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:05:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:05:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:05:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:06:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:06:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.71 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:06:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:06:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:06:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:06:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:06:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:06:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:07:10 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:07:10 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.74 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:07:10 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:07:10 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:07:10 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:07:10 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:07:10 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:07:10 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:08:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:08:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.69 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:08:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:08:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:08:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:08:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:08:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:08:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:09:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:09:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.72 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:09:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:09:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:09:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:09:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.26 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:09:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:09:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:10:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:10:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.76 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:10:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:10:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:10:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:10:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:10:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:10:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:11:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:11:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.77 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:11:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:11:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:11:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:11:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:11:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:11:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:12:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:12:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.77 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:12:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:12:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:12:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:12:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:12:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:12:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:13:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:13:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.70 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:13:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:13:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:13:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:13:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:13:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:13:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:14:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:14:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.77 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:14:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:14:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:14:09 [DEBUG] [US Oil] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:96.735 AL:91.778
+2026-03-20 03:14:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:14:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:14:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:15:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:15:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.73 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:15:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:15:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:15:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:15:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:15:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:15:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:16:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:16:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.69 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:16:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:16:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:16:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:16:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:16:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:16:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:17:22 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:17:22 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.64 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:17:22 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:17:23 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:17:23 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:17:23 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:17:23 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:17:23 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:18:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:18:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.69 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:18:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:18:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:18:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:18:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:18:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:18:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:19:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:19:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.76 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:19:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:19:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:19:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:19:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:19:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:19:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:20:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:20:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.76 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:20:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:20:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:20:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.22 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:20:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:20:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:20:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:21:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:21:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.72 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:21:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:21:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:21:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:21:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:21:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:21:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:22:24 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:22:24 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.76 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:22:24 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:22:24 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:22:24 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:22:24 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:22:24 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:22:24 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:23:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:23:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.73 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:23:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:23:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.17 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:23:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:23:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:23:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:23:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:24:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:24:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.73 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:24:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:24:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:24:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:24:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:24:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:24:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:25:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:25:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.71 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:25:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:25:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:25:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:25:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:25:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:25:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:26:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:26:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.77 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:26:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:26:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:26:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:26:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:26:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:26:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:27:24 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:27:24 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.76 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:27:24 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:27:24 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:27:24 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:27:24 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:27:25 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:27:25 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:28:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:28:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.71 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:28:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:28:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:28:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:28:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:28:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:28:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:29:09 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:29:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.73 | Mapping range | AH:1.34671 AL:1.33941
+2026-03-20 03:29:09 [DEBUG] [USDJPY] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-03-20 03:29:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:29:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:29:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:29:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:29:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:30:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.53 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:30:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.73 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:30:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:30:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:30:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:30:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:30:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:30:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:31:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.52 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:31:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.69 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:31:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:31:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:31:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:31:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:31:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:31:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:32:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.49 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:32:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.67 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:32:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:32:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:32:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:32:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.14 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:32:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:32:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:33:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.40 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:33:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.61 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:33:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:33:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:33:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:33:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:33:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:33:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:34:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.37 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:34:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.55 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:34:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:34:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:34:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:34:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:34:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:34:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:35:10 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.38 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:35:10 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.56 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:35:10 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:35:10 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:35:10 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:35:10 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:35:11 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:35:11 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:36:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.36 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:36:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.60 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:36:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:36:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:36:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:36:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:36:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:36:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:37:10 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.37 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:37:10 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.63 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:37:10 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:37:10 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:37:10 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:37:10 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:37:10 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:37:10 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:38:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.41 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:38:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.60 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:38:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:38:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:38:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:38:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:38:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:38:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:39:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.43 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:39:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.63 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:39:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:39:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:39:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:39:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:39:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:39:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:40:10 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.43 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:40:10 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.62 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:40:10 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:40:10 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:40:10 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:40:10 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:40:10 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:40:10 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:41:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.43 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:41:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.61 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:41:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:41:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:41:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:41:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:41:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:41:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:42:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.43 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:42:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.61 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:42:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:42:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:42:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:42:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:42:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:42:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:43:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.43 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:43:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.63 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:43:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:43:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:43:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:43:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:43:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:43:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:44:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.1616 AL:1.15531
+2026-03-20 03:44:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.60 | Mapping range | AH:1.34671 AL:1.33944
+2026-03-20 03:44:09 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-20 03:44:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:44:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:44:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:44:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:44:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:45:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.49 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:45:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.50 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:45:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:45:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:45:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:45:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.16 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:45:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:45:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:46:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.43 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:46:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.45 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:46:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:46:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:46:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:46:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:46:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:46:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:47:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.46 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:47:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.46 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:47:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:47:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:47:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:47:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:47:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:47:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:48:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.45 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:48:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:48:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:48:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:48:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:48:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:48:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:48:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:49:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:49:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:49:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:49:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:49:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:49:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:49:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:49:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:50:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.40 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:50:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:50:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:50:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:50:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:50:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:50:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:50:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:51:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.37 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:51:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.45 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:51:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:51:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:51:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:51:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:51:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:51:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:52:09 [DEBUG] [EURUSD] INDETERMINATE [Asian] | conf:0.33 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:52:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:52:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:52:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:52:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:52:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:52:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:52:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:53:09 [DEBUG] [EURUSD] INDETERMINATE [Asian] | conf:0.31 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:53:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.46 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:53:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:53:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:53:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:53:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:53:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:53:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:54:09 [DEBUG] [EURUSD] INDETERMINATE [Asian] | conf:0.33 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:54:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:54:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:54:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:54:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:54:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:54:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:54:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:55:09 [DEBUG] [EURUSD] INDETERMINATE [Asian] | conf:0.33 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:55:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.50 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:55:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:55:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:55:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:55:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:55:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:55:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:56:09 [DEBUG] [EURUSD] INDETERMINATE [Asian] | conf:0.34 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:56:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.56 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:56:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:56:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:56:10 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:56:10 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:56:10 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:56:10 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:57:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.37 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:57:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.55 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:57:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:57:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:57:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:57:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:57:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:57:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:58:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.40 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:58:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.56 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:58:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:58:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.36 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:58:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:58:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:58:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:58:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:59:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.45 | Mapping range | AH:1.1616 AL:1.1577
+2026-03-20 03:59:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.55 | Mapping range | AH:1.34671 AL:1.34174
+2026-03-20 03:59:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:59:09 [DEBUG] [XAGUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:72.865 AL:70.917
+2026-03-20 03:59:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:59:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:59:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 03:59:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:00:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.48 | Mapping range | AH:1.16131 AL:1.1577
+2026-03-20 04:00:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.43 | Mapping range | AH:1.34671 AL:1.34172
+2026-03-20 04:00:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:00:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:00:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:00:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:00:10 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:00:10 [DEBUG] [BTCUSD] ACCUMULATION [Asian] | conf:0.40 | Mapping range | AH:70651.611 AL:70121.767
+2026-03-20 04:01:09 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.44 | Mapping range | AH:1.16131 AL:1.1577
+2026-03-20 04:01:09 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.42 | Mapping range | AH:1.34671 AL:1.34172
+2026-03-20 04:01:09 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:01:09 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:01:09 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:01:09 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:01:09 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:01:09 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:02:13 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.36 | Mapping range | AH:1.16131 AL:1.1577
+2026-03-20 04:02:14 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:1.34671 AL:1.34172
+2026-03-20 04:02:14 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:02:14 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:02:14 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:02:14 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:02:14 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:02:14 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:03:11 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.42 | Mapping range | AH:1.16131 AL:1.1577
+2026-03-20 04:03:11 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.37 | Mapping range | AH:1.34671 AL:1.34172
+2026-03-20 04:03:11 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:03:11 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:03:11 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:03:11 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:03:11 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:03:12 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:04:12 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.45 | Mapping range | AH:1.16131 AL:1.1577
+2026-03-20 04:04:12 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.42 | Mapping range | AH:1.34671 AL:1.34172
+2026-03-20 04:04:12 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:04:12 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:04:12 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:04:12 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:04:12 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:04:12 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:05:10 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.44 | Mapping range | AH:1.16131 AL:1.1577
+2026-03-20 04:05:10 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.41 | Mapping range | AH:1.34671 AL:1.34172
+2026-03-20 04:05:10 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:05:10 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:05:10 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:05:10 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:05:10 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:05:10 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:05:56 [INFO] Stopped.
