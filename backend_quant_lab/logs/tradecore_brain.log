@@ -25399,3 +25399,17 @@
 2026-03-20 04:05:10 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.18 | Price trending, no clean AMD range — skipping.
 2026-03-20 04:05:10 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
 2026-03-20 04:05:56 [INFO] Stopped.
+2026-03-20 04:08:11 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-20 04:08:11 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-20 04:08:21 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-20 04:08:21 [INFO] 🗑️ Stale Trap Avoided: Cancelled XAUUSD limit order. (Target reached before entry (Stale Trap))
+2026-03-20 04:08:21 [DEBUG] ⚠️ Stale trap #1/3 for XAUUSD @ 4617.1.
+2026-03-20 04:10:26 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.47 | Mapping range | AH:1.16131 AL:1.1577
+2026-03-20 04:10:26 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.37 | Mapping range | AH:1.34671 AL:1.34172
+2026-03-20 04:10:26 [DEBUG] [USDJPY] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:10:28 [DEBUG] [XAUUSD] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:4671.81 AL:4596.0
+2026-03-20 04:10:28 [DEBUG] [XAGUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:10:28 [DEBUG] [US Oil] INDETERMINATE [Asian] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:10:29 [DEBUG] [US SP 500] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:10:29 [DEBUG] [US Tech 100] INDETERMINATE [Asian] | conf:0.20 | Price trending, no clean AMD range — skipping.
+2026-03-20 04:10:29 [DEBUG] [BTCUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
