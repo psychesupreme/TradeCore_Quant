@@ -87,12 +87,7 @@ class TradingBot:
         self.execution_lock = set() 
         
         self._closing_tickets = set()
-
-        # [S25-F3] Per-symbol H4 ATR cache — populated at signal time from
-        # ict_conditions[h4_atr], consumed by apply_trailing_stop() to set
-        # a wider trail on confirmed H4 continuation moves.
-        self._h4_atr_cache = {}
-
+        
         # --- STATE PERSISTENCE ---
         self.state_file = "logs/tradecore_state.json"
         self.scaled_positions = set()  
@@ -259,12 +254,12 @@ class TradingBot:
                 import sqlite3 as _sl
                 con = _sl.connect("tradecore.db")
                 rows = con.execute("""
-                    SELECT profit FROM trades
+                    SELECT CAST(profit AS REAL) FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
-                      AND comment NOT LIKE '%ghost%'
+                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
                 """).fetchall()
                 con.close()
-                profits = [r[0] for r in rows]
+                profits = [float(r[0]) for r in rows]
                 if not profits:
                     self.async_alert("📉 No closed trades yet.")
                     return
@@ -305,7 +300,7 @@ class TradingBot:
                 rows = con.execute("""
                     SELECT symbol, type, profit, volume, close_time FROM trades
                     WHERE profit IS NOT NULL AND profit != 0
-                      AND comment NOT LIKE '%ghost%'
+                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
                     ORDER BY close_time DESC LIMIT ?
                 """, (n,)).fetchall()
                 con.close()
@@ -445,17 +440,17 @@ class TradingBot:
                 today = datetime.utcnow().strftime('%Y-%m-%d')
                 
                 rows_today = con.execute(
-                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND comment NOT LIKE '%ghost%'",
+                    "SELECT SUM(profit) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
                     (f"{today}%",)
                 ).fetchone()
                 
                 all_profits = con.execute(
-                    "SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
+                    "SELECT CAST(profit AS REAL) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')"
                 ).fetchall()
                 con.close()
                 
                 daily_pnl  = rows_today[0] or 0.0
-                profits    = [r[0] for r in all_profits]
+                profits    = [float(r[0]) for r in all_profits]
                 peak       = bal
                 cumsum     = 0.0
                 for p in profits:
@@ -603,20 +598,20 @@ class TradingBot:
             week_start_str = (datetime.utcnow() - _td(days=datetime.utcnow().weekday())).strftime('%Y-%m-%d')
             con = _sl.connect("tradecore.db")
             today_rows  = con.execute(
-                "SELECT profit FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
+                "SELECT CAST(profit AS REAL) FROM trades WHERE close_time LIKE ? AND profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
                 (f"{today_str}%",)
             ).fetchall()
             week_rows   = con.execute(
-                "SELECT profit FROM trades WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'",
+                "SELECT CAST(profit AS REAL) FROM trades WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
                 (week_start_str,)
             ).fetchall()
             all_rows    = con.execute(
-                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%'"
+                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 AND (comment IS NULL OR comment NOT LIKE '%ghost%')"
             ).fetchone()
             con.close()
             today_pnl    = sum(r[0] for r in today_rows)
-            today_w      = sum(1 for r in today_rows if r[0] > 0)
-            today_l      = sum(1 for r in today_rows if r[0] < 0)
+            today_w      = sum(1 for r in today_rows if float(r[0]) > 0)
+            today_l      = sum(1 for r in today_rows if float(r[0]) < 0)
             weekly_pnl   = sum(r[0] for r in week_rows)
             total_trades = all_rows[0] if all_rows else 0
         except Exception:
@@ -726,14 +721,14 @@ class TradingBot:
                 week_start_str = week_start.strftime('%Y-%m-%d')
                 con2 = _sl.connect("tradecore.db")
                 week_trades = con2.execute("""
-                    SELECT profit FROM trades
+                    SELECT CAST(profit AS REAL) FROM trades
                     WHERE close_time >= ? AND profit IS NOT NULL AND profit != 0
-                      AND comment NOT LIKE '%ghost%'
+                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
                 """, (week_start_str,)).fetchall()
                 con2.close()
                 weekly_pnl = sum(r[0] for r in week_trades)
                 trades_this_week = len(week_trades)
-                winners_this_week = sum(1 for r in week_trades if r[0] > 0)
+                winners_this_week = sum(1 for r in week_trades if float(r[0]) > 0)
             except Exception:
                 pass
 
@@ -1414,7 +1409,9 @@ class TradingBot:
         is_sniper_mode = (current_count >= self.MAX_OPEN_TRADES)
         upcoming_news = self.news_manager.get_upcoming_news() if self.news_manager else []
 
-        for symbol in self.active_symbols:
+        from analyst import get_after_hours_active_symbols
+        _tradable = get_after_hours_active_symbols(self.active_symbols, datetime.utcnow())
+        for symbol in _tradable:
             if _is_manually_paused:
                 continue
 
@@ -1457,6 +1454,8 @@ class TradingBot:
                 symbol = pos['symbol']
                 ticket = pos['ticket']
                 magic = pos.get('magic', 510000)
+                if magic == 510003:          # [S27] M1 scalp — let TP run cleanly
+                    continue
                 
                 if 'open_price' not in pos: 
                     continue
@@ -1588,50 +1587,16 @@ class TradingBot:
                     tp_dist  = abs(tp_price - open_price) if tp_price else 0.0
                     near_tp  = (tp_dist > 0 and profit_dist >= tp_dist * 0.50)
 
-                    # [S25-F3] H4-proportional trailing stop for continuation trades.
-                    # The core problem: a 7pt XAUUSD SL with 1×SL-distance trail
-                    # exits a 280pt move in the first 7 points. When the H4 trend
-                    # is confirmed (h4_atr cached from signal time), trail by
-                    # 2×H4_ATR instead — keeping the trade alive through normal
-                    # H4 retracements while still protecting profits.
-                    # For assets without H4 data or non-continuation setups,
-                    # behaviour is identical to the previous logic.
-                    _h4_atr_sym    = self._h4_atr_cache.get(symbol, 0.0)
-                    _is_large_asset = any(x in symbol for x in
-                                          ['XAU','XAG','Oil','NGAS','BTC','ETH',
-                                           'SP 500','Tech 100','Germany'])
-                    _use_h4_trail  = (
-                        _is_large_asset and
-                        _h4_atr_sym > 0 and
-                        profit_dist >= one_r and          # only after at least 1R
-                        not near_tp                        # tight trail once near TP
-                    )
-
+                    # [SPRINT 19e] Sniper Runner Aggressive Trail
                     if near_tp:
-                        # Within 50% of TP: trail tightly to protect most of the gain
                         tight_trail = sl_dist_dynamic * 0.30
-                        lock_price = (price_current - tight_trail if is_buy
-                                      else price_current + tight_trail)
-
-                    elif _use_h4_trail:
-                        # [S25-F3] H4 continuation trail: 2×H4_ATR behind price.
-                        # This is wide enough to survive an H4 retracement (typically
-                        # 0.5-1×H4_ATR) while still locking directional progress.
-                        h4_trail = _h4_atr_sym * 2.0
-                        lock_price = (price_current - h4_trail if is_buy
-                                      else price_current + h4_trail)
-                        # Never let the trail move the SL backwards
-                        # (ratchet enforcement happens below via should_modify)
-
+                        lock_price = (price_current - tight_trail if is_buy else price_current + tight_trail)
                     elif conf_mem >= 0.85 and profit_dist > one_r:
-                        lock_price = (open_price + (profit_dist * 0.50) if is_buy
-                                      else open_price - (profit_dist * 0.50))
+                        lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
                     elif profit_dist > two_r:
-                        lock_price = (open_price + (profit_dist * 0.80) if is_buy
-                                      else open_price - (profit_dist * 0.80))
+                        lock_price = open_price + (profit_dist * 0.80) if is_buy else open_price - (profit_dist * 0.80)
                     elif profit_dist > one_r:
-                        lock_price = (open_price + (profit_dist * 0.50) if is_buy
-                                      else open_price - (profit_dist * 0.50))
+                        lock_price = open_price + (profit_dist * 0.50) if is_buy else open_price - (profit_dist * 0.50)
 
                     if profit_dist >= two_r and not near_tp:
                         try:
@@ -1722,13 +1687,22 @@ class TradingBot:
             return
         
         spread = (props['ask'] - props['bid']) / props['point']
-        
+
+        # [S26+S27] Per-asset spread limits. Gold gets raised limit during NY rollover.
+        # XAUUSD spread hits 2000-5000 pts at 22:00-00:30 UTC (daily futures rollover).
+        # At our lot sizes (0.01-0.15) this is $0.10-$1.50 cost — tradeable for M1 scalps.
+        _tnow = datetime.utcnow().hour * 60 + datetime.utcnow().minute
+        _in_rollover = (_tnow >= 22 * 60 or _tnow < 30)  # 22:00–00:30 UTC window
         if "BTC" in symbol or "ETH" in symbol:
             limit = 50000
         elif "US SP 500" in symbol or "US Tech 100" in symbol or "Germany" in symbol:
             limit = 5000
-        elif "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
-            limit = 1000
+        elif "XAU" in symbol:
+            limit = 4000 if _in_rollover else 1000   # raised during NY rollover
+        elif "XAG" in symbol:
+            limit = 2000  # Silver spreads wider during London open
+        elif "Oil" in symbol or "NGAS" in symbol:
+            limit = 1500
         else:
             limit = 60
             
@@ -1754,17 +1728,46 @@ class TradingBot:
         try:
             candles_micro = [Candle(**row) for row in df_micro.to_dict('records') if hasattr(row['time'], 'year')]
             req = AnalysisRequest(symbol=symbol, candles=candles_micro, daily_trend="NEUTRAL")
-            
+            req.__dict__['df_m1'] = df_m1  # [S27-B] M1 micro-scalp engine
+
             analysis = analyze_market_structure(
                 req, df_macro=df_macro, market_regime=symbol_regime, symbol=symbol, df_ticks=df_ticks
             )
+
+            # [S27-ML] Apply ML confidence nudge to M1 scalp signals
+            # The LiveScorer was trained on ICT features but the direction signal
+            # carries meaningful cross-asset momentum information.
+            _is_m1_result = (getattr(analysis, 'ict_conditions', {}) or {}).get('m1_scalp', False)
+            if _is_m1_result and analysis.signal != "NEUTRAL":
+                try:
+                    ml_adj = self.ml_scorer.score_trade(
+                        symbol        = symbol,
+                        signal_type   = analysis.signal,
+                        confidence    = analysis.confidence,
+                        ict_score     = analysis.confidence,
+                        kill_zone     = "M1_SCALP",
+                        hold_minutes  = 8,     # M1 scalps average 5-15min
+                        dollar_risk   = 0.0,   # filled post-sizing
+                    ) if self.ml_scorer else 0.0
+                    if ml_adj != 0.0:
+                        analysis.confidence = round(
+                            min(0.97, max(0.50, analysis.confidence + ml_adj)), 4
+                        )
+                        self.log_debug(
+                            f"[{symbol}] M1+ML adj: {ml_adj:+.2f} → conf={analysis.confidence:.2f}"
+                        )
+                except Exception:
+                    pass
             
             result_status = "SKIPPED"
             _is_micro_sig = "MICRO" in analysis.signal
+            # [S26] Per-asset confidence thresholds
+            _is_commodity_crypto = any(x in symbol for x in
+                                       ['XAU','XAG','Oil','NGAS','BTC','ETH'])
             if is_sniper_mode:
-                required_conf = 0.75 if _is_micro_sig else 0.88 
+                required_conf = 0.78 if (_is_micro_sig and _is_commodity_crypto) else                                 0.75 if _is_micro_sig else 0.88
             else:
-                required_conf = 0.65 if _is_micro_sig else 0.77
+                required_conf = 0.65 if (_is_micro_sig and _is_commodity_crypto) else                                 0.70 if _is_micro_sig else 0.77
 
             if analysis.signal != "NEUTRAL":
                  is_nano = "NANO" in analysis.signal
@@ -1772,17 +1775,27 @@ class TradingBot:
                      self.log_debug(f"[{symbol}] NANO LOCK: Skipped (Spread drag too high).")
                      return
 
-                 if analysis.confidence >= required_conf:
+                 # [S27] Proper result status labelling — separate block reasons from quality fails
+                 _reason_str = analysis.reason or ""
+                 _in_cooldown = (symbol in self.symbol_cooldowns and
+                                 (datetime.utcnow() - self.symbol_cooldowns[symbol]).total_seconds() < 900)
+                 _h4_blocked  = ("blocked by Bearish" in _reason_str or
+                                 "blocked by Bullish" in _reason_str)
+
+                 if _in_cooldown:
+                     result_status = "COOLDOWN"
+                     self.log_debug(f"[{symbol}] COOLDOWN: {analysis.signal} valid but in cooldown.")
+                 elif _h4_blocked:
+                     result_status = "H4_BLOCKED"
+                 elif analysis.confidence >= required_conf:
                      if is_sniper_mode:
                          self.log_info(f"🎯 GLOBAL SNIPER OVERRIDE: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
                      else:
                          self.log_info(f"🔎 MTF Confluence Locked: {symbol} {analysis.signal} (Conf: {analysis.confidence*100:.0f}%)")
-                     
                      result_status = "ATTEMPTED"
                      self.execute_signal(symbol, analysis, df_micro, props, regime=symbol_regime)
                  else:
                      result_status = f"LOW_CONFIDENCE ({analysis.confidence*100:.0f}%)"
-                     _reason_str = analysis.reason or ""
                      if "NY Lunch" in _reason_str or "Reaccumulation" in _reason_str:
                          _last = getattr(self, '_ny_lunch_last_log', {})
                          _now  = datetime.utcnow()
@@ -1860,7 +1873,11 @@ class TradingBot:
                     atr_val = df['atr'].iloc[-1] if 'atr' in df.columns else volatility_buffer
                     volatility_buffer = max(atr_val * 0.5, volatility_buffer)
 
-                magic_number = 510001 if is_nano else 510000
+                # [S27] M1 scalp gets magic 510003 (skips trailing stop)
+                _m1_chk = getattr(analysis, 'ict_conditions', {}) or {}
+                if   _m1_chk.get('m1_scalp', False): magic_number = 510003
+                elif is_nano:                          magic_number = 510001
+                else:                                 magic_number = 510000
 
                 base_nano_sl = volatility_buffer * 0.4
                 floor_sl = 0.060 if "JPY" in symbol else 0.00060  
@@ -1875,21 +1892,9 @@ class TradingBot:
                 ob_zone_high = ict_cond.get('ob_zone_high')      
                 swing_sl_ref = ict_cond.get('swing_sl_ref')      
                 sl_atr_buf   = ict_cond.get('sl_atr_buffer', volatility_buffer * 0.1)
-                # [S25-F2] Use H4 structural target as primary TP.
-                # Asian session level is the minimum TP floor (ensures trade
-                # captures at least the intraday session target).
-                h4_tp_target  = ict_cond.get('h4_tp_target')
-                asian_tp_floor= ict_cond.get('asian_tp_floor')
-                # h4_atr used to calibrate trailing stop width (stored for use below)
-                _h4_atr       = ict_cond.get('h4_atr', volatility_buffer * 4)
-                tp_target     = h4_tp_target or ict_cond.get('tp_target_level')
+                tp_target    = ict_cond.get('tp_target_level')   
 
                 is_scalp_model = ict_cond.get('scalp_model', False)
-                # [S25-F3] Store H4 ATR keyed by symbol for trailing stop calibration.
-                # apply_trailing_stop() reads this to trail H4 continuation trades
-                # at 2×H4_ATR instead of 1×SL-distance, keeping runners alive.
-                if _h4_atr and _h4_atr > 0:
-                    self._h4_atr_cache[symbol] = float(_h4_atr)
                 if is_scalp_model:
                     tfvg_high  = ict_cond.get('tfvg_high')
                     tfvg_low   = ict_cond.get('tfvg_low')
@@ -2013,28 +2018,12 @@ class TradingBot:
                 if sl_dist_check > 0 and tp_price:
                     tp_dist_check = abs(tp_price - price)
                     tp_r          = tp_dist_check / sl_dist_check
-
-                    # [S25-F2] Asian session level is the TP floor: if H4 target
-                    # is closer than the Asian level, use Asian level instead.
-                    if asian_tp_floor and tp_price:
-                        if is_buy and tp_price < asian_tp_floor:
-                            tp_price = asian_tp_floor
-                        elif not is_buy and tp_price > asian_tp_floor:
-                            tp_price = asian_tp_floor
-
-                    # [S25-F2] R:R cap raised: commodities/crypto have no cap
-                    # (H4 swings can be 10-30R from M15 SL), other assets capped
-                    # at 8R (previously 3R which was choking all large FX moves).
-                    _is_commodity_crypto = any(x in symbol for x in
-                                               ['XAU','XAG','Oil','NGAS','BTC','ETH'])
-                    _rr_cap = 99.0 if _is_commodity_crypto else 8.0
-                    if tp_r > _rr_cap:
-                        capped_tp = (price + (sl_dist_check * _rr_cap) if is_buy
-                                     else price - (sl_dist_check * _rr_cap))
-                        tp_price = capped_tp
+                    if tp_r > 6.0 and "XAU" not in symbol and "XAG" not in symbol:
+                        capped_tp    = price + (sl_dist_check * 3.0) if is_buy else price - (sl_dist_check * 3.0)
+                        tp_price     = capped_tp
                         self.log_info(
                             f"🎯 TP Cap Applied: {symbol} structural TP was {tp_r:.1f}R "
-                            f"→ capped at {_rr_cap:.0f}R ({tp_price:.5f})"
+                            f"→ capped at 3.0R ({tp_price:.5f})"
                         )
 
                 tp = self.gateway.normalize_price(symbol, tp_price)
@@ -2206,80 +2195,59 @@ class TradingBot:
                 elif is_micro:
                     risk_multiplier = risk_multiplier * 0.50   
 
-                if "XAU" in symbol or "XAG" in symbol:
+                # [S26] Per-asset lot sizing. XAGUSD 5000 oz/lot (not 100 like XAUUSD).
+                if "XAU" in symbol:
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
-                    capital_per_lot = sl_distance * 100
-                    min_lot  = 0.10
-                    vol_step = 0.01
+                    capital_per_lot = sl_distance * 100.0
+                    min_lot  = 0.01; max_lot_asset = 0.50; vol_step = 0.01
+                elif "XAG" in symbol:
+                    # [S26-CRITICAL] XAGUSD = 5000 oz/lot. Old *100 caused 64x oversize.
+                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    capital_per_lot = sl_distance * 5000.0
+                    min_lot  = 0.01; max_lot_asset = 0.05; vol_step = 0.01
                 elif "BTC" in symbol:
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 1
-                    min_lot  = 0.01
-                    vol_step = 0.01
+                    capital_per_lot = sl_distance * 1.0
+                    min_lot  = 0.01; max_lot_asset = 0.10; vol_step = 0.01
                 elif "ETH" in symbol:
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 1
-                    min_lot  = 0.01
-                    vol_step = 0.01
+                    capital_per_lot = sl_distance * 1.0
+                    min_lot  = 0.01; max_lot_asset = 0.10; vol_step = 0.01
                 elif "Oil" in symbol:
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 100.0  
-                    min_lot  = 1.0     
-                    vol_step = 1.0     
+                    capital_per_lot = sl_distance * 100.0
+                    min_lot  = 0.01; max_lot_asset = 1.0; vol_step = 0.01
                 elif "NGAS" in symbol:
                     risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
-                    capital_per_lot = sl_distance * 10000.0  
-                    min_lot  = 0.1
-                    vol_step = 0.1
+                    capital_per_lot = sl_distance * 10000.0
+                    min_lot  = 0.01; max_lot_asset = 0.10; vol_step = 0.01
                 elif any(idx in symbol for idx in ["SP 500", "Tech 100", "Germany"]):
-                    contract_size = props.get('trade_contract_size', 10.0) if props else 10.0
+                    contract_size   = props.get('trade_contract_size', 1.0) if props else 1.0
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
                     capital_per_lot = sl_distance * contract_size
-                    min_lot  = 0.1
-                    vol_step = 0.1
+                    min_lot  = 0.10; max_lot_asset = max(0.1, min(30.0, round(balance/1000,1))); vol_step = 0.1
                 elif "JPY" in symbol:
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
-                    capital_per_lot = sl_distance * 1000
-                    min_lot  = 0.30
-                    vol_step = 0.01
+                    capital_per_lot = sl_distance * 1000.0
+                    min_lot  = 0.01; max_lot_asset = 1.0; vol_step = 0.01
                 else:
                     risk_capital    = (balance * base_risk_pct) * risk_multiplier
-                    capital_per_lot = sl_distance * 100000
-                    min_lot  = 0.30
-                    vol_step = 0.01
+                    capital_per_lot = sl_distance * 100000.0
+                    min_lot  = 0.01; max_lot_asset = 1.0; vol_step = 0.01
 
-                raw_lot        = risk_capital / capital_per_lot
+                raw_lot        = risk_capital / capital_per_lot if capital_per_lot > 0 else min_lot
                 import math as _math
                 step_inv       = round(1.0 / vol_step)
                 calculated_lot = _math.floor(raw_lot * step_inv) / step_inv
                 lot = max(min_lot, calculated_lot)
 
-                if "BTC" in symbol or "ETH" in symbol:
-                    max_lot = max(0.5, round(balance / 20000, 2))
-                elif "XAU" in symbol or "XAG" in symbol:
-                    max_lot = 3.0 if "XAU" in symbol else 2.5
-                elif "Oil" in symbol:
-                    max_lot = max(1.0, min(10, int(round(balance / 1500, 0))))   
-                elif "NGAS" in symbol:
-                    max_lot = 5.0    
-                elif "SP 500" in symbol:
-                    max_lot = max(0.1, min(30, round(balance / 500, 1)))   
-                elif "Tech 100" in symbol:
-                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
-                elif "Germany" in symbol:
-                    max_lot = max(0.1, min(20, round(balance / 500, 1)))   
-                elif is_nano:
-                    max_lot = 0.10
-                elif is_micro:
-                    max_lot = max(round(balance / 12000, 2), 0.30)
-                else:
-                    max_lot = max(1.0, round(balance / 3500, 2))
-
+                # max_lot_asset set in per-asset block above
+                max_lot = max_lot_asset
                 if is_nano:
                     max_lot = min(max_lot, 0.10)
                 elif is_micro:
-                    micro_cap = max(round(balance / 12000, 2), 0.30)
-                    max_lot   = min(max_lot, max(micro_cap, min_lot)) 
+                    micro_cap = max(round(balance / 12000, 2), min_lot)
+                    max_lot   = min(max_lot, micro_cap)
 
                 if lot > max_lot:
                     capped = _math.floor(max_lot * step_inv) / step_inv
@@ -2316,8 +2284,20 @@ class TradingBot:
                 except Exception:
                     pass  
 
+                # [S27] M1 scalp → MARKET ORDER; all others → LIMIT ORDER
+                _m1c = getattr(analysis, 'ict_conditions', {}) or {}
+                _is_m1_scalp = _m1c.get('m1_scalp', False)
+                if _is_m1_scalp:
+                    _m1_tp = _m1c.get('m1_tp'); _m1_sl = _m1c.get('m1_sl')
+                    if _m1_tp and _m1_sl:
+                        tp, sl = _m1_tp, _m1_sl
+                        self.log_info(f"🎯 M1 Tight: {symbol} TP={tp:.5g} SL={sl:.5g} ATR={_m1c.get('m1_atr',0):.3f}")
+                    self.log_info(f"⚡ M1 MARKET ORDER: {symbol} {'BUY' if is_buy else 'SELL'} @ {price:.5g} Lot:{lot:.2f}")
+
                 request = {
-                    "action": mt5.TRADE_ACTION_DEAL if is_nano else mt5.TRADE_ACTION_PENDING,
+                    "action": (mt5.TRADE_ACTION_DEAL
+                               if (is_nano or _is_m1_scalp)
+                               else mt5.TRADE_ACTION_PENDING),
                     "symbol": symbol,
                     "volume": float(lot),
                     "price": float(price),
@@ -2326,17 +2306,23 @@ class TradingBot:
                     "deviation": 10,
                     "magic": magic_number,
                     "comment": "Kom_v1.0",
-                    "type_time": mt5.ORDER_TIME_GTC if is_nano else mt5.ORDER_TIME_SPECIFIED,
+                    "type_time": (mt5.ORDER_TIME_GTC
+                                  if (is_nano or _is_m1_scalp)
+                                  else mt5.ORDER_TIME_SPECIFIED),
                     "type_filling": type_filling,
                 }
 
-                if not is_nano: 
+                if not is_nano and not _is_m1_scalp:
                     request["expiration"] = int(time.time()) + (8 * 3600)
-                
-                if is_buy: 
-                    request["type"] = mt5.ORDER_TYPE_BUY if is_nano else mt5.ORDER_TYPE_BUY_LIMIT
-                else: 
-                    request["type"] = mt5.ORDER_TYPE_SELL if is_nano else mt5.ORDER_TYPE_SELL_LIMIT
+
+                if is_buy:
+                    request["type"] = (mt5.ORDER_TYPE_BUY
+                                       if (is_nano or _is_m1_scalp)
+                                       else mt5.ORDER_TYPE_BUY_LIMIT)
+                else:
+                    request["type"] = (mt5.ORDER_TYPE_SELL
+                                       if (is_nano or _is_m1_scalp)
+                                       else mt5.ORDER_TYPE_SELL_LIMIT)
 
                 fill_order   = [mt5.ORDER_FILLING_FOK, mt5.ORDER_FILLING_IOC, mt5.ORDER_FILLING_RETURN]
                 fill_names   = ["FOK", "IOC", "RETURN"]
@@ -2429,32 +2415,94 @@ class TradingBot:
         try:
             import sqlite3
             con = sqlite3.connect("tradecore.db")
-            rows = con.execute("SELECT profit FROM trades WHERE profit IS NOT NULL AND profit != 0 AND comment NOT LIKE '%ghost%' ORDER BY close_time ASC").fetchall()
+            rows = con.execute("""
+                SELECT ticket, symbol, CAST(profit AS REAL) as profit, close_time
+                FROM trades
+                WHERE profit IS NOT NULL AND profit != 0
+                  AND (comment IS NULL OR comment NOT LIKE '%ghost%')
+                ORDER BY close_time ASC
+            """).fetchall()
+            # columns: r[0]=ticket, r[1]=symbol, r[2]=profit(float), r[3]=close_time
             con.close()
-            
-            profits = [r[0] for r in rows]
-            if not profits:
-                return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0, "curve": []}
-                
-            wins = [p for p in profits if p > 0]
-            losses = [p for p in profits if p < 0]
+
+            if not rows:
+                return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0,
+                        "net_pnl": 0.0, "avg_win": 0.0, "avg_loss": 0.0,
+                        "rr_ratio": 0.0, "curve": [], "recent_trades": [], "by_asset": []}
+
+            # [FIX] Cast to float — SQLite may return profit as TEXT in legacy rows
+            profits  = [float(r[2]) for r in rows]
+            wins     = [p for p in profits if p > 0]
+            losses   = [p for p in profits if p < 0]
             win_rate = (len(wins) / len(profits)) * 100
-            
-            gross_win = sum(wins)
+            gross_win  = sum(wins)
             gross_loss = abs(sum(losses))
-            pf = gross_win / gross_loss if gross_loss > 0 else 99.9
-            
-            curve = [{"profit": p} for p in profits]
-            
+            pf       = gross_win / gross_loss if gross_loss > 0 else 99.9
+            avg_win  = gross_win  / len(wins)   if wins   else 0.0
+            avg_loss = gross_loss / len(losses) if losses else 0.0
+            rr       = avg_win / avg_loss if avg_loss > 0 else 0.0
+
+            # Cumulative P&L curve
+            curve, running = [], 0.0
+            for p in profits:
+                running += p
+                curve.append({"profit": p, "cumulative": round(running, 2)})
+
+            # Last 10 closed trades — r = (ticket, symbol, type[=profit!], close_time)
+            # NOTE: rows columns are: ticket=r[0], symbol=r[1], profit=r[2], close_time=r[3]
+            recent = [{"ticket": r[0], "symbol": r[1], "type": "TRADE",
+                       "profit": round(float(r[2] or 0), 2), "close_time": str(r[3])[:16]}
+                      for r in rows[-10:]][::-1]
+
+            # Per-asset breakdown
+            by_asset = []
+            try:
+                import sqlite3 as _sl2
+                con2 = _sl2.connect("tradecore.db")
+                asset_rows = con2.execute("""
+                    SELECT symbol,
+                           COUNT(*) as n,
+                           SUM(CASE WHEN profit > 0 THEN 1 ELSE 0 END) as wins,
+                           SUM(profit) as net,
+                           AVG(CASE WHEN profit > 0 THEN profit END) as avg_win,
+                           AVG(CASE WHEN profit < 0 THEN profit END) as avg_loss,
+                           AVG(CAST((julianday(close_time)-julianday(open_time))*1440 AS REAL)) as avg_hold
+                    FROM trades
+                    WHERE profit IS NOT NULL AND profit != 0
+                      AND (comment IS NULL OR comment NOT LIKE '%ghost%')
+                    GROUP BY symbol ORDER BY SUM(profit) DESC
+                """).fetchall()
+                con2.close()
+                for sym, n, w, net_a, aw, al, ah in asset_rows:
+                    rr_a = (aw / abs(al)) if (aw and al and al != 0) else 0
+                    by_asset.append({
+                        'symbol': sym, 'n': n, 'wins': w or 0,
+                        'net':  round(net_a or 0, 2),
+                        'avg_win':  round(aw or 0, 2),
+                        'avg_loss': round(al or 0, 2),
+                        'rr':       round(rr_a, 2),
+                        'avg_hold': round(ah or 0, 1),
+                    })
+            except Exception:
+                pass
+
             return {
-                "win_rate": round(win_rate, 1),
+                "win_rate":      round(win_rate, 1),
                 "profit_factor": round(pf, 2),
-                "total_trades": len(profits),
-                "curve": curve
+                "total_trades":  len(profits),
+                "net_pnl":       round(running, 2),
+                "avg_win":       round(avg_win, 2),
+                "avg_loss":      round(avg_loss, 2),
+                "rr_ratio":      round(rr, 2),
+                "curve":         curve,
+                "recent_trades": recent,
+                "by_asset":      by_asset,
             }
         except Exception as e:
             self.log_debug(f"Performance API Error: {e}")
-            return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0, "curve": []}
+            return {"win_rate": 0.0, "profit_factor": 0.0, "total_trades": 0,
+                    "net_pnl": 0.0, "avg_win": 0.0, "avg_loss": 0.0,
+                    "rr_ratio": 0.0, "curve": [], "recent_trades": [], "by_asset": []}
 
     def get_risk(self):
         try:

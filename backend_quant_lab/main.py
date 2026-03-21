@@ -175,57 +175,70 @@ def get_risk():
 def get_news():
     return bot.get_news()
 
-# ==========================================
-# QUANT / AUDIT ENDPOINTS
-# ==========================================
+@app.get("/bot/pending")
+def get_pending():
+    try:
+        import MetaTrader5 as mt5
+        orders = mt5.orders_get()
+        if not orders:
+            return []
+        result = []
+        for o in orders:
+            state = bot._pending_order_info.get(str(o.ticket), {})
+            result.append({
+                "ticket":     o.ticket,
+                "symbol":     o.symbol,
+                "type":       "BUY_LIMIT" if o.type == mt5.ORDER_TYPE_BUY_LIMIT else "SELL_LIMIT",
+                "price_open": round(o.price_open, 5),
+                "sl":         round(o.sl, 5),
+                "tp":         round(o.tp, 5),
+                "volume":     o.volume_current,
+                "time_setup": o.time_setup,
+                "confidence": state.get("confidence"),
+                "regime":     state.get("regime", ""),
+            })
+        return result
+    except Exception:
+        return []
+
 
 @app.get("/quant/status")
 def get_quant_status():
-    """
-    [S24] Comprehensive quant intelligence endpoint for the dashboard.
-    Returns risk params, signal funnel, and ML model status in one call.
-    """
-    import sqlite3, json, os
-
-    result = bot.quant_engine.get_live_risk_params()
-
-    # Signal funnel counts from DB
+    import sqlite3, json as _json, os
+    result = {}
+    try:
+        result = bot.quant_engine.get_live_risk_params()
+    except Exception:
+        pass
+    # Signal funnel
     try:
         con = sqlite3.connect("tradecore.db")
-        funnel_rows = con.execute(
-            "SELECT result, COUNT(*) FROM signals GROUP BY result"
-        ).fetchall()
+        rows = con.execute("SELECT result, COUNT(*) FROM signals GROUP BY result").fetchall()
         con.close()
-        funnel = {r[0]: r[1] for r in funnel_rows}
+        funnel = {r[0]: r[1] for r in rows}
         result['signal_funnel'] = {
             'filled':           funnel.get('FILLED', 0),
             'executed':         funnel.get('EXECUTED', 0),
             'attempted':        funnel.get('ATTEMPTED', 0),
             'orphaned_pre_s20': funnel.get('ORPHANED_PRE_S20', 0),
             'low_confidence':   sum(v for k, v in funnel.items() if 'LOW_CONFIDENCE' in k),
+            'h4_blocked':       funnel.get('H4_BLOCKED', 0),
+            'cooldown':         funnel.get('COOLDOWN', 0),
             'rejected':         sum(v for k, v in funnel.items() if 'REJECTED' in k),
             'skipped':          funnel.get('SKIPPED', 0),
         }
-        outcome_rows = con.execute(
-            "SELECT outcome, COUNT(*) FROM signals WHERE outcome IS NOT NULL GROUP BY outcome"
-        ) if False else sqlite3.connect("tradecore.db").execute(
-            "SELECT outcome, COUNT(*) FROM signals WHERE outcome IS NOT NULL GROUP BY outcome"
-        ).fetchall()
-        result['signal_outcomes'] = {r[0]: r[1] for r in outcome_rows}
     except Exception:
-        result['signal_funnel']   = {}
-        result['signal_outcomes'] = {}
-
+        result['signal_funnel'] = {}
     # ML model metadata
     try:
         meta_path = os.path.join("media", "kom_xgboost_v1_meta.json")
         if os.path.exists(meta_path):
             with open(meta_path) as f:
-                meta = json.load(f)
+                meta = _json.load(f)
             result['ml_model'] = {
                 'active':       meta.get('precision_gate') == 'ACTIVE',
                 'precision':    round(meta.get('cv_precision', 0) * 100, 1),
-                'accuracy':     round(meta.get('cv_accuracy',  0) * 100, 1),
+                'accuracy':     round(meta.get('cv_accuracy', 0) * 100, 1),
                 'n_trained_on': meta.get('n_trades', 0),
                 'trained_at':   meta.get('trained_at', '')[:16],
                 'gate':         meta.get('precision_gate', 'DISABLED'),
@@ -234,32 +247,37 @@ def get_quant_status():
             result['ml_model'] = {'active': False, 'gate': 'NOT_TRAINED'}
     except Exception:
         result['ml_model'] = {'active': False, 'gate': 'ERROR'}
-
     return result
+
 
 @app.get("/quant/export_report")
 def export_report():
-    """
-    [S22-C] Generates a per-account audit report and returns it as a
-    downloadable CSV. Called by the Flutter dashboard audit button.
-    """
-    from audit_db import audit_database
-    from fastapi.responses import FileResponse
-    import os
-
+    import sqlite3, io, csv
+    from fastapi.responses import StreamingResponse
+    from datetime import datetime as _dt
     try:
-        result = audit_database(export_csv=True)
-        csv_path = result.get('csv_path')
-
-        if not csv_path or not os.path.exists(csv_path):
-            # No trades yet — return the JSON report instead
-            return result
-
-        return FileResponse(
-            path=csv_path,
-            media_type='text/csv',
-            filename=os.path.basename(csv_path)
+        con = sqlite3.connect("tradecore.db")
+        rows = con.execute("""
+            SELECT ticket, symbol, type, volume, open_price, close_price,
+                   profit, open_time, close_time, account_id, model_type, regime
+            FROM trades
+            WHERE (comment IS NULL OR comment NOT LIKE '%ghost%')
+              AND profit IS NOT NULL
+            ORDER BY open_time ASC
+        """).fetchall()
+        con.close()
+        cols = ['ticket','symbol','type','volume','open_price','close_price',
+                'profit','open_time','close_time','account_id','model_type','regime']
+        buf = io.StringIO()
+        writer = csv.writer(buf)
+        writer.writerow(cols)
+        writer.writerows(rows)
+        buf.seek(0)
+        fname = f"kom_audit_{_dt.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
+        return StreamingResponse(
+            io.BytesIO(buf.getvalue().encode()),
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename={fname}"}
         )
     except Exception as e:
-        logger.error(f"Audit export error: {e}")
         return {"error": str(e)}

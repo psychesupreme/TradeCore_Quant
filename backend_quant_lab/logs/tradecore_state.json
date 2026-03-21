@@ -1,10 +1,10 @@
 {
   "account_id": "32128474",
   "scaled_positions": [
-    "EURGBP_0.86291_SELL",
     "BTCUSD_69219.997_SELL",
     "XAUUSD_5021.27_SELL",
-    "XAUUSD_5139.09_BUY"
+    "XAUUSD_5139.09_BUY",
+    "EURGBP_0.86291_SELL"
   ],
   "last_logged_signal": {
     "EURUSD": [
@@ -68,14 +68,14 @@
       "SKIPPED"
     ],
     "XAGUSD": [
+      "SELL_MICRO",
+      0.77,
+      "ATTEMPTED"
+    ],
+    "US Oil": [
       "NEUTRAL",
       0.0,
       "SKIPPED"
-    ],
-    "US Oil": [
-      "SELL",
-      0.87,
-      "ATTEMPTED"
     ],
     "NGAS": [
       "NEUTRAL",
@@ -93,9 +93,9 @@
       "SKIPPED"
     ],
     "US Tech 100": [
-      "BUY_MICRO",
-      0.99,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "Germany 40": [
       "NEUTRAL",
@@ -103,37 +103,8 @@
       "SKIPPED"
     ]
   },
-  "trade_confidences": {},
-  "pending_order_info": {
-    "8587276508": {
-      "regime": "HIGH VOLATILITY (GARCH)",
-      "account_id": "32128474",
-      "model_type": "ICT_STANDARD",
-      "model_sizing": "STANDARD",
-      "confidence": 0.99,
-      "sl": 94.826,
-      "tp": 97.833,
-      "symbol": "US Oil"
-    },
-    "8587410192": {
-      "regime": "HIGH VOLATILITY (GARCH)",
-      "account_id": "32128474",
-      "model_type": "ICT_STANDARD",
-      "model_sizing": "STANDARD",
-      "confidence": 0.872,
-      "sl": 98.44,
-      "tp": 95.593,
-      "symbol": "US Oil"
-    },
-    "8587410198": {
-      "regime": "NORMAL (TRENDING)",
-      "account_id": "32128474",
-      "model_type": "ICT_STANDARD",
-      "model_sizing": "STANDARD",
-      "confidence": 0.99,
-      "sl": 24343.14,
-      "tp": 24352.75,
-      "symbol": "US Tech 100"
-    }
+  "trade_confidences": {
+    "8588670778": 0.705,
+    "8588908044": 0.772
   }
 }

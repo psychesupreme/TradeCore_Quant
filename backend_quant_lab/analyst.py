@@ -60,16 +60,37 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
 
 
 # ── DEAD MARKET ATR THRESHOLD (OPT-1) ────────────────────────────────────────
+# [S26] Per-asset thresholds. Gold/Silver move even in quiet sessions.
+# Indices need a genuinely dead pre-market to trigger. BTC is never truly dead.
 
 def _dead_market_atr_threshold(symbol: str) -> float:
     s = symbol.upper()
-    if "BTC" in s:  return 50.0
-    if "ETH" in s:  return 5.0
-    if "XAU" in s:  return 0.30
-    if "XAG" in s:  return 0.05
-    if "SP 500" in s or "NAS" in s or "Tech 100" in s: return 2.0
-    if "JPY" in s:  return 0.030
+    if "BTC" in s:  return 80.0   # was 50 — raised; BTC has baseline volatility
+    if "ETH" in s:  return 8.0
+    if "XAU" in s:  return 0.20   # was 0.30 — Gold moves even in "quiet" sessions
+    if "XAG" in s:  return 0.03   # was 0.05 — Silver very responsive to moves
+    if "OIL" in s:  return 0.05
+    if "NGAS" in s: return 0.005
+    if "SP 500" in s or "TECH 100" in s: return 3.0   # was 2.0 — pre-NYSE looks dead
+    if "GERMANY" in s: return 5.0
+    if "JPY" in s:  return 0.025  # was 0.030 — JPY active in Asian session
     return 0.0003
+
+
+# ── PER-ASSET DISPLACEMENT ATR MULTIPLIER (S26) ───────────────────────────────
+# How large a displacement candle must be relative to ATR to qualify as
+# genuine institutional displacement. Calibrated per asset class.
+
+def _get_disp_atr_mult(symbol: str, regime: str) -> float:
+    if "HIGH VOLATILITY" in regime: return 0.8
+    if "DEAD" in regime:            return 0.3
+    s = symbol.upper()
+    if "XAU" in s:  return 0.50   # Gold: AMD moves fast, 0.5×ATR enough
+    if "XAG" in s:  return 0.40   # Silver: more volatile per ATR unit
+    if "BTC" in s or "ETH" in s:  return 0.55
+    if "OIL" in s or "NGAS" in s: return 0.50
+    if "SP 500" in s or "TECH 100" in s or "GERMANY" in s: return 0.80
+    return 0.60   # FX standard
 
 
 
@@ -131,15 +152,8 @@ def _session_amd_prior(utc_hour: int, utc_minute: int,
         return {'DISTRIBUTION': 1.1, 'MANIPULATION': 0.8, 'ACCUMULATION': 0.8}
 
     # ── FX, COMMODITIES, CRYPTO: standard session priors ─────────────
-    # [S25-F1] NY Lunch AVOID gate is FX-only.
-    # Gold, Silver, Oil, NGAS, BTC and ETH have continuous institutional
-    # flow through the NY session (ETF rebalancing, macro catalysts,
-    # equity-linked demand). The FX liquidity dry-up gate does not apply.
-    # Evidence: XAUUSD 5000→4600 breakdown on March 18 2026 occurred
-    # entirely within the 16:00-17:30 AVOID window — bot was silent.
-    _is_commodity_crypto = any(x in sym for x in
-                                ['XAU', 'XAG', 'OIL', 'NGAS', 'BTC', 'ETH'])
-    if 16*60 <= t < 17*60+30 and not _is_commodity_crypto:
+    # NY Lunch is the only hard gate — liquidity genuinely absent
+    if 16*60 <= t < 17*60+30:
         return {'AVOID': 1.0}
 
     # Asian (00-03 UTC): accumulation strongly favoured; manipulation possible
@@ -1829,131 +1843,6 @@ def detect_candlestick_pattern(df: pd.DataFrame, direction: str,
         return empty
 
 
-def _extract_h4_targets(df_macro: pd.DataFrame, current_price: float,
-                         direction: str, current_atr_m15: float) -> dict:
-    """
-    [S25-F2] Extract the nearest H4 structural target in the trade direction.
-
-    The Asian session TP formula sets targets 30-60pt away on Gold.
-    H4 AMD distribution targets are 150-400pt away — the real institutional
-    delivery zone. This function finds the nearest H4 swing low (for SELL)
-    or swing high (for BUY) as the primary TP, with the Asian session level
-    remaining as a minimum TP floor enforced in bot_engine.
-
-    Uses a 5-bar pivot to identify H4 swing points — deliberately simple to
-    avoid overfitting to recent micro noise on the H4 timeframe.
-
-    Returns:
-        h4_tp_target:    float | None — nearest H4 structural level in direction
-        h4_sl_buffer:    float        — 0.5×H4_ATR for use as SL reference width
-        h4_swing_count:  int          — number of confirmed H4 swing points
-        h4_atr:          float        — H4 ATR (for trailing stop calibration)
-        h4_macro_trend:  str          — BULLISH | BEARISH | NEUTRAL
-    """
-    empty = {'h4_tp_target': None, 'h4_sl_buffer': current_atr_m15,
-             'h4_swing_count': 0, 'h4_atr': current_atr_m15 * 4,
-             'h4_macro_trend': 'NEUTRAL'}
-    try:
-        if df_macro is None or len(df_macro) < 15:
-            return empty
-
-        df = df_macro.copy()
-
-        # H4 ATR (14-bar)
-        tr = pd.concat([
-            df['high'] - df['low'],
-            (df['high'] - df['close'].shift()).abs(),
-            (df['low']  - df['close'].shift()).abs(),
-        ], axis=1).max(axis=1)
-        h4_atr = float(tr.rolling(14).mean().iloc[-1])
-        if h4_atr <= 0:
-            h4_atr = current_atr_m15 * 4
-
-        # 5-bar pivot swing detection on H4
-        pivot = 2   # bars on each side
-        highs = df['high'].values
-        lows  = df['low'].values
-        swing_highs, swing_lows = [], []
-
-        for i in range(pivot, len(df) - pivot):
-            if all(highs[i] > highs[j] for j in range(i - pivot, i + pivot + 1) if j != i):
-                swing_highs.append(float(highs[i]))
-            if all(lows[i] < lows[j] for j in range(i - pivot, i + pivot + 1) if j != i):
-                swing_lows.append(float(lows[i]))
-
-        h4_swing_count = len(swing_highs) + len(swing_lows)
-
-        # H4 macro trend via EMA-20/50
-        df['ema20'] = df['close'].ewm(span=20, adjust=False).mean()
-        df['ema50'] = df['close'].ewm(span=50, adjust=False).mean()
-        last  = df.iloc[-1]
-        prev  = df.iloc[-2]
-        bull  = (last['close'] > last['ema20']) and (prev['close'] > prev['ema20']) and (last['ema20'] > last['ema50'])
-        bear  = (last['close'] < last['ema20']) and (prev['close'] < prev['ema20']) and (last['ema20'] < last['ema50'])
-        h4_macro_trend = 'BULLISH' if bull else ('BEARISH' if bear else 'NEUTRAL')
-
-        # Nearest H4 structural level in trade direction
-        h4_tp_target = None
-        is_sell = direction == 'SELL'
-
-        if is_sell and swing_lows:
-            # For SELL: target the nearest H4 swing low BELOW current price
-            candidates = [lvl for lvl in swing_lows if lvl < current_price - h4_atr * 0.3]
-            if candidates:
-                h4_tp_target = max(candidates)  # nearest swing low below price
-        elif not is_sell and swing_highs:
-            # For BUY: target the nearest H4 swing high ABOVE current price
-            candidates = [lvl for lvl in swing_highs if lvl > current_price + h4_atr * 0.3]
-            if candidates:
-                h4_tp_target = min(candidates)  # nearest swing high above price
-
-        return {
-            'h4_tp_target':   round(h4_tp_target, 5) if h4_tp_target else None,
-            'h4_sl_buffer':   round(h4_atr * 0.5, 5),
-            'h4_swing_count': h4_swing_count,
-            'h4_atr':         round(h4_atr, 5),
-            'h4_macro_trend': h4_macro_trend,
-        }
-    except Exception:
-        return empty
-
-
-def _h4_trend_strength(df_macro: pd.DataFrame) -> int:
-    """
-    [S25-F4] Count confirmed H4 swing structure points.
-
-    Returns the number of confirmed HH/HL (bull) or LL/LH (bear) swing
-    sequences on H4. Used to determine whether enforce_macro should activate
-    in NORMAL regime (it normally only fires in HIGH VOLATILITY).
-
-    A count >= 3 means the H4 trend has been confirmed by at least 3
-    structural touches — reliable enough to require sniper-threshold
-    confluence (0.88) before trading counter-trend on M15.
-    """
-    try:
-        if df_macro is None or len(df_macro) < 15:
-            return 0
-        pivot = 2
-        highs = df_macro['high'].values
-        lows  = df_macro['low'].values
-        sh, sl = [], []
-        for i in range(pivot, len(df_macro) - pivot):
-            if all(highs[i] > highs[j] for j in range(i - pivot, i + pivot + 1) if j != i):
-                sh.append(highs[i])
-            if all(lows[i] < lows[j]  for j in range(i - pivot, i + pivot + 1) if j != i):
-                sl.append(lows[i])
-        if len(sh) < 2 or len(sl) < 2:
-            return len(sh) + len(sl)
-        # Count HH sequences (each is a confirmed bullish swing point)
-        hh = sum(1 for i in range(1, len(sh)) if sh[i] > sh[i-1])
-        hl = sum(1 for i in range(1, len(sl)) if sl[i] > sl[i-1])
-        ll = sum(1 for i in range(1, len(sl)) if sl[i] < sl[i-1])
-        lh = sum(1 for i in range(1, len(sh)) if sh[i] < sh[i-1])
-        return max(hh + hl, ll + lh)
-    except Exception:
-        return 0
-
-
 def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                             symbol: str, market_regime: str,
                             utc_now: datetime = None,
@@ -1997,25 +1886,6 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     obs         = detect_order_blocks(df)
     pd_zone     = detect_premium_discount(df, df_macro=df_macro, lookback=100)
     eq_levels   = detect_equal_highs_lows(df)
-
-    # [S25-F2] Extract H4 structural targets for TP placement.
-    # Runs for both MANIPULATION and DISTRIBUTION paths so the full signal
-    # tuple always carries the H4 TP level for bot_engine to consume.
-    current_price_mid = float((c2['high'] + c2['low']) / 2)
-    _h4_bull = _extract_h4_targets(df_macro, current_price_mid, 'BUY',  current_atr)
-    _h4_bear = _extract_h4_targets(df_macro, current_price_mid, 'SELL', current_atr)
-    h4_atr        = _h4_bull['h4_atr']   # same value regardless of direction
-    h4_swing_count = _h4_bull['h4_swing_count']
-
-    # [S25-F4] Strengthen enforce_macro based on H4 structural trend depth.
-    # In NORMAL regime enforce_macro was always False — allowing the M15
-    # engine to trade counter-trend even when H4 had 3+ confirmed swing
-    # points (the root cause of GBPUSD/EURUSD 0-25% WR).
-    # New rule: enforce_macro = True whenever H4 trend has >= 3 structural
-    # swing confirmations, regardless of GARCH regime.
-    _strong_h4 = h4_swing_count >= 3
-    # Sniper override: 4+ swing points = require 0.88 score for counter-trend
-    _sniper_h4 = h4_swing_count >= 4
 
     # ── AMD Phase — STRUCTURAL detection (not clock-based) ─────────
     # The Asian range boundaries feed the manipulation detector as reference.
@@ -2101,10 +1971,8 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     elif "HIGH VOLATILITY" in market_regime:
         disp_atr_mult = 0.8;  enforce_macro = True
     else:
-        disp_atr_mult = 0.6
-        # [S25-F4] Enforce H4 macro direction when trend is structurally confirmed
-        # (3+ H4 swing points). Previously enforce_macro was False in NORMAL regime,
-        # allowing counter-trend M15 signals to execute against confirmed H4 trends.
+        disp_atr_mult = _get_disp_atr_mult(symbol, market_regime)
+        # [S25-F4+S26] enforce_macro when 3+ H4 swings confirmed
         enforce_macro = _strong_h4
 
     # ── DISTRIBUTION PATH ──────────────────────────────────────────
@@ -2291,17 +2159,11 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['swing_sl_ref']    = round(float(last_swing_low), 5)  # structural level swept
         cond['sl_atr_buffer']   = round(float(current_atr * 0.3), 5)
 
-        # [S12-P1B] TP target: H4 structural swing high as primary target;
-        # Asian High is the floor (minimum — trade must at least reach session high).
-        # [S25-F2] _h4_bull['h4_tp_target'] is the nearest H4 swing high above price.
-        # If no H4 target exists, fall back to Asian High → ref_high.
-        _asian_tp_bull  = asian.get('asian_high') or ref_high
-        _h4_tp_bull     = _h4_bull.get('h4_tp_target')
-        cond['tp_target_level'] = _h4_tp_bull if _h4_tp_bull else _asian_tp_bull
-        cond['asian_tp_floor']  = _asian_tp_bull     # floor: always shown
-        cond['h4_tp_target']    = _h4_tp_bull
-        cond['h4_atr']          = h4_atr
-        cond['h4_swing_count']  = h4_swing_count
+        # [S12-P1B] Asian range as natural TP target:
+        # For a bullish setup (swept the Asian Low), the natural target is the
+        # Asian High — smart money swept SSL, now distributes toward BSL (AH).
+        # Fall back to ref_high from London range if Asian not valid.
+        cond['tp_target_level'] = asian.get('asian_high') or ref_high
         cond['asian_high']      = asian.get('asian_high')
         cond['asian_low']       = asian.get('asian_low')
 
@@ -2366,14 +2228,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
             cond['amd_judas_bonus_value'] = amd_judas_bonus
 
         if enforce_macro and macro_trend == "BEARISH":
-            if _sniper_h4 and score >= 0.88:
-                pass   # rare high-conviction counter-trend — allow through
-            else:
-                swing_note = f"{h4_swing_count} H4 swings" if _strong_h4 else "H4 macro"
-                return "NEUTRAL", 0.0, (
-                    f"BUY blocked by Bearish {swing_note} "
-                    f"(score={score:.2f}, need 0.88 for counter-trend)"
-                ), cond, kill_zone
+            return "NEUTRAL", 0.0, f"BUY blocked by Bearish H4 (score={score:.2f})", cond, kill_zone
 
         # ── [S13] CONFLUENCE AMPLIFIER — BULLISH MANIPULATION ──────
         # Applied AFTER all ICT checks and H4 enforcement, before signal emit.
@@ -2481,17 +2336,9 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['swing_sl_ref']    = round(float(last_swing_high), 5)
         cond['sl_atr_buffer']   = round(float(current_atr * 0.3), 5)
 
-        # [S12-P1B] TP target: H4 structural swing low as primary target;
-        # Asian Low is the floor (minimum — trade must at least reach session low).
-        # [S25-F2] _h4_bear['h4_tp_target'] is the nearest H4 swing low below price.
-        # If no H4 target exists, fall back to Asian Low → ref_low.
-        _asian_tp_bear  = asian.get('asian_low') or ref_low
-        _h4_tp_bear     = _h4_bear.get('h4_tp_target')
-        cond['tp_target_level'] = _h4_tp_bear if _h4_tp_bear else _asian_tp_bear
-        cond['asian_tp_floor']  = _asian_tp_bear
-        cond['h4_tp_target']    = _h4_tp_bear
-        cond['h4_atr']          = h4_atr
-        cond['h4_swing_count']  = h4_swing_count
+        # [S12-P1B] Asian Low as natural TP target for bearish setups.
+        # Swept the Asian High (BSL cleared) → target the Asian Low (SSL below).
+        cond['tp_target_level'] = asian.get('asian_low') or ref_low
         cond['asian_high']      = asian.get('asian_high')
         cond['asian_low']       = asian.get('asian_low')
 
@@ -2552,18 +2399,7 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
             cond['amd_judas_bonus_value'] = amd_judas_bonus
 
         if enforce_macro and macro_trend == "BULLISH":
-            # [S25-F4] If H4 has 4+ confirmed swing points, require sniper-level
-            # score (0.88) for a counter-trend SELL rather than hard-blocking it.
-            # This allows genuinely exceptional confluence to still execute while
-            # preventing routine counter-trend signals on confirmed bull trends.
-            if _sniper_h4 and score >= 0.88:
-                pass   # rare high-conviction counter-trend — allow through
-            else:
-                swing_note = f"{h4_swing_count} H4 swings" if _strong_h4 else "H4 macro"
-                return "NEUTRAL", 0.0, (
-                    f"SELL blocked by Bullish {swing_note} "
-                    f"(score={score:.2f}, need 0.88 for counter-trend)"
-                ), cond, kill_zone
+            return "NEUTRAL", 0.0, f"SELL blocked by Bullish H4 (score={score:.2f})", cond, kill_zone
 
         # ── [S13] CONFLUENCE AMPLIFIER — BEARISH MANIPULATION ──────
         s13_bonus = 0.0
@@ -2712,14 +2548,18 @@ _SILVER_BULLET_WINDOWS: dict = {
     ],
     # Crypto — crypto trades 24h; highest-probability windows at London and NY opens
     'BTCUSD': [
-        (7, 30,  8, 30, 'BTC_London_Open_SB'),      # 07:30-08:30 UTC = 02:30-03:30 EST
-        (13, 0, 14,  0, 'BTC_NY_Open_SB'),           # 13:00-14:00 UTC = 08:00-09:00 EST
-        (15, 0, 16,  0, 'BTC_NY_Midday_SB'),         # 15:00-16:00 UTC = 10:00-11:00 EST
+        (0,  0,  2,  0, 'BTC_Asian_Open_SB'),        # 00:00-02:00 UTC — Asian open sweep
+        (7, 30,  8, 30, 'BTC_London_Open_SB'),        # 07:30-08:30 UTC — London algo trigger
+        (13, 0, 14,  0, 'BTC_NY_Open_SB'),             # 13:00-14:00 UTC — NYSE open
+        (15, 0, 16,  0, 'BTC_NY_Midday_SB'),           # 15:00-16:00 UTC — mid-session
+        (20, 0, 22,  0, 'BTC_NY_Close_SB'),            # 20:00-22:00 UTC — NY close / post-market
     ],
     'ETHUSD': [
+        (0,  0,  2,  0, 'ETH_Asian_Open_SB'),
         (7, 30,  8, 30, 'ETH_London_Open_SB'),
         (13, 0, 14,  0, 'ETH_NY_Open_SB'),
         (15, 0, 16,  0, 'ETH_NY_Midday_SB'),
+        (20, 0, 22,  0, 'ETH_NY_Close_SB'),
     ],
 }
 
@@ -2733,6 +2573,80 @@ _ASIAN_RANGE_HOURS: dict = {
 }
 
 # Per-asset minimum FVG size as multiple of ATR
+
+
+# ── [S27] MARKET HOURS DETECTOR ──────────────────────────────────────────────
+def get_tradable_asset_classes(utc_now: datetime) -> dict:
+    """
+    Returns which asset classes are tradable right now.
+    Market hours in UTC:
+      FX:      Sun 22:00 – Fri 22:00 (continuous)
+      Gold:    Sun 23:00 – Fri 21:00, with 23:00–23:15 daily rollover gap
+      Indices: Mon–Fri 13:30–21:00 (NYSE)
+      Energy:  Mon–Fri 01:00–21:00
+      Crypto:  24/7
+    """
+    dow = utc_now.weekday()  # 0=Mon … 6=Sun
+    t   = utc_now.hour * 60 + utc_now.minute
+
+    # Weekend: Fri 22:00 → Sun 22:00
+    is_weekend = (
+        (dow == 4 and t >= 22*60) or
+        (dow == 5) or
+        (dow == 6 and t < 22*60)
+    )
+    fx_open      = not is_weekend
+    gold_open    = fx_open and not (23*60 <= t < 23*60 + 15)  # skip daily rollover
+    indices_open = fx_open and dow < 5 and 13*60+30 <= t < 21*60
+    energy_open  = fx_open and dow < 5 and 1*60 <= t < 21*60
+
+    return {
+        'fx':         fx_open,
+        'gold':       gold_open,
+        'indices':    indices_open,
+        'energy':     energy_open,
+        'crypto':     True,
+        'is_weekend': is_weekend,
+        'is_ny_close': fx_open and 21*60 <= t < 22*60 + 30,
+    }
+
+
+def get_after_hours_active_symbols(vip_assets: list, utc_now: datetime) -> list:
+    """
+    [S27] Filters the vip_assets list to only symbols that are tradable now.
+    On weekends: crypto only.
+    NY close (21:00–22:30 UTC): crypto elevated to top of scan order.
+    Gold rollover (23:00–23:15): XAUUSD/XAGUSD skipped that minute.
+    """
+    h = get_tradable_asset_classes(utc_now)
+
+    if h['is_weekend']:
+        crypto = [s for s in vip_assets
+                  if 'BTC' in s.upper() or 'ETH' in s.upper()]
+        return crypto or vip_assets  # safety fallback
+
+    active = []
+    for sym in vip_assets:
+        s = sym.upper()
+        is_crypto  = 'BTC' in s or 'ETH' in s
+        is_gold    = 'XAU' in s or 'XAG' in s
+        is_index   = any(x in s for x in ['SP 500','TECH 100','GERMANY'])
+        is_energy  = 'OIL' in s or 'NGAS' in s
+        is_fx      = not is_crypto and not is_gold and not is_index and not is_energy
+
+        if   is_crypto                       : active.append(sym)
+        elif is_gold   and h['gold']         : active.append(sym)
+        elif is_fx     and h['fx']           : active.append(sym)
+        elif is_index  and h['indices']      : active.append(sym)
+        elif is_energy and h['energy']       : active.append(sym)
+
+    if h['is_ny_close']:
+        crypto_syms = [s for s in active if 'BTC' in s.upper() or 'ETH' in s.upper()]
+        others      = [s for s in active if s not in crypto_syms]
+        active      = crypto_syms + others
+
+    return active or [s for s in vip_assets if 'BTC' in s.upper()]
+
 _MIN_FVG_ATR: dict = {
     'XAUUSD': 0.50,
     'XAGUSD': 0.40,
@@ -3115,6 +3029,128 @@ def _detect_fvg_from_slice(df_slice: pd.DataFrame, direction: str,
                         'fvg_size': round(gh - gl, 5),
                         'window_name': 'displacement'}
     return empty
+
+
+
+# ── [S27-B] M1 MICRO-SCALP ENGINE ─────────────────────────────────────────────
+def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
+    """
+    Detects M1 displacement sequences → FVG → intraday range fade.
+    Returns MARKET ORDER signal with tight TP/SL.
+    conditions['m1_scalp'] = True → bot_engine executes immediately.
+    """
+    NEUTRAL = ("NEUTRAL", 0.0, "M1: No setup", {}, "M1_SCALP")
+    if df_m1 is None or len(df_m1) < 20:
+        return NEUTRAL
+    df  = df_m1.copy().reset_index(drop=True)
+    df['_atr'] = calculate_atr(df)
+    atr = float(df['_atr'].iloc[-1])
+    if atr <= 0:
+        return NEUTRAL
+
+    s = symbol.upper()
+    if 'XAU' in s:   tp_m, sl_m, md = 1.5, 0.8, 0.6
+    elif 'XAG' in s: tp_m, sl_m, md = 1.8, 0.9, 0.5
+    elif 'BTC' in s or 'ETH' in s: tp_m, sl_m, md = 2.0, 0.8, 0.6
+    else:            tp_m, sl_m, md = 1.5, 0.8, 0.6
+
+    def body(i): return float(df.iloc[i]['close']) - float(df.iloc[i]['open'])
+    n = len(df)
+    bull_d = bear_d = False
+    for i in range(max(0, n-6), n-1):
+        if body(i) >=  md*atr and body(i+1) >=  md*atr: bull_d = True; break
+        if body(i) <= -md*atr and body(i+1) <= -md*atr: bear_d = True; break
+    if not bull_d and not bear_d:
+        return ("NEUTRAL", 0.0, "M1: No displacement", {}, "M1_SCALP")
+
+    direction = "BUY" if bull_d else "SELL"
+
+    # Intraday range detection
+    rh = float(df.tail(30)['high'].max())
+    rl = float(df.tail(30)['low'].min())
+    rs = rh - rl
+    price = float(df.iloc[-1]['close'])
+    rpos  = (price - rl) / rs if rs > 0 else 0.5
+    tight = rs < 3.0 * atr
+    at_top, at_bot = rpos > 0.80, rpos < 0.20
+    rng_ok = (direction == "SELL" and at_top) or (direction == "BUY" and at_bot)
+
+    # H4 alignment
+    h4_ok = (direction == "BUY"  and h4_bias in ("BULLISH","NEUTRAL")) or             (direction == "SELL" and h4_bias in ("BEARISH","NEUTRAL"))
+    sc = 0.72 if h4_ok else 0.62
+    if tight and rng_ok: sc += 0.08
+    elif tight:          sc += 0.03
+
+    # M1 FVG (last 10 bars)
+    fvg = None
+    for i in range(max(1, n-10), n-1):
+        hp = float(df.iloc[i-1]['high']); lp = float(df.iloc[i-1]['low'])
+        hn = float(df.iloc[i+1]['high']); ln = float(df.iloc[i+1]['low'])
+        if direction == "BUY"  and ln > hp: fvg = (ln + hp)/2; sc += 0.08; break
+        if direction == "SELL" and hn < lp: fvg = (hn + lp)/2; sc += 0.08; break
+
+    lb = float(df.iloc[-1]['close']) - float(df.iloc[-1]['open'])
+    mom = (direction == "BUY" and lb > 0) or (direction == "SELL" and lb < 0)
+    if mom: sc += 0.05
+
+    sc = min(0.94, sc)
+    t  = utc_now.hour*60 + utc_now.minute
+    dow = utc_now.weekday()
+    weekend = (dow >= 5) or (dow == 4 and t >= 22*60)
+
+    # ── Session-specific confidence adjustments ──────────────────────
+    # Gold: prime scalp windows
+    if 'XAU' in s:
+        if 7*60  <= t <  8*60:  sc = min(0.96, sc+0.05)  # London open SB
+        if 15*60 <= t < 16*60: sc = min(0.96, sc+0.05)  # NY Afternoon SB
+        if 19*60 <= t < 21*60: sc = min(0.96, sc+0.04)  # NY PM (screenshots window)
+        if 0*60  <= t <  0*60+30 or t >= 23*60+15:  # post-rollover early Asia
+            sc = min(0.96, sc+0.03)
+
+    # Silver: same windows as Gold
+    if 'XAG' in s:
+        if 7*60 <= t < 8*60 or 15*60 <= t < 16*60:
+            sc = min(0.96, sc+0.04)
+
+    # Crypto: 24h but prime windows
+    if 'BTC' in s or 'ETH' in s:
+        sc = min(0.96, sc+0.02)           # base bonus — always active
+        if 0*60  <= t <  2*60:  sc = min(0.97, sc+0.03)  # Asian Open SB
+        if 7*60+30 <= t < 8*60+30: sc = min(0.97, sc+0.03)  # London Open SB
+        if 13*60 <= t < 14*60: sc = min(0.97, sc+0.03)  # NY Open SB
+        if 20*60 <= t < 22*60: sc = min(0.97, sc+0.03)  # NY Close SB
+
+    # Weekend: lower bar for BTC/ETH (only game in town)
+    if weekend and ('BTC' in s or 'ETH' in s):
+        sc = max(sc, 0.68)
+
+    # ── Accumulation phase bonus: BTC/Gold mapped range → watch sweep ─
+    # When parent ICT score is exactly 0.42 (ACCUMULATION floor) it means
+    # price is consolidating at a clear range. M1 displacement at range
+    # boundaries is the Manipulation sweep. Give +0.06 bonus for this setup.
+    parent_phase = h4_bias  # reused as proxy — actual phase in ict_conditions
+    if (tight and rng_ok) and abs(sc - 0.72) < 0.15:   # displacement from range extreme
+        sc = min(0.97, sc + 0.06)
+
+    if direction == "BUY":
+        tp, sl, sig = round(price+tp_m*atr,5), round(price-sl_m*atr,5), "BUY_MICRO"
+    else:
+        tp, sl, sig = round(price-tp_m*atr,5), round(price+sl_m*atr,5), "SELL_MICRO"
+
+    cond = {
+        'm1_scalp': True, 'm1_tp': tp, 'm1_sl': sl, 'm1_atr': round(atr,5),
+        'fvg_price': round(fvg,5) if fvg else None,
+        'h4_aligned': h4_ok, 'direction': direction,
+        'range_high': round(rh,5), 'range_low': round(rl,5),
+        'range_position': round(rpos,3), 'at_range_top': at_top,
+        'at_range_bottom': at_bot, 'in_tight_range': tight,
+        'range_aligned': rng_ok, 'is_weekend': weekend,
+    }
+    reason = (f"M1 {'RNG_FADE' if rng_ok else 'DISP'} {direction} "
+              f"ATR={atr:.3f} TP={tp:.3f} SL={sl:.3f}"
+              f"{' FVG' if fvg else ''}{' [H4OK]' if h4_ok else ' [CTR]'}"
+              f"{' [TOP]' if at_top else ' [BOT]' if at_bot else ''}")
+    return (sig, sc, reason, cond, "M1_SCALP")
 
 
 def compute_scalp_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
@@ -3500,6 +3536,58 @@ def analyze_market_structure(
         except Exception as _sc_err:
             conditions['scalp_error'] = str(_sc_err)
     # ────────────────────────────────────────────────────────────────────
+
+    # ── [S27-B] M1 MICRO-SCALP ───────────────────────────────────────
+    _df_m1 = getattr(request, 'df_m1', None)
+    _scalp_sym = any(k in sym.upper() for k in ['XAU','XAG','BTC','ETH'])
+    if _df_m1 is not None and _scalp_sym and market_regime != "DEAD MARKET":
+        try:
+            _h4b = conditions.get('h4_macro', 'NEUTRAL')
+            m1s, m1sc, m1r, m1c, m1kz = compute_m1_scalp(_df_m1, sym, utc_now, _h4b)
+            if m1s != "NEUTRAL" and (m1sc > score or (score < 0.65 and m1sc >= 0.68)):
+                m1c['ict_score_shadow']  = score
+                m1c['ict_signal_shadow'] = signal
+                m1c['model_winner']      = 'M1_SCALP'
+                signal, score, reason, conditions, kill_zone = m1s, m1sc, m1r, m1c, m1kz
+            elif m1s != "NEUTRAL":
+                conditions['m1_score_shadow']  = m1sc
+                conditions['m1_signal_shadow'] = m1s
+        except Exception as _e:
+            conditions['m1_error'] = str(_e)
+
+    # ── [S26-A] INDEX OPENING RANGE BREAKOUT BONUS ─────────────────────
+    # NYSE opens 13:30 UTC. SELL signals in confirmed H4 bear trend during
+    # the first 30 minutes get +0.05 — the highest-probability index window.
+    sym_up = sym.upper()
+    if signal != "NEUTRAL" and any(x in sym_up for x in ['SP 500', 'TECH 100']):
+        t = utc_now.hour * 60 + utc_now.minute
+        if 13*60+30 <= t < 14*60:
+            score = min(0.99, score + 0.05)
+            conditions['orb_bonus'] = True
+            reason += " | ORB[NYSE +0.05]"
+        else:
+            conditions['orb_bonus'] = False
+
+    # ── [S26-B] OVERNIGHT GAP FILL ALIGNMENT ────────────────────────
+    # Indices frequently fill overnight gaps. Signal aligned with gap fill
+    # direction gets +0.03 confluence bonus.
+    if signal != "NEUTRAL" and any(x in sym_up for x in ['SP 500', 'TECH 100', 'GERMANY']):
+        try:
+            if 'timestamp' in df.columns and len(df) > 1:
+                df_c = df.copy()
+                df_c['_dt'] = pd.to_datetime(df_c['timestamp'])
+                today_mask = df_c['_dt'].dt.date == utc_now.date()
+                today_idx  = df_c.index[today_mask]
+                if len(today_idx) > 0 and today_idx[0] > 0:
+                    prior_close  = float(df.iloc[today_idx[0] - 1]['close'])
+                    today_open   = float(df.iloc[today_idx[0]]['open'])
+                    gap          = today_open - prior_close
+                    if (gap > 0 and 'SELL' in signal) or (gap < 0 and 'BUY' in signal):
+                        score = min(0.99, score + 0.03)
+                        conditions['gap_fill_alignment'] = 'ALIGNED'
+                    conditions['gap_size'] = round(gap, 5)
+        except Exception:
+            pass
 
     resp = AnalysisResponse(
         symbol=request.symbol,

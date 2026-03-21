@@ -200,7 +200,9 @@ class MLDataExtractor:
             if pd.isna(sl) or sl == 0 or pd.isna(vol):
                 return np.nan
             if 'XAU' in sym or 'XAG' in sym:
-                return sl * 100 * vol          # metals: $100/lot/point
+                if 'XAG' in symbol:
+                    return sl * 5000 * vol      # silver: 5000 oz/lot
+                return sl * 100 * vol           # gold/oil: $100/lot/point
             if 'BTC' in sym or 'ETH' in sym:
                 return sl * vol                 # crypto: $1/lot/point
             if 'JPY' in sym:
