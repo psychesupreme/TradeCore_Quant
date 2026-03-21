@@ -33567,3 +33567,4 @@
 2026-03-21 11:02:47 [INFO] ✅ DB integrity check passed (WAL checkpointed).
 2026-03-21 11:02:47 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
 2026-03-21 11:03:01 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-21 11:12:27 [INFO] Stopped.
