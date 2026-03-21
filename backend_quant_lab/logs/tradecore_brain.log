@@ -33564,3 +33564,6 @@
 2026-03-21 04:18:52 [INFO] 📩 Received Command: /trades
 2026-03-21 04:18:58 [INFO] 📩 Received Command: /signals
 2026-03-21 10:42:32 [INFO] Stopped.
+2026-03-21 11:02:47 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-21 11:02:47 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-21 11:03:01 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
