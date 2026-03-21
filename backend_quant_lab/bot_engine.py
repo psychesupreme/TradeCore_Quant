@@ -1930,13 +1930,21 @@ class TradingBot:
                         if tfvg_high:
                             swing_sl_ref = tfvg_high
                             sl_atr_buf   = volatility_buffer * 0.15
-                        if asian_low:
+                        # [FIX] SELL TP must be BELOW entry price.
+                        # Asian_L is valid TP only when it's below the entry price.
+                        # If Asian_L > entry (price already below Asian range),
+                        # fall back to a structural distance-based target.
+                        _entry_est = tfvg_mid  # best estimate of fill price
+                        if asian_low and asian_low < _entry_est:
                             ext = volatility_buffer * 0.30 if 'XAU' in symbol else 0.0
                             ext = volatility_buffer * 0.20 if is_btc_eth else ext
                             tp_target = asian_low - ext
                         elif tfvg_size > 0:
                             mult = 1.5 if is_btc_eth else 2.0
                             tp_target = tfvg_mid - tfvg_size * mult
+                        else:
+                            # Fallback: 2×ATR below entry
+                            tp_target = tfvg_mid - (volatility_buffer * 2.0)
                         self.log_info(
                             f"📐 Scalp Levels [{symbol} SELL]: "
                             f"Entry≈{ob_entry:.5f}  SL≈{swing_sl_ref:.5f}  "
@@ -2311,6 +2319,22 @@ class TradingBot:
                                   else mt5.ORDER_TIME_SPECIFIED),
                     "type_filling": type_filling,
                 }
+
+                # [FIX] Final TP direction guard — prevent retcode=10016
+                # For SELL: TP must be < current ask (profitable direction = price falls)
+                # For BUY:  TP must be > current bid
+                _tick_now = mt5.symbol_info_tick(symbol)
+                if _tick_now and tp and sl:
+                    _ref_price = float(_tick_now.ask if is_buy else _tick_now.bid)
+                    _tp_wrong  = (is_buy  and float(tp) <= _ref_price) or                                  (not is_buy and float(tp) >= _ref_price)
+                    _sl_wrong  = (is_buy  and float(sl) >= _ref_price) or                                  (not is_buy and float(sl) <= _ref_price)
+                    if _tp_wrong or _sl_wrong:
+                        self.log_info(
+                            f"⚠️ TP/SL direction guard blocked {symbol}: "
+                            f"price={_ref_price:.5g} tp={tp:.5g} sl={sl:.5g} "
+                            f"({'BUY' if is_buy else 'SELL'}) — would be retcode 10016"
+                        )
+                        return
 
                 if not is_nano and not _is_m1_scalp:
                     request["expiration"] = int(time.time()) + (8 * 3600)

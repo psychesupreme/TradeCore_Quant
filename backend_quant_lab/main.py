@@ -205,9 +205,16 @@ def get_pending():
 @app.get("/quant/status")
 def get_quant_status():
     import sqlite3, json as _json, os
-    result = {}
+    # Safe defaults when quant engine hasn't accumulated enough data yet (N<30)
+    result = {
+        "kelly_fraction": 0.0, "risk_pct": 0.01, "var_limit": 0.0,
+        "cvar_limit": 0.0, "n_trades": 0, "regime_gate": "CALIBRATING",
+        "ml_collection_phase": True,
+    }
     try:
-        result = bot.quant_engine.get_live_risk_params()
+        live = bot.quant_engine.get_live_risk_params()
+        if live and isinstance(live, dict):
+            result.update(live)
     except Exception:
         pass
     # Signal funnel
@@ -216,17 +223,32 @@ def get_quant_status():
         rows = con.execute("SELECT result, COUNT(*) FROM signals GROUP BY result").fetchall()
         con.close()
         funnel = {r[0]: r[1] for r in rows}
+        # Also get real trade count for ML progress display
+        try:
+            cn2 = sqlite3.connect("tradecore.db")
+            conn_n = cn2.execute(
+                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0 "
+                "AND (comment IS NULL OR comment NOT LIKE '%ghost%')"
+            ).fetchone()[0]
+            cn2.close()
+        except Exception:
+            conn_n = 0
+        # Build comprehensive funnel with all S27 result statuses
+        low_conf_total = sum(v for k, v in funnel.items() if 'LOW_CONFIDENCE' in str(k))
+        rejected_total = sum(v for k, v in funnel.items() if 'REJECTED' in str(k))
         result['signal_funnel'] = {
             'filled':           funnel.get('FILLED', 0),
             'executed':         funnel.get('EXECUTED', 0),
             'attempted':        funnel.get('ATTEMPTED', 0),
             'orphaned_pre_s20': funnel.get('ORPHANED_PRE_S20', 0),
-            'low_confidence':   sum(v for k, v in funnel.items() if 'LOW_CONFIDENCE' in k),
+            'low_confidence':   low_conf_total,
             'h4_blocked':       funnel.get('H4_BLOCKED', 0),
             'cooldown':         funnel.get('COOLDOWN', 0),
-            'rejected':         sum(v for k, v in funnel.items() if 'REJECTED' in k),
+            'rejected':         rejected_total,
             'skipped':          funnel.get('SKIPPED', 0),
+            'total':            sum(funnel.values()),
         }
+        result['n_trades'] = result.get('n_trades') or conn_n
     except Exception:
         result['signal_funnel'] = {}
     # ML model metadata

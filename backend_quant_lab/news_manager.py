@@ -282,9 +282,31 @@ class NewsManager:
 
     def get_upcoming_news(self, hours=12):
         """
-        [RESTORED S18a] Returns a list of high/medium impact events 
-        occurring within the next X hours.
+        [RESTORED S18a] Returns high/medium impact events in next X hours.
+        [S28] Weekend awareness: returns sentinel during market closure.
+        [S28] Tier field added to all events for dashboard display.
         """
+        now = datetime.utcnow()
+        dow = now.weekday()  # 0=Mon, 5=Sat, 6=Sun
+        t   = now.hour * 60 + now.minute
+
+        # Weekend: FX markets closed Fri 22:00 → Sun 22:00 UTC
+        _is_weekend = (dow == 5) or (dow == 6) or                       (dow == 4 and t >= 22*60) or                       (dow == 6 and t < 22*60)
+
+        if _is_weekend:
+            # On weekends, don't burn a fetch — return market status info
+            # Only BTC/ETH are active; next event will be Sunday 22:00 open
+            dow_names = {4:'Friday', 5:'Saturday', 6:'Sunday', 0:'Monday'}
+            _day = dow_names.get(dow, 'Weekend')
+            return [{
+                'title':   'FX Markets Closed — Crypto Only',
+                'country': '🌐',
+                'impact':  'Info',
+                'tier':    0,
+                'time':    now.strftime('%Y-%m-%d %H:%M'),
+                '_weekend': True,
+            }]
+
         if not self.events:
             self.fetch_calendar()
             
