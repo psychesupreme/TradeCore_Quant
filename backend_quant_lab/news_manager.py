@@ -68,7 +68,7 @@ class NewsManager:
             with open(_CACHE_PATH, 'r') as f:
                 data = json.load(f)
             cached_at = datetime.fromisoformat(data.get('cached_at', '2000-01-01'))
-            age = (datetime.utcnow() - cached_at).total_seconds()
+            age = (datetime.now(timezone.utc).replace(tzinfo=None) - cached_at).total_seconds()
             # Only use cache if it's less than 12 hours old
             if age < 43200:
                 raw_events = data.get('events', [])
@@ -98,7 +98,7 @@ class NewsManager:
                 serializable.append(ev_copy)
             with open(_CACHE_PATH, 'w') as f:
                 json.dump({
-                    'cached_at': datetime.utcnow().isoformat(),
+                    'cached_at': datetime.now(timezone.utc).replace(tzinfo=None).isoformat(),
                     'events':    serializable,
                 }, f)
         except Exception as e:
@@ -112,7 +112,7 @@ class NewsManager:
         backoff so repeated restarts don't burn through the IP quota.
         [BUG-68] Stateful inheritance of Time and Currency for grouped rows.
         """
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
 
         # [S24-NEWS] Honour the 403 backoff window
         if self._blocked_until and now < self._blocked_until:
@@ -257,7 +257,7 @@ class NewsManager:
         if not self.events:
             return False, ""
 
-        now = now or datetime.utcnow()
+        now = now or datetime.now(timezone.utc).replace(tzinfo=None)
 
         for ev in self.events:
             if ev['impact'] != 'High':
@@ -286,7 +286,7 @@ class NewsManager:
         [S28] Weekend awareness: returns sentinel during market closure.
         [S28] Tier field added to all events for dashboard display.
         """
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
         dow = now.weekday()  # 0=Mon, 5=Sat, 6=Sun
         t   = now.hour * 60 + now.minute
 
@@ -310,7 +310,7 @@ class NewsManager:
         if not self.events:
             self.fetch_calendar()
             
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
         upcoming = []
         
         for ev in self.events:

@@ -33674,3 +33674,109 @@
 2026-03-23 01:44:08 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
 2026-03-23 01:44:08 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.36 | Mapping range | AH:68819.232 AL:68182.423
 2026-03-23 01:44:19 [INFO] Stopped.
+2026-03-23 01:47:43 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 01:47:43 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 01:47:53 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-23 01:51:26 [DEBUG] Process Error on EURUSD: name '_strong_h4' is not defined
+2026-03-23 01:51:26 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33159
+2026-03-23 01:51:26 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4614.07 AL:4524.88
+2026-03-23 01:51:26 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 01:51:26 [DEBUG] Process Error on BTCUSD: name '_strong_h4' is not defined
+2026-03-23 01:52:26 [DEBUG] Process Error on EURUSD: name '_strong_h4' is not defined
+2026-03-23 01:52:26 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33159
+2026-03-23 01:52:26 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4614.07 AL:4524.88
+2026-03-23 01:52:26 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 01:52:26 [DEBUG] Process Error on BTCUSD: name '_strong_h4' is not defined
+2026-03-23 01:53:31 [DEBUG] Process Error on EURUSD: name '_strong_h4' is not defined
+2026-03-23 01:53:31 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33159
+2026-03-23 01:53:31 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4614.07 AL:4524.88
+2026-03-23 01:53:32 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 01:53:32 [DEBUG] Process Error on BTCUSD: name '_strong_h4' is not defined
+2026-03-23 01:54:55 [DEBUG] Process Error on EURUSD: name '_strong_h4' is not defined
+2026-03-23 01:54:55 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33159
+2026-03-23 01:54:55 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4614.07 AL:4524.88
+2026-03-23 01:54:55 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 93%)
+2026-03-23 01:54:55 [DEBUG] [XAGUSD] SMC Breaker TP: 68.732
+2026-03-23 01:54:56 [DEBUG] Process Error on BTCUSD: name '_strong_h4' is not defined
+2026-03-23 01:59:06 [INFO] 🎯 M1 Tight: XAGUSD TP=68.614 SL=69.019 ATR=0.150
+2026-03-23 01:59:06 [INFO] ⚡ M1 MARKET ORDER: XAGUSD SELL @ 69.56 Lot:0.01
+2026-03-23 01:59:07 [INFO] ⚡ TRAP SET: XAGUSD SELL_LIMIT | Entry: 69.56 | Lot: 0.01
+2026-03-23 02:00:22 [DEBUG] Process Error on EURUSD: name '_strong_h4' is not defined
+2026-03-23 02:00:22 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:00:22 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.144
+2026-03-23 02:00:22 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.38 | Mapping range | AH:68819.232 AL:68106.888
+2026-03-23 02:01:34 [DEBUG] [XAGUSD] Trade recorded: ticket=8590706924 (Conf: 0.93)
+2026-03-23 02:01:54 [INFO] 🔴 Trade Closed: #8590706924 XAGUSD | P&L: $-16.85
+2026-03-23 02:01:56 [DEBUG] Process Error on EURUSD: name '_strong_h4' is not defined
+2026-03-23 02:01:56 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:01:56 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.144
+2026-03-23 02:01:56 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.37 | Mapping range | AH:68819.232 AL:68106.888
+2026-03-23 02:11:01 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=98%. No new positions.
+2026-03-23 02:24:38 [INFO] Stopped.
+2026-03-23 02:26:42 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 02:26:42 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 02:26:52 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-23 02:34:27 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:34:27 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:34:27 [DEBUG] Process Error on USDJPY: name '_strong_h4' is not defined
+2026-03-23 02:34:27 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:34:27 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 02:34:28 [INFO] 🔎 MTF Confluence Locked: BTCUSD SELL_MICRO (Conf: 97%)
+2026-03-23 02:34:28 [DEBUG] [BTCUSD] SMC Breaker TP: 67863
+2026-03-23 02:34:28 [INFO] ⚠️ Thread Execution Error on BTCUSD: cannot access local variable '_is_m1_scalp' where it is not associated with a value
+2026-03-23 02:35:28 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:35:29 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:35:29 [DEBUG] Process Error on USDJPY: name '_strong_h4' is not defined
+2026-03-23 02:35:29 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:35:29 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 02:36:40 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:36:40 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:36:40 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.187
+2026-03-23 02:36:41 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:36:41 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 02:37:49 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:37:49 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:37:49 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.187
+2026-03-23 02:37:49 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:37:50 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 02:39:39 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:39:39 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:39:39 [DEBUG] Process Error on USDJPY: name '_strong_h4' is not defined
+2026-03-23 02:39:39 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:39:39 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 02:40:40 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:40:40 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:40:40 [DEBUG] Process Error on USDJPY: name '_strong_h4' is not defined
+2026-03-23 02:40:40 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:40:40 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 02:41:40 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:41:40 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:41:40 [DEBUG] Process Error on USDJPY: name '_strong_h4' is not defined
+2026-03-23 02:41:40 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:41:40 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 02:42:59 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:42:59 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:42:59 [DEBUG] Process Error on USDJPY: name '_strong_h4' is not defined
+2026-03-23 02:42:59 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4600.82 AL:4478.79
+2026-03-23 02:43:00 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 95%)
+2026-03-23 02:43:00 [DEBUG] [XAGUSD] SMC Breaker TP: 68.487
+2026-03-23 02:43:00 [INFO] ⚠️ Thread Execution Error on XAGUSD: cannot access local variable '_is_m1_scalp' where it is not associated with a value
+2026-03-23 02:44:27 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:44:27 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33198
+2026-03-23 02:44:28 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.187
+2026-03-23 02:44:28 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 98%)
+2026-03-23 02:44:28 [DEBUG] [XAUUSD] SMC Breaker TP: 4497.8
+2026-03-23 02:44:28 [INFO] ⚠️ Thread Execution Error on XAUUSD: cannot access local variable '_is_m1_scalp' where it is not associated with a value
+2026-03-23 02:45:25 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:45:25 [DEBUG] Process Error on GBPUSD: name '_strong_h4' is not defined
+2026-03-23 02:45:25 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.188
+2026-03-23 02:46:25 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:46:25 [DEBUG] Process Error on GBPUSD: name '_strong_h4' is not defined
+2026-03-23 02:46:25 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.188
+2026-03-23 02:47:25 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:47:25 [DEBUG] Process Error on GBPUSD: name '_strong_h4' is not defined
+2026-03-23 02:47:25 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.188
+2026-03-23 02:49:06 [DEBUG] [EURUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.15716 AL:1.15468
+2026-03-23 02:49:06 [DEBUG] Process Error on GBPUSD: name '_strong_h4' is not defined
+2026-03-23 02:49:06 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.188
+2026-03-23 02:49:33 [INFO] Stopped.

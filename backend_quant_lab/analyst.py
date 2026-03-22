@@ -1176,6 +1176,69 @@ def _derive_macro_trend(df_macro: pd.DataFrame) -> str:
 
 # ── AMD-5: DISTRIBUTION MODE SCORER ──────────────────────────────────────────
 
+
+# ── [S25-F4] H4 TREND STRENGTH ────────────────────────────────────────────────
+# Counts confirmed Higher High/Higher Low (bullish) or Lower Low/Lower High
+# (bearish) sequences on the H4 dataframe.
+# Returns: (swing_count, _strong_h4, _sniper_h4)
+#   _strong_h4  = True when 3+ confirmed H4 swings → enforce_macro activates
+#   _sniper_h4  = True when 4+ confirmed H4 swings → counter-trend needs 0.88+
+
+def _h4_trend_strength(df_macro: pd.DataFrame) -> tuple:
+    """
+    Count confirmed H4 swing sequences to determine trend conviction.
+    Uses 3-bar pivot swing detection (local high/low over prev/next bar).
+    Returns (swing_count: int, strong: bool, sniper: bool)
+    """
+    if df_macro is None or len(df_macro) < 10:
+        return 0, False, False
+
+    df = df_macro.copy()
+    highs  = df['high'].values
+    lows   = df['low'].values
+    closes = df['close'].values
+    n      = len(df)
+
+    # Identify pivot highs and lows using 3-bar look-around
+    pivot_highs = []
+    pivot_lows  = []
+    for i in range(1, n - 1):
+        if highs[i] > highs[i-1] and highs[i] > highs[i+1]:
+            pivot_highs.append((i, highs[i]))
+        if lows[i] < lows[i-1] and lows[i] < lows[i+1]:
+            pivot_lows.append((i, lows[i]))
+
+    if len(pivot_highs) < 2 or len(pivot_lows) < 2:
+        return 0, False, False
+
+    # Count bullish sequence: HH (each new pivot high > prior pivot high)
+    hh_count, hl_count = 0, 0
+    for k in range(1, len(pivot_highs)):
+        if pivot_highs[k][1] > pivot_highs[k-1][1]:
+            hh_count += 1
+    for k in range(1, len(pivot_lows)):
+        # HL: each swing low is higher than the previous
+        if pivot_lows[k][1] > pivot_lows[k-1][1]:
+            hl_count += 1
+
+    # Count bearish sequence: LL + LH
+    ll_count, lh_count = 0, 0
+    for k in range(1, len(pivot_lows)):
+        if pivot_lows[k][1] < pivot_lows[k-1][1]:
+            ll_count += 1
+    for k in range(1, len(pivot_highs)):
+        if pivot_highs[k][1] < pivot_highs[k-1][1]:
+            lh_count += 1
+
+    bull_swings = hh_count + hl_count
+    bear_swings = ll_count + lh_count
+    swing_count = max(bull_swings, bear_swings)
+
+    _strong_h4 = swing_count >= 3
+    _sniper_h4 = swing_count >= 4
+    return swing_count, _strong_h4, _sniper_h4
+
+
 def _score_distribution(df: pd.DataFrame, structure: dict, obs: dict,
                          pd_zone: dict, session_wt: float, kill_zone: str,
                          current_atr: float, vol_ratio: float,
@@ -1977,13 +2040,16 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     if kill_zone == 'NY_Lunch':
         return "NEUTRAL", 0.0, "NY Lunch: Low-quality session. Skipped.", {}, kill_zone
 
+    # [S25-F4] Compute H4 swing conviction before regime routing
+    _h4_swing_count, _strong_h4, _sniper_h4 = _h4_trend_strength(df_macro)
+
     if "DEAD MARKET" in market_regime:
         disp_atr_mult = 0.3;  enforce_macro = False
     elif "HIGH VOLATILITY" in market_regime:
         disp_atr_mult = 0.8;  enforce_macro = True
     else:
         disp_atr_mult = _get_disp_atr_mult(symbol, market_regime)
-        # [S25-F4+S26] enforce_macro when 3+ H4 swings confirmed
+        # [S25-F4+S26] enforce_macro when H4 has 3+ confirmed swing points
         enforce_macro = _strong_h4
 
     # ── DISTRIBUTION PATH ──────────────────────────────────────────
@@ -2348,10 +2414,14 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
         cond['sl_atr_buffer']   = round(float(current_atr * 0.3), 5)
 
         # [S12-P1B] Asian Low as natural TP target for bearish setups.
-        # Swept the Asian High (BSL cleared) → target the Asian Low (SSL below).
-        cond['tp_target_level'] = asian.get('asian_low') or ref_low
+        # Guard: asian_low MUST be below current close (valid SELL target).
+        # If asian_low > close, price already broke below range — use ref_low.
+        _c3_close   = float(c3['close'])
+        _asian_low  = asian.get('asian_low')
+        _valid_al   = _asian_low if (_asian_low and _asian_low < _c3_close) else None
+        cond['tp_target_level'] = _valid_al or ref_low
         cond['asian_high']      = asian.get('asian_high')
-        cond['asian_low']       = asian.get('asian_low')
+        cond['asian_low']       = _asian_low
 
         is_judas = judas['judas_bear']
         cond['judas_swing'] = is_judas
@@ -3059,11 +3129,24 @@ def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
     if atr <= 0:
         return NEUTRAL
 
+    # [S28-FIX] Breathing room: SL 1.5×ATR (was 0.8), TP 2.2-3.0×ATR (was 1.5-2.0)
+    # Minimum R:R of 1.4:1 enforced below. Spike guard added.
     s = symbol.upper()
-    if 'XAU' in s:   tp_m, sl_m, md = 1.5, 0.8, 0.6
-    elif 'XAG' in s: tp_m, sl_m, md = 1.8, 0.9, 0.5
-    elif 'BTC' in s or 'ETH' in s: tp_m, sl_m, md = 2.0, 0.8, 0.6
-    else:            tp_m, sl_m, md = 1.5, 0.8, 0.6
+    if 'XAU' in s:
+        tp_m, sl_m, md = 2.2, 1.5, 0.6   # Gold: 1.47:1 R:R minimum
+    elif 'XAG' in s:
+        tp_m, sl_m, md = 2.5, 1.5, 0.5   # Silver: 1.67:1 R:R minimum
+    elif 'BTC' in s or 'ETH' in s:
+        tp_m, sl_m, md = 3.0, 1.5, 0.6   # Crypto: 2.0:1 R:R minimum
+    else:
+        tp_m, sl_m, md = 2.0, 1.5, 0.6   # Default: 1.33:1 R:R minimum
+
+    # ── Spike guard: skip on outsized candles ───────────────────────
+    # If last candle's total range > 1.8×ATR, price is spiking/volatile.
+    # Wait for consolidation before entering — avoids stops on wicks.
+    last_range = float(df.iloc[-1]['high']) - float(df.iloc[-1]['low'])
+    if last_range > atr * 1.8:
+        return ("NEUTRAL", 0.0, "M1: Spike candle — waiting", {}, "M1_SCALP")
 
     def body(i): return float(df.iloc[i]['close']) - float(df.iloc[i]['open'])
     n = len(df)
@@ -3144,9 +3227,20 @@ def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
         sc = min(0.97, sc + 0.06)
 
     if direction == "BUY":
-        tp, sl, sig = round(price+tp_m*atr,5), round(price-sl_m*atr,5), "BUY_MICRO"
+        tp  = round(price + tp_m * atr, 5)
+        sl  = round(price - sl_m * atr, 5)
+        sig = "BUY_MICRO"
     else:
-        tp, sl, sig = round(price-tp_m*atr,5), round(price+sl_m*atr,5), "SELL_MICRO"
+        tp  = round(price - tp_m * atr, 5)
+        sl  = round(price + sl_m * atr, 5)
+        sig = "SELL_MICRO"
+
+    # [S28-FIX] R:R guard: TP must be ≥1.3× SL to prevent inverted R:R
+    _sl_dist = abs(sl - price)
+    _tp_dist = abs(tp - price)
+    if _tp_dist < _sl_dist * 1.3:
+        _min_tp = _sl_dist * 1.3
+        tp = round(price - _min_tp, 5) if direction == "SELL" else round(price + _min_tp, 5)
 
     cond = {
         'm1_scalp': True, 'm1_tp': tp, 'm1_sl': sl, 'm1_atr': round(atr,5),

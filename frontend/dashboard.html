@@ -389,7 +389,7 @@ tr:last-child td{border-bottom:none}
 
   <div class="panel">
     <div class="ph">Database Audit
-      <a href="http://127.0.0.1:8000/quant/export_report" target="_blank">↓ Export CSV</a>
+      <a href="/quant/export_report" target="_blank" id="exportLink">↓ Export CSV</a>
     </div>
     <div class="sg">
       <div class="sc"><div class="sl">Real Trades</div><div class="sv" id="auN">—</div></div>
@@ -418,7 +418,25 @@ tr:last-child td{border-bottom:none}
 </div><!-- /app -->
 
 <script>
-const B='http://127.0.0.1:8000';
+// Auto-detect API base: relative when served via FastAPI (/), absolute when file://
+const B = (window.location.protocol === 'file:')
+  ? 'http://127.0.0.1:8000'
+  : (window.location.origin === 'null' ? 'http://127.0.0.1:8000' : window.location.origin);
+
+// Resilient fetch with timeout + error catch — prevents blank tabs on API down
+async function safeFetch(url, fallback = {}) {
+  try {
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => ctrl.abort(), 8000);
+    const res  = await fetch(B + url, { signal: ctrl.signal });
+    clearTimeout(tid);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch(e) {
+    console.warn(`API ${url}: ${e.message}`);
+    return fallback;
+  }
+}
 const $=id=>document.getElementById(id);
 const usd=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);
 let _bal=0,_n=0,_tick=0;
@@ -586,14 +604,25 @@ function drawCurve(curve){
 
 // ── QUANT / INTELLIGENCE ───────────────────────────────────────
 async function fetchQuant(){
-  const r=await fetch(B+'/quant/status',{signal:AbortSignal.timeout(5000)});
-  if(!r.ok) throw new Error(r.status);
-  const q=await r.json();
+  const q=await safeFetch('/quant/status', {
+    kelly_fraction:0, var_limit:0, cvar_limit:0, risk_pct:0.01,
+    n_trades:0, regime_gate:'CALIBRATING', signal_funnel:{}
+  });
   $('qkelly').textContent=q.kelly_fraction!=null?(q.kelly_fraction*100).toFixed(1)+'%':'—';
   $('qvar').textContent=q.var_limit?usd(q.var_limit):'—';
   $('qcvar').textContent=q.cvar_limit?usd(q.cvar_limit):'—';
   $('qrisk').textContent=q.risk_pct?(q.risk_pct*100).toFixed(2)+'%':'—';
   $('qn').textContent=q.n_trades??'—';
+  // H4 swing conviction
+  if($('qh4swings')) $('qh4swings').textContent=q.h4_swing_count??'—';
+  if($('qenforce'))  $('qenforce').textContent=q.strong_h4?'ACTIVE':'off';
+  // SMC structure quality (from last signal)
+  if($('qsmc'))      $('qsmc').textContent=q.smc_structure_q!=null
+    ?Math.round(q.smc_structure_q*100)+'%':'—';
+  if($('qstack'))    $('qstack').textContent=q.smc_stack_score!=null
+    ?q.smc_stack_score.toFixed(2):'—';
+  // Regime gate status
+  if($('qgate'))     $('qgate').textContent=q.regime_gate??'—';
   $('markov').textContent=$('markov2').textContent=q.regime_gate||'—';
   const ml=q.ml_model||{};
   const prec=ml.precision||0;

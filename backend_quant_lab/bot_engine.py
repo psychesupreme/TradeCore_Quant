@@ -1749,6 +1749,13 @@ class TradingBot:
                 req, df_macro=df_macro, market_regime=symbol_regime, symbol=symbol, df_ticks=df_ticks
             )
 
+            # Cache H4 swing + SMC data for dashboard /quant/status
+            if analysis and analysis.signal != "NEUTRAL":
+                _cond = getattr(analysis, 'ict_conditions', {}) or {}
+                if _cond.get('smc_structure_q') is not None:
+                    self._last_smc_q   = _cond.get('smc_structure_q')
+                    self._last_stack   = _cond.get('smc_stack_score', 0)
+
             # [S27-ML] Apply ML confidence nudge to M1 scalp signals
             # The LiveScorer was trained on ICT features but the direction signal
             # carries meaningful cross-asset momentum information.
@@ -1944,7 +1951,13 @@ class TradingBot:
                             tp_target = brk_float
                             self.log_debug(f"[{symbol}] SMC Breaker TP: {tp_target:.5g}")
 
-                is_scalp_model = ict_cond.get('scalp_model', False)
+                # [S28-FIX] If this was an M1 market order, the TP/SL are already
+                # set correctly above. Skip ICT scalp level overrides.
+                if _is_m1_scalp:
+                    pass  # TP/SL locked by M1 engine — do not override
+                else:
+                  pass  # will fall through to normal ICT scalp path
+                is_scalp_model = ict_cond.get('scalp_model', False) and not _is_m1_scalp
                 if is_scalp_model:
                     tfvg_high  = ict_cond.get('tfvg_high')
                     tfvg_low   = ict_cond.get('tfvg_low')
@@ -2348,8 +2361,23 @@ class TradingBot:
                 if _is_m1_scalp:
                     _m1_tp = _m1c.get('m1_tp'); _m1_sl = _m1c.get('m1_sl')
                     if _m1_tp and _m1_sl:
+                        # [S28-FIX] Use M1 engine's TP/SL EXCLUSIVELY for market orders.
+                        # Do NOT let the subsequent ICT scalp level code override these.
+                        # The M1 TP/SL have breathing room built in (1.5×ATR SL, 2.5×ATR TP).
                         tp, sl = _m1_tp, _m1_sl
-                        self.log_info(f"🎯 M1 Tight: {symbol} TP={tp:.5g} SL={sl:.5g} ATR={_m1c.get('m1_atr',0):.3f}")
+
+                        # Enforce minimum R:R: TP must be > SL distance from entry
+                        _sl_d = abs(sl - price); _tp_d = abs(tp - price)
+                        if _tp_d < _sl_d:
+                            _m1_atr = _m1c.get('m1_atr', _sl_d)
+                            tp = round(price - _sl_d * 1.5, 5) if not is_buy else round(price + _sl_d * 1.5, 5)
+                            self.log_info(f"⚠️ M1 R:R fix: TP adjusted to {tp:.5g} (was {_m1_tp:.5g})")
+
+                        self.log_info(
+                            f"🎯 M1 Tight: {symbol} TP={tp:.5g} SL={sl:.5g} "
+                            f"ATR={_m1c.get('m1_atr',0):.3f} "
+                            f"R:R={abs(tp-price)/abs(sl-price):.2f}:1"
+                        )
                     self.log_info(f"⚡ M1 MARKET ORDER: {symbol} {'BUY' if is_buy else 'SELL'} @ {price:.5g} Lot:{lot:.2f}")
 
                 request = {

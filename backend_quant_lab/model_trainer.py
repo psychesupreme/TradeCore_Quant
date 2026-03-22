@@ -162,7 +162,7 @@ class ModelTrainer:
             'cv_precision':   round(prec_mean, 4),
             'cv_precision_std': round(prec_std, 4),
             'precision_gate': 'ACTIVE' if prec_mean >= 0.50 else 'DISABLED',
-            'trained_at':     pd.Timestamp.utcnow().isoformat(),
+            'trained_at':     pd.Timestamp.now('UTC').isoformat(),
         }
         with open(self.meta_path, 'w') as f:
             json.dump(meta, f, indent=2)
