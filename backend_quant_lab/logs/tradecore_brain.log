@@ -33780,3 +33780,7 @@
 2026-03-23 02:49:06 [DEBUG] Process Error on GBPUSD: name '_strong_h4' is not defined
 2026-03-23 02:49:06 [DEBUG] [USDJPY] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:159.388 AL:159.188
 2026-03-23 02:49:33 [INFO] Stopped.
+2026-03-23 02:54:30 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 02:54:30 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 02:55:23 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 02:55:23 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
