@@ -33568,3 +33568,109 @@
 2026-03-21 11:02:47 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
 2026-03-21 11:03:01 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
 2026-03-21 11:12:27 [INFO] Stopped.
+2026-03-23 00:55:20 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 00:55:20 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 00:55:31 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-23 01:11:09 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:11:10 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:11:12 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:11:13 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:12:24 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:12:24 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:12:24 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:12:24 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:14:09 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:14:09 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:14:09 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:14:09 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:15:04 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:15:04 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:15:04 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:15:04 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:16:05 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:16:05 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:16:05 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:16:05 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:17:26 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:17:26 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:17:26 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:17:26 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:19:04 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:19:04 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:19:04 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:19:04 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:20:04 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:20:04 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:20:04 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:20:04 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:21:03 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:21:03 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:21:03 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:21:03 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:22:28 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:22:28 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:22:28 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:22:28 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:24:16 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:24:16 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:24:16 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:24:16 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:25:05 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:25:05 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:25:05 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:25:05 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:26:06 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:26:06 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:26:06 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:26:06 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:27:04 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:27:04 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:27:04 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:27:04 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:28:29 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:28:29 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:28:29 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:28:29 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:30:36 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:30:37 [DEBUG] Process Error on GBPUSD: name 'df_m1' is not defined
+2026-03-23 01:30:37 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:30:37 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:30:37 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:32:11 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:32:11 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:32:11 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:32:11 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:33:12 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:33:12 [DEBUG] Process Error on GBPUSD: name 'df_m1' is not defined
+2026-03-23 01:33:12 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:33:12 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:33:12 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:34:44 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:34:44 [DEBUG] Process Error on GBPUSD: name 'df_m1' is not defined
+2026-03-23 01:34:44 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:34:44 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:34:44 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:36:51 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:36:51 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:36:51 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:36:51 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:38:08 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:38:08 [DEBUG] Process Error on GBPUSD: name 'df_m1' is not defined
+2026-03-23 01:38:08 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:38:08 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:38:08 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:39:13 [DEBUG] Process Error on EURUSD: name 'df_m1' is not defined
+2026-03-23 01:39:13 [DEBUG] Process Error on GBPUSD: name 'df_m1' is not defined
+2026-03-23 01:39:13 [DEBUG] Process Error on XAUUSD: name 'df_m1' is not defined
+2026-03-23 01:39:13 [DEBUG] Process Error on XAGUSD: name 'df_m1' is not defined
+2026-03-23 01:39:13 [DEBUG] Process Error on BTCUSD: name 'df_m1' is not defined
+2026-03-23 01:39:16 [INFO] Stopped.
+2026-03-23 01:39:59 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 01:39:59 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 01:40:09 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-23 01:44:08 [DEBUG] Process Error on EURUSD: name '_strong_h4' is not defined
+2026-03-23 01:44:08 [DEBUG] [GBPUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:1.33533 AL:1.33153
+2026-03-23 01:44:08 [DEBUG] [XAUUSD] ACCUMULATION [NY_PM2_Late] | conf:0.42 | Mapping range | AH:4614.07 AL:4538.09
+2026-03-23 01:44:08 [DEBUG] [XAGUSD] DISTRIBUTION [NY_PM2_Late]: No OB/FVG retest in BEARISH direction.
+2026-03-23 01:44:08 [DEBUG] [BTCUSD] ACCUMULATION [NY_PM2_Late] | conf:0.36 | Mapping range | AH:68819.232 AL:68182.423
+2026-03-23 01:44:19 [INFO] Stopped.

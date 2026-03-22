@@ -200,8 +200,8 @@ class MLDataExtractor:
             if pd.isna(sl) or sl == 0 or pd.isna(vol):
                 return np.nan
             if 'XAU' in sym or 'XAG' in sym:
-                if 'XAG' in symbol:
-                    return sl * 5000 * vol      # silver: 5000 oz/lot
+                if 'XAG' in sym:
+                    return sl * 5000 * vol      # [S26] silver: 5000 oz/lot
                 return sl * 100 * vol           # gold/oil: $100/lot/point
             if 'BTC' in sym or 'ETH' in sym:
                 return sl * vol                 # crypto: $1/lot/point
@@ -216,14 +216,44 @@ class MLDataExtractor:
         df['dollar_risk'] = df.apply(pip_value, axis=1)
 
         # ── ICT SIGNAL FEATURES ───────────────────────────────
-        # These are NaN for trades without a matching signal
         df['ict_score']   = pd.to_numeric(df['ict_score'],   errors='coerce')
         df['signal_conf'] = pd.to_numeric(df['signal_conf'], errors='coerce')
-
-        # Fill NaN ICT scores with the column median (trades before signal logging)
         ict_median = df['ict_score'].median()
         df['ict_score']   = df['ict_score'].fillna(ict_median)
         df['signal_conf'] = df['signal_conf'].fillna(df['signal_conf'].median())
+
+        # ── [S28] SMC STRUCTURAL FEATURES ────────────────────────
+        # Extracted from ict_conditions JSON column when available.
+        # These encode multi-timeframe FVG/OB/MSB confluence quality.
+        def _extract_smc(row):
+            cond = row.get('ict_conditions', '{}') or '{}'
+            try:
+                d = __import__('json').loads(cond) if isinstance(cond, str) else {}
+            except Exception:
+                d = {}
+            return pd.Series({
+                'smc_stack_score':  float(d.get('smc_stack_score', 0.0)),
+                'smc_structure_q':  float(d.get('smc_structure_q', 0.0)),
+                'smc_has_ifvg':     int(bool(d.get('smc_ifvg', 0))),
+                'smc_has_breaker':  int(bool(d.get('smc_breakers', 0))),
+                'smc_has_void':     int(bool(d.get('smc_liq_voids', 0))),
+                'smc_has_mss':      int(bool(d.get('smc_has_mss', False))),
+                'smc_bonus':        float(d.get('smc_bonus', 0.0)),
+                'm1_scalp':         int(bool(d.get('m1_scalp', False))),
+                'm1_range_aligned': int(bool(d.get('range_aligned', False))),
+                'h4_aligned':       int(bool(d.get('h4_aligned', True))),
+            })
+
+        # Only extract if ict_conditions column exists
+        if 'ict_conditions' in df.columns:
+            smc_feats = df.apply(_extract_smc, axis=1)
+            df = pd.concat([df, smc_feats], axis=1)
+        else:
+            # Add zero columns so feature alignment is stable
+            for col in ['smc_stack_score','smc_structure_q','smc_has_ifvg',
+                        'smc_has_breaker','smc_has_void','smc_has_mss',
+                        'smc_bonus','m1_scalp','m1_range_aligned','h4_aligned']:
+                df[col] = 0
 
         # Kill zone one-hot encoding
         kz_known = ['Asian', 'London', 'London_NY', 'London_PM', 'NY_Open',
@@ -262,7 +292,8 @@ class MLDataExtractor:
             'type', 'regime', 'open_time', 'close_time',
             'open_price', 'close_price', 'sl', 'tp',
             'execution_hour', 'dow', 'kill_zone', 'kill_zone_clean',
-            'volume',     # [S23-A-4] replaced by dollar_risk
+            'volume',           # [S23-A-4] replaced by dollar_risk
+            'ict_conditions',   # [S28] already extracted into smc_* columns
         ]
         df_ml = df.drop(columns=[c for c in drop_cols if c in df.columns])
 

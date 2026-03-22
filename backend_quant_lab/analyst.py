@@ -43,6 +43,17 @@
 #   - [Sprint  9] Core AMD (Accumulation, Manipulation, Distribution) mapping.
 # ============================================================
 
+try:
+    from smc_engine import (
+        analyse_smc_layers, smc_confluence_bonus, smc_layers_summary
+    )
+    _SMC_AVAILABLE = True
+except ImportError:
+    _SMC_AVAILABLE = False
+    def analyse_smc_layers(*a, **kw): return None
+    def smc_confluence_bonus(l, d, s): return 0.0, []
+    def smc_layers_summary(l): return {}
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timezone
@@ -3554,6 +3565,34 @@ def analyze_market_structure(
                 conditions['m1_signal_shadow'] = m1s
         except Exception as _e:
             conditions['m1_error'] = str(_e)
+
+    # ── [S28] SMC MULTI-TIMEFRAME CONFLUENCE ──────────────────────────
+    # Runs for all assets when M1 data is available (Gold, Crypto always).
+    # Adds up to +0.18 to confidence based on structural confluence.
+    if _SMC_AVAILABLE and market_regime != "DEAD MARKET":
+        try:
+            _df_m1_smc  = getattr(request, 'df_m1', None)
+            _df_h4_smc  = df_macro if df_macro is not None and not df_macro.empty else None
+            _atr_m15    = float(df['atr'].iloc[-1]) if 'atr' in df.columns else 1.0
+            _smc_dir    = 'BUY' if 'BUY' in signal else 'SELL'
+
+            if signal != "NEUTRAL":
+                layers = analyse_smc_layers(
+                    df_m1  = _df_m1_smc,
+                    df_m15 = df,
+                    df_h4  = _df_h4_smc,
+                    symbol = sym,
+                    direction = _smc_dir,
+                    atr_m15 = _atr_m15,
+                )
+                smc_bonus, smc_reasons = smc_confluence_bonus(layers, _smc_dir, score)
+                if smc_bonus > 0:
+                    score = min(0.99, score + smc_bonus)
+                    reason += " | SMC[" + ",".join(smc_reasons) + f" +{smc_bonus:.2f}]"
+                conditions.update(smc_layers_summary(layers))
+                conditions['smc_bonus'] = smc_bonus
+        except Exception as _smc_err:
+            conditions['smc_error'] = str(_smc_err)
 
     # ── [S26-A] INDEX OPENING RANGE BREAKOUT BONUS ─────────────────────
     # NYSE opens 13:30 UTC. SELL signals in confirmed H4 bear trend during

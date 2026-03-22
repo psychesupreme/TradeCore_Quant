@@ -151,13 +151,39 @@ def shutdown_event():
 # RESTORED DASHBOARD API ENDPOINTS
 # ==========================================
 
-@app.get("/")
+from fastapi.responses import HTMLResponse, FileResponse
+import os as _os
+
+@app.get("/", response_class=HTMLResponse)
 def read_root():
-    return {
-        "system": "Kom",
-        "version": "1.0",
-        "status": "Online" if bot.is_running else "Offline"
-    }
+    """
+    Serve the dashboard HTML directly — eliminates the file:// security origin
+    error. Access via http://127.0.0.1:8000/ instead of opening the file.
+    Looks for dashboard.html relative to this main.py file's directory.
+    """
+    # Look for dashboard in common locations relative to the backend
+    _here = _os.path.dirname(_os.path.abspath(__file__))
+    _candidates = [
+        _os.path.join(_here, "..", "frontend", "dashboard.html"),
+        _os.path.join(_here, "dashboard.html"),
+        _os.path.join(_here, "..", "dashboard.html"),
+    ]
+    for _path in _candidates:
+        if _os.path.exists(_path):
+            with open(_path, "r", encoding="utf-8") as _f:
+                return HTMLResponse(content=_f.read(), status_code=200)
+    # Fallback: return JSON status if HTML not found
+    return HTMLResponse(
+        content="<h1>Kom v1.0</h1><p>Dashboard not found. Place dashboard.html "
+                "in the frontend/ folder.</p>"
+                f"<p>Engine: {'Online' if bot.is_running else 'Offline'}</p>",
+        status_code=200
+    )
+
+@app.get("/status")
+def get_api_status():
+    return {"system": "Kom", "version": "1.0",
+            "status": "Online" if bot.is_running else "Offline"}
 
 @app.get("/bot/status")
 def get_status():
@@ -269,6 +295,25 @@ def get_quant_status():
             result['ml_model'] = {'active': False, 'gate': 'NOT_TRAINED'}
     except Exception:
         result['ml_model'] = {'active': False, 'gate': 'ERROR'}
+    # [S28] Latest SMC layer data from most recent signal
+    try:
+        import json as _j2
+        _c3 = sqlite3.connect("tradecore.db")
+        _smc_row = _c3.execute(
+            "SELECT ict_conditions FROM signals "
+            "WHERE result IN ('FILLED','EXECUTED','ATTEMPTED') "
+            "AND ict_conditions IS NOT NULL "
+            "ORDER BY timestamp DESC LIMIT 1"
+        ).fetchone()
+        _c3.close()
+        if _smc_row and _smc_row[0]:
+            _cond = _j2.loads(_smc_row[0])
+            _smc_d = {k: v for k, v in _cond.items() if k.startswith('smc_')}
+            if _smc_d:
+                result['smc_latest'] = _smc_d
+    except Exception:
+        pass
+
     return result
 
 

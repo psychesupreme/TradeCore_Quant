@@ -1715,8 +1715,23 @@ class TradingBot:
 
         df_micro = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
         df_macro = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_H4)
-        
-        if df_micro.empty or df_macro.empty: 
+
+        # [S27-B] Fetch M1 data for Gold + Crypto micro-scalp engine
+        # Always initialised to None so the req.__dict__ assignment is safe for all symbols
+        df_m1 = None
+        _is_scalp_sym = any(k in symbol.upper() for k in ('XAU','XAG','BTC','ETH'))
+        if _is_scalp_sym:
+            try:
+                raw_m1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, 80)
+                if raw_m1 is not None and len(raw_m1) >= 20:
+                    df_m1 = pd.DataFrame(raw_m1)
+                    df_m1.rename(columns={"time":"timestamp","tick_volume":"volume"},
+                                 inplace=True)
+                    df_m1["timestamp"] = pd.to_datetime(df_m1["timestamp"], unit="s")
+            except Exception:
+                df_m1 = None
+
+        if df_micro.empty or df_macro.empty:
             return
 
         symbol_regime = self.get_asset_regime(symbol)
@@ -1892,7 +1907,42 @@ class TradingBot:
                 ob_zone_high = ict_cond.get('ob_zone_high')      
                 swing_sl_ref = ict_cond.get('swing_sl_ref')      
                 sl_atr_buf   = ict_cond.get('sl_atr_buffer', volatility_buffer * 0.1)
-                tp_target    = ict_cond.get('tp_target_level')   
+                tp_target    = ict_cond.get('tp_target_level')
+
+                # [S28] SMC-enhanced TP targets: Liquidity Voids > Breaker Blocks
+                # These are more precise structural magnets than the Asian range floor.
+                # Priority: Liquidity Void (strongest pull) > Breaker Block > H4 structural
+                _smc_liq_void  = ict_cond.get('smc_nearest_void')   # nearest void price
+                _smc_breaker   = ict_cond.get('smc_breaker_px')     # breaker block price
+                _smc_fvg_stack = ict_cond.get('smc_fvg_macro')      # macro FVG count
+
+                # For BUY signals: targets above entry (void high, breaker above)
+                # For SELL signals: targets below entry (void low, breaker below)
+                # Only use if the SMC target is BEYOND the current tp_target (more ambitious)
+                _ob_entry_est = ict_cond.get('ob_entry_price') or (
+                    df.iloc[-1]['close'] if not df.empty else 0
+                )
+                if _smc_liq_void and _ob_entry_est:
+                    void_float = float(_smc_liq_void)
+                    if is_buy and void_float > float(_ob_entry_est):
+                        if not tp_target or void_float > float(tp_target):
+                            tp_target = void_float
+                            self.log_debug(f"[{symbol}] SMC LiqVoid TP: {tp_target:.5g}")
+                    elif not is_buy and void_float < float(_ob_entry_est):
+                        if not tp_target or void_float < float(tp_target):
+                            tp_target = void_float
+                            self.log_debug(f"[{symbol}] SMC LiqVoid TP: {tp_target:.5g}")
+
+                if _smc_breaker and _ob_entry_est and not _smc_liq_void:
+                    brk_float = float(_smc_breaker)
+                    if is_buy and brk_float > float(_ob_entry_est):
+                        if not tp_target or brk_float > float(tp_target):
+                            tp_target = brk_float
+                            self.log_debug(f"[{symbol}] SMC Breaker TP: {tp_target:.5g}")
+                    elif not is_buy and brk_float < float(_ob_entry_est):
+                        if not tp_target or brk_float < float(tp_target):
+                            tp_target = brk_float
+                            self.log_debug(f"[{symbol}] SMC Breaker TP: {tp_target:.5g}")
 
                 is_scalp_model = ict_cond.get('scalp_model', False)
                 if is_scalp_model:
