@@ -33836,3 +33836,6 @@
 2026-03-23 03:12:21 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.74 | Mapping range | AH:1.33533 AL:1.3305
 2026-03-23 03:12:21 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:159.388 AL:159.192
 2026-03-23 03:12:24 [INFO] Stopped.
+2026-03-23 03:12:26 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 03:12:26 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 03:12:36 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
