@@ -33784,3 +33784,15 @@
 2026-03-23 02:54:30 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
 2026-03-23 02:55:23 [INFO] ✅ DB integrity check passed (WAL checkpointed).
 2026-03-23 02:55:23 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 02:58:34 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-23 02:58:34 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-23 02:58:44 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-23 03:00:52 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.86 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:00:52 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.97 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:00:52 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.70 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:00:52 [DEBUG] [XAUUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-23 03:00:52 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-23 03:00:52 [DEBUG] [XAGUSD] SMC Breaker TP: 68.365
+2026-03-23 03:00:52 [INFO] ⚠️ Thread Execution Error on XAGUSD: cannot access local variable '_is_m1_scalp' where it is not associated with a value
+2026-03-23 03:00:53 [DEBUG] [BTCUSD] DISTRIBUTION [Asian]: No OB/FVG retest in BEARISH direction.
+2026-03-23 03:01:04 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
