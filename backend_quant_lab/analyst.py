@@ -3142,20 +3142,61 @@ def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
         tp_m, sl_m, md = 2.0, 1.5, 0.6   # Default: 1.33:1 R:R minimum
 
     # ── Spike guard: skip on outsized candles ───────────────────────
-    # If last candle's total range > 1.8×ATR, price is spiking/volatile.
-    # Wait for consolidation before entering — avoids stops on wicks.
     last_range = float(df.iloc[-1]['high']) - float(df.iloc[-1]['low'])
     if last_range > atr * 1.8:
         return ("NEUTRAL", 0.0, "M1: Spike candle — waiting", {}, "M1_SCALP")
 
     def body(i): return float(df.iloc[i]['close']) - float(df.iloc[i]['open'])
+    def bar_range(i): return float(df.iloc[i]['high']) - float(df.iloc[i]['low'])
     n = len(df)
+
+    # ── [S29] Displacement detection: look for 2+ strong candles ────
+    # Then confirm a PULLBACK candle (smaller, opposite body) follows.
+    # Pattern: [impulse1][impulse2][pullback] → enter at pullback FVG
+    # This is the "Turtle Soup" / retrace-entry model used by manual traders.
     bull_d = bear_d = False
-    for i in range(max(0, n-6), n-1):
-        if body(i) >=  md*atr and body(i+1) >=  md*atr: bull_d = True; break
-        if body(i) <= -md*atr and body(i+1) <= -md*atr: bear_d = True; break
+    disp_end_idx = -1   # bar index where displacement sequence ends
+
+    for i in range(max(0, n-8), n-2):
+        b0, b1 = body(i), body(i+1)
+        if b0 >= md*atr and b1 >= md*atr:
+            bull_d = True;  disp_end_idx = i+1; break
+        if b0 <= -md*atr and b1 <= -md*atr:
+            bear_d = True;  disp_end_idx = i+1; break
+
     if not bull_d and not bear_d:
         return ("NEUTRAL", 0.0, "M1: No displacement", {}, "M1_SCALP")
+
+    direction = "BUY" if bull_d else "SELL"
+
+    # ── [S29] Pullback confirmation ──────────────────────────────────
+    # After displacement, price should retrace partially (1-2 bars).
+    # A pullback bar is: body is OPPOSITE and smaller than displacement.
+    has_pullback    = False
+    pullback_bar    = None
+    pullback_high   = None
+    pullback_low    = None
+
+    # Check bars AFTER the displacement sequence (last 3 bars)
+    for i in range(max(disp_end_idx+1, n-3), n):
+        b = body(i)
+        rng = bar_range(i)
+        if direction == "SELL" and b > 0 and abs(b) < md*atr*1.5:
+            # Small bullish candle after bearish displacement = pullback
+            has_pullback  = True
+            pullback_bar  = i
+            pullback_high = float(df.iloc[i]['high'])
+            pullback_low  = float(df.iloc[i]['low'])
+            break
+        elif direction == "BUY" and b < 0 and abs(b) < md*atr*1.5:
+            has_pullback  = True
+            pullback_bar  = i
+            pullback_high = float(df.iloc[i]['high'])
+            pullback_low  = float(df.iloc[i]['low'])
+            break
+
+    # Pullback bonus — confirmed retrace entry is significantly better
+    pullback_score_bonus = 0.10 if has_pullback else 0.0
 
     direction = "BUY" if bull_d else "SELL"
 
@@ -3187,7 +3228,7 @@ def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
     mom = (direction == "BUY" and lb > 0) or (direction == "SELL" and lb < 0)
     if mom: sc += 0.05
 
-    sc = min(0.94, sc)
+    sc = min(0.94, sc + pullback_score_bonus)  # S29: pullback bonus
     t  = utc_now.hour*60 + utc_now.minute
     dow = utc_now.weekday()
     weekend = (dow >= 5) or (dow == 4 and t >= 22*60)
@@ -3226,24 +3267,43 @@ def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
     if (tight and rng_ok) and abs(sc - 0.72) < 0.15:   # displacement from range extreme
         sc = min(0.97, sc + 0.06)
 
+    # ── [S29] Entry price: use pullback level for better fill ───────
+    # If a pullback candle was detected, enter at its body midpoint
+    # (the FVG of the retrace). This avoids chasing momentum.
     if direction == "BUY":
-        tp  = round(price + tp_m * atr, 5)
-        sl  = round(price - sl_m * atr, 5)
+        if has_pullback and pullback_low:
+            # Enter at the LOW of the pullback bar (demand zone)
+            entry_price = round(pullback_low, 5)
+        else:
+            entry_price = price
+        tp  = round(entry_price + tp_m * atr, 5)
+        sl  = round(entry_price - sl_m * atr, 5)
         sig = "BUY_MICRO"
     else:
-        tp  = round(price - tp_m * atr, 5)
-        sl  = round(price + sl_m * atr, 5)
+        if has_pullback and pullback_high:
+            # Enter at the HIGH of the pullback bar (supply zone)
+            entry_price = round(pullback_high, 5)
+        else:
+            entry_price = price
+        tp  = round(entry_price - tp_m * atr, 5)
+        sl  = round(entry_price + sl_m * atr, 5)
         sig = "SELL_MICRO"
 
-    # [S28-FIX] R:R guard: TP must be ≥1.3× SL to prevent inverted R:R
-    _sl_dist = abs(sl - price)
-    _tp_dist = abs(tp - price)
+    # [S28-FIX] R:R guard: TP must be ≥1.3× SL distance
+    _sl_dist = abs(sl - entry_price)
+    _tp_dist = abs(tp - entry_price)
     if _tp_dist < _sl_dist * 1.3:
         _min_tp = _sl_dist * 1.3
-        tp = round(price - _min_tp, 5) if direction == "SELL" else round(price + _min_tp, 5)
+        tp = round(entry_price - _min_tp, 5) if direction == "SELL"              else round(entry_price + _min_tp, 5)
+
+    # Use entry_price as the canonical price for this signal
+    price = entry_price
 
     cond = {
         'm1_scalp': True, 'm1_tp': tp, 'm1_sl': sl, 'm1_atr': round(atr,5),
+        'm1_entry_price': round(price, 5),
+        'm1_has_pullback': has_pullback,
+        'm1_pullback_bonus': pullback_score_bonus,
         'fvg_price': round(fvg,5) if fvg else None,
         'h4_aligned': h4_ok, 'direction': direction,
         'range_high': round(rh,5), 'range_low': round(rl,5),

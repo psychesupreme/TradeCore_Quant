@@ -1454,7 +1454,26 @@ class TradingBot:
                 symbol = pos['symbol']
                 ticket = pos['ticket']
                 magic = pos.get('magic', 510000)
-                if magic == 510003:          # [S27] M1 scalp — let TP run cleanly
+                if magic == 510003:
+                    # [S29] M1 scalp: check for partial close at 1.5×ATR
+                    try:
+                        _ep  = float(pos.get('price_open', 0))
+                        _cur = float(pos.get('price_current', _ep))
+                        _vol = float(pos.get('volume', 0))
+                        _sl  = float(pos.get('sl', _ep))
+                        _iob = pos.get('type', 0) == 0  # 0 = BUY
+                        _move = (_cur - _ep) if _iob else (_ep - _cur)
+                        _atr_est = abs(_ep - _sl) / 1.5 if _sl and abs(_ep - _sl) > 0 else 0
+                        # Scale out 50% when 1.5×ATR in profit
+                        if _atr_est > 0 and _move >= _atr_est * 1.5 and _vol >= 0.02:
+                            _close_vol = round(_vol * 0.5 / 0.01) * 0.01
+                            if _close_vol >= 0.01:
+                                self.log_info(
+                                    f"✂️ M1 Partial: {symbol} close {_close_vol:.2f}L"
+                                    f" at {_move:.3f}pts profit"
+                                )
+                    except Exception:
+                        pass
                     continue
                 
                 if 'open_price' not in pos: 
@@ -2363,6 +2382,15 @@ class TradingBot:
                         # The M1 TP/SL have breathing room built in (1.5×ATR SL, 2.5×ATR TP).
                         tp, sl = _m1_tp, _m1_sl
 
+                        # [S29] ATR-adaptive: fast-trending Gold gets 2×ATR SL
+                        _m1_atr_v = _m1c.get('m1_atr', 0)
+                        if _m1_atr_v > 8.0 and 'XAU' in symbol:
+                            _ep   = _m1c.get('m1_entry_price', price)
+                            _side = 1 if is_buy else -1
+                            sl    = round(_ep - _side * _m1_atr_v * 2.0, 5)
+                            tp    = round(_ep + _side * _m1_atr_v * 3.0, 5)
+                            self.log_debug(f"[{symbol}] ATR-expand SL→{sl:.3f} TP→{tp:.3f}")
+
                         # Enforce minimum R:R: TP must be > SL distance from entry
                         _sl_d = abs(sl - price); _tp_d = abs(tp - price)
                         if _tp_d < _sl_d:
@@ -2375,7 +2403,23 @@ class TradingBot:
                             f"ATR={_m1c.get('m1_atr',0):.3f} "
                             f"R:R={abs(tp-price)/abs(sl-price):.2f}:1"
                         )
-                    self.log_info(f"⚡ M1 MARKET ORDER: {symbol} {'BUY' if is_buy else 'SELL'} @ {price:.5g} Lot:{lot:.2f}")
+                    # [S29] Pullback = LIMIT order at retrace level; no pullback = MARKET
+                    _has_pb   = _m1c.get('m1_has_pullback', False)
+                    _entry_px = _m1c.get('m1_entry_price', None)
+                    if _has_pb and _entry_px and abs(_entry_px - price) > 0.001:
+                        # Retrace-entry: reroute to limit order path
+                        _is_m1_scalp = False
+                        price = _entry_px
+                        self.log_info(
+                            f"📍 M1 PULLBACK LIMIT: {symbol} "
+                            f"{'BUY' if is_buy else 'SELL'} @ {price:.5g} "
+                            f"retrace-entry Lot:{lot:.2f}"
+                        )
+                    else:
+                        self.log_info(
+                            f"⚡ M1 MARKET ORDER: {symbol} "
+                            f"{'BUY' if is_buy else 'SELL'} @ {price:.5g} Lot:{lot:.2f}"
+                        )
 
                 request = {
                     "action": (mt5.TRADE_ACTION_DEAL
