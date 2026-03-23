@@ -1909,6 +1909,7 @@ class TradingBot:
                 dynamic_nano_tp = dynamic_nano_sl * 2.0
 
                 ict_cond     = getattr(analysis, 'ict_conditions', {}) or {}
+                _is_m1_scalp = False   # initialised here; set properly below in order block
                 ob_entry     = ict_cond.get('ob_entry_price')    
                 ob_zone_low  = ict_cond.get('ob_zone_low')       
                 ob_zone_high = ict_cond.get('ob_zone_high')      
@@ -1951,13 +1952,9 @@ class TradingBot:
                             tp_target = brk_float
                             self.log_debug(f"[{symbol}] SMC Breaker TP: {tp_target:.5g}")
 
-                # [S28-FIX] If this was an M1 market order, the TP/SL are already
-                # set correctly above. Skip ICT scalp level overrides.
-                if _is_m1_scalp:
-                    pass  # TP/SL locked by M1 engine — do not override
-                else:
-                  pass  # will fall through to normal ICT scalp path
-                is_scalp_model = ict_cond.get('scalp_model', False) and not _is_m1_scalp
+                # is_scalp_model uses the ICT scalp engine path (Silver Bullet TFVGs)
+                # _is_m1_scalp is determined later in the order submission block
+                is_scalp_model = ict_cond.get('scalp_model', False)
                 if is_scalp_model:
                     tfvg_high  = ict_cond.get('tfvg_high')
                     tfvg_low   = ict_cond.get('tfvg_low')

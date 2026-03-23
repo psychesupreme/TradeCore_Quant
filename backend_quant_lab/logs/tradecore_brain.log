@@ -33796,3 +33796,43 @@
 2026-03-23 03:00:52 [INFO] ⚠️ Thread Execution Error on XAGUSD: cannot access local variable '_is_m1_scalp' where it is not associated with a value
 2026-03-23 03:00:53 [DEBUG] [BTCUSD] DISTRIBUTION [Asian]: No OB/FVG retest in BEARISH direction.
 2026-03-23 03:01:04 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-23 03:02:19 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.68 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:02:19 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.88 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:02:19 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.62 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:02:20 [DEBUG] [XAUUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-23 03:02:20 [DEBUG] [BTCUSD] DISTRIBUTION [Asian]: No OB/FVG retest in BEARISH direction.
+2026-03-23 03:03:16 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.74 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:03:17 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.94 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:03:17 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.70 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:03:17 [DEBUG] [XAUUSD] INDETERMINATE [Asian] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-23 03:03:17 [INFO] 🔎 MTF Confluence Locked: BTCUSD SELL_MICRO (Conf: 99%)
+2026-03-23 03:03:17 [DEBUG] [BTCUSD] SMC Breaker TP: 67824
+2026-03-23 03:03:17 [INFO] ⚠️ Thread Execution Error on BTCUSD: cannot access local variable '_is_m1_scalp' where it is not associated with a value
+2026-03-23 03:04:17 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.72 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:04:17 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.92 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:04:18 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.63 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:04:18 [DEBUG] [XAUUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-23 03:05:47 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.62 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:05:47 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.77 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:05:47 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.66 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:05:47 [DEBUG] [XAUUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-23 03:07:21 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.64 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:07:21 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.78 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:07:21 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.61 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:07:21 [DEBUG] [XAUUSD] INDETERMINATE [Asian] | conf:0.21 | Price trending, no clean AMD range — skipping.
+2026-03-23 03:08:19 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.71 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:08:19 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.85 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:08:19 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.51 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:08:19 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 98%)
+2026-03-23 03:08:19 [DEBUG] [XAUUSD] SMC Breaker TP: 4452.4
+2026-03-23 03:08:19 [INFO] ⚠️ Thread Execution Error on XAUUSD: cannot access local variable '_is_m1_scalp' where it is not associated with a value
+2026-03-23 03:09:23 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.73 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:09:23 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.83 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:09:23 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.46 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:11:05 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.73 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:11:05 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.83 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:11:05 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.37 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:12:21 [DEBUG] [EURUSD] ACCUMULATION [Asian] | conf:0.72 | Mapping range | AH:1.15716 AL:1.15341
+2026-03-23 03:12:21 [DEBUG] [GBPUSD] ACCUMULATION [Asian] | conf:0.74 | Mapping range | AH:1.33533 AL:1.3305
+2026-03-23 03:12:21 [DEBUG] [USDJPY] ACCUMULATION [Asian] | conf:0.35 | Mapping range | AH:159.388 AL:159.192
+2026-03-23 03:12:24 [INFO] Stopped.
