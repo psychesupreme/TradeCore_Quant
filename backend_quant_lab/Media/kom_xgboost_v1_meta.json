@@ -37,11 +37,11 @@
     "dow_sin",
     "dow_cos"
   ],
-  "n_trades": 45,
-  "cv_accuracy": 0.5333,
-  "cv_accuracy_std": 0.1778,
-  "cv_precision": 0.53,
-  "cv_precision_std": 0.1965,
+  "n_trades": 86,
+  "cv_accuracy": 0.5922,
+  "cv_accuracy_std": 0.0574,
+  "cv_precision": 0.5089,
+  "cv_precision_std": 0.0809,
   "precision_gate": "ACTIVE",
-  "trained_at": "2026-03-22T23:16:22.397343+00:00"
+  "trained_at": "2026-03-23T16:40:24.044602+00:00"
 }

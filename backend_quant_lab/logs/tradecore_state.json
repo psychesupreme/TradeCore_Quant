@@ -1,9 +1,9 @@
 {
   "account_id": "32128474",
   "scaled_positions": [
-    "XAUUSD_5021.27_SELL",
     "EURGBP_0.86291_SELL",
     "BTCUSD_69219.997_SELL",
+    "XAUUSD_5021.27_SELL",
     "XAUUSD_5139.09_BUY"
   ],
   "last_logged_signal": {
@@ -63,13 +63,13 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "SELL_MICRO",
+      "BUY_MICRO",
       0.99,
       "ATTEMPTED"
     ],
     "XAGUSD": [
-      "SELL_MICRO",
-      0.99,
+      "BUY_MICRO",
+      0.98,
       "ATTEMPTED"
     ],
     "US Oil": [
@@ -83,9 +83,9 @@
       "SKIPPED"
     ],
     "BTCUSD": [
-      "SELL_MICRO",
-      0.99,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "US SP 500": [
       "NEUTRAL",
@@ -104,7 +104,6 @@
     ]
   },
   "trade_confidences": {
-    "8591260545": 0.99,
-    "8591260825": 0.99
+    "8592338964": 0.98
   }
 }
