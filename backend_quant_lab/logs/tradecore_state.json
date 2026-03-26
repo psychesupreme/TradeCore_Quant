@@ -63,13 +63,13 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "BUY_MICRO",
-      0.99,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "XAGUSD": [
-      "BUY_MICRO",
-      0.98,
+      "SELL_MICRO",
+      0.9,
       "ATTEMPTED"
     ],
     "US Oil": [
@@ -104,6 +104,7 @@
     ]
   },
   "trade_confidences": {
-    "8592338964": 0.98
+    "8594653206": 0.97,
+    "8594654359": 0.9
   }
 }

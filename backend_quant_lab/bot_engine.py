@@ -2270,7 +2270,16 @@ class TradingBot:
                 
                 conf_scale      = (analysis.confidence - 0.80) / (0.99 - 0.80)
                 conf_scale      = max(0.0, min(1.0, conf_scale))
-                base_risk_pct   = quant_params.get('risk_pct', 0.02) * (1.0 + 0.25 * conf_scale)
+                # [S29] Risk floor: never below 1% even with negative Kelly.
+                # Kelly goes negative when recent WR < 40% (e.g. after a bad session).
+                # The floor ensures the system can generate meaningful P&L while
+                # the pullback entry engine corrects the WR. Cap at 2% for safety.
+                _quant_risk = quant_params.get('risk_pct', 0.01)
+                _risk_floor = 0.01   # 1% minimum per trade
+                _risk_cap   = 0.02   # 2% maximum per trade
+                base_risk_pct = max(_risk_floor,
+                                    min(_risk_cap,
+                                        _quant_risk * (1.0 + 0.25 * conf_scale)))
 
                 if analysis.confidence >= 0.92 and not is_nano:
                     base_risk_pct *= 1.25
@@ -2284,12 +2293,17 @@ class TradingBot:
 
                 # [S26] Per-asset lot sizing. XAGUSD 5000 oz/lot (not 100 like XAUUSD).
                 if "XAU" in symbol:
-                    risk_capital    = (balance * base_risk_pct) * risk_multiplier
+                    # [S29] M1 scalp: fixed 1% risk for pullback-entry trades
+                    _m1_flag = getattr(analysis, 'ict_conditions', {})
+                    _m1_flag = (_m1_flag or {}).get('m1_scalp', False) if _m1_flag else False
+                    _xau_risk = 0.01 if _m1_flag else base_risk_pct  # 1% for scalps
+                    risk_capital    = (balance * max(0.01, _xau_risk)) * risk_multiplier
                     capital_per_lot = sl_distance * 100.0
                     min_lot  = 0.01; max_lot_asset = 0.50; vol_step = 0.01
                 elif "XAG" in symbol:
-                    # [S26-CRITICAL] XAGUSD = 5000 oz/lot. Old *100 caused 64x oversize.
-                    risk_capital    = (balance * base_risk_pct * 0.5) * risk_multiplier
+                    # [S26-CRITICAL] XAGUSD = 5000 oz/lot.
+                    # [S29] Minimum 0.5% risk for Silver scalps
+                    risk_capital    = (balance * max(0.005, base_risk_pct * 0.5)) * risk_multiplier
                     capital_per_lot = sl_distance * 5000.0
                     min_lot  = 0.01; max_lot_asset = 0.05; vol_step = 0.01
                 elif "BTC" in symbol:
