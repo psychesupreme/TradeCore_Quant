@@ -40250,3 +40250,326 @@
 2026-03-26 19:35:41 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
 2026-03-26 19:35:41 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
 2026-03-26 19:35:41 [DEBUG] [BTCUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:45:07 [DEBUG] [XAGUSD] Trade recorded: ticket=8595310944 (Conf: 0.97)
+2026-03-26 19:45:40 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-26 19:45:40 [DEBUG] [XAGUSD] SMC Breaker TP: 67.805
+2026-03-26 19:45:40 [INFO] 🎯 M1 Tight: XAGUSD TP=67.867 SL=67.176 ATR=0.173 R:R=10.74:1
+2026-03-26 19:45:40 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 67.435 retrace-entry Lot:0.03
+2026-03-26 19:45:40 [INFO] ⚡ TRAP SET: XAGUSD BUY_LIMIT | Entry: 67.435 | Lot: 0.03
+2026-03-26 19:49:47 [INFO] ⚡ Momentum Guard Exit: XAGUSD adverse=0.14700
+2026-03-26 19:50:49 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:50:49 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:50:49 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:50:49 [DEBUG] [XAUUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:50:49 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:50:49 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:50:49 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:50:49 [DEBUG] [BTCUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 19:52:46 [INFO] 🧹 Markov Cleanup: 1 contra-regime limit(s) cancelled.
+2026-03-26 20:14:01 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=97%. No new positions.
+2026-03-26 20:19:02 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=97%. No new positions.
+2026-03-26 20:22:40 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:22:40 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:22:40 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:22:40 [DEBUG] [XAUUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:22:40 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 99%)
+2026-03-26 20:22:40 [DEBUG] [XAGUSD] SMC Breaker TP: 67.247
+2026-03-26 20:22:40 [INFO] 🎯 M1 Tight: XAGUSD TP=67.707 SL=68.131 ATR=0.106 R:R=14.15:1
+2026-03-26 20:22:40 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD SELL @ 67.972 retrace-entry Lot:0.01
+2026-03-26 20:23:33 [INFO] ⚡ TRAP SET: XAGUSD SELL_LIMIT | Entry: 67.972 | Lot: 0.01
+2026-03-26 20:23:34 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:23:34 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:23:34 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:23:34 [INFO] 🔎 MTF Confluence Locked: BTCUSD BUY_MICRO (Conf: 99%)
+2026-03-26 20:23:34 [DEBUG] [BTCUSD] SMC Breaker TP: 69342
+2026-03-26 20:26:08 [INFO] ⚠️ Lot Cap: BTCUSD calculated 0.12 lots → capped at 0.1 (MICRO)
+2026-03-26 20:26:08 [INFO] 🎯 M1 Tight: BTCUSD TP=69063 SL=68866 ATR=43.820 R:R=18.88:1
+2026-03-26 20:26:08 [INFO] 📍 M1 PULLBACK LIMIT: BTCUSD BUY @ 68932 retrace-entry Lot:0.10
+2026-03-26 20:26:10 [INFO] ⚡ TRAP SET: BTCUSD BUY_LIMIT | Entry: 68931.883 | Lot: 0.1
+2026-03-26 20:27:48 [INFO] 🗑️ Stale Trap Avoided: Cancelled XAGUSD limit order. (Target reached before entry (Stale Trap))
+2026-03-26 20:27:48 [DEBUG] ⚠️ Stale trap #1/3 for XAGUSD @ 67.972.
+2026-03-26 20:28:46 [DEBUG] [XAGUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-26 20:30:21 [INFO] 🗑️ Stale Trap Avoided: Cancelled BTCUSD limit order. (Target reached before entry (Stale Trap))
+2026-03-26 20:30:21 [DEBUG] ⚠️ Stale trap #1/3 for BTCUSD @ 68931.883.
+2026-03-26 20:30:32 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 20:30:32 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:30:32 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:30:32 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:30:32 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:30:32 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:30:32 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:30:32 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:30:32 [INFO] 🔎 MTF Confluence Locked: BTCUSD BUY_MICRO (Conf: 97%)
+2026-03-26 20:30:32 [DEBUG] [BTCUSD] SMC Breaker TP: 69342
+2026-03-26 20:30:32 [INFO] ⚠️ Lot Cap: BTCUSD calculated 0.17 lots → capped at 0.1 (MICRO)
+2026-03-26 20:30:32 [INFO] 🎯 M1 Tight: BTCUSD TP=69224 SL=69034 ATR=42.252 R:R=2.22:1
+2026-03-26 20:30:32 [INFO] ⚡ M1 MARKET ORDER: BTCUSD BUY @ 68878 Lot:0.10
+2026-03-26 20:30:33 [INFO] ⚡ TRAP SET: BTCUSD BUY_LIMIT | Entry: 68878.266 | Lot: 0.1
+2026-03-26 20:30:38 [DEBUG] [BTCUSD] Trade recorded: ticket=8595357729 (Conf: 0.97)
+2026-03-26 20:31:40 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 20:31:40 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:31:40 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:31:40 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:31:40 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:31:40 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:31:40 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:31:40 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:32:41 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 20:32:41 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:32:41 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:32:41 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:32:41 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:32:41 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:32:41 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:32:41 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:33:40 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 20:33:40 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:33:40 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:33:40 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:33:40 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:33:40 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:33:40 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:33:40 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:35:44 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 20:35:44 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:35:44 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:35:44 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:35:44 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:35:44 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:35:44 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:35:44 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:36:43 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 20:36:43 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:36:43 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:36:43 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:36:43 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:36:43 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:36:44 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 20:36:44 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 20:36:47 [INFO] 🔴 Trade Closed: #8595357729 BTCUSD | P&L: $-7.44
+2026-03-26 21:07:38 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:07:38 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:07:38 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:07:38 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:07:38 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-26 21:07:38 [DEBUG] [XAGUSD] SMC Breaker TP: 67.452
+2026-03-26 21:07:38 [INFO] 🎯 M1 Tight: XAGUSD TP=67.691 SL=67.211 ATR=0.120 R:R=11.06:1
+2026-03-26 21:07:38 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 67.391 retrace-entry Lot:0.01
+2026-03-26 21:07:41 [INFO] ⚡ TRAP SET: XAGUSD BUY_LIMIT | Entry: 67.391 | Lot: 0.01
+2026-03-26 21:07:41 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:07:41 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:07:41 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-3.29 HVN:False Δ:-20797] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:07:41 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:08:40 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:08:40 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:08:40 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:08:40 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:08:40 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:08:40 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:08:40 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-3.32 HVN:False Δ:-20324] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:08:40 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:10:06 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:10:06 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:10:06 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:10:06 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:10:06 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:10:06 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:10:06 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-3.27 HVN:False Δ:-19619] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:10:06 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:10:58 [DEBUG] [XAGUSD] Trade recorded: ticket=8595391792 (Conf: 0.99)
+2026-03-26 21:11:41 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:11:41 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:11:41 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:11:41 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:11:41 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:11:41 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:11:41 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:11:41 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-3.35 HVN:False Δ:-18808] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:11:41 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:12:41 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:12:41 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:12:41 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:12:41 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:12:41 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:12:41 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:12:41 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-3.35 HVN:False Δ:-18355] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:12:41 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:13:41 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:13:41 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:13:41 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:13:41 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:13:41 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:13:41 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:13:41 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-3.34 HVN:False Δ:-17865] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:13:42 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:14:54 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:14:54 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:14:54 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:14:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:14:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:14:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:14:55 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-3.36 HVN:False Δ:-17316] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:14:55 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:16:28 [INFO] 🔴 Trade Closed: #8595391792 XAGUSD | P&L: $-9.05
+2026-03-26 21:16:39 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:16:39 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:16:39 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:16:39 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 21:16:40 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:16:40 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:16:40 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.9x | Trend:BEARISH | S13[VWAP_Z:-3.25 HVN:False Δ:-11729] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-03-26 21:16:40 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:47:42 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:47:42 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:47:42 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:47:42 [DEBUG] [XAUUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:47:43 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-26 21:47:43 [DEBUG] [XAGUSD] SMC Breaker TP: 68.406
+2026-03-26 21:47:43 [INFO] 🎯 M1 Tight: XAGUSD TP=67.787 SL=67.415 ATR=0.093 R:R=1.74:1
+2026-03-26 21:47:43 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 67.554 retrace-entry Lot:0.01
+2026-03-26 21:47:48 [INFO] ⚡ TRAP SET: XAGUSD BUY_LIMIT | Entry: 67.554 | Lot: 0.01
+2026-03-26 21:47:49 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:47:49 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:47:49 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:47:49 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:49:47 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 21:49:47 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:49:47 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:49:48 [DEBUG] [XAUUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:49:48 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:49:48 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:49:48 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:49:48 [INFO] 🔎 MTF Confluence Locked: BTCUSD BUY_MICRO (Conf: 97%)
+2026-03-26 21:49:48 [DEBUG] [BTCUSD] SMC Breaker TP: 68427
+2026-03-26 21:49:48 [INFO] 🎯 M1 Tight: BTCUSD TP=68497 SL=68322 ATR=38.794 R:R=1.99:1
+2026-03-26 21:49:48 [INFO] ⚡ M1 MARKET ORDER: BTCUSD BUY @ 68147 Lot:0.01
+2026-03-26 21:49:51 [INFO] ⚡ TRAP SET: BTCUSD BUY_LIMIT | Entry: 68146.774 | Lot: 0.01
+2026-03-26 21:49:58 [DEBUG] [BTCUSD] Trade recorded: ticket=8595433825 (Conf: 0.97)
+2026-03-26 21:51:42 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:51:43 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:51:43 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:52:48 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:52:48 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:52:48 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:54:42 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:54:42 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:54:42 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:56:36 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:56:36 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:56:36 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:58:00 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:58:00 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:58:00 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:59:51 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:59:52 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 21:59:52 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:02:23 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:02:23 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:02:23 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:02:48 [DEBUG] [XAGUSD] Trade recorded: ticket=8595431958 (Conf: 0.99)
+2026-03-26 22:03:53 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:03:53 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:03:53 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:06:27 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:06:27 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:06:27 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:07:54 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:07:54 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:07:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:08:08 [INFO] 🔴 Trade Closed: #8595431958 XAGUSD | P&L: $-7.70
+2026-03-26 22:22:18 [INFO] 🟢 Trade Closed: #8595433825 BTCUSD | P&L: $+1.12
+2026-03-26 22:39:46 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 22:39:46 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:39:46 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:39:47 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 99%)
+2026-03-26 22:39:47 [DEBUG] [XAUUSD] SMC Breaker TP: 4389.1
+2026-03-26 22:39:47 [INFO] 🎯 M1 Tight: XAUUSD TP=4393.9 SL=4379.7 ATR=3.841 R:R=11.95:1
+2026-03-26 22:39:47 [INFO] 📍 M1 PULLBACK LIMIT: XAUUSD BUY @ 4385.5 retrace-entry Lot:0.01
+2026-03-26 22:39:47 [INFO] ❌ MT5 REJECTED XAUUSD: Invalid price (retcode=10015)
+2026-03-26 22:39:47 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 98%)
+2026-03-26 22:39:47 [DEBUG] [XAGUSD] SMC Breaker TP: 68.406
+2026-03-26 22:39:47 [INFO] 🎯 M1 Tight: XAGUSD TP=67.937 SL=67.526 ATR=0.103 R:R=3.65:1
+2026-03-26 22:39:47 [INFO] ⚡ M1 MARKET ORDER: XAGUSD BUY @ 67.371 Lot:0.01
+2026-03-26 22:39:58 [INFO] ⚡ TRAP SET: XAGUSD BUY_LIMIT | Entry: 67.371 | Lot: 0.01
+2026-03-26 22:40:15 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:40:49 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:41:34 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:42:46 [INFO] 🔎 MTF Confluence Locked: BTCUSD BUY_MICRO (Conf: 97%)
+2026-03-26 22:42:46 [DEBUG] [BTCUSD] SMC Breaker TP: 68925
+2026-03-26 22:42:48 [DEBUG] [XAGUSD] Trade recorded: ticket=8595477939 (Conf: 0.98)
+2026-03-26 22:45:46 [INFO] ⚠️ Lot Cap: BTCUSD calculated 0.18 lots → capped at 0.1 (MICRO)
+2026-03-26 22:45:46 [INFO] 🎯 M1 Tight: BTCUSD TP=68763 SL=68521 ATR=53.869 R:R=2.37:1
+2026-03-26 22:45:46 [INFO] ⚡ M1 MARKET ORDER: BTCUSD BUY @ 68344 Lot:0.10
+2026-03-26 22:45:59 [INFO] ⚡ TRAP SET: BTCUSD BUY_LIMIT | Entry: 68343.533 | Lot: 0.1
+2026-03-26 22:46:21 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-03-26 22:46:29 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:46:41 [DEBUG] [USDJPY] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:46:41 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:46:41 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:46:41 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:46:41 [DEBUG] [BTCUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 22:46:48 [DEBUG] [BTCUSD] Trade recorded: ticket=8595482055 (Conf: 0.97)
+2026-03-26 22:54:48 [INFO] 🔴 Trade Closed: #8595482055 BTCUSD | P&L: $-7.75
+2026-03-26 23:19:04 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=97%. No new positions.
+2026-03-26 23:25:55 [DEBUG] [EURUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:25:55 [DEBUG] [GBPUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:25:55 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:26:54 [DEBUG] [XAUUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BEARISH direction.
+2026-03-26 23:28:17 [DEBUG] [XAGUSD] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:28:17 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:28:17 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:28:18 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:28:18 [INFO] 🔎 MTF Confluence Locked: BTCUSD BUY_MICRO (Conf: 80%)
+2026-03-26 23:28:18 [DEBUG] [BTCUSD] SMC Breaker TP: 69251
+2026-03-26 23:28:18 [INFO] 📐 Scalp Levels [BTCUSD BUY]: Entry≈68842.14500  SL≈68649.70000  TP≈71129.70860  (FVG mid=68842.14500 Asian_H=70862.896)
+2026-03-26 23:28:44 [INFO] ⚡ TRAP SET: BTCUSD BUY_LIMIT | Entry: 68842.145 | Lot: 0.01
+2026-03-26 23:30:53 [INFO] 🔎 MTF Confluence Locked: EURUSD SELL_MICRO (Conf: 96%)
+2026-03-26 23:30:55 [INFO] ⚡ TRAP SET: EURUSD SELL_LIMIT | Entry: 1.15467 | Lot: 0.4
+2026-03-26 23:31:03 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:31:13 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:31:37 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:32:46 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:32:46 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:32:46 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:33:46 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:33:46 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:33:46 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:35:36 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:35:36 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:35:36 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:36:45 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:36:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:36:45 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:37:47 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:37:47 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:37:47 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:38:45 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:38:45 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:38:45 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:40:25 [DEBUG] [US Oil] INDETERMINATE [NY_PM2] | conf:0.32 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:40:25 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:40:25 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:41:53 [INFO] 🔎 MTF Confluence Locked: US Oil BUY (Conf: 99%)
+2026-03-26 23:41:53 [INFO] ❌ MT5 REJECTED US Oil: Invalid volume (retcode=10014)
+2026-03-26 23:41:59 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:42:18 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:43:52 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:43:52 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:46:28 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:46:28 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:47:54 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:47:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:50:00 [INFO] 📋 Daily summary dispatched via Telegram.
+2026-03-26 23:50:36 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:50:36 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:51:58 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:51:58 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:53:37 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:53:37 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:54:53 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:54:54 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:56:48 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:56:48 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:58:39 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-26 23:58:39 [DEBUG] [US SP 500] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
+2026-03-26 23:58:39 [DEBUG] [US Tech 100] INDETERMINATE [NY_PM2] | conf:0.24 | Price trending, no clean AMD range — skipping.
