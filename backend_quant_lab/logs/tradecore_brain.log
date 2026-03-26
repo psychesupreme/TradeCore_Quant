@@ -39851,3 +39851,31 @@
 2026-03-26 14:01:58 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 97%)
 2026-03-26 14:01:59 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
 2026-03-26 14:01:59 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:02:19 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-26 14:02:19 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-26 14:02:29 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-26 14:04:42 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:04:42 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:04:42 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:04:42 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:04:42 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-26 14:04:42 [DEBUG] [XAGUSD] SMC Breaker TP: 68.408
+2026-03-26 14:04:42 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:04:43 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:06:01 [INFO] 🎯 M1 Tight: XAGUSD TP=68.53 SL=68.05 ATR=0.120 R:R=2.34:1
+2026-03-26 14:06:01 [INFO] ⚡ M1 MARKET ORDER: XAGUSD BUY @ 67.691 Lot:0.01
+2026-03-26 14:06:02 [INFO] ⚡ TRAP SET: XAGUSD BUY_LIMIT | Entry: 67.691 | Lot: 0.01
+2026-03-26 14:06:10 [DEBUG] [XAGUSD] Trade recorded: ticket=8594950275 (Conf: 0.99)
+2026-03-26 14:06:29 [DEBUG] [EURUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:06:29 [DEBUG] [GBPUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:06:29 [DEBUG] [USDJPY] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:06:29 [DEBUG] [XAUUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:06:29 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-26 14:06:29 [DEBUG] [XAGUSD] SMC Breaker TP: 68.408
+2026-03-26 14:06:29 [INFO] 🎯 M1 Tight: XAGUSD TP=68.62 SL=68.116 ATR=0.126 R:R=2.18:1
+2026-03-26 14:06:29 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 68.305 retrace-entry Lot:0.01
+2026-03-26 14:06:29 [INFO] ⚡ TRAP SET: XAGUSD BUY_LIMIT | Entry: 68.305 | Lot: 0.01
+2026-03-26 14:06:30 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:06:30 [DEBUG] [BTCUSD] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
+2026-03-26 14:06:40 [DEBUG] [XAGUSD] Trade recorded: ticket=8594950533 (Conf: 0.99)
+2026-03-26 14:08:09 [DEBUG] [US Oil] INDETERMINATE [London_PM] | conf:0.28 | Price trending, no clean AMD range — skipping.
