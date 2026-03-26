@@ -9,5 +9,5 @@ venv/
 # --- Database (Don't upload the live record) ---
 *.db
 *.sqlite3
-tradecore.db
-
+*.tradecore.db
+*.tmp.driveupload
