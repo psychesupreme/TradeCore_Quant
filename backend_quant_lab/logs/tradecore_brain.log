@@ -39566,3 +39566,12 @@
 2026-03-26 09:06:45 [DEBUG] [US Oil] ACCUMULATION [PreLondon] | conf:0.39 | Mapping range | AH:91.141 AL:90.068
 2026-03-26 09:08:28 [DEBUG] [US Oil] ACCUMULATION [PreLondon] | conf:0.39 | Mapping range | AH:91.141 AL:90.068
 2026-03-26 09:08:28 [INFO] Stopped.
+2026-03-26 09:08:30 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-26 09:08:30 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-26 09:08:40 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-26 09:10:47 [DEBUG] [US Oil] ACCUMULATION [PreLondon] | conf:0.39 | Mapping range | AH:91.141 AL:90.068
+2026-03-26 09:12:17 [DEBUG] [US Oil] ACCUMULATION [PreLondon] | conf:0.39 | Mapping range | AH:91.141 AL:90.068
+2026-03-26 09:13:17 [DEBUG] [US Oil] ACCUMULATION [PreLondon] | conf:0.39 | Mapping range | AH:91.141 AL:90.068
+2026-03-26 09:14:17 [DEBUG] [US Oil] ACCUMULATION [PreLondon] | conf:0.39 | Mapping range | AH:91.141 AL:90.068
+2026-03-26 09:15:41 [DEBUG] [US Oil] ACCUMULATION [PreLondon] | conf:0.39 | Mapping range | AH:91.141 AL:90.068
+2026-03-26 09:16:01 [INFO] 🟢 Trade Closed: #8594654359 XAGUSD | P&L: $+31.20
