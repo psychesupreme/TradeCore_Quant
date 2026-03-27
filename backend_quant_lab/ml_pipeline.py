@@ -232,6 +232,13 @@ class MLDataExtractor:
             except Exception:
                 d = {}
             return pd.Series({
+                # [S30] Hybrid strategy context features
+                'conqueror_bull':    int(bool(d.get('conqueror_bull', False))),
+                'conqueror_bear':    int(bool(d.get('conqueror_bear', False))),
+                'channel_breakout':  int(bool(d.get('channel_breakout_zone', False))),
+                'silver_ar':         int(str(d.get('model_winner','')).startswith('SILVER_ASIAN')),
+                'amd_penalty':       float(d.get('s30_amd_penalty', 0.0)),
+                # [S28] SMC features
                 'smc_stack_score':  float(d.get('smc_stack_score', 0.0)),
                 'smc_structure_q':  float(d.get('smc_structure_q', 0.0)),
                 'smc_has_ifvg':     int(bool(d.get('smc_ifvg', 0))),

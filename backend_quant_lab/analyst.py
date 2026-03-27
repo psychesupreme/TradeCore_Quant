@@ -2004,32 +2004,31 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     s17_candle_bull = detect_candlestick_pattern(df, 'BUY',  current_atr)
     s17_candle_bear = detect_candlestick_pattern(df, 'SELL', current_atr)
 
-    # ── ACCUMULATION — map range, do not trade ─────────────────────
+    # ── [S30] ACCUMULATION / INDETERMINATE — allow M1 scalp to pass through ──
+    # Previously: these phases were hard NEUTRAL blocks (97.5% of signals blocked).
+    # Now: ICT AMD is CONTEXT, not the gate. The M1 pullback scalp engine runs
+    # independently of AMD phase. AMD only adjusts confidence weight.
+    #
+    # ACCUMULATION  → -0.08 confidence penalty (ranging market, harder entries)
+    # INDETERMINATE → -0.05 confidence penalty (trending but no clean structure)
+    # DISTRIBUTION  → no penalty (this is the ideal execution phase)
+    # M1 scalp can still fire in any phase as long as session window allows.
+    _amd_context_penalty = 0.0
     if amd_phase == 'ACCUMULATION':
-        cond = {
-            'mode': 'ACCUMULATION', 'amd_phase': amd_phase,
-            'amd_confidence': amd_conf, 'clock_label': clock_label,
-            'asian_high':  asian.get('asian_high'),
-            'asian_low':   asian.get('asian_low'),
-            'range_high':  accum_data.get('range_high'),
-            'range_low':   accum_data.get('range_low'),
-            'range_atr':   accum_data.get('range_atr'),
-        }
-        reason = (f"ACCUMULATION [{clock_label}] | conf:{amd_conf:.2f} | "
-                  f"Mapping range | AH:{asian.get('asian_high')} "
-                  f"AL:{asian.get('asian_low')}")
-        return "NEUTRAL", 0.0, reason, cond, clock_label
+        _amd_context_penalty = 0.08
+    elif amd_phase == 'INDETERMINATE':
+        _amd_context_penalty = 0.05
 
-    # ── INDETERMINATE — trending/ambiguous market, no clean phase ──
-    # [S12-AMD-D] When all three phase detectors fall below their thresholds,
-    # the market is moving without a readable AMD structure. Do not trade:
-    # boundaries are unreliable and the manipulation detector would fire
-    # on noise rather than genuine stop-hunt sweeps.
-    if amd_phase == 'INDETERMINATE':
-        reason = (f"INDETERMINATE [{clock_label}] | conf:{amd_conf:.2f} | "
-                  f"Price trending, no clean AMD range — skipping.")
-        return "NEUTRAL", 0.0, reason, {'mode': 'INDETERMINATE', 'amd_confidence': amd_conf,
-                                         'clock_label': clock_label}, clock_label
+    # Store AMD context for downstream use
+    _amd_cond_base = {
+        'mode': amd_phase, 'amd_phase': amd_phase,
+        'amd_confidence': amd_conf, 'clock_label': clock_label,
+        'asian_high':  asian.get('asian_high'),
+        'asian_low':   asian.get('asian_low'),
+        'range_high':  accum_data.get('range_high'),
+        'range_low':   accum_data.get('range_low'),
+        'amd_penalty': _amd_context_penalty,
+    }
 
     # ── AVOID ──────────────────────────────────────────────────────
     if amd_phase == 'AVOID':
@@ -2042,6 +2041,41 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
     # [S25-F4] Compute H4 swing conviction before regime routing
     _h4_swing_count, _strong_h4, _sniper_h4 = _h4_trend_strength(df_macro)
+
+    # ── [S30A] Conqueror 3-MA alignment filter ─────────────────────
+    # Confirms macro trend across three time horizons simultaneously.
+    # Bullish: MA(10) > MA(10)[10 bars ago] AND close > close[40 bars ago]
+    _conqueror_bull = False; _conqueror_bear = False; _conqueror_bonus = 0.0
+    try:
+        if df_macro is not None and len(df_macro) >= 50:
+            _cl = df_macro['close'].astype(float)
+            _ma10_now = _cl.iloc[-10:].mean()
+            _ma10_ago = _cl.iloc[-20:-10].mean()
+            _c_now    = float(_cl.iloc[-1])
+            _c_40     = float(_cl.iloc[-41]) if len(_cl) >= 41 else _c_now
+            _conqueror_bull = (_ma10_now > _ma10_ago) and (_c_now > _c_40)
+            _conqueror_bear = (_ma10_now < _ma10_ago) and (_c_now < _c_40)
+            if _conqueror_bull or _conqueror_bear:
+                _conqueror_bonus = 0.08
+    except Exception:
+        pass
+
+    # ── [S30B] Channel Breakout — 55-bar H4 extreme zone ───────────
+    # If price is within 0.3% of the 55-bar H4 high or low, we are in
+    # a breakout zone → increase confidence.
+    _channel_breakout_zone = False; _channel_bonus = 0.0
+    try:
+        if df_macro is not None and len(df_macro) >= 56:
+            _h4_55_high = float(df_macro['high'].astype(float).iloc[-55:].max())
+            _h4_55_low  = float(df_macro['low'].astype(float).iloc[-55:].min())
+            _c_cur      = float(df_macro['close'].astype(float).iloc[-1])
+            _rng_55     = _h4_55_high - _h4_55_low
+            _thresh     = _rng_55 * 0.003
+            if _c_cur >= _h4_55_high - _thresh or _c_cur <= _h4_55_low + _thresh:
+                _channel_breakout_zone = True
+                _channel_bonus = 0.06
+    except Exception:
+        pass
 
     if "DEAD MARKET" in market_regime:
         disp_atr_mult = 0.3;  enforce_macro = False
@@ -3113,6 +3147,127 @@ def _detect_fvg_from_slice(df_slice: pd.DataFrame, direction: str,
 
 
 
+
+
+# ── [S30] SILVER ASIAN MEAN-REVERSION MODULE ─────────────────────────────────
+def compute_silver_asian_reversion(df_m1, utc_now):
+    """
+    Asian session (22:00-07:00 UTC) mean-reversion for XAGUSD only.
+    
+    Silver ranges during Asian hours with NY net $885 vs Asian -$34.
+    Strategy: fade the Bollinger Band extremes when ATR is contracting.
+    
+    Entry: BUY near lower BB, SELL near upper BB
+    Confirmation: RSI < 30 (BUY) or RSI > 70 (SELL)
+    SL: 1.0×ATR beyond the band
+    TP: midline of BB (mean reversion target)
+    
+    Returns same tuple as compute_m1_scalp for compatible routing.
+    """
+    NEUTRAL = ("NEUTRAL", 0.0, "SilverAR: No setup", {}, "ASIAN_REVERSION")
+    
+    t_min = utc_now.hour * 60 + utc_now.minute
+    # Only active during Asian session
+    in_asian = (22*60 <= t_min < 24*60) or (0 <= t_min < 7*60)
+    if not in_asian:
+        return NEUTRAL
+    
+    if df_m1 is None or len(df_m1) < 30:
+        return NEUTRAL
+    
+    df = df_m1.copy().reset_index(drop=True)
+    closes = df['close'].astype(float)
+    
+    # ATR (14-bar)
+    try:
+        df['_atr'] = calculate_atr(df)
+        atr = float(df['_atr'].iloc[-1])
+        atr_avg = float(df['_atr'].iloc[-20:].mean())
+    except Exception:
+        return NEUTRAL
+    
+    if atr <= 0 or atr_avg <= 0:
+        return NEUTRAL
+    
+    # ATR contraction: current ATR < 80% of recent average → ranging mode
+    atr_contracting = (atr < atr_avg * 0.80)
+    if not atr_contracting:
+        return NEUTRAL  # Skip if volatility is expanding
+    
+    # Bollinger Bands (20, 2σ)
+    bb_period = 20
+    if len(closes) < bb_period + 5:
+        return NEUTRAL
+    
+    bb_mean  = float(closes.iloc[-bb_period:].mean())
+    bb_std   = float(closes.iloc[-bb_period:].std())
+    bb_upper = bb_mean + 2.0 * bb_std
+    bb_lower = bb_mean - 2.0 * bb_std
+    bb_width = bb_upper - bb_lower
+    
+    if bb_width <= 0:
+        return NEUTRAL
+    
+    cur_close = float(closes.iloc[-1])
+    
+    # RSI (14)
+    try:
+        deltas = closes.diff()
+        gains  = deltas.clip(lower=0).rolling(14).mean()
+        losses = (-deltas.clip(upper=0)).rolling(14).mean()
+        rs     = gains.iloc[-1] / losses.iloc[-1] if losses.iloc[-1] != 0 else 100
+        rsi    = 100 - (100 / (1 + rs))
+    except Exception:
+        rsi = 50.0
+    
+    # Signal logic: fade the extremes
+    near_lower = cur_close <= bb_lower + bb_width * 0.05
+    near_upper = cur_close >= bb_upper - bb_width * 0.05
+    
+    if near_lower and rsi < 35:
+        direction = "BUY"
+        tp = round(bb_mean, 5)          # Target: midline
+        sl = round(cur_close - atr, 5)  # SL: 1×ATR below
+        score = 0.68
+        if rsi < 25: score = 0.74  # Oversold extreme = stronger signal
+        reason = (f"SilverAR BUY: price {cur_close:.3f} at lower BB {bb_lower:.3f} "
+                  f"RSI={rsi:.0f} ATR contracting ({atr:.3f}<{atr_avg:.3f})")
+    elif near_upper and rsi > 65:
+        direction = "SELL"
+        tp = round(bb_mean, 5)          # Target: midline
+        sl = round(cur_close + atr, 5)  # SL: 1×ATR above
+        score = 0.68
+        if rsi > 75: score = 0.74  # Overbought extreme = stronger signal
+        reason = (f"SilverAR SELL: price {cur_close:.3f} at upper BB {bb_upper:.3f} "
+                  f"RSI={rsi:.0f} ATR contracting ({atr:.3f}<{atr_avg:.3f})")
+    else:
+        return NEUTRAL
+    
+    # R:R check
+    sl_dist = abs(cur_close - sl)
+    tp_dist = abs(tp - cur_close)
+    if sl_dist <= 0 or tp_dist / sl_dist < 1.3:
+        return NEUTRAL
+    
+    sig = f"{direction}_MICRO"
+    cond = {
+        'm1_scalp':        True,
+        'm1_tp':           tp,
+        'm1_sl':           sl,
+        'm1_atr':          round(atr, 5),
+        'm1_entry_price':  round(cur_close, 5),
+        'm1_has_pullback': False,
+        'm1_pullback_bonus': 0.0,
+        'model_winner':    'SILVER_ASIAN_REVERSION',
+        'bb_upper':        round(bb_upper, 5),
+        'bb_lower':        round(bb_lower, 5),
+        'bb_mean':         round(bb_mean, 5),
+        'rsi':             round(rsi, 1),
+        'atr_contracting': True,
+    }
+    return (sig, score, reason, cond, "ASIAN_REVERSION")
+
+
 # ── [S27-B] M1 MICRO-SCALP ENGINE ─────────────────────────────────────────────
 def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
     """
@@ -3129,9 +3284,27 @@ def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
     if atr <= 0:
         return NEUTRAL
 
+    s = symbol.upper()
+    # ── [S30] Empirical session gate for Gold/Silver M1 scalp ─────────
+    # Based on 205-trade WR data: 03:00 UTC WR=12%, 06:00 WR=25%, 22:00 WR=17%
+    # vs 23:00 WR=86%, 19-20:00 WR=67-100%. Block the dead hours.
+    # Gold/Silver only: crypto trades 24h (different liquidity profile).
+    _t_min  = utc_now.hour * 60 + utc_now.minute
+    _is_cmd = ('XAU' in s or 'XAG' in s)
+    if _is_cmd:
+        # Dead sessions for commodity scalp:
+        # 22:00-00:30 UTC: rollover/low liquidity (WR=17%)
+        # 01:00-07:00 UTC: pre-London overnight (WR=12-25%)
+        # Allow: 00:30-01:00 (Asian early pop), 07:00-22:00 (full trading day)
+        _dead = (22*60 <= _t_min < 24*60) or (1*60+30 <= _t_min < 7*60)
+        if _dead:
+            return ("NEUTRAL", 0.0,
+                    f"M1: {s} blocked — dead session {utc_now.strftime('%H:%M')} UTC (WR<25%)",
+                    {}, "M1_SCALP")
+
     # [S28-FIX] Breathing room: SL 1.5×ATR (was 0.8), TP 2.2-3.0×ATR (was 1.5-2.0)
     # Minimum R:R of 1.4:1 enforced below. Spike guard added.
-    s = symbol.upper()
+    # s already set above
     if 'XAU' in s:
         tp_m, sl_m, md = 2.2, 1.5, 0.6   # Gold: 1.47:1 R:R minimum
     elif 'XAG' in s:
@@ -3702,10 +3875,40 @@ def analyze_market_structure(
             conditions['scalp_error'] = str(_sc_err)
     # ────────────────────────────────────────────────────────────────────
 
-    # ── [S27-B] M1 MICRO-SCALP ───────────────────────────────────────
+    # ── [S30] BTC Range Filter — only scalp when H4 is trending ────
+    # N=51 WR=37% Net=-$116.50 on BTC. Root cause: firing in 200pt choppy ranges.
+    # Fix: BTC only enters when 24h range > 1500pts AND H4 has 3+ confirmed swings.
+    _btc_range_ok = True
+    if 'BTC' in sym or 'ETH' in sym:
+        try:
+            _btc_h4 = conditions.get('h4_swing_count', 0) if 'h4_swing_count' in conditions                       else _h4_swing_count if '_h4_swing_count' in dir() else 0
+            _btc_strong = conditions.get('h4_macro_strong', False) if 'h4_macro_strong' in conditions                           else _strong_h4 if '_strong_h4' in dir() else False
+            if df_macro is not None and len(df_macro) >= 6:
+                _btc_24h_high = float(df_macro['high'].astype(float).iloc[-6:].max())
+                _btc_24h_low  = float(df_macro['low'].astype(float).iloc[-6:].min())
+                _btc_range    = _btc_24h_high - _btc_24h_low
+                _btc_range_ok = (_btc_range > 1500) and _btc_strong
+        except Exception:
+            _btc_range_ok = True  # fail-open: when uncertain, allow trade
+
+    # ── [S27-B] M1 MICRO-SCALP + [S30] Silver Asian Reversion ──────
     _df_m1 = getattr(request, 'df_m1', None)
     _scalp_sym = any(k in sym.upper() for k in ['XAU','XAG','BTC','ETH'])
-    if _df_m1 is not None and _scalp_sym and market_regime != "DEAD MARKET":
+    _scalp_ok  = _scalp_sym and (_btc_range_ok if ('BTC' in sym or 'ETH' in sym) else True)
+
+    # [S30] Silver Asian Reversion — runs when XAG M1 scalp is blocked (22-07 UTC)
+    if _df_m1 is not None and 'XAG' in sym.upper() and market_regime != "DEAD MARKET":
+        try:
+            _ar_sig, _ar_sc, _ar_r, _ar_c, _ar_kz = compute_silver_asian_reversion(
+                _df_m1, utc_now)
+            if _ar_sig != "NEUTRAL" and _ar_sc > score:
+                _ar_c['ict_score_shadow']  = score
+                _ar_c['ict_signal_shadow'] = signal
+                signal, score, reason, conditions, kill_zone = _ar_sig, _ar_sc, _ar_r, _ar_c, _ar_kz
+        except Exception as _ar_e:
+            conditions['silver_ar_error'] = str(_ar_e)
+
+    if _df_m1 is not None and _scalp_ok and market_regime != "DEAD MARKET":
         try:
             _h4b = conditions.get('h4_macro', 'NEUTRAL')
             m1s, m1sc, m1r, m1c, m1kz = compute_m1_scalp(_df_m1, sym, utc_now, _h4b)
@@ -3713,7 +3916,16 @@ def analyze_market_structure(
                 m1c['ict_score_shadow']  = score
                 m1c['ict_signal_shadow'] = signal
                 m1c['model_winner']      = 'M1_SCALP'
-                signal, score, reason, conditions, kill_zone = m1s, m1sc, m1r, m1c, m1kz
+                # [S30] Apply Conqueror bonus and AMD penalty to M1 score
+                _s30_conqueror_b = _conqueror_bonus if '_conqueror_bonus' in dir() else 0.0
+                _s30_amd_pen     = _amd_context_penalty if '_amd_context_penalty' in dir() else 0.0
+                _s30_channel_b   = _channel_bonus if '_channel_bonus' in dir() else 0.0
+                m1sc_adj = min(0.99, m1sc + _s30_conqueror_b + _s30_channel_b - _s30_amd_pen)
+                m1c['s30_conqueror_bonus'] = _s30_conqueror_b
+                m1c['s30_channel_bonus']   = _s30_channel_b
+                m1c['s30_amd_penalty']     = _s30_amd_pen
+                m1c['s30_adjusted_score']  = m1sc_adj
+                signal, score, reason, conditions, kill_zone = m1s, m1sc_adj, m1r, m1c, m1kz
             elif m1s != "NEUTRAL":
                 conditions['m1_score_shadow']  = m1sc
                 conditions['m1_signal_shadow'] = m1s

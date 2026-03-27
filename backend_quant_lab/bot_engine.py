@@ -2359,6 +2359,32 @@ class TradingBot:
                     )
                     lot = capped
                 
+                # ── [S30] Portfolio Correlation Gate ────────────────
+                # XAUUSD + XAGUSD have >0.75 correlation → treat as single risk unit
+                # If both open simultaneously, halve the lot size on the second entry
+                try:
+                    _open_pos = mt5.positions_get() or []
+                    _open_syms = [p.symbol for p in _open_pos
+                                  if str(p.magic) in ['510001','510002','510003','510004']]
+                    _n_open = len(_open_pos)
+                    # Max 4 concurrent positions
+                    if _n_open >= 4:
+                        self.log_info(f"⛔ Portfolio Gate: {_n_open} open positions — max 4 reached")
+                        return
+                    # Correlation gate: XAU + XAG same direction = 50% lot
+                    _xau_open = any('XAU' in s for s in _open_syms)
+                    _xag_open = any('XAG' in s for s in _open_syms)
+                    if (('XAU' in symbol and _xag_open) or ('XAG' in symbol and _xau_open)):
+                        _corr_lot = round(lot * 0.5 / 0.01) * 0.01
+                        _corr_lot = max(min_lot, _corr_lot)
+                        if _corr_lot != lot:
+                            self.log_info(
+                                f"🔗 Corr Gate: XAU+XAG open → lot {lot:.2f}→{_corr_lot:.2f}"
+                            )
+                            lot = _corr_lot
+                except Exception:
+                    pass
+
                 filling_mode_code = props.get('filling_mode', 0)
                 if filling_mode_code & 1:
                     type_filling = mt5.ORDER_FILLING_FOK
