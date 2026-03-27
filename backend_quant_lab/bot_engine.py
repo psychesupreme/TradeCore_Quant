@@ -1265,6 +1265,10 @@ class TradingBot:
             else:
                 self._risk_reduction_mode = False
 
+        # [S31] Penalty Box: weekly -5% halt
+        if self._check_weekly_loss_limit():
+            return
+
         self.apply_trailing_stop(current_positions)
         self.evaluate_pending_orders() 
         self.evaluate_open_positions(current_positions) 
@@ -1448,12 +1452,73 @@ class TradingBot:
             
             self.process_symbol(symbol, is_sniper_mode, upcoming_news)
 
+    def _compute_adx(self, symbol: str, period: int = 14) -> float:
+        """[S31] Compute H4 ADX for Bishop exit protocol."""
+        try:
+            import MetaTrader5 as mt5
+            sym_mapped = self.gateway.find_symbol(symbol) or symbol
+            bars = mt5.copy_rates_from_pos(sym_mapped, mt5.TIMEFRAME_H4, 0, period * 3 + 5)
+            if bars is None or len(bars) < period + 2: return 0.0
+            import pandas as pd
+            df = pd.DataFrame(bars)
+            H, L, C = df['high'].astype(float), df['low'].astype(float), df['close'].astype(float)
+            tr  = pd.concat([(H-L).abs(),(H-C.shift()).abs(),(L-C.shift()).abs()],axis=1).max(axis=1)
+            pdm = ((H-H.shift())>(L.shift()-L)).astype(float)*(H-H.shift()).clip(lower=0)
+            ndm = ((L.shift()-L)>(H-H.shift())).astype(float)*(L.shift()-L).clip(lower=0)
+            atr14 = tr.ewm(span=period,adjust=False).mean()
+            pdi   = 100*pdm.ewm(span=period,adjust=False).mean()/atr14.replace(0,1)
+            ndi   = 100*ndm.ewm(span=period,adjust=False).mean()/atr14.replace(0,1)
+            dx    = 100*(pdi-ndi).abs()/(pdi+ndi).replace(0,1)
+            return float(dx.ewm(span=period,adjust=False).mean().iloc[-1])
+        except Exception: return 0.0
+
+    def _check_weekly_loss_limit(self) -> bool:
+        """[S31] Penalty Box: if week-to-date drawdown > 5%, halt trading for the week."""
+        try:
+            from datetime import date, timedelta
+            import sqlite3
+            today  = date.today()
+            monday = today - timedelta(days=today.weekday())
+            conn   = sqlite3.connect(self.db_path)
+            cur    = conn.cursor()
+            cur.execute(
+                "SELECT CAST(SUM(profit) AS REAL) FROM trades "                "WHERE open_time >= ? AND (comment IS NULL OR comment NOT LIKE '%ghost%')",
+                (monday.isoformat(),)
+            )
+            week_pnl = float((cur.fetchone() or [0])[0] or 0)
+            conn.close()
+            bal = self._get_balance()
+            if bal and bal > 0 and (week_pnl / bal * 100) < -5.0:
+                self.log_info(
+                    f"🚫 PENALTY BOX: Week P&L {week_pnl/bal*100:.1f}% < -5% — halted for week"
+                )
+                return True
+        except Exception: pass
+        return False
+
     def apply_trailing_stop(self, positions):
         for pos in positions:
             try:
                 symbol = pos['symbol']
                 ticket = pos['ticket']
                 magic = pos.get('magic', 510000)
+                # ── [S31] Bishop Exit: ADX > 45 overheated trend ──────────
+                # "If ADX exceeds 40 and ticks down, liquidate immediately."
+                # We use ADX > 45 as proxy for overheated + reversal imminent.
+                # Skip M1 scalps (magic 510003) — they have own TP/SL.
+                try:
+                    if magic != 510003:
+                        _adx = self._compute_adx(symbol)
+                        if _adx > 45:
+                            self.log_info(
+                                f"♟️ Bishop Exit: {symbol} H4 ADX={_adx:.1f} "
+                                f"— overheated, liquidating to protect gains"
+                            )
+                            self._close_position(pos)
+                            continue
+                except Exception:
+                    pass
+
                 if magic == 510003:
                     # [S29] M1 scalp: check for partial close at 1.5×ATR
                     try:

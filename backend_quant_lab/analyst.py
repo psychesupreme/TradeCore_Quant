@@ -3149,6 +3149,131 @@ def _detect_fvg_from_slice(df_slice: pd.DataFrame, direction: str,
 
 
 
+
+
+# ── [S31] TURTLE SOUP FX FADE MODULE ─────────────────────────────────────────
+def compute_turtle_soup_fx(df_m15, symbol, utc_now):
+    """
+    Fades false FX breakouts (Turtle Soup / ICT manipulation sweep).
+    
+    London session only (07:00-10:30 UTC). FX pairs only.
+    Logic:
+      1. Price breaks above 20-bar M15 high or below 20-bar low
+      2. Wait: next 1-2 bars show rejection (close back inside the range)
+      3. Enter LIMIT in the opposite direction at the 20-bar boundary
+      4. SL: 1×ATR beyond the false breakout extreme
+      5. TP: Opposite range extreme (mean reversion target)
+    
+    This directly addresses EUR/USD WR=0%, Net=-$59.84 historical losses
+    by turning the false breakout into the entry signal.
+    """
+    NEUTRAL = ("NEUTRAL", 0.0, "TurtleSoup: No setup", {}, "TURTLE_SOUP")
+    
+    # FX pairs only
+    sym = symbol.upper()
+    FX_PAIRS = ['EURUSD','GBPUSD','USDJPY','AUDUSD','USDCAD','USDCHF',
+                'NZDUSD','EURJPY','GBPJPY','AUDJPY','EURGBP','AUDJPY']
+    is_fx = any(p in sym for p in FX_PAIRS)
+    if not is_fx:
+        return NEUTRAL
+    
+    # London session only: 07:00-10:30 UTC (Manipulation phase)
+    t_min = utc_now.hour * 60 + utc_now.minute
+    in_london = (7*60 <= t_min <= 10*60 + 30)
+    if not in_london:
+        return NEUTRAL
+    
+    if df_m15 is None or len(df_m15) < 25:
+        return NEUTRAL
+    
+    df = df_m15.copy().reset_index(drop=True)
+    
+    try:
+        df['_atr'] = calculate_atr(df)
+        atr = float(df['_atr'].iloc[-1])
+    except Exception:
+        return NEUTRAL
+    
+    if atr <= 0:
+        return NEUTRAL
+    
+    # 20-bar lookback range (excluding the last 2 bars)
+    lookback = 20
+    if len(df) < lookback + 3:
+        return NEUTRAL
+    
+    # Range over bars [-lookback-2:-2] (exclude last 2 bars — potential breakout)
+    range_df   = df.iloc[-lookback-2:-2]
+    range_high = float(range_df['high'].max())
+    range_low  = float(range_df['low'].min())
+    
+    # Last 2 bars: the potential false breakout bars
+    bar_1  = df.iloc[-2]  # First breakout bar
+    bar_0  = df.iloc[-1]  # Most recent bar (should show rejection)
+    
+    high_1 = float(bar_1['high']); low_1 = float(bar_1['low']); close_1 = float(bar_1['close'])
+    high_0 = float(bar_0['high']); low_0 = float(bar_0['low']); close_0 = float(bar_0['close'])
+    
+    signal    = None
+    entry     = None
+    sl        = None
+    tp        = None
+    breakout_extreme = None
+    
+    # Bearish Turtle Soup: broke above 20-bar high but closed back inside
+    if high_1 > range_high and close_1 < range_high and close_0 < range_high:
+        # False upside breakout confirmed — fade it (SELL)
+        signal           = "SELL_MICRO"
+        breakout_extreme = high_1
+        entry            = round(range_high + atr * 0.1, 5)  # Just above the swept level
+        sl               = round(breakout_extreme + atr * 1.0, 5)
+        tp               = round(range_low + atr * 0.5, 5)
+    
+    # Bullish Turtle Soup: broke below 20-bar low but closed back inside
+    elif low_1 < range_low and close_1 > range_low and close_0 > range_low:
+        # False downside breakout confirmed — fade it (BUY)
+        signal           = "BUY_MICRO"
+        breakout_extreme = low_1
+        entry            = round(range_low - atr * 0.1, 5)
+        sl               = round(breakout_extreme - atr * 1.0, 5)
+        tp               = round(range_high - atr * 0.5, 5)
+    
+    if signal is None:
+        return NEUTRAL
+    
+    # R:R check
+    sl_dist = abs(entry - sl)
+    tp_dist = abs(tp - entry)
+    if sl_dist <= 0 or tp_dist / sl_dist < 1.2:
+        return NEUTRAL
+    
+    score = 0.70  # Conservative base — FX manipulation patterns have noise
+    # Bonus: if the rejection bar also shows strong opposite momentum
+    if signal == "SELL_MICRO" and close_0 < (high_0 + low_0) / 2:
+        score = min(0.76, score + 0.06)  # Rejection with bear close = stronger
+    elif signal == "BUY_MICRO" and close_0 > (high_0 + low_0) / 2:
+        score = min(0.76, score + 0.06)
+    
+    reason = (f"TurtleSoup {signal[:4]}: {sym} false breakout above {range_high:.5f}" 
+              if 'SELL' in signal 
+              else f"TurtleSoup {signal[:3]}: {sym} false breakdown below {range_low:.5f}")
+    
+    cond = {
+        'm1_scalp':        True,  # Routes through same execution path
+        'm1_tp':           tp,
+        'm1_sl':           sl,
+        'm1_atr':          round(atr, 5),
+        'm1_entry_price':  round(entry, 5),
+        'm1_has_pullback': False,
+        'm1_pullback_bonus': 0.0,
+        'model_winner':    'TURTLE_SOUP_FX',
+        'ts_range_high':   round(range_high, 5),
+        'ts_range_low':    round(range_low, 5),
+        'ts_breakout_ext': round(breakout_extreme, 5),
+    }
+    return (signal, score, reason, cond, "TURTLE_SOUP")
+
+
 # ── [S30] SILVER ASIAN MEAN-REVERSION MODULE ─────────────────────────────────
 def compute_silver_asian_reversion(df_m1, utc_now):
     """
@@ -3895,6 +4020,19 @@ def analyze_market_structure(
     _df_m1 = getattr(request, 'df_m1', None)
     _scalp_sym = any(k in sym.upper() for k in ['XAU','XAG','BTC','ETH'])
     _scalp_ok  = _scalp_sym and (_btc_range_ok if ('BTC' in sym or 'ETH' in sym) else True)
+
+    # [S31] Turtle Soup FX Fade — London session, FX pairs only
+    _FX_SYMS = ['EUR','GBP','USD','JPY','AUD','NZD','CAD','CHF']
+    _is_fx   = sum(1 for x in _FX_SYMS if x in sym.upper()) >= 2
+    if _is_fx and market_regime != "DEAD MARKET":
+        try:
+            _ts_sig, _ts_sc, _ts_r, _ts_c, _ts_kz = compute_turtle_soup_fx(df, sym, utc_now)
+            if _ts_sig != "NEUTRAL" and _ts_sc > score:
+                _ts_c['ict_score_shadow']  = score
+                _ts_c['ict_signal_shadow'] = signal
+                signal, score, reason, conditions, kill_zone = _ts_sig, _ts_sc, _ts_r, _ts_c, _ts_kz
+        except Exception as _ts_e:
+            conditions['turtle_soup_error'] = str(_ts_e)
 
     # [S30] Silver Asian Reversion — runs when XAG M1 scalp is blocked (22-07 UTC)
     if _df_m1 is not None and 'XAG' in sym.upper() and market_regime != "DEAD MARKET":
