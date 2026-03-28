@@ -2208,6 +2208,13 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 
             if "DEAD MARKET" in market_regime:
                 signal = "BUY_NANO" if "BUY" in signal else "SELL_NANO"
+            # [S33-FIX] Expose S30/S32 bonus vars so analyze_market_structure can read them
+            cond['h4_swing_count']      = _h4_swing_count
+            cond['h4_macro_strong']     = _strong_h4
+            cond['conqueror_bonus']     = _conqueror_bonus
+            cond['amd_context_penalty'] = _amd_context_penalty
+            cond['channel_bonus']       = _channel_bonus
+            cond['ema50_bonus']         = _ema50_bonus
             return signal, round(score, 3), reason, cond, kill_zone
         return "NEUTRAL", 0.0, (f"DISTRIBUTION [{clock_label}]: No OB/FVG retest "
                                 f"in {macro_trend} direction."), {}, kill_zone
@@ -2458,6 +2465,13 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bull} "
                   f"Disc:{in_discount}(deep:{deep_pd}) BOS:{bos_aligned} "
                   f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s19f_tag}{s17_tag}")
+        # [S33-FIX] Expose S30/S32 bonus vars so analyze_market_structure can read them
+        cond['h4_swing_count']      = _h4_swing_count
+        cond['h4_macro_strong']     = _strong_h4
+        cond['conqueror_bonus']     = _conqueror_bonus
+        cond['amd_context_penalty'] = _amd_context_penalty
+        cond['channel_bonus']       = _channel_bonus
+        cond['ema50_bonus']         = _ema50_bonus
         return signal, round(score, 3), reason, cond, kill_zone
 
     # ── BEARISH MANIPULATION ───────────────────────────────────────
@@ -2630,6 +2644,13 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
                   f"Score:{score:.2f} | OB:{ob_hit} FVG:{fvg_bear} "
                   f"Prem:{in_premium}(deep:{deep_pd}) BOS:{bos_aligned} "
                   f"OTE:{ote_hit} Vol:{vol_ratio:.1f}x{s13_tag}{s19f_tag}{s17_tag}")
+        # [S33-FIX] Expose S30/S32 bonus vars so analyze_market_structure can read them
+        cond['h4_swing_count']      = _h4_swing_count
+        cond['h4_macro_strong']     = _strong_h4
+        cond['conqueror_bonus']     = _conqueror_bonus
+        cond['amd_context_penalty'] = _amd_context_penalty
+        cond['channel_bonus']       = _channel_bonus
+        cond['ema50_bonus']         = _ema50_bonus
         return signal, round(score, 3), reason, cond, kill_zone
 
     return "NEUTRAL", 0.0, f"[{amd_phase}] No sweep or displacement detected.", {}, kill_zone
@@ -3442,6 +3463,226 @@ def compute_slingshot_reversal(df_h4, symbol, utc_now):
         return NEUTRAL
 
 
+# ── [S33] EURUSD DEDICATED STRATEGY MODULE ───────────────────────────────────
+def compute_eurusd_strategy(df_m15, df_m1, symbol, utc_now):
+    """
+    [S33] Two-sub-strategy engine built specifically for EURUSD.
+
+    Historical context: ICT_STANDARD produced 0% WR / -$59.84 on EURUSD
+    (14 trades). EURUSD is a deep-liquidity pair that trends hard on London
+    open and mean-reverts during NY afternoon consolidation. ICT AMD
+    framework is wrong for this pair; these two modes are right.
+
+    Sub-strategy A — London Momentum Breakout (07:00-08:30 UTC):
+      • Detects a tight Asian range (23:00-06:00 UTC, ideally < 30 pips)
+      • Waits for a genuine breakout bar: M15 close outside range with
+        a body > 5 pips (not just a wick)
+      • Confirms bar has NOT rejected back (distinguishes from Turtle Soup)
+      • Enters in breakout direction via limit at the broken range boundary
+      • TP: 2.0×ATR  |  SL: 1.2×ATR
+      • Score: 0.72 base, +0.05 for tight Asian range, +0.04 H4 alignment
+
+    Sub-strategy B — NY Afternoon Mean Reversion (13:30-16:00 UTC):
+      • Computes Z-score of last M15 close vs 20-bar EMA
+      • Fade when |Z| > 1.8 (price statistically extended)
+      • TP: EMA20 (the mean)  |  SL: 1.5×ATR beyond the extreme
+      • Score: 0.70 base, +0.05 if |Z| > 2.2 (deeper extreme = higher edge)
+
+    Both sub-strategies bypass ICT scoring and feed directly into the
+    M1 pullback entry execution path for execution consistency.
+    Returns same tuple format as all other compute_* functions.
+    """
+    NEUTRAL = ("NEUTRAL", 0.0, "EURUSD: No setup", {}, "EURUSD_STRATEGY")
+
+    sym = symbol.upper()
+    if "EURUSD" not in sym:
+        return NEUTRAL
+
+    if df_m15 is None or len(df_m15) < 25:
+        return NEUTRAL
+
+    df = df_m15.copy().reset_index(drop=True)
+    try:
+        df['_atr'] = calculate_atr(df)
+        atr = float(df['_atr'].iloc[-1])
+    except Exception:
+        return NEUTRAL
+
+    if atr <= 0:
+        return NEUTRAL
+
+    pip = 0.0001  # EURUSD pip size
+    t_min = utc_now.hour * 60 + utc_now.minute
+
+    # ── Sub-strategy A: London Momentum Breakout ──────────────────────────
+    in_london_open = (7*60 <= t_min <= 8*60 + 30)
+
+    if in_london_open:
+        # Detect Asian range: look for bars timestamped 23:00-06:00 UTC today
+        asian_high = asian_low = None
+        try:
+            if 'timestamp' in df.columns:
+                df['_dt'] = pd.to_datetime(df['timestamp'], utc=True)
+                today = utc_now.date()
+                from datetime import timedelta
+                yesterday = today - timedelta(days=1)
+                asian_mask = (
+                    (
+                        (df['_dt'].dt.date == yesterday) & (df['_dt'].dt.hour >= 23)
+                    ) | (
+                        (df['_dt'].dt.date == today) & (df['_dt'].dt.hour < 7)
+                    )
+                )
+                asian_bars = df[asian_mask]
+                if len(asian_bars) >= 4:
+                    asian_high = float(asian_bars['high'].max())
+                    asian_low  = float(asian_bars['low'].min())
+        except Exception:
+            pass
+
+        # Fallback: last 28 bars ≈ 7 hours of M15
+        if asian_high is None:
+            lookback_bars = df.tail(28)
+            if len(lookback_bars) >= 6:
+                asian_high = float(lookback_bars['high'].max())
+                asian_low  = float(lookback_bars['low'].min())
+
+        if asian_high is not None and asian_low is not None:
+            asian_range_pips = (asian_high - asian_low) / pip
+            tight_range = asian_range_pips < 35  # < 35 pips = consolidation
+
+            cur_bar  = df.iloc[-1]
+            cur_close = float(cur_bar['close'])
+            cur_open  = float(cur_bar['open'])
+            bar_body  = abs(cur_close - cur_open)
+            min_body  = 5 * pip  # at least 5 pips of body
+
+            # Bullish breakout: close above Asian high AND body confirms
+            bull_break = (
+                cur_close > asian_high + 2 * pip and
+                cur_close > cur_open and          # bullish body
+                bar_body >= min_body
+            )
+            # Bearish breakout: close below Asian low AND body confirms
+            bear_break = (
+                cur_close < asian_low - 2 * pip and
+                cur_close < cur_open and          # bearish body
+                bar_body >= min_body
+            )
+
+            if bull_break or bear_break:
+                direction = "BUY" if bull_break else "SELL"
+                ref_level = asian_high if bull_break else asian_low
+
+                # Entry: at the broken boundary (momentum continuation)
+                entry = round(ref_level, 5)
+                tp    = round(entry + 2.0 * atr, 5) if bull_break else round(entry - 2.0 * atr, 5)
+                sl    = round(entry - 1.2 * atr, 5) if bull_break else round(entry + 1.2 * atr, 5)
+
+                sl_dist = abs(entry - sl)
+                tp_dist = abs(tp - entry)
+                if sl_dist <= 0 or tp_dist / sl_dist < 1.3:
+                    return NEUTRAL
+
+                score = 0.72
+                if tight_range:
+                    score = min(0.82, score + 0.05)  # tighter range = cleaner break
+                if asian_range_pips < 20:
+                    score = min(0.84, score + 0.02)  # very tight = extra edge
+                # London open prime window bonus
+                if t_min < 7*60 + 45:
+                    score = min(0.84, score + 0.04)
+
+                sig = f"{direction}_MICRO"
+                reason = (
+                    f"EURUSD London Breakout {direction}: "
+                    f"Asian range {asian_range_pips:.0f}pips "
+                    f"[{asian_low:.5f}-{asian_high:.5f}] "
+                    f"broken @ {cur_close:.5f} | body={bar_body/pip:.1f}pips"
+                )
+                cond = {
+                    'm1_scalp':           True,
+                    'm1_tp':              tp,
+                    'm1_sl':              sl,
+                    'm1_atr':             round(atr, 5),
+                    'm1_entry_price':     entry,
+                    'm1_has_pullback':    False,
+                    'm1_pullback_bonus':  0.0,
+                    'model_winner':       'EURUSD_LONDON_BREAKOUT',
+                    'eu_asian_high':      round(asian_high, 5),
+                    'eu_asian_low':       round(asian_low, 5),
+                    'eu_asian_range_pips': round(asian_range_pips, 1),
+                    'eu_tight_range':     tight_range,
+                }
+                return (sig, round(score, 3), reason, cond, "EURUSD_LONDON_OPEN")
+
+    # ── Sub-strategy B: NY Afternoon Mean Reversion ───────────────────────
+    in_ny_reversion = (13*60 + 30 <= t_min <= 16*60)
+
+    if in_ny_reversion:
+        if len(df) < 22:
+            return NEUTRAL
+
+        closes = df['close'].astype(float)
+        ema20  = closes.ewm(span=20, adjust=False).mean()
+        cur_close = float(closes.iloc[-1])
+        ema_val   = float(ema20.iloc[-1])
+
+        # Z-score: how many std devs is price from EMA?
+        std20 = float(closes.iloc[-20:].std())
+        if std20 <= 0:
+            return NEUTRAL
+
+        z_score = (cur_close - ema_val) / std20
+
+        # Only trade meaningful extremes
+        if abs(z_score) < 1.8:
+            return NEUTRAL
+
+        direction = "SELL" if z_score > 0 else "BUY"
+
+        # TP = EMA (the mean reversion target)
+        tp  = round(ema_val, 5)
+        if direction == "SELL":
+            sl  = round(cur_close + 1.5 * atr, 5)
+        else:
+            sl  = round(cur_close - 1.5 * atr, 5)
+
+        sl_dist = abs(cur_close - sl)
+        tp_dist = abs(tp - cur_close)
+        if sl_dist <= 0 or tp_dist / sl_dist < 1.2:
+            return NEUTRAL
+
+        score = 0.70
+        if abs(z_score) > 2.2:
+            score = min(0.80, score + 0.05)  # deeper extreme = more edge
+        if abs(z_score) > 2.8:
+            score = min(0.82, score + 0.02)  # very extended = high probability
+
+        sig = f"{direction}_MICRO"
+        reason = (
+            f"EURUSD NY Reversion {direction}: "
+            f"Z={z_score:+.2f} (|Z|>1.8 threshold) "
+            f"price={cur_close:.5f} EMA20={ema_val:.5f} TP={tp:.5f}"
+        )
+        cond = {
+            'm1_scalp':           True,
+            'm1_tp':              tp,
+            'm1_sl':              sl,
+            'm1_atr':             round(atr, 5),
+            'm1_entry_price':     round(cur_close, 5),
+            'm1_has_pullback':    False,
+            'm1_pullback_bonus':  0.0,
+            'model_winner':       'EURUSD_NY_REVERSION',
+            'eu_z_score':         round(z_score, 3),
+            'eu_ema20':           round(ema_val, 5),
+            'eu_std20':           round(std20, 5),
+        }
+        return (sig, round(score, 3), reason, cond, "EURUSD_NY_REVERSION")
+
+    return NEUTRAL
+
+
 # ── [S31] TURTLE SOUP FX FADE MODULE ─────────────────────────────────────────
 def compute_turtle_soup_fx(df_m15, symbol, utc_now):
     """
@@ -3711,8 +3952,17 @@ def compute_m1_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
         # Dead sessions for commodity scalp:
         # 22:00-00:30 UTC: rollover/low liquidity (WR=17%)
         # 01:00-07:00 UTC: pre-London overnight (WR=12-25%)
-        # Allow: 00:30-01:00 (Asian early pop), 07:00-22:00 (full trading day)
-        _dead = (22*60 <= _t_min < 24*60) or (1*60+30 <= _t_min < 7*60)
+        # 09:00-10:30 UTC: [S33] London continuation chop — statistically worst window
+        #   Data: 09:00 UTC = -$779 on 17 trades, WR=29%; 10:00 = -$127, WR=17%.
+        #   The London open manipulation is already captured 07:00-09:00.
+        #   Post-09:00 price action is directionless and whipsaws ICT entries.
+        # Allow: 00:30-01:00 (Asian early pop), 07:00-09:00 (London open),
+        #        10:30-22:00 (London PM + NY session)
+        _dead = (
+            (22*60 <= _t_min < 24*60) or
+            (1*60+30 <= _t_min < 7*60) or
+            (9*60 <= _t_min < 10*60+30)   # [S33] London chop gate
+        )
         if _dead:
             return ("NEUTRAL", 0.0,
                     f"M1: {s} blocked — dead session {utc_now.strftime('%H:%M')} UTC (WR<25%)",
@@ -4297,8 +4547,8 @@ def analyze_market_structure(
     _btc_range_ok = True
     if 'BTC' in sym or 'ETH' in sym:
         try:
-            _btc_h4 = conditions.get('h4_swing_count', 0) if 'h4_swing_count' in conditions                       else _h4_swing_count if '_h4_swing_count' in dir() else 0
-            _btc_strong = conditions.get('h4_macro_strong', False) if 'h4_macro_strong' in conditions                           else _strong_h4 if '_strong_h4' in dir() else False
+            _btc_h4 = conditions.get('h4_swing_count', 0)
+            _btc_strong = conditions.get('h4_macro_strong', False)
             if df_macro is not None and len(df_macro) >= 6:
                 _btc_24h_high = float(df_macro['high'].astype(float).iloc[-6:].max())
                 _btc_24h_low  = float(df_macro['low'].astype(float).iloc[-6:].min())
@@ -4323,6 +4573,19 @@ def analyze_market_structure(
                 signal, score, reason, conditions, kill_zone = _sl_sig, _sl_sc, _sl_r, _sl_c, _sl_kz
         except Exception as _sl_e:
             conditions['slingshot_error'] = str(_sl_e)
+
+    # [S33] EURUSD dedicated strategy — London breakout + NY reversion
+    # Runs BEFORE the generic FX London scalp; EURUSD gets its own module.
+    if 'EURUSD' in sym.upper() and market_regime != "DEAD MARKET":
+        try:
+            _eu_sig, _eu_sc, _eu_r, _eu_c, _eu_kz = compute_eurusd_strategy(
+                df, _df_m1, sym, utc_now)
+            if _eu_sig != "NEUTRAL" and _eu_sc > score:
+                _eu_c['ict_score_shadow']  = score
+                _eu_c['ict_signal_shadow'] = signal
+                signal, score, reason, conditions, kill_zone = _eu_sig, _eu_sc, _eu_r, _eu_c, _eu_kz
+        except Exception as _eu_e:
+            conditions['eurusd_strategy_error'] = str(_eu_e)
 
     # [S32] FX London M1 scalp — pullback entries for FX during London open
     _FX_SYMS = ['EUR','GBP','USD','JPY','AUD','NZD','CAD','CHF']
@@ -4373,10 +4636,10 @@ def analyze_market_structure(
                 m1c['ict_signal_shadow'] = signal
                 m1c['model_winner']      = 'M1_SCALP'
                 # [S30/S32] Apply all bonuses and penalties to M1 score
-                _s30_conqueror_b = _conqueror_bonus if '_conqueror_bonus' in dir() else 0.0
-                _s30_amd_pen     = _amd_context_penalty if '_amd_context_penalty' in dir() else 0.0
-                _s30_channel_b   = _channel_bonus if '_channel_bonus' in dir() else 0.0
-                _s32_ema50_b     = _ema50_bonus if '_ema50_bonus' in dir() else 0.0
+                _s30_conqueror_b = conditions.get('conqueror_bonus', 0.0)
+                _s30_amd_pen     = conditions.get('amd_context_penalty', 0.0)
+                _s30_channel_b   = conditions.get('channel_bonus', 0.0)
+                _s32_ema50_b     = conditions.get('ema50_bonus', 0.0)
                 m1sc_adj = min(0.99, m1sc + _s30_conqueror_b + _s30_channel_b
                                + _s32_ema50_b - _s30_amd_pen)
                 m1c['s30_conqueror_bonus'] = _s30_conqueror_b

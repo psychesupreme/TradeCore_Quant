@@ -249,6 +249,16 @@ class MLDataExtractor:
                 'm1_scalp':         int(bool(d.get('m1_scalp', False))),
                 'm1_range_aligned': int(bool(d.get('range_aligned', False))),
                 'h4_aligned':       int(bool(d.get('h4_aligned', True))),
+                # [S33] EURUSD dedicated strategy features
+                'eu_london_breakout': int(str(d.get('model_winner','')) == 'EURUSD_LONDON_BREAKOUT'),
+                'eu_ny_reversion':    int(str(d.get('model_winner','')) == 'EURUSD_NY_REVERSION'),
+                'eu_tight_range':     int(bool(d.get('eu_tight_range', False))),
+                'eu_z_score':         float(d.get('eu_z_score', 0.0)),
+                'eu_asian_range_pips': float(d.get('eu_asian_range_pips', 0.0)),
+                # [S33] Model winner one-hot (key strategies)
+                'model_turtle_soup':  int(str(d.get('model_winner','')).startswith('TURTLE_SOUP')),
+                'model_fx_london':    int(str(d.get('model_winner','')).startswith('FX_LONDON')),
+                'model_slingshot':    int(str(d.get('model_winner','')).startswith('SLINGSHOT')),
             })
 
         # Only extract if ict_conditions column exists
@@ -259,7 +269,11 @@ class MLDataExtractor:
             # Add zero columns so feature alignment is stable
             for col in ['smc_stack_score','smc_structure_q','smc_has_ifvg',
                         'smc_has_breaker','smc_has_void','smc_has_mss',
-                        'smc_bonus','m1_scalp','m1_range_aligned','h4_aligned']:
+                        'smc_bonus','m1_scalp','m1_range_aligned','h4_aligned',
+                        # [S33] EURUSD + model winner features
+                        'eu_london_breakout','eu_ny_reversion','eu_tight_range',
+                        'eu_z_score','eu_asian_range_pips',
+                        'model_turtle_soup','model_fx_london','model_slingshot']:
                 df[col] = 0
 
         # Kill zone one-hot encoding

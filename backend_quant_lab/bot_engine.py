@@ -113,6 +113,11 @@ class TradingBot:
         self.quant_engine = QuantEngine()
         self._risk_reduction_mode = False
 
+        # [S33] Automated ML retraining tracking
+        self._last_retrain_trade_count = 0   # N at last retrain
+        self._last_retrain_ts = None         # datetime of last retrain
+        self._retrain_in_progress = False    # guard against concurrent runs
+
     def _get_current_account_id(self):
         try:
             return self.gateway.get_account_id()
@@ -184,7 +189,41 @@ class TradingBot:
             for t in stale_tcks:
                 self.trade_confidences.pop(t, None)
         except: pass
-            
+
+        # [S33] Stale scaled_positions cleanup: cross-check against live MT5 positions.
+        # scaled_positions keys are: "{symbol}_{open_price}_{type}" e.g. "XAUUSD_5139.09_BUY"
+        # If no live position matches the symbol + approximate price, the key is ghost data.
+        try:
+            import MetaTrader5 as _mt5_gc
+            live_pos = _mt5_gc.positions_get()
+            if live_pos is not None:
+                stale_scaled = []
+                for scale_key in list(self.scaled_positions):
+                    parts = scale_key.split('_')
+                    if len(parts) < 3:
+                        stale_scaled.append(scale_key)
+                        continue
+                    sym_part = parts[0]
+                    try:
+                        px_part = float(parts[1])
+                    except (ValueError, IndexError):
+                        stale_scaled.append(scale_key)
+                        continue
+                    # Match: live position for same symbol with price within 2%
+                    matched = any(
+                        p.symbol == sym_part and abs(p.price_open - px_part) / max(px_part, 1e-8) < 0.02
+                        for p in live_pos
+                    )
+                    if not matched:
+                        stale_scaled.append(scale_key)
+                for k in stale_scaled:
+                    self.scaled_positions.discard(k)
+                    self.log_debug(f"🧹 Stale scaled position purged: {k}")
+                if stale_scaled:
+                    self._save_state()
+        except Exception:
+            pass
+
         self.log_debug("🧹 Garbage Collection: Cleared stale state tracking variables.")
 
     def log_info(self, message):
@@ -235,6 +274,7 @@ class TradingBot:
                 "  /close [SYMBOL|all] — close position(s)\n"
                 "  /cancel [SYMBOL|all] — cancel pending limit(s)\n"
                 "  /summary — trigger daily summary report now\n"
+                "  /retrain — trigger ML model retrain now\n"
                 "  /stop — stop the engine entirely\n"
                 "  /start — restart the engine\n"
             )
@@ -567,6 +607,13 @@ class TradingBot:
         elif cmd == "/start":
             if not self.is_running:
                 self.start_service()
+        elif cmd == "/retrain":
+            # [S33] Manual ML retrain trigger
+            if self._retrain_in_progress:
+                self.async_alert("⏳ **ML Retrain already in progress.** Check logs for completion.")
+            else:
+                self.async_alert("🔁 **ML Retrain triggered manually.** Will notify on completion.")
+                self._trigger_ml_retrain(reason="manual /retrain command")
         else:
             self.async_alert(
                 f"❓ Unknown command: `{cmd}`\n"
@@ -1452,6 +1499,98 @@ class TradingBot:
             
             self.process_symbol(symbol, is_sniper_mode, upcoming_news)
 
+        # [S33] Automated ML retraining check — runs at end of each cycle
+        self._check_ml_retrain_trigger()
+
+    def _trigger_ml_retrain(self, reason: str = "auto"):
+        """
+        [S33] Runs the ML pipeline in a background subprocess.
+        Atomic: writes to a temp model file then renames to avoid mid-retrain reads.
+        Safe to call from any thread; guarded against concurrent runs.
+        """
+        if self._retrain_in_progress:
+            return
+        self._retrain_in_progress = True
+
+        def _retrain_worker():
+            try:
+                import subprocess, sys, os
+                self.log_info(f"🔁 ML Retrain started — reason: {reason}")
+                result = subprocess.run(
+                    [sys.executable, "ml_pipeline.py"],
+                    capture_output=True, text=True, timeout=300
+                )
+                if result.returncode == 0:
+                    # Count samples from output for logging
+                    n_line = next((l for l in result.stdout.splitlines() if "Extracted:" in l), "")
+                    n_samples = n_line.replace("Extracted:", "").replace("trades", "").strip() if n_line else "?"
+                    self.log_info(f"✅ ML Retrain complete — {n_samples} samples | reason: {reason}")
+                    self.async_alert(
+                        f"🔁 **ML Retrain Complete**\n"
+                        f"Samples: {n_samples} | Trigger: {reason}"
+                    )
+                    # Update retrain tracking
+                    try:
+                        import sqlite3 as _sl
+                        con = _sl.connect("tradecore.db")
+                        n_count = con.execute(
+                            "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0"
+                        ).fetchone()[0]
+                        con.close()
+                        self._last_retrain_trade_count = n_count
+                    except Exception:
+                        pass
+                    self._last_retrain_ts = datetime.utcnow()
+                else:
+                    self.log_info(f"⚠️ ML Retrain failed (rc={result.returncode}): {result.stderr[:200]}")
+            except subprocess.TimeoutExpired:
+                self.log_info("⚠️ ML Retrain timed out after 300s")
+            except Exception as _re:
+                self.log_info(f"⚠️ ML Retrain error: {_re}")
+            finally:
+                self._retrain_in_progress = False
+
+        threading.Thread(target=_retrain_worker, daemon=True).start()
+
+    def _check_ml_retrain_trigger(self):
+        """
+        [S33] Auto-trigger ML retrain on three conditions (any one fires):
+          1. N trades since last retrain >= 50
+          2. Weekly schedule: Sunday 00:00-01:00 UTC
+          3. Not retrained in > 7 days
+        """
+        if self._retrain_in_progress:
+            return
+        try:
+            import sqlite3 as _sl
+            con = _sl.connect("tradecore.db")
+            n_total = con.execute(
+                "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0"
+            ).fetchone()[0]
+            con.close()
+        except Exception:
+            return
+
+        now = datetime.utcnow()
+        n_since = n_total - self._last_retrain_trade_count
+
+        # Condition 1: 50 new trades since last retrain
+        if n_since >= 50:
+            self._trigger_ml_retrain(reason=f"50 new trades (N={n_total})")
+            return
+
+        # Condition 2: Sunday 00:00-01:00 UTC weekly run
+        if now.weekday() == 6 and now.hour == 0:
+            if (self._last_retrain_ts is None or
+                    (now - self._last_retrain_ts).total_seconds() > 3600):
+                self._trigger_ml_retrain(reason=f"weekly Sunday schedule (N={n_total})")
+                return
+
+        # Condition 3: Not retrained in > 7 days
+        if (self._last_retrain_ts is not None and
+                (now - self._last_retrain_ts).total_seconds() > 7 * 86400):
+            self._trigger_ml_retrain(reason=f"7-day stale model (N={n_total})")
+
     def _compute_adx(self, symbol: str, period: int = 14) -> float:
         """[S31] Compute H4 ADX for Bishop exit protocol."""
         try:
@@ -1821,10 +1960,13 @@ class TradingBot:
         df_macro = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_H4)
 
         # [S27-B] Fetch M1 data for Gold + Crypto micro-scalp engine
+        # [S33] Extended to FX pairs for EURUSD strategy + compute_fx_london_scalp
         # Always initialised to None so the req.__dict__ assignment is safe for all symbols
         df_m1 = None
+        _FX_SCALP_KEYS = ('EUR','GBP','JPY','AUD','NZD','CAD','CHF')
         _is_scalp_sym = any(k in symbol.upper() for k in ('XAU','XAG','BTC','ETH'))
-        if _is_scalp_sym:
+        _is_fx_scalp  = sum(1 for k in _FX_SCALP_KEYS if k in symbol.upper()) >= 2
+        if _is_scalp_sym or _is_fx_scalp:
             try:
                 raw_m1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, 80)
                 if raw_m1 is not None and len(raw_m1) >= 20:
@@ -2464,6 +2606,20 @@ class TradingBot:
                     micro_cap = max(round(balance / 12000, 2), min_lot)
                     max_lot   = min(max_lot, micro_cap)
 
+                # [S33] HIGH_VOL lot hard cap.
+                # GARCH regime = amplified losses (data: -$724 on 131 trades).
+                # Cap at 0.02 lots for XAU, 0.01 for everything else.
+                # This is a safety ceiling — the 1% risk floor already limits size,
+                # but during volatility spikes ATR grows and lot can still exceed safe levels.
+                if 'HIGH VOLATILITY' in regime:
+                    _hv_cap = 0.02 if 'XAU' in symbol else 0.01
+                    if lot > _hv_cap:
+                        self.log_info(
+                            f"🛡️ HIGH_VOL Lot Cap: {symbol} {lot:.2f} → {_hv_cap:.2f} "
+                            f"(GARCH regime protection)"
+                        )
+                        lot = _hv_cap
+
                 if lot > max_lot:
                     capped = _math.floor(max_lot * step_inv) / step_inv
                     capped = max(capped, min_lot)
@@ -2647,6 +2803,13 @@ class TradingBot:
                     self.async_alert(f"⚡ **SMC {safe_action}**: {symbol}\nTarget Entry: {price}\nLot: {lot}\nConf: {analysis.confidence*100:.0f}%")
                     
                     DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
+
+                    # [S33] Dual-fire guard: apply cooldown after successful execution.
+                    # Previously cooldown only fired on rejection; this allows two cycles
+                    # to both find the same signal and both execute before the first
+                    # position registers in MT5. Now we gate the symbol for 3 min post-fill.
+                    _post_fill_cooldown = 3   # minutes — short enough not to miss next setup
+                    self.symbol_cooldowns[symbol] = datetime.utcnow() - timedelta(minutes=15 - _post_fill_cooldown)
 
                     acc_id = self._get_current_account_id()
                     if is_nano:
