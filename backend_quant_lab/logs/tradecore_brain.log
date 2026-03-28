@@ -40932,3 +40932,9 @@
 2026-03-27 17:54:45 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
 2026-03-27 17:55:05 [INFO] 🔴 Trade Closed: #8596283608 XAGUSD | P&L: $-13.00
 2026-03-27 18:23:31 [INFO] Stopped.
+2026-03-28 12:20:37 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-28 12:20:37 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-28 12:20:49 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-28 12:21:27 [INFO] 📩 Received Command: /start
+2026-03-28 12:21:41 [INFO] 📩 Received Command: /status
+2026-03-28 12:21:45 [INFO] 📩 Received Command: /help
