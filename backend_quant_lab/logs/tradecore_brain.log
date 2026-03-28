@@ -40939,3 +40939,18 @@
 2026-03-28 12:21:41 [INFO] 📩 Received Command: /status
 2026-03-28 12:21:45 [INFO] 📩 Received Command: /help
 2026-03-28 12:54:26 [INFO] Stopped.
+2026-03-28 21:42:32 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-28 21:42:32 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 10 Elite Assets.
+2026-03-28 21:42:46 [DEBUG] 🧹 Stale scaled position purged: XAUUSD_5021.27_SELL
+2026-03-28 21:42:46 [DEBUG] 🧹 Stale scaled position purged: XAUUSD_5139.09_BUY
+2026-03-28 21:42:46 [DEBUG] 🧹 Stale scaled position purged: BTCUSD_69219.997_SELL
+2026-03-28 21:42:46 [DEBUG] 🧹 Stale scaled position purged: EURGBP_0.86291_SELL
+2026-03-28 21:42:46 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-28 21:43:51 [INFO] 📩 Received Command: /help
+2026-03-28 21:43:58 [INFO] 📩 Received Command: /retrain
+2026-03-28 21:43:58 [INFO] 🔁 ML Retrain started — reason: manual /retrain command
+2026-03-28 21:43:59 [INFO] ⚠️ ML Retrain failed (rc=1): Traceback (most recent call last):
+  File "D:\Dev\Kom\backend_quant_lab\ml_pipeline.py", line 365, in <module>
+    extractor.build_dataset()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Dev\Kom\backend_qu
