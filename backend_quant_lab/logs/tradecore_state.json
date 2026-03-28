@@ -1,11 +1,6 @@
 {
   "account_id": "32128474",
-  "scaled_positions": [
-    "XAUUSD_5139.09_BUY",
-    "BTCUSD_69219.997_SELL",
-    "XAUUSD_5021.27_SELL",
-    "EURGBP_0.86291_SELL"
-  ],
+  "scaled_positions": [],
   "last_logged_signal": {
     "EURUSD": [
       "NEUTRAL",
@@ -103,9 +98,5 @@
       "SKIPPED"
     ]
   },
-  "trade_confidences": {
-    "8596215397": 0.99,
-    "8596283597": 0.92,
-    "8596283608": 0.92
-  }
+  "trade_confidences": {}
 }
