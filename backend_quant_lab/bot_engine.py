@@ -1487,8 +1487,9 @@ class TradingBot:
             )
             week_pnl = float((cur.fetchone() or [0])[0] or 0)
             conn.close()
-            bal = self._get_balance()
-            if bal and bal > 0 and (week_pnl / bal * 100) < -5.0:
+            acc = self.gateway.get_account_info()
+            bal = float(acc.get('balance', 0) if isinstance(acc, dict) else getattr(acc, 'balance', 0))
+            if bal > 0 and (week_pnl / bal * 100) < -5.0:
                 self.log_info(
                     f"🚫 PENALTY BOX: Week P&L {week_pnl/bal*100:.1f}% < -5% — halted for week"
                 )
@@ -1514,7 +1515,26 @@ class TradingBot:
                                 f"♟️ Bishop Exit: {symbol} H4 ADX={_adx:.1f} "
                                 f"— overheated, liquidating to protect gains"
                             )
-                            self._close_position(pos)
+                            # Close via MT5 market order (no _close_position helper)
+                            try:
+                                _ticket  = int(pos.get('ticket', 0))
+                                _vol     = float(pos.get('volume', 0.01))
+                                _ptype   = int(pos.get('type', 0))
+                                _sym_map = self.gateway.find_symbol(symbol) or symbol
+                                _tick    = mt5.symbol_info_tick(_sym_map)
+                                _px      = _tick.bid if _ptype == 0 else _tick.ask
+                                mt5.order_send({
+                                    "action":       mt5.TRADE_ACTION_DEAL,
+                                    "symbol":       _sym_map,
+                                    "volume":       _vol,
+                                    "type":         mt5.ORDER_TYPE_SELL if _ptype == 0 else mt5.ORDER_TYPE_BUY,
+                                    "price":        _px,
+                                    "position":     _ticket,
+                                    "comment":      "Bishop_Exit",
+                                    "type_filling": mt5.ORDER_FILLING_IOC,
+                                })
+                            except Exception:
+                                pass
                             continue
                 except Exception:
                     pass
@@ -2335,6 +2355,35 @@ class TradingBot:
                 
                 conf_scale      = (analysis.confidence - 0.80) / (0.99 - 0.80)
                 conf_scale      = max(0.0, min(1.0, conf_scale))
+                # ── [S32] Strategy Performance Weighting ─────────────────
+                # Weight lot sizes by recent win rate of each strategy module.
+                # WR > 55% → +20% lot boost; WR < 40% → -25% cut.
+                _strategy_module = str(
+                    (getattr(analysis, 'ict_conditions', {}) or {}).get('model_winner', 'ICT')
+                )
+                _perf_mult = 1.0
+                try:
+                    import sqlite3 as _sq
+                    _pconn = _sq.connect(self.db_path)
+                    _pcur  = _pconn.cursor()
+                    _pcur.execute(
+                        "SELECT CAST(profit AS REAL) FROM trades "
+                        "WHERE regime LIKE ? AND profit IS NOT NULL "
+                        "AND (comment IS NULL OR comment NOT LIKE '%ghost%') "
+                        "ORDER BY close_time DESC LIMIT 20",
+                        (f"%{_strategy_module}%",)
+                    )
+                    _p_rows = [r[0] for r in _pcur.fetchall()]
+                    _pconn.close()
+                    if len(_p_rows) >= 5:
+                        _strat_wr = sum(1 for p in _p_rows if p > 0) / len(_p_rows)
+                        if _strat_wr > 0.55:
+                            _perf_mult = 1.20
+                        elif _strat_wr < 0.40:
+                            _perf_mult = 0.75
+                except Exception:
+                    pass
+
                 # [S29] Risk floor: never below 1% even with negative Kelly.
                 # Kelly goes negative when recent WR < 40% (e.g. after a bad session).
                 # The floor ensures the system can generate meaningful P&L while
@@ -2401,7 +2450,7 @@ class TradingBot:
                     capital_per_lot = sl_distance * 100000.0
                     min_lot  = 0.01; max_lot_asset = 1.0; vol_step = 0.01
 
-                raw_lot        = risk_capital / capital_per_lot if capital_per_lot > 0 else min_lot
+                raw_lot        = (risk_capital / capital_per_lot if capital_per_lot > 0 else min_lot) * _perf_mult
                 import math as _math
                 step_inv       = round(1.0 / vol_step)
                 calculated_lot = _math.floor(raw_lot * step_inv) / step_inv

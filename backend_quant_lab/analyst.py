@@ -2060,6 +2060,34 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     except Exception:
         pass
 
+    # ── [S32D] 50 EMA Trend + RSI Pullback Layer (Hybrid Strategy 1) ──
+    # "Price above 50 EMA on H4 + pullback to 50 EMA + RSI crosses 40 → BUY"
+    # Applied as a confidence modifier (+0.05) when setup aligns.
+    _ema50_bonus = 0.0
+    try:
+        if df_macro is not None and len(df_macro) >= 55:
+            _cl50  = df_macro['close'].astype(float)
+            _ema50 = _cl50.ewm(span=50, adjust=False).mean()
+            _e50   = float(_ema50.iloc[-1])
+            _c50   = float(_cl50.iloc[-1])
+            _prv   = float(_cl50.iloc[-3:].mean())  # 3-bar avg = near EMA
+
+            # RSI(14) on H4
+            _d     = _cl50.diff()
+            _g     = _d.clip(lower=0).rolling(14).mean()
+            _ls    = (-_d.clip(upper=0)).rolling(14).mean()
+            _rsi50 = float(100 - 100 / (1 + _g.iloc[-1] / max(_ls.iloc[-1], 1e-9)))
+
+            # Bullish: price above EMA50, currently near EMA50, RSI 35-55 (crossing up)
+            near_ema = abs(_c50 - _e50) / max(_e50, 1) < 0.005  # Within 0.5% of EMA
+            if _c50 > _e50 and near_ema and 35 <= _rsi50 <= 55:
+                _ema50_bonus = 0.05  # EMA50 pullback BUY setup
+            # Bearish: price below EMA50, near EMA50, RSI 45-65 (crossing down)
+            elif _c50 < _e50 and near_ema and 45 <= _rsi50 <= 65:
+                _ema50_bonus = 0.05  # EMA50 pullback SELL setup
+    except Exception:
+        pass
+
     # ── [S30B] Channel Breakout — 55-bar H4 extreme zone ───────────
     # If price is within 0.3% of the 55-bar H4 high or low, we are in
     # a breakout zone → increase confidence.
@@ -3151,6 +3179,269 @@ def _detect_fvg_from_slice(df_slice: pd.DataFrame, direction: str,
 
 
 
+
+
+
+
+# ── [S32] FX LONDON M1 SCALP MODULE ─────────────────────────────────────────
+def compute_fx_london_scalp(df_m1, symbol, utc_now, h4_bias="NEUTRAL"):
+    """
+    M1 pullback scalp for FX pairs during London session (07:00-10:00 UTC).
+
+    FX pairs exhibit strong directional momentum at London open as EUR and
+    GBP liquidity kicks in. The same displacement + pullback pattern used
+    for Gold applies here, calibrated for FX pip values.
+
+    Only fires when:
+      - Session: London open 07:00-10:00 UTC
+      - H4 bias confirmed (Conqueror filter pre-applied)
+      - 2-candle displacement detected on M1
+      - Pullback candle confirmed (1-2 bars counter-trend)
+    """
+    NEUTRAL = ("NEUTRAL", 0.0, "FX_Scalp: No setup", {}, "FX_LONDON_M1")
+
+    # London session only
+    t_min = utc_now.hour * 60 + utc_now.minute
+    if not (7*60 <= t_min <= 10*60):
+        return NEUTRAL
+
+    # FX pairs only
+    sym = symbol.upper()
+    FX_LIQUID = ['EURUSD','GBPUSD','USDJPY','AUDUSD','EURGBP','GBPJPY','EURJPY']
+    if not any(p in sym for p in FX_LIQUID):
+        return NEUTRAL
+
+    if df_m1 is None or len(df_m1) < 20:
+        return NEUTRAL
+
+    df  = df_m1.copy().reset_index(drop=True)
+    df['_atr'] = calculate_atr(df)
+    atr = float(df['_atr'].iloc[-1])
+    if atr <= 0:
+        return NEUTRAL
+
+    # FX pip size calibration
+    # USDJPY: 1 pip = 0.01; others: 1 pip = 0.0001
+    pip = 0.01 if 'JPY' in sym else 0.0001
+    min_disp = 3 * pip  # Minimum 3-pip displacement candle
+
+    def body(i):
+        return float(df.iloc[i]['close']) - float(df.iloc[i]['open'])
+    def bar_range(i):
+        return float(df.iloc[i]['high']) - float(df.iloc[i]['low'])
+
+    n = len(df)
+
+    # Spike guard
+    if bar_range(n-1) > atr * 2.0:
+        return NEUTRAL
+
+    # Displacement detection: 2 consecutive directional candles
+    bull_d = bear_d = False
+    disp_end = -1
+    md = max(min_disp, atr * 0.5)  # At least 0.5×ATR per candle
+
+    for i in range(max(0, n-8), n-2):
+        b0, b1 = body(i), body(i+1)
+        if b0 >= md and b1 >= md:
+            bull_d = True; disp_end = i+1; break
+        if b0 <= -md and b1 <= -md:
+            bear_d = True; disp_end = i+1; break
+
+    if not bull_d and not bear_d:
+        return NEUTRAL
+
+    direction = "BUY" if bull_d else "SELL"
+
+    # H4 bias filter — only trade with the prevailing H4 trend
+    if h4_bias != "NEUTRAL":
+        if direction == "BUY" and "BEAR" in h4_bias.upper():
+            return NEUTRAL
+        if direction == "SELL" and "BULL" in h4_bias.upper():
+            return NEUTRAL
+
+    # Pullback confirmation
+    has_pullback = False
+    pullback_high = pullback_low = None
+
+    for i in range(max(disp_end+1, n-3), n):
+        b = body(i)
+        if direction == "SELL" and b > 0 and abs(b) < md * 1.5:
+            has_pullback = True
+            pullback_high = float(df.iloc[i]['high'])
+            pullback_low  = float(df.iloc[i]['low'])
+            break
+        elif direction == "BUY" and b < 0 and abs(b) < md * 1.5:
+            has_pullback = True
+            pullback_high = float(df.iloc[i]['high'])
+            pullback_low  = float(df.iloc[i]['low'])
+            break
+
+    if not has_pullback:
+        return NEUTRAL  # FX scalp REQUIRES pullback — no market orders
+
+    # FX TP/SL: tighter than commodities (pips not points)
+    tp_m, sl_m = 2.0, 1.5  # 1.33:1 R:R minimum
+
+    price = float(df.iloc[-1]['close'])
+    if direction == "BUY":
+        entry = round(pullback_low, 5)
+        tp    = round(entry + tp_m * atr, 5)
+        sl    = round(entry - sl_m * atr, 5)
+        sig   = "BUY_MICRO"
+    else:
+        entry = round(pullback_high, 5)
+        tp    = round(entry - tp_m * atr, 5)
+        sl    = round(entry + sl_m * atr, 5)
+        sig   = "SELL_MICRO"
+
+    sl_dist = abs(entry - sl)
+    tp_dist = abs(entry - tp)
+    if sl_dist <= 0 or tp_dist / sl_dist < 1.2:
+        return NEUTRAL
+
+    score = 0.70 + 0.08  # Pullback confirmed = +0.08
+
+    # London open bonus (07:00-08:00 = prime manipulation window)
+    if t_min < 8*60:
+        score = min(0.84, score + 0.04)
+
+    reason = (f"FX London M1 {direction}: {sym} pullback {'high' if direction=='SELL' else 'low'} "
+              f"@ {entry:.5f} ATR={atr:.5f}")
+
+    cond = {
+        'm1_scalp':          True,
+        'm1_tp':             tp,
+        'm1_sl':             sl,
+        'm1_atr':            round(atr, 5),
+        'm1_entry_price':    entry,
+        'm1_has_pullback':   True,
+        'm1_pullback_bonus': 0.08,
+        'model_winner':      'FX_LONDON_M1',
+    }
+    return (sig, score, reason, cond, "FX_LONDON_M1")
+
+
+# ── [S32] SLINGSHOT REVERSAL PATTERN ─────────────────────────────────────────
+def compute_slingshot_reversal(df_h4, symbol, utc_now):
+    """
+    Identifies exhausted rallies via the Slingshot pattern (Courtney Smith).
+
+    Logic:
+      1. Key Low — distinct swing low with 2+ bars higher on each side
+      2. Price rallies but fails to break a prior swing high (Slingshot High)
+      3. Current price breaks below the Key Low → trapped longs capitulate
+      4. Enter SELL_MICRO; TP = Key Low − (Slingshot High − Key Low)
+      5. SL = Slingshot High + 0.5×ATR
+
+    Active during London (07-16 UTC) and NY (13-21 UTC).
+    Returns compatible tuple for main signal routing.
+    """
+    NEUTRAL = ("NEUTRAL", 0.0, "Slingshot: No setup", {}, "SLINGSHOT")
+
+    t_min = utc_now.hour * 60 + utc_now.minute
+    active = (7*60 <= t_min < 21*60)
+    if not active:
+        return NEUTRAL
+
+    if df_h4 is None or len(df_h4) < 30:
+        return NEUTRAL
+
+    try:
+        df = df_h4.copy().reset_index(drop=True)
+        df['_atr'] = calculate_atr(df)
+        atr = float(df['_atr'].iloc[-1])
+        if atr <= 0:
+            return NEUTRAL
+
+        highs  = df['high'].astype(float).values
+        lows   = df['low'].astype(float).values
+        closes = df['close'].astype(float).values
+        n      = len(df)
+
+        # ── Step 1: Find Key Low ──────────────────────────────────────────
+        # A Key Low requires lows[-k] < lows[-k-1] and lows[-k] < lows[-k+1]
+        # (a genuine pivot low) at least 5 bars back
+        key_low_idx  = None
+        key_low_val  = None
+        for k in range(5, min(25, n-3)):
+            idx = n - 1 - k
+            if lows[idx] < lows[idx-1] and lows[idx] < lows[idx-2] and                lows[idx] < lows[idx+1] and lows[idx] < lows[idx+2]:
+                key_low_idx = idx
+                key_low_val = lows[idx]
+                break
+
+        if key_low_idx is None:
+            return NEUTRAL
+
+        # ── Step 2: Find prior swing high before the Key Low ─────────────
+        prior_swing_high = None
+        for k in range(key_low_idx - 1, max(0, key_low_idx - 15), -1):
+            if highs[k] > highs[k-1] and highs[k] > highs[k+1]:
+                prior_swing_high = highs[k]
+                break
+
+        if prior_swing_high is None:
+            return NEUTRAL
+
+        # ── Step 3: Find Slingshot High — rally after Key Low that FAILS ─
+        # The rally after the Key Low must not exceed the prior swing high
+        slingshot_high = None
+        for k in range(key_low_idx + 1, n - 1):
+            if highs[k] > highs[k-1] and highs[k] > highs[k+1]:
+                if highs[k] < prior_swing_high:  # Failed to exceed prior high
+                    slingshot_high = highs[k]
+                    break
+
+        if slingshot_high is None:
+            return NEUTRAL
+
+        # ── Step 4: Current price breaks below Key Low ───────────────────
+        cur_close = float(closes[-1])
+        if cur_close >= key_low_val:
+            return NEUTRAL  # Not broken below Key Low yet
+
+        # ── Compute TP / SL ───────────────────────────────────────────────
+        swing_range = slingshot_high - key_low_val
+        if swing_range <= atr * 0.5:
+            return NEUTRAL  # Range too small to be meaningful
+
+        tp = round(key_low_val - swing_range, 5)      # Projected equal move down
+        sl = round(slingshot_high + atr * 0.5, 5)    # Above the failed high
+        entry = round(cur_close, 5)
+
+        sl_dist = abs(entry - sl)
+        tp_dist = abs(entry - tp)
+        if sl_dist <= 0 or tp_dist / sl_dist < 1.5:
+            return NEUTRAL  # Minimum 1.5:1 R:R required
+
+        score = 0.72
+        # Bonus: strong momentum candle breaking the Key Low
+        if float(df['close'].iloc[-1]) < float(df['open'].iloc[-1]):
+            score = min(0.78, score + 0.06)  # Bearish close = confirmed breakdown
+
+        reason = (f"Slingshot SELL: Key Low {key_low_val:.5g} broken, "
+                  f"SLH {slingshot_high:.5g} failed vs prior {prior_swing_high:.5g}")
+
+        cond = {
+            'm1_scalp':          True,
+            'm1_tp':             tp,
+            'm1_sl':             sl,
+            'm1_atr':            round(atr, 5),
+            'm1_entry_price':    entry,
+            'm1_has_pullback':   False,
+            'm1_pullback_bonus': 0.0,
+            'model_winner':      'SLINGSHOT',
+            'sling_key_low':     round(key_low_val, 5),
+            'sling_high':        round(slingshot_high, 5),
+            'sling_prior_high':  round(prior_swing_high, 5),
+        }
+        return ("SELL_MICRO", score, reason, cond, "SLINGSHOT")
+
+    except Exception:
+        return NEUTRAL
+
+
 # ── [S31] TURTLE SOUP FX FADE MODULE ─────────────────────────────────────────
 def compute_turtle_soup_fx(df_m15, symbol, utc_now):
     """
@@ -4021,6 +4312,33 @@ def analyze_market_structure(
     _scalp_sym = any(k in sym.upper() for k in ['XAU','XAG','BTC','ETH'])
     _scalp_ok  = _scalp_sym and (_btc_range_ok if ('BTC' in sym or 'ETH' in sym) else True)
 
+    # [S32] Slingshot reversal — commodities + crypto during London/NY
+    _sling_sym = any(k in sym.upper() for k in ['XAU','XAG','BTC','ETH','Oil','NGAS'])
+    if _sling_sym and market_regime != "DEAD MARKET":
+        try:
+            _sl_sig, _sl_sc, _sl_r, _sl_c, _sl_kz = compute_slingshot_reversal(df_macro, sym, utc_now)
+            if _sl_sig != "NEUTRAL" and _sl_sc > score:
+                _sl_c['ict_score_shadow']  = score
+                _sl_c['ict_signal_shadow'] = signal
+                signal, score, reason, conditions, kill_zone = _sl_sig, _sl_sc, _sl_r, _sl_c, _sl_kz
+        except Exception as _sl_e:
+            conditions['slingshot_error'] = str(_sl_e)
+
+    # [S32] FX London M1 scalp — pullback entries for FX during London open
+    _FX_SYMS = ['EUR','GBP','USD','JPY','AUD','NZD','CAD','CHF']
+    _is_fx   = sum(1 for x in _FX_SYMS if x in sym.upper()) >= 2
+    if _is_fx and _df_m1 is not None and market_regime != "DEAD MARKET":
+        try:
+            _h4b_fx  = conditions.get('h4_macro', 'NEUTRAL')
+            _fx_sig, _fx_sc, _fx_r, _fx_c, _fx_kz = compute_fx_london_scalp(
+                _df_m1, sym, utc_now, _h4b_fx)
+            if _fx_sig != "NEUTRAL" and _fx_sc > score:
+                _fx_c['ict_score_shadow']  = score
+                _fx_c['ict_signal_shadow'] = signal
+                signal, score, reason, conditions, kill_zone = _fx_sig, _fx_sc, _fx_r, _fx_c, _fx_kz
+        except Exception as _fx_e:
+            conditions['fx_london_error'] = str(_fx_e)
+
     # [S31] Turtle Soup FX Fade — London session, FX pairs only
     _FX_SYMS = ['EUR','GBP','USD','JPY','AUD','NZD','CAD','CHF']
     _is_fx   = sum(1 for x in _FX_SYMS if x in sym.upper()) >= 2
@@ -4054,11 +4372,13 @@ def analyze_market_structure(
                 m1c['ict_score_shadow']  = score
                 m1c['ict_signal_shadow'] = signal
                 m1c['model_winner']      = 'M1_SCALP'
-                # [S30] Apply Conqueror bonus and AMD penalty to M1 score
+                # [S30/S32] Apply all bonuses and penalties to M1 score
                 _s30_conqueror_b = _conqueror_bonus if '_conqueror_bonus' in dir() else 0.0
                 _s30_amd_pen     = _amd_context_penalty if '_amd_context_penalty' in dir() else 0.0
                 _s30_channel_b   = _channel_bonus if '_channel_bonus' in dir() else 0.0
-                m1sc_adj = min(0.99, m1sc + _s30_conqueror_b + _s30_channel_b - _s30_amd_pen)
+                _s32_ema50_b     = _ema50_bonus if '_ema50_bonus' in dir() else 0.0
+                m1sc_adj = min(0.99, m1sc + _s30_conqueror_b + _s30_channel_b
+                               + _s32_ema50_b - _s30_amd_pen)
                 m1c['s30_conqueror_bonus'] = _s30_conqueror_b
                 m1c['s30_channel_bonus']   = _s30_channel_b
                 m1c['s30_amd_penalty']     = _s30_amd_pen

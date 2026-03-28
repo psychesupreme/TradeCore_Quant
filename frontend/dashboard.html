@@ -204,6 +204,8 @@ tr:last-child td{border-bottom:none}
       <div class="sc"><div class="sl">Float P&L</div><div class="sv" id="fpnl">—</div></div>
     </div>
     <div class="sc f"><div class="sl">Regime</div><div id="regimePill" class="rp">CALIBRATING...</div></div>
+    <div class="sc f"><div class="sl">Active Module</div><div id="stratModule" class="rp" style="background:#1a3a2a;color:#4caf50">—</div></div>
+    <div class="sc f"><div class="sl">Session</div><div id="sessionLabel" class="rp" style="background:#1a2a3a;color:#64b5f6">—</div></div>
   </div>
 
   <div class="panel" style="grid-row:1/3">
@@ -482,6 +484,28 @@ async function fetchStatus(){
   $('fpnl').textContent=(fp>=0?'+':'')+usd(fp);
   $('fpnl').className='sv '+(fp>=0?'g':'r');
   const reg=s.market_regime||'NORMAL';
+  // [S32] Active strategy module display
+  const modWinner = s.model_winner || s.strategy_module || '—';
+  const modEl = $('stratModule');
+  if(modEl){
+    modEl.textContent = modWinner;
+    const modColors = {
+      'M1_SCALP':'#4caf50','SILVER_ASIAN_REVERSION':'#26a69a',
+      'TURTLE_SOUP_FX':'#ff7043','SLINGSHOT':'#ab47bc',
+      'FX_LONDON_M1':'#42a5f5','CHANNEL_BREAKOUT':'#ffca28',
+      'ICT':'#90a4ae'
+    };
+    modEl.style.color = modColors[modWinner] || '#90a4ae';
+  }
+  // Session label
+  const sessEl = $('sessionLabel');
+  if(sessEl){
+    const hr = new Date().getUTCHours();
+    const sess = hr>=7&&hr<10 ? 'London Open' : hr>=10&&hr<13 ? 'London Mid' :
+                 hr>=13&&hr<17 ? 'NY Open' : hr>=17&&hr<21 ? 'NY Afternoon' :
+                 hr>=21&&hr<23 ? 'NY Close/Crypto' : 'Asian';
+    sessEl.textContent = sess;
+  }
   const pill=$('regimePill');
   pill.textContent=reg;
   pill.className='rp'+(reg.includes('HIGH')?' hi':reg.includes('DEAD')?' dead':'');
