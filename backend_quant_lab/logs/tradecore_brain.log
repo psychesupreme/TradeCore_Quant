@@ -40955,3 +40955,11 @@
     ~~~~~~~~~~~~~~~~~~~~~~~^^
   File "D:\Dev\Kom\backend_qu
 2026-03-28 21:58:44 [INFO] 📩 Received Command: /status
+2026-03-28 22:11:20 [INFO] 📩 Received Command: /retrain
+2026-03-28 22:11:20 [INFO] 🔁 ML Retrain started — reason: manual /retrain command
+2026-03-28 22:11:21 [INFO] ⚠️ ML Retrain failed (rc=1): Traceback (most recent call last):
+  File "D:\Dev\Kom\backend_quant_lab\ml_pipeline.py", line 365, in <module>
+    extractor.build_dataset()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Dev\Kom\backend_qu
+2026-03-28 22:18:25 [INFO] Stopped.
