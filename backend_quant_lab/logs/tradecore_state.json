@@ -3,14 +3,14 @@
   "scaled_positions": [],
   "last_logged_signal": {
     "EURUSD": [
-      "BUY_MICRO",
-      0.76,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "GBPUSD": [
-      "SELL_MICRO",
-      0.65,
-      "LOW_CONFIDENCE (65%)"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "USDJPY": [
       "NEUTRAL",
@@ -58,7 +58,7 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "SELL",
+      "BUY_MICRO",
       0.99,
       "ATTEMPTED"
     ],
@@ -99,10 +99,7 @@
     ]
   },
   "trade_confidences": {
-    "8598602699": 0.82,
-    "8598665739": 0.99,
-    "8598706328": 0.94,
-    "8598773158": 0.97,
-    "8598870318": 0.99
+    "8598962770": 0.99,
+    "8599000831": 0.99
   }
 }
