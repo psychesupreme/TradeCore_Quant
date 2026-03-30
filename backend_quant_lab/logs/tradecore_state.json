@@ -3,14 +3,14 @@
   "scaled_positions": [],
   "last_logged_signal": {
     "EURUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.76,
+      "ATTEMPTED"
     ],
     "GBPUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "BUY_MICRO",
+      0.82,
+      "ATTEMPTED"
     ],
     "USDJPY": [
       "NEUTRAL",
@@ -58,14 +58,14 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "BUY_MICRO",
-      0.92,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "XAGUSD": [
-      "BUY_MICRO",
-      0.92,
-      "ATTEMPTED"
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "US Oil": [
       "NEUTRAL",
@@ -98,5 +98,8 @@
       "SKIPPED"
     ]
   },
-  "trade_confidences": {}
+  "trade_confidences": {
+    "8598602688": 0.76,
+    "8598602699": 0.82
+  }
 }
