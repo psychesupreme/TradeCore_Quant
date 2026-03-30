@@ -44261,3 +44261,16 @@
 2026-03-30 13:24:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
 2026-03-30 13:24:58 [INFO] 🔁 ML Retrain started — reason: 50 new trades (N=222)
 2026-03-30 13:24:58 [INFO] Stopped.
+2026-03-30 13:25:00 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-30 13:25:00 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 8 Elite Assets.
+2026-03-30 13:25:10 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-30 13:27:31 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 13:27:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 13:27:32 [DEBUG] [XAUUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-30 13:27:32 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 13:27:32 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 13:29:04 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 13:29:04 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 13:29:04 [DEBUG] [XAUUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-03-30 13:29:04 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 13:29:05 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
