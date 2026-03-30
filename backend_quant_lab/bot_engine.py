@@ -119,7 +119,9 @@ class TradingBot:
 
         # [S33] Automated ML retraining tracking
         self._last_retrain_trade_count = 0   # N at last retrain
-        self._last_retrain_ts = None         # datetime of last retrain
+        # [S34-FIX] Initialise to now so the 1-hour gate blocks the first post-startup
+        # attempt. Without this, every bot restart triggers an immediate retrain attempt.
+        self._last_retrain_ts = datetime.utcnow()
         self._retrain_in_progress = False    # guard against concurrent runs
 
     def _get_current_account_id(self):
@@ -1511,9 +1513,6 @@ class TradingBot:
         [S33] Runs the ML pipeline then the model trainer in a background thread.
         Step 1: ml_pipeline.py  — extracts features, saves training_matrix CSV
         Step 2: model_trainer.py — reads CSV, trains XGBoost, saves model file
-
-        Atomic: each script writes to a temp path then renames, so the live
-        scorer never reads a partially-written model.
         """
         if self._retrain_in_progress:
             return
@@ -1533,13 +1532,26 @@ class TradingBot:
                 if r1.returncode != 0:
                     self.log_info(f"⚠️ ML Retrain — pipeline error: {r1.stderr[:300]}")
                     self.async_alert(f"⚠️ **ML Retrain failed** (pipeline step)\n{r1.stderr[:200]}")
+                    # [S34-FIX] Update trade count even on failure so we don't
+                    # hammer every cycle. Next auto-trigger will be 50 trades later.
+                    try:
+                        import sqlite3 as _sl
+                        con = _sl.connect("tradecore.db")
+                        n_count = con.execute(
+                            "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0"
+                        ).fetchone()[0]
+                        con.close()
+                        self._last_retrain_trade_count = n_count
+                    except Exception:
+                        pass
+                    self._last_retrain_ts = datetime.utcnow()
                     return
 
                 n_line = next((l for l in r1.stdout.splitlines() if "Extracted:" in l), "")
                 n_samples = n_line.replace("Extracted:", "").replace("trades", "").strip() or "?"
                 self.log_info(f"🔁 ML pipeline done — {n_samples} samples extracted")
 
-                # Step 2: model training (model_trainer.py must exist alongside bot)
+                # Step 2: model training
                 trainer_path = os.path.join(
                     os.path.dirname(os.path.abspath(__file__)) or ".", "model_trainer.py"
                 )
@@ -1559,6 +1571,20 @@ class TradingBot:
                 if r2.returncode != 0:
                     self.log_info(f"⚠️ ML Retrain — trainer error: {r2.stderr[:300]}")
                     self.async_alert(f"⚠️ **ML Retrain failed** (trainer step)\n{r2.stderr[:200]}")
+                    # [S34-FIX] Update timestamps even on trainer failure so the 1-hour
+                    # gate blocks the next auto-trigger. Pipeline succeeded so trade count
+                    # is valid — only the model file wasn't updated.
+                    try:
+                        import sqlite3 as _sl
+                        con = _sl.connect("tradecore.db")
+                        n_count = con.execute(
+                            "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0"
+                        ).fetchone()[0]
+                        con.close()
+                        self._last_retrain_trade_count = n_count
+                    except Exception:
+                        pass
+                    self._last_retrain_ts = datetime.utcnow()
                     return
 
                 self.log_info(
@@ -1569,7 +1595,6 @@ class TradingBot:
                     f"Samples: {n_samples} | Trigger: {reason}"
                 )
 
-                # Update tracking counters
                 try:
                     import sqlite3 as _sl
                     con = _sl.connect("tradecore.db")
@@ -1598,9 +1623,21 @@ class TradingBot:
           1. N trades since last retrain >= 50
           2. Weekly schedule: Sunday 00:00-01:00 UTC
           3. Not retrained in > 7 days
+
+        [S34-FIX] Added 1-hour minimum between attempts regardless of outcome.
+        This prevents the retrain from hammering every cycle when the subprocess
+        fails fast (e.g. wrong conda env), which was resetting _retrain_in_progress
+        immediately and letting the trigger re-fire on every subsequent cycle.
         """
         if self._retrain_in_progress:
             return
+
+        # [S34-FIX] Hard minimum: never attempt more than once per hour
+        now = datetime.utcnow()
+        if (self._last_retrain_ts is not None and
+                (now - self._last_retrain_ts).total_seconds() < 3600):
+            return
+
         try:
             import sqlite3 as _sl
             con = _sl.connect("tradecore.db")
@@ -1611,7 +1648,6 @@ class TradingBot:
         except Exception:
             return
 
-        now = datetime.utcnow()
         n_since = n_total - self._last_retrain_trade_count
 
         # Condition 1: 50 new trades since last retrain
@@ -2646,8 +2682,6 @@ class TradingBot:
                 # [S33] HIGH_VOL lot hard cap.
                 # GARCH regime = amplified losses (data: -$724 on 131 trades).
                 # Cap at 0.02 lots for XAU, 0.01 for everything else.
-                # This is a safety ceiling — the 1% risk floor already limits size,
-                # but during volatility spikes ATR grows and lot can still exceed safe levels.
                 if 'HIGH VOLATILITY' in regime:
                     _hv_cap = 0.02 if 'XAU' in symbol else 0.01
                     if lot > _hv_cap:
@@ -2656,6 +2690,22 @@ class TradingBot:
                             f"(GARCH regime protection)"
                         )
                         lot = _hv_cap
+
+                # [S34] FX MICRO lot cap.
+                # FX lot sizes calculated from tight M1 SLs (5-15 pips) give inflated
+                # raw lots because capital_per_lot = sl_pips * 10 is small.
+                # Hard cap at 0.10 lots for all FX MICRO signals regardless of balance.
+                # At 0.10 lots, a 10-pip SL = $10 risk = 0.15% of $6,700 account.
+                _is_fx_symbol = (
+                    not any(k in symbol for k in ['XAU', 'XAG', 'Oil', 'NGAS',
+                                                   'SP 500', 'Tech 100', 'Germany'])
+                )
+                if is_micro and _is_fx_symbol and lot > 0.10:
+                    self.log_info(
+                        f"🛡️ FX MICRO Lot Cap: {symbol} {lot:.2f} → 0.10 "
+                        f"(FX pip-risk protection)"
+                    )
+                    lot = 0.10
 
                 if lot > max_lot:
                     capped = _math.floor(max_lot * step_inv) / step_inv

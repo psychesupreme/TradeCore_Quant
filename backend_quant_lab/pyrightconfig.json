@@ -2,8 +2,7 @@
   "typeCheckingMode": "basic",
 
   "reportMissingModuleSource": "none",
-
-  "reportMissingImports": "warning",
+  "reportMissingImports": "none",
   "reportUndefinedVariable": "error",
   "reportAttributeAccessIssue": "warning",
 

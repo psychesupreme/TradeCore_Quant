@@ -90,6 +90,14 @@ class MLDataExtractor:
                 conn.close()
                 return df
 
+            # [S34] Filter out crypto trades — BTC/ETH removed from asset universe.
+            # Including them skews the model with patterns from a discontinued strategy.
+            before_crypto = len(df)
+            df = df[~df['symbol'].str.contains('BTC|ETH', na=False)].copy()
+            removed_crypto = before_crypto - len(df)
+            if removed_crypto > 0:
+                print(f"  [INFO] Filtered {removed_crypto} retired crypto trade(s) from training set.")
+
             # [S23-A-2] Remove timestamp anomalies
             df['open_time']  = pd.to_datetime(df['open_time'],  format='mixed')
             df['close_time'] = pd.to_datetime(df['close_time'], format='mixed')
@@ -97,7 +105,7 @@ class MLDataExtractor:
             df = df[df['close_time'] > df['open_time']].copy()
             removed = before - len(df)
             if removed > 0:
-                print(f"  ⚠️  Removed {removed} trade(s) with invalid timestamps.")
+                print(f"  [WARN] Removed {removed} trade(s) with invalid timestamps.")
 
             # [S23-A-3] Signal feature enrichment via left join
             sig_q = """
@@ -166,10 +174,10 @@ class MLDataExtractor:
         Transforms raw trade data into an ML-ready numerical matrix.
         """
         if df.empty:
-            print("⚠️  No data to vectorize.")
+            print("[WARN] No data to vectorize.")
             return df
 
-        print(f"⚙️  Engineering features for {len(df)} trades...")
+        print(f"[INFO] Engineering features for {len(df)} trades...")
         df = df.copy()
 
         # ── TARGET ────────────────────────────────────────────
@@ -336,12 +344,12 @@ class MLDataExtractor:
 
     def build_dataset(self) -> pd.DataFrame | None:
         print("\n" + "=" * 54)
-        print("  🧠 KOM v1.0 — ML PIPELINE EXTRACTION (S23-A)")
+        print("  KOM v1.0 -- ML PIPELINE EXTRACTION (S23-A)")
         print("=" * 54)
 
         raw_df = self.extract_trade_data()
         if raw_df.empty:
-            print("🛑 Extraction halted: database empty or locked.")
+            print("[ERROR] Extraction halted: database empty or locked.")
             return None
 
         print(f"  Extracted: {len(raw_df)} trades")
@@ -353,15 +361,15 @@ class MLDataExtractor:
 
         n = len(ml_df)
         if n < 30:
-            print(f"\n⚠️  N={n} — below threshold (30). Export only, no training.")
+            print(f"\n[WARN] N={n} -- below threshold (30). Export only, no training.")
         else:
-            print(f"\n✅ N={n} — threshold met. Dataset ready for XGBoost.")
+            print(f"\n[OK] N={n} -- threshold met. Dataset ready for XGBoost.")
 
         timestamp   = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         export_path = os.path.join(self.export_dir, f"training_matrix_{timestamp}.csv")
         ml_df.to_csv(export_path, index=False)
-        print(f"💾 Matrix saved: {export_path}")
-        print(f"   Features: {[c for c in ml_df.columns if c not in ['ticket','symbol','profit','target_win']]}")
+        print(f"[SAVE] Matrix saved: {export_path}")
+        print(f"       Features: {[c for c in ml_df.columns if c not in ['ticket','symbol','profit','target_win']]}")
         print("=" * 54 + "\n")
 
         return ml_df
