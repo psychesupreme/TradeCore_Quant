@@ -44605,3 +44605,400 @@
 2026-03-30 17:15:19 [INFO] 🧹 Markov Cleanup: 1 contra-regime limit(s) cancelled.
 2026-03-30 17:26:03 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=97%. No new positions.
 2026-03-30 17:32:53 [INFO] Stopped.
+2026-03-30 17:35:08 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-03-30 17:35:08 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 8 Elite Assets.
+2026-03-30 17:35:24 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-03-30 17:36:09 [INFO] 📩 Received Command: /status
+2026-03-30 17:36:22 [INFO] 📩 Received Command: /retrain
+2026-03-30 17:36:22 [INFO] 🔁 ML Retrain started — reason: manual /retrain command
+2026-03-30 17:36:23 [INFO] 🔁 ML pipeline done — 171 samples extracted
+2026-03-30 17:36:28 [INFO] ✅ ML Retrain complete — 171 samples | reason: manual /retrain command
+2026-03-30 17:45:19 [DEBUG] [EURUSD] BUY blocked by Bearish H4 (score=0.58)
+2026-03-30 17:45:20 [DEBUG] [GBPUSD] DISTRIBUTION [London_NY] | Score:0.53 | OB:False FVG:True BOS:True OTE:False Vol:1.4x | Trend:BEARISH | S13[VWAP_Z:-3.15 HVN:False Δ:-133] | SMC[IFVG_ALIGNED +0.04]
+2026-03-30 17:45:22 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:45:23 [DEBUG] [XAUUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:45:25 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 99%)
+2026-03-30 17:45:25 [DEBUG] [XAGUSD] SMC Breaker TP: 70.575
+2026-03-30 17:45:25 [INFO] 🎯 M1 Tight: XAGUSD TP=70.262 SL=70.84 ATR=0.144 R:R=3.95:1
+2026-03-30 17:45:25 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD SELL @ 70.623 retrace-entry Lot:0.01
+2026-03-30 17:45:25 [INFO] ⚡ TRAP SET: XAGUSD SELL_LIMIT | Entry: 70.623 | Lot: 0.01
+2026-03-30 17:45:26 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:45:26 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:45:27 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:47:43 [DEBUG] [EURUSD] BUY blocked by Bearish H4 (score=0.58)
+2026-03-30 17:47:43 [DEBUG] [GBPUSD] DISTRIBUTION [London_NY] | Score:0.53 | OB:False FVG:True BOS:True OTE:False Vol:1.4x | Trend:BEARISH | SMC[IFVG_ALIGNED +0.04]
+2026-03-30 17:47:44 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:47:44 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 17:47:44 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:47:44 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 17:47:45 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:20:11 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:20:16 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM]: No OB/FVG retest in BEARISH direction.
+2026-03-30 18:20:17 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:20:22 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:20:24 [DEBUG] [XAGUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:20:26 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:20:27 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:20:29 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:22:09 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:22:09 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM]: No OB/FVG retest in BEARISH direction.
+2026-03-30 18:22:09 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:22:09 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:22:09 [DEBUG] [XAGUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:22:09 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:22:09 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:22:09 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:24:05 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:24:05 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 86%)
+2026-03-30 18:24:05 [DEBUG] [GBPUSD] SMC Breaker TP: 1.3179
+2026-03-30 18:24:05 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:24:05 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:24:05 [DEBUG] [XAGUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:24:05 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:24:05 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:24:05 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:25:58 [INFO] 🛡️ FX MICRO Lot Cap: GBPUSD 0.28 → 0.10 (FX pip-risk protection)
+2026-03-30 18:25:59 [INFO] ⚡ TRAP SET: GBPUSD SELL_LIMIT | Entry: 1.3199 | Lot: 0.1
+2026-03-30 18:26:07 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:26:07 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:26:07 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:26:08 [DEBUG] [XAGUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:26:08 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:26:08 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:26:08 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:27:08 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:27:08 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:27:08 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:27:08 [DEBUG] [XAGUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:27:08 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:27:08 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:27:08 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:28:09 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:28:09 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:28:10 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:28:10 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 99%)
+2026-03-30 18:28:10 [DEBUG] [XAGUSD] SMC Breaker TP: 70.863
+2026-03-30 18:28:10 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 18:28:10 [INFO] 🎯 M1 Tight: XAGUSD TP=70.687 SL=71.048 ATR=0.090 R:R=18.45:1
+2026-03-30 18:28:10 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD SELL @ 70.913 retrace-entry Lot:0.01
+2026-03-30 18:28:10 [INFO] ❌ MT5 REJECTED XAGUSD: Invalid price (retcode=10015)
+2026-03-30 18:28:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:28:10 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:28:10 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:29:09 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:29:09 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:29:10 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:29:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:29:10 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:29:10 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:31:12 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:31:12 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:31:12 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:31:12 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:31:12 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:31:12 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:32:10 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:32:10 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:32:10 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:32:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:32:10 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:32:10 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:33:10 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:33:10 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:33:10 [DEBUG] [XAUUSD] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:33:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:33:10 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:33:10 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:34:10 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:34:10 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:34:10 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 99%)
+2026-03-30 18:34:10 [DEBUG] [XAUUSD] SMC Breaker TP: 4541.2
+2026-03-30 18:34:10 [INFO] 🛡️ HIGH_VOL Lot Cap: XAUUSD 0.18 → 0.02 (GARCH regime protection)
+2026-03-30 18:34:10 [INFO] 🎯 M1 Tight: XAUUSD TP=4546.5 SL=4533.7 ATR=3.463 R:R=2.42:1
+2026-03-30 18:34:10 [INFO] ⚡ M1 MARKET ORDER: XAUUSD BUY @ 4524.7 Lot:0.02
+2026-03-30 18:34:10 [INFO] ⚡ TRAP SET: XAUUSD BUY_LIMIT | Entry: 4524.66 | Lot: 0.02
+2026-03-30 18:34:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:34:11 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:34:11 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:34:14 [DEBUG] [XAUUSD] Trade recorded: ticket=8598962770 (Conf: 0.99)
+2026-03-30 18:36:24 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 18:36:24 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:36:24 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:37:34 [INFO] 🟢 Trade Closed: #8598962770 XAUUSD | P&L: $+15.84
+2026-03-30 18:38:24 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:38:24 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:38:24 [DEBUG] [US Tech 100] [MANIPULATION] No sweep or displacement detected.
+2026-03-30 18:40:58 [INFO] 🧹 Markov Cleanup: 1 contra-regime limit(s) cancelled.
+2026-03-30 18:56:45 [INFO] 📩 Received Command: /status
+2026-03-30 19:10:33 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:10:33 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:10:34 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:10:34 [DEBUG] [XAUUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:10:34 [DEBUG] [XAGUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:10:34 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:10:34 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:10:34 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:12:09 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 99%)
+2026-03-30 19:12:09 [DEBUG] [XAUUSD] SMC Breaker TP: 4554.1
+2026-03-30 19:12:09 [INFO] ⚠️ Price Validation: XAUUSD BUY_LIMIT 4545.42 too close to market (4545.11). Min distance: 0.02000. Rejection #1/4.
+2026-03-30 19:12:10 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 19:12:10 [DEBUG] [XAGUSD] SMC Breaker TP: 71.149
+2026-03-30 19:12:10 [INFO] ⚠️ Price Validation: XAGUSD BUY_LIMIT 70.988 too close to market (70.864). Min distance: 0.00200. Rejection #1/4.
+2026-03-30 19:13:09 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 99%)
+2026-03-30 19:13:09 [DEBUG] [XAUUSD] SMC Breaker TP: 4554.1
+2026-03-30 19:13:09 [INFO] ⚠️ M1 R:R fix: TP adjusted to 4555.5 (was 4551.2)
+2026-03-30 19:13:09 [INFO] 🎯 M1 Tight: XAUUSD TP=4555.5 SL=4538.7 ATR=3.366 R:R=1.50:1
+2026-03-30 19:13:09 [INFO] 📍 M1 PULLBACK LIMIT: XAUUSD BUY @ 4543.8 retrace-entry Lot:0.01
+2026-03-30 19:13:09 [INFO] ⚡ TRAP SET: XAUUSD BUY_LIMIT | Entry: 4543.75 | Lot: 0.01
+2026-03-30 19:16:15 [DEBUG] [XAUUSD] Trade recorded: ticket=8599000831 (Conf: 0.99)
+2026-03-30 19:27:10 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:27:10 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:27:10 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:27:10 [DEBUG] [XAGUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:27:10 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:27:10 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:27:10 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 19:27:24 [INFO] 🔴 Trade Closed: #8599000831 XAUUSD | P&L: $-4.94
+2026-03-30 19:37:03 [INFO] 🔴 Markov Gate HALT: P(BEAR)=95% P(HIGH_VOL)=1%. No new positions.
+2026-03-30 20:00:52 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:00:52 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:00:52 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:00:52 [DEBUG] [XAUUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:00:53 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:00:53 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:00:53 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:00:53 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:00:53 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:00:53 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:00:53 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:00:53 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:04:26 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:04:26 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:04:26 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:04:26 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:04:26 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:04:26 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:08:10 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:08:10 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:10:48 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:10:48 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:10:48 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:10:48 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:12:37 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:12:37 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:12:37 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:12:37 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:12:37 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:12:37 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:16:53 [DEBUG] [EURUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:16:53 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:16:53 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:16:53 [DEBUG] [XAUUSD] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:16:53 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:16:53 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:16:53 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:16:53 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:16:53 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:16:53 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:16:54 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:16:54 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:16:54 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-03-30 20:19:52 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:19:52 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:22:41 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:22:41 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:22:41 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:22:41 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:24:36 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:24:36 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:24:36 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:24:36 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:24:36 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:24:36 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:28:26 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:28:26 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:28:26 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:28:26 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:28:26 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:28:26 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:32:14 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:32:14 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:32:14 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:32:14 [DEBUG] [XAUUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:32:14 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:32:14 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:32:15 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:32:15 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:32:15 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:34:53 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:34:53 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:34:53 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:34:53 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:36:54 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:36:54 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:36:54 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:36:54 [DEBUG] [XAUUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:36:54 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:36:54 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:36:54 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 20:36:54 [INFO] 🎯 M1 Tight: XAGUSD TP=71.035 SL=70.817 ATR=0.054 R:R=1.97:1
+2026-03-30 20:36:54 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD BUY @ 70.899 retrace-entry Lot:0.01
+2026-03-30 20:36:54 [INFO] ⚠️ TP/SL direction guard blocked XAGUSD: price=70.638 tp=71.035 sl=70.817 (BUY) — would be retcode 10016
+2026-03-30 20:36:55 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:36:55 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:36:55 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:40:29 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:40:29 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:40:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:40:29 [DEBUG] [XAUUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:40:29 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:40:29 [DEBUG] [XAGUSD] SMC Breaker TP: 70.931
+2026-03-30 20:40:29 [INFO] ⚠️ Price Validation: XAGUSD BUY_LIMIT 70.593 too close to market (70.459). Min distance: 0.00200. Rejection #1/4.
+2026-03-30 20:40:30 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:40:30 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:40:30 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:42:21 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:42:51 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:43:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:43:45 [DEBUG] [XAUUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:45:15 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 95%)
+2026-03-30 20:45:15 [DEBUG] [XAGUSD] SMC Breaker TP: 70.434
+2026-03-30 20:45:15 [INFO] ⚠️ Price Validation: XAGUSD SELL_LIMIT 70.569 too close to market (70.597). Min distance: 0.00200. Rejection #1/4.
+2026-03-30 20:45:34 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:45:59 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:47:26 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:49:33 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:49:39 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 82%)
+2026-03-30 20:49:39 [DEBUG] [GBPUSD] SMC Breaker TP: 1.3179
+2026-03-30 20:49:39 [INFO] 🛡️ FX MICRO Lot Cap: GBPUSD 0.55 → 0.10 (FX pip-risk protection)
+2026-03-30 20:49:39 [INFO] ⚡ TRAP SET: GBPUSD SELL_LIMIT | Entry: 1.31943 | Lot: 0.1
+2026-03-30 20:49:42 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:50:19 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 99%)
+2026-03-30 20:50:19 [DEBUG] [XAUUSD] SMC Breaker TP: 4521.7
+2026-03-30 20:50:19 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:50:19 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:50:19 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:50:20 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:52:59 [INFO] 🛡️ XAU MICRO Lot Cap: XAUUSD 0.18 → 0.05 (Gold pip-risk protection)
+2026-03-30 20:52:59 [INFO] 🎯 M1 Tight: XAUUSD TP=4527.4 SL=4515.7 ATR=3.174 R:R=16.09:1
+2026-03-30 20:52:59 [INFO] 📍 M1 PULLBACK LIMIT: XAUUSD BUY @ 4520.4 retrace-entry Lot:0.05
+2026-03-30 20:52:59 [INFO] ❌ MT5 REJECTED XAUUSD: Invalid price (retcode=10015)
+2026-03-30 20:53:44 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:53:44 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:53:44 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:53:44 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:53:44 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:53:44 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:55:18 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:55:18 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:55:18 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:55:19 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:55:19 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:55:19 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:57:31 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:57:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:57:31 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:57:31 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:57:31 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:57:31 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:59:14 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:59:14 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:59:14 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:59:14 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:59:14 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 20:59:14 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:02:20 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:02:20 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:02:20 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:02:20 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:02:20 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:02:20 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:04:27 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:04:27 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:04:27 [INFO] 🔎 MTF Confluence Locked: XAGUSD BUY_MICRO (Conf: 98%)
+2026-03-30 21:04:27 [DEBUG] [XAGUSD] SMC Breaker TP: 70.57
+2026-03-30 21:04:27 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.02 → 0.01 (GARCH regime protection)
+2026-03-30 21:04:27 [INFO] 🎯 M1 Tight: XAGUSD TP=70.659 SL=70.388 ATR=0.068 R:R=8.68:1
+2026-03-30 21:04:27 [INFO] ⚡ M1 MARKET ORDER: XAGUSD BUY @ 70.353 Lot:0.01
+2026-03-30 21:04:27 [INFO] ❌ MT5 REJECTED XAGUSD: Request rejected due to absence of network connection (retcode=10031)
+2026-03-30 21:04:28 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:04:28 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:04:28 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:07:02 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:07:02 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:07:02 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:07:02 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:07:02 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:08:31 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:08:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:08:31 [INFO] 🔎 MTF Confluence Locked: XAUUSD BUY_MICRO (Conf: 99%)
+2026-03-30 21:08:31 [DEBUG] [XAUUSD] SMC Breaker TP: 4520.9
+2026-03-30 21:08:31 [INFO] 🛡️ HIGH_VOL Lot Cap: XAUUSD 0.18 → 0.02 (GARCH regime protection)
+2026-03-30 21:08:31 [INFO] 🎯 M1 Tight: XAUUSD TP=4524.5 SL=4512.5 ATR=3.254 R:R=12.25:1
+2026-03-30 21:08:31 [INFO] 📍 M1 PULLBACK LIMIT: XAUUSD BUY @ 4517.3 retrace-entry Lot:0.02
+2026-03-30 21:08:31 [INFO] ❌ MT5 REJECTED XAUUSD: Request rejected due to absence of network connection (retcode=10031)
+2026-03-30 21:08:32 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:08:32 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:08:32 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:10:23 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:10:24 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:12:04 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:12:04 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:12:04 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:14:29 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:14:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:16:15 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:16:15 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:16:15 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:19:44 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:19:44 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:19:45 [INFO] 🔎 MTF Confluence Locked: XAGUSD SELL_MICRO (Conf: 99%)
+2026-03-30 21:19:45 [DEBUG] [XAGUSD] SMC Breaker TP: 69.388
+2026-03-30 21:19:45 [INFO] 🛡️ HIGH_VOL Lot Cap: XAGUSD 0.03 → 0.01 (GARCH regime protection)
+2026-03-30 21:19:45 [INFO] 🎯 M1 Tight: XAGUSD TP=70.103 SL=70.404 ATR=0.075 R:R=2.12:1
+2026-03-30 21:19:45 [INFO] 📍 M1 PULLBACK LIMIT: XAGUSD SELL @ 70.291 retrace-entry Lot:0.01
+2026-03-30 21:19:45 [INFO] ❌ MT5 REJECTED XAGUSD: Invalid price (retcode=10015)
+2026-03-30 21:21:29 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:21:29 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:21:29 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:24:17 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:24:17 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:24:25 [INFO] 🔎 MTF Confluence Locked: XAUUSD SELL_MICRO (Conf: 98%)
+2026-03-30 21:24:25 [DEBUG] [XAUUSD] SMC Breaker TP: 4511.9
+2026-03-30 21:24:25 [INFO] 🛡️ HIGH_VOL Lot Cap: XAUUSD 0.03 → 0.02 (GARCH regime protection)
+2026-03-30 21:24:25 [INFO] 🎯 M1 Tight: XAUUSD TP=4510 SL=4518.9 ATR=2.417 R:R=3.13:1
+2026-03-30 21:24:25 [INFO] ⚡ M1 MARKET ORDER: XAUUSD SELL @ 4523.1 Lot:0.02
+2026-03-30 21:24:25 [INFO] ⚡ TRAP SET: XAUUSD SELL_LIMIT | Entry: 4523.1 | Lot: 0.02
+2026-03-30 21:24:29 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:24:30 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:24:39 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:24:44 [DEBUG] [XAUUSD] Trade recorded: ticket=8599119285 (Conf: 0.98)
+2026-03-30 21:26:15 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:26:15 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:26:15 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:29:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:29:00 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:29:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:30:30 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:30:30 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:30:30 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:32:30 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:32:30 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:32:30 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:34:53 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:34:53 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:34:53 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:36:24 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:36:24 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:36:24 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 21:37:04 [INFO] 🔴 Trade Closed: #8599119285 XAUUSD | P&L: $-8.02
+2026-03-30 21:39:14 [INFO] 🧹 Markov Cleanup: 1 contra-regime limit(s) cancelled.
+2026-03-30 22:10:37 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 22:11:56 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BEARISH | S13[VWAP_Z:-9.55 HVN:False Δ:-874] | SMC[IFVG_ALIGNED,LIQ_VOID@1.319,MACRO_OB +0.11]
+2026-03-30 22:11:56 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 22:11:56 [DEBUG] [XAUUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 22:11:57 [DEBUG] [XAGUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 22:11:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 22:11:57 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 22:11:57 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-03-30 22:11:57 [INFO] Stopped.
