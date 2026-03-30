@@ -1,0 +1,15 @@
+{
+  "typeCheckingMode": "basic",
+
+  "reportMissingModuleSource": "none",
+
+  "reportMissingImports": "warning",
+  "reportUndefinedVariable": "error",
+  "reportAttributeAccessIssue": "warning",
+
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/migrations"
+  ]
+}

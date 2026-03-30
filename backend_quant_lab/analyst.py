@@ -2694,46 +2694,30 @@ def compute_ict_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
 # ───────────────────────────────────────────────────────────────────────────────
 
 
-_SILVER_BULLET_ASSETS = {'XAUUSD', 'XAGUSD', 'BTCUSD', 'ETHUSD'}
+_SILVER_BULLET_ASSETS = {'XAUUSD', 'XAGUSD'}
 
 # Silver Bullet window definitions per asset — (start_hour, start_min, end_hour, end_min)
 # All times in TRUE UTC. Names chosen to map to institutional session triggers.
 _SILVER_BULLET_WINDOWS: dict = {
-    # Gold & Silver — three windows, aligned to Midnight NY Open, London-NY transition, NY PM
+    # Gold & Silver — three windows, aligned to London Open, London-NY transition, NY PM
     'XAUUSD': [
-        (7,  0,  8,  0, 'Gold_London_Open_SB'),    # 07:00-08:00 UTC = 02:00-03:00 EST
-        (15, 0, 16,  0, 'Gold_NY_Afternoon_SB'),    # 15:00-16:00 UTC = 10:00-11:00 EST
-        (19, 0, 20,  0, 'Gold_NY_PM_SB'),           # 19:00-20:00 UTC = 14:00-15:00 EST
+        (7,  0,  8,  0, 'Gold_London_Open_SB'),
+        (15, 0, 16,  0, 'Gold_NY_Afternoon_SB'),
+        (19, 0, 20,  0, 'Gold_NY_PM_SB'),
     ],
     'XAGUSD': [
         (7,  0,  8,  0, 'Silver_London_Open_SB'),
         (15, 0, 16,  0, 'Silver_NY_Afternoon_SB'),
         (19, 0, 20,  0, 'Silver_NY_PM_SB'),
     ],
-    # Crypto — crypto trades 24h; highest-probability windows at London and NY opens
-    'BTCUSD': [
-        (0,  0,  2,  0, 'BTC_Asian_Open_SB'),        # 00:00-02:00 UTC — Asian open sweep
-        (7, 30,  8, 30, 'BTC_London_Open_SB'),        # 07:30-08:30 UTC — London algo trigger
-        (13, 0, 14,  0, 'BTC_NY_Open_SB'),             # 13:00-14:00 UTC — NYSE open
-        (15, 0, 16,  0, 'BTC_NY_Midday_SB'),           # 15:00-16:00 UTC — mid-session
-        (20, 0, 22,  0, 'BTC_NY_Close_SB'),            # 20:00-22:00 UTC — NY close / post-market
-    ],
-    'ETHUSD': [
-        (0,  0,  2,  0, 'ETH_Asian_Open_SB'),
-        (7, 30,  8, 30, 'ETH_London_Open_SB'),
-        (13, 0, 14,  0, 'ETH_NY_Open_SB'),
-        (15, 0, 16,  0, 'ETH_NY_Midday_SB'),
-        (20, 0, 22,  0, 'ETH_NY_Close_SB'),
-    ],
+    # [S34] BTC/ETH removed from Silver Bullet asset set
 }
 
 # Asian accumulation range boundaries per asset (UTC)
-# Crypto uses a wider window — 8h of consolidation before London opens
 _ASIAN_RANGE_HOURS: dict = {
     'XAUUSD': (20, 3),    # 20:00 prev UTC → 03:00 UTC (NY close → Asian)
     'XAGUSD': (20, 3),
-    'BTCUSD': (0,  8),    # 00:00 → 08:00 UTC (pure Asian + early London pre-market)
-    'ETHUSD': (0,  8),
+    # [S34] BTC/ETH removed
 }
 
 # Per-asset minimum FVG size as multiple of ATR
@@ -2748,7 +2732,7 @@ def get_tradable_asset_classes(utc_now: datetime) -> dict:
       Gold:    Sun 23:00 – Fri 21:00, with 23:00–23:15 daily rollover gap
       Indices: Mon–Fri 13:30–21:00 (NYSE)
       Energy:  Mon–Fri 01:00–21:00
-      Crypto:  24/7
+    [S34] Crypto removed from asset universe.
     """
     dow = utc_now.weekday()  # 0=Mon … 6=Sun
     t   = utc_now.hour * 60 + utc_now.minute
@@ -2765,12 +2749,11 @@ def get_tradable_asset_classes(utc_now: datetime) -> dict:
     energy_open  = fx_open and dow < 5 and 1*60 <= t < 21*60
 
     return {
-        'fx':         fx_open,
-        'gold':       gold_open,
-        'indices':    indices_open,
-        'energy':     energy_open,
-        'crypto':     True,
-        'is_weekend': is_weekend,
+        'fx':          fx_open,
+        'gold':        gold_open,
+        'indices':     indices_open,
+        'energy':      energy_open,
+        'is_weekend':  is_weekend,
         'is_ny_close': fx_open and 21*60 <= t < 22*60 + 30,
     }
 
@@ -2778,44 +2761,35 @@ def get_tradable_asset_classes(utc_now: datetime) -> dict:
 def get_after_hours_active_symbols(vip_assets: list, utc_now: datetime) -> list:
     """
     [S27] Filters the vip_assets list to only symbols that are tradable now.
-    On weekends: crypto only.
-    NY close (21:00–22:30 UTC): crypto elevated to top of scan order.
-    Gold rollover (23:00–23:15): XAUUSD/XAGUSD skipped that minute.
+    [S34] Crypto removed — USDCHF/NZDUSD added which trade during FX hours.
+    On weekends all FX pairs (including USDCHF/NZDUSD) are closed — return empty.
+    Gold rollover (23:00–23:15): XAUUSD/XAGUSD skipped.
     """
     h = get_tradable_asset_classes(utc_now)
 
     if h['is_weekend']:
-        crypto = [s for s in vip_assets
-                  if 'BTC' in s.upper() or 'ETH' in s.upper()]
-        return crypto or vip_assets  # safety fallback
+        # No crypto fallback anymore — nothing tradable on weekends
+        return []
 
     active = []
     for sym in vip_assets:
         s = sym.upper()
-        is_crypto  = 'BTC' in s or 'ETH' in s
         is_gold    = 'XAU' in s or 'XAG' in s
-        is_index   = any(x in s for x in ['SP 500','TECH 100','GERMANY'])
+        is_index   = any(x in s for x in ['SP 500', 'TECH 100', 'GERMANY'])
         is_energy  = 'OIL' in s or 'NGAS' in s
-        is_fx      = not is_crypto and not is_gold and not is_index and not is_energy
+        is_fx      = not is_gold and not is_index and not is_energy
 
-        if   is_crypto                       : active.append(sym)
-        elif is_gold   and h['gold']         : active.append(sym)
-        elif is_fx     and h['fx']           : active.append(sym)
-        elif is_index  and h['indices']      : active.append(sym)
-        elif is_energy and h['energy']       : active.append(sym)
+        if   is_gold   and h['gold']    : active.append(sym)
+        elif is_fx     and h['fx']      : active.append(sym)
+        elif is_index  and h['indices'] : active.append(sym)
+        elif is_energy and h['energy']  : active.append(sym)
 
-    if h['is_ny_close']:
-        crypto_syms = [s for s in active if 'BTC' in s.upper() or 'ETH' in s.upper()]
-        others      = [s for s in active if s not in crypto_syms]
-        active      = crypto_syms + others
-
-    return active or [s for s in vip_assets if 'BTC' in s.upper()]
+    return active or []
 
 _MIN_FVG_ATR: dict = {
     'XAUUSD': 0.50,
     'XAGUSD': 0.40,
-    'BTCUSD': 0.30,
-    'ETHUSD': 0.30,
+    # [S34] BTC/ETH removed from asset universe
 }
 
 
@@ -4541,29 +4515,17 @@ def analyze_market_structure(
             conditions['scalp_error'] = str(_sc_err)
     # ────────────────────────────────────────────────────────────────────
 
-    # ── [S30] BTC Range Filter — only scalp when H4 is trending ────
-    # N=51 WR=37% Net=-$116.50 on BTC. Root cause: firing in 200pt choppy ranges.
-    # Fix: BTC only enters when 24h range > 1500pts AND H4 has 3+ confirmed swings.
-    _btc_range_ok = True
-    if 'BTC' in sym or 'ETH' in sym:
-        try:
-            _btc_h4 = conditions.get('h4_swing_count', 0)
-            _btc_strong = conditions.get('h4_macro_strong', False)
-            if df_macro is not None and len(df_macro) >= 6:
-                _btc_24h_high = float(df_macro['high'].astype(float).iloc[-6:].max())
-                _btc_24h_low  = float(df_macro['low'].astype(float).iloc[-6:].min())
-                _btc_range    = _btc_24h_high - _btc_24h_low
-                _btc_range_ok = (_btc_range > 1500) and _btc_strong
-        except Exception:
-            _btc_range_ok = True  # fail-open: when uncertain, allow trade
+    # [S34] BTC range filter removed — BTCUSD/ETHUSD no longer in asset universe
+    _btc_range_ok = False  # unused placeholder
 
     # ── [S27-B] M1 MICRO-SCALP + [S30] Silver Asian Reversion ──────
     _df_m1 = getattr(request, 'df_m1', None)
-    _scalp_sym = any(k in sym.upper() for k in ['XAU','XAG','BTC','ETH'])
-    _scalp_ok  = _scalp_sym and (_btc_range_ok if ('BTC' in sym or 'ETH' in sym) else True)
+    # [S34] Scalp engine: XAUUSD + XAGUSD only (crypto removed)
+    _scalp_sym = any(k in sym.upper() for k in ['XAU', 'XAG'])
+    _scalp_ok  = _scalp_sym
 
-    # [S32] Slingshot reversal — commodities + crypto during London/NY
-    _sling_sym = any(k in sym.upper() for k in ['XAU','XAG','BTC','ETH','Oil','NGAS'])
+    # [S32] Slingshot reversal — commodities during London/NY (crypto removed S34)
+    _sling_sym = any(k in sym.upper() for k in ['XAU', 'XAG', 'Oil', 'NGAS'])
     if _sling_sym and market_regime != "DEAD MARKET":
         try:
             _sl_sig, _sl_sc, _sl_r, _sl_c, _sl_kz = compute_slingshot_reversal(df_macro, sym, utc_now)

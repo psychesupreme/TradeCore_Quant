@@ -71,7 +71,11 @@ class TradingBot:
             "EURUSD", "GBPUSD", "USDJPY",
             "XAUUSD", "XAGUSD", "US Oil",
             "US SP 500", "US Tech 100",
-            "BTCUSD", "ETHUSD",
+            # [S34] BTCUSD/ETHUSD removed — crypto shuts down on weekends/nights
+            # and showed net -$134 on 55 trades with no session edge.
+            # Replaced with deep-liquidity FX pairs that fit the M1 scalp engine:
+            "USDCHF",   # Safe-haven pair, London/NY sessions, +$77 net in live data
+            "NZDUSD",   # Asian session exposure, near-breakeven, mean-reversion candidate
         ]
         
         self.active_symbols = [] 
@@ -1051,7 +1055,7 @@ class TradingBot:
         try:
             import MetaTrader5 as mt5
             baseline_df = None
-            for base_sym in ["EURUSD", "GBPUSD", "US SP 500", "BTCUSD"]:
+            for base_sym in ["EURUSD", "GBPUSD", "US SP 500", "USDCHF"]:
                 real_base = self.gateway.find_symbol(base_sym) or base_sym
                 try:
                     df = self.gateway.get_market_data(real_base)
@@ -1504,47 +1508,83 @@ class TradingBot:
 
     def _trigger_ml_retrain(self, reason: str = "auto"):
         """
-        [S33] Runs the ML pipeline in a background subprocess.
-        Atomic: writes to a temp model file then renames to avoid mid-retrain reads.
-        Safe to call from any thread; guarded against concurrent runs.
+        [S33] Runs the ML pipeline then the model trainer in a background thread.
+        Step 1: ml_pipeline.py  — extracts features, saves training_matrix CSV
+        Step 2: model_trainer.py — reads CSV, trains XGBoost, saves model file
+
+        Atomic: each script writes to a temp path then renames, so the live
+        scorer never reads a partially-written model.
         """
         if self._retrain_in_progress:
             return
         self._retrain_in_progress = True
 
         def _retrain_worker():
+            import subprocess, sys, os
             try:
-                import subprocess, sys, os
                 self.log_info(f"🔁 ML Retrain started — reason: {reason}")
-                result = subprocess.run(
+
+                # Step 1: feature extraction
+                r1 = subprocess.run(
                     [sys.executable, "ml_pipeline.py"],
-                    capture_output=True, text=True, timeout=300
+                    capture_output=True, text=True, timeout=180,
+                    cwd=os.path.dirname(os.path.abspath(__file__)) or "."
                 )
-                if result.returncode == 0:
-                    # Count samples from output for logging
-                    n_line = next((l for l in result.stdout.splitlines() if "Extracted:" in l), "")
-                    n_samples = n_line.replace("Extracted:", "").replace("trades", "").strip() if n_line else "?"
-                    self.log_info(f"✅ ML Retrain complete — {n_samples} samples | reason: {reason}")
+                if r1.returncode != 0:
+                    self.log_info(f"⚠️ ML Retrain — pipeline error: {r1.stderr[:300]}")
+                    self.async_alert(f"⚠️ **ML Retrain failed** (pipeline step)\n{r1.stderr[:200]}")
+                    return
+
+                n_line = next((l for l in r1.stdout.splitlines() if "Extracted:" in l), "")
+                n_samples = n_line.replace("Extracted:", "").replace("trades", "").strip() or "?"
+                self.log_info(f"🔁 ML pipeline done — {n_samples} samples extracted")
+
+                # Step 2: model training (model_trainer.py must exist alongside bot)
+                trainer_path = os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)) or ".", "model_trainer.py"
+                )
+                if not os.path.exists(trainer_path):
+                    self.log_info("⚠️ ML Retrain — model_trainer.py not found, skipping training step")
                     self.async_alert(
-                        f"🔁 **ML Retrain Complete**\n"
-                        f"Samples: {n_samples} | Trigger: {reason}"
+                        f"⚠️ **ML Retrain — pipeline complete but model_trainer.py missing**\n"
+                        f"Samples extracted: {n_samples}. Training skipped."
                     )
-                    # Update retrain tracking
-                    try:
-                        import sqlite3 as _sl
-                        con = _sl.connect("tradecore.db")
-                        n_count = con.execute(
-                            "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0"
-                        ).fetchone()[0]
-                        con.close()
-                        self._last_retrain_trade_count = n_count
-                    except Exception:
-                        pass
-                    self._last_retrain_ts = datetime.utcnow()
-                else:
-                    self.log_info(f"⚠️ ML Retrain failed (rc={result.returncode}): {result.stderr[:200]}")
+                    return
+
+                r2 = subprocess.run(
+                    [sys.executable, trainer_path],
+                    capture_output=True, text=True, timeout=300,
+                    cwd=os.path.dirname(os.path.abspath(__file__)) or "."
+                )
+                if r2.returncode != 0:
+                    self.log_info(f"⚠️ ML Retrain — trainer error: {r2.stderr[:300]}")
+                    self.async_alert(f"⚠️ **ML Retrain failed** (trainer step)\n{r2.stderr[:200]}")
+                    return
+
+                self.log_info(
+                    f"✅ ML Retrain complete — {n_samples} samples | reason: {reason}"
+                )
+                self.async_alert(
+                    f"🔁 **ML Retrain Complete** ✅\n"
+                    f"Samples: {n_samples} | Trigger: {reason}"
+                )
+
+                # Update tracking counters
+                try:
+                    import sqlite3 as _sl
+                    con = _sl.connect("tradecore.db")
+                    n_count = con.execute(
+                        "SELECT COUNT(*) FROM trades WHERE profit IS NOT NULL AND profit != 0"
+                    ).fetchone()[0]
+                    con.close()
+                    self._last_retrain_trade_count = n_count
+                except Exception:
+                    pass
+                self._last_retrain_ts = datetime.utcnow()
+
             except subprocess.TimeoutExpired:
-                self.log_info("⚠️ ML Retrain timed out after 300s")
+                self.log_info("⚠️ ML Retrain timed out")
+                self.async_alert("⚠️ **ML Retrain timed out** — check logs")
             except Exception as _re:
                 self.log_info(f"⚠️ ML Retrain error: {_re}")
             finally:
@@ -1964,7 +2004,7 @@ class TradingBot:
         # Always initialised to None so the req.__dict__ assignment is safe for all symbols
         df_m1 = None
         _FX_SCALP_KEYS = ('EUR','GBP','JPY','AUD','NZD','CAD','CHF')
-        _is_scalp_sym = any(k in symbol.upper() for k in ('XAU','XAG','BTC','ETH'))
+        _is_scalp_sym = any(k in symbol.upper() for k in ('XAU', 'XAG'))  # [S34] crypto removed
         _is_fx_scalp  = sum(1 for k in _FX_SCALP_KEYS if k in symbol.upper()) >= 2
         if _is_scalp_sym or _is_fx_scalp:
             try:
@@ -2370,12 +2410,9 @@ class TradingBot:
                         min_dist = stops_pt + (sym_info.point * 2)
                         
                         _idx_syms = {"US SP 500", "US Tech 100", "Germany 40"}
-                        _crypto_syms = {"BTCUSD", "ETHUSD"}
                         if symbol in _idx_syms:
                             _rnd = max(1, round(price / 5))  
                             rejection_key = f"{symbol}_{_rnd}"
-                        elif symbol in _crypto_syms:
-                            rejection_key = f"{symbol}_{round(price, 0)}"
                         elif symbol in ("XAUUSD",):
                             rejection_key = f"{symbol}_{round(price, 1)}"
                         else:

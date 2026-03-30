@@ -215,65 +215,71 @@ class MLDataExtractor:
 
         df['dollar_risk'] = df.apply(pip_value, axis=1)
 
-        # ── ICT SIGNAL FEATURES ───────────────────────────────
-        df['ict_score']   = pd.to_numeric(df['ict_score'],   errors='coerce')
+        # ── SIGNAL CONFIDENCE ─────────────────────────────────
+        # [S34] signal_conf is the execution confidence from the hybrid system.
+        # ict_score removed — it encoded ICT_STANDARD internals which are
+        # no longer the primary signal source.
         df['signal_conf'] = pd.to_numeric(df['signal_conf'], errors='coerce')
-        ict_median = df['ict_score'].median()
-        df['ict_score']   = df['ict_score'].fillna(ict_median)
         df['signal_conf'] = df['signal_conf'].fillna(df['signal_conf'].median())
 
         # ── [S28] SMC STRUCTURAL FEATURES ────────────────────────
         # Extracted from ict_conditions JSON column when available.
         # These encode multi-timeframe FVG/OB/MSB confluence quality.
-        def _extract_smc(row):
+        # [S34] Hybrid-system-only feature extraction.
+        # ICT/SMC internal scores removed (smc_*, amd_penalty, ict_score):
+        # those features encoded the failing ICT_STANDARD model's internals.
+        # Retained: M1 scalp system, session context, Conqueror 3-MA,
+        # channel breakout, Silver AR, EURUSD modules, model-winner one-hots.
+        def _extract_hybrid(row):
             cond = row.get('ict_conditions', '{}') or '{}'
             try:
                 d = __import__('json').loads(cond) if isinstance(cond, str) else {}
             except Exception:
                 d = {}
+            mw = str(d.get('model_winner', ''))
             return pd.Series({
-                # [S30] Hybrid strategy context features
+                # ── M1 scalp system ─────────────────────────────────
+                'm1_scalp':          int(bool(d.get('m1_scalp', False))),
+                'm1_range_aligned':  int(bool(d.get('range_aligned', False))),
+                'm1_has_pullback':   int(bool(d.get('m1_has_pullback', False))),
+                'h4_aligned':        int(bool(d.get('h4_aligned', True))),
+                # ── Hybrid confluences (S30/S32) ─────────────────────
                 'conqueror_bull':    int(bool(d.get('conqueror_bull', False))),
                 'conqueror_bear':    int(bool(d.get('conqueror_bear', False))),
+                'conqueror_bonus':   float(d.get('conqueror_bonus', 0.0)),
                 'channel_breakout':  int(bool(d.get('channel_breakout_zone', False))),
-                'silver_ar':         int(str(d.get('model_winner','')).startswith('SILVER_ASIAN')),
-                'amd_penalty':       float(d.get('s30_amd_penalty', 0.0)),
-                # [S28] SMC features
-                'smc_stack_score':  float(d.get('smc_stack_score', 0.0)),
-                'smc_structure_q':  float(d.get('smc_structure_q', 0.0)),
-                'smc_has_ifvg':     int(bool(d.get('smc_ifvg', 0))),
-                'smc_has_breaker':  int(bool(d.get('smc_breakers', 0))),
-                'smc_has_void':     int(bool(d.get('smc_liq_voids', 0))),
-                'smc_has_mss':      int(bool(d.get('smc_has_mss', False))),
-                'smc_bonus':        float(d.get('smc_bonus', 0.0)),
-                'm1_scalp':         int(bool(d.get('m1_scalp', False))),
-                'm1_range_aligned': int(bool(d.get('range_aligned', False))),
-                'h4_aligned':       int(bool(d.get('h4_aligned', True))),
-                # [S33] EURUSD dedicated strategy features
-                'eu_london_breakout': int(str(d.get('model_winner','')) == 'EURUSD_LONDON_BREAKOUT'),
-                'eu_ny_reversion':    int(str(d.get('model_winner','')) == 'EURUSD_NY_REVERSION'),
-                'eu_tight_range':     int(bool(d.get('eu_tight_range', False))),
-                'eu_z_score':         float(d.get('eu_z_score', 0.0)),
+                'channel_bonus':     float(d.get('channel_bonus', 0.0)),
+                'ema50_bonus':       float(d.get('ema50_bonus', 0.0)),
+                # ── Module one-hots (which strategy fired) ───────────
+                'model_m1_scalp':    int(mw == 'M1_SCALP'),
+                'model_silver_ar':   int(mw.startswith('SILVER_ASIAN')),
+                'model_turtle_soup': int(mw.startswith('TURTLE_SOUP')),
+                'model_fx_london':   int(mw.startswith('FX_LONDON')),
+                'model_slingshot':   int(mw.startswith('SLINGSHOT')),
+                'model_ict':         int(mw == '' or mw == 'ICT_STANDARD'),
+                # ── EURUSD dedicated strategy (S33) ──────────────────
+                'eu_london_breakout':  int(mw == 'EURUSD_LONDON_BREAKOUT'),
+                'eu_ny_reversion':     int(mw == 'EURUSD_NY_REVERSION'),
+                'eu_tight_range':      int(bool(d.get('eu_tight_range', False))),
+                'eu_z_score':          float(d.get('eu_z_score', 0.0)),
                 'eu_asian_range_pips': float(d.get('eu_asian_range_pips', 0.0)),
-                # [S33] Model winner one-hot (key strategies)
-                'model_turtle_soup':  int(str(d.get('model_winner','')).startswith('TURTLE_SOUP')),
-                'model_fx_london':    int(str(d.get('model_winner','')).startswith('FX_LONDON')),
-                'model_slingshot':    int(str(d.get('model_winner','')).startswith('SLINGSHOT')),
             })
 
         # Only extract if ict_conditions column exists
         if 'ict_conditions' in df.columns:
-            smc_feats = df.apply(_extract_smc, axis=1)
-            df = pd.concat([df, smc_feats], axis=1)
+            hybrid_feats = df.apply(_extract_hybrid, axis=1)
+            df = pd.concat([df, hybrid_feats], axis=1)
         else:
             # Add zero columns so feature alignment is stable
-            for col in ['smc_stack_score','smc_structure_q','smc_has_ifvg',
-                        'smc_has_breaker','smc_has_void','smc_has_mss',
-                        'smc_bonus','m1_scalp','m1_range_aligned','h4_aligned',
-                        # [S33] EURUSD + model winner features
-                        'eu_london_breakout','eu_ny_reversion','eu_tight_range',
-                        'eu_z_score','eu_asian_range_pips',
-                        'model_turtle_soup','model_fx_london','model_slingshot']:
+            for col in [
+                'm1_scalp','m1_range_aligned','m1_has_pullback','h4_aligned',
+                'conqueror_bull','conqueror_bear','conqueror_bonus',
+                'channel_breakout','channel_bonus','ema50_bonus',
+                'model_m1_scalp','model_silver_ar','model_turtle_soup',
+                'model_fx_london','model_slingshot','model_ict',
+                'eu_london_breakout','eu_ny_reversion','eu_tight_range',
+                'eu_z_score','eu_asian_range_pips',
+            ]:
                 df[col] = 0
 
         # Kill zone one-hot encoding
@@ -314,7 +320,8 @@ class MLDataExtractor:
             'open_price', 'close_price', 'sl', 'tp',
             'execution_hour', 'dow', 'kill_zone', 'kill_zone_clean',
             'volume',           # [S23-A-4] replaced by dollar_risk
-            'ict_conditions',   # [S28] already extracted into smc_* columns
+            'ict_conditions',   # [S34] already extracted into hybrid feature cols
+            'ict_score',        # [S34] ICT internal score removed; use signal_conf
         ]
         df_ml = df.drop(columns=[c for c in drop_cols if c in df.columns])
 
