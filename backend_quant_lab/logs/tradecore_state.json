@@ -8,9 +8,9 @@
       "ATTEMPTED"
     ],
     "GBPUSD": [
-      "BUY_MICRO",
-      0.82,
-      "ATTEMPTED"
+      "SELL_MICRO",
+      0.65,
+      "LOW_CONFIDENCE (65%)"
     ],
     "USDJPY": [
       "NEUTRAL",
@@ -58,9 +58,9 @@
       "SKIPPED"
     ],
     "XAUUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
+      "SELL",
+      0.99,
+      "ATTEMPTED"
     ],
     "XAGUSD": [
       "NEUTRAL",
@@ -99,7 +99,10 @@
     ]
   },
   "trade_confidences": {
-    "8598602688": 0.76,
-    "8598602699": 0.82
+    "8598602699": 0.82,
+    "8598665739": 0.99,
+    "8598706328": 0.94,
+    "8598773158": 0.97,
+    "8598870318": 0.99
   }
 }
