@@ -2680,8 +2680,6 @@ class TradingBot:
                     max_lot   = min(max_lot, micro_cap)
 
                 # [S33] HIGH_VOL lot hard cap.
-                # GARCH regime = amplified losses (data: -$724 on 131 trades).
-                # Cap at 0.02 lots for XAU, 0.01 for everything else.
                 if 'HIGH VOLATILITY' in regime:
                     _hv_cap = 0.02 if 'XAU' in symbol else 0.01
                     if lot > _hv_cap:
@@ -2691,21 +2689,35 @@ class TradingBot:
                         )
                         lot = _hv_cap
 
-                # [S34] FX MICRO lot cap.
-                # FX lot sizes calculated from tight M1 SLs (5-15 pips) give inflated
-                # raw lots because capital_per_lot = sl_pips * 10 is small.
-                # Hard cap at 0.10 lots for all FX MICRO signals regardless of balance.
-                # At 0.10 lots, a 10-pip SL = $10 risk = 0.15% of $6,700 account.
-                _is_fx_symbol = (
-                    not any(k in symbol for k in ['XAU', 'XAG', 'Oil', 'NGAS',
-                                                   'SP 500', 'Tech 100', 'Germany'])
-                )
-                if is_micro and _is_fx_symbol and lot > 0.10:
-                    self.log_info(
-                        f"🛡️ FX MICRO Lot Cap: {symbol} {lot:.2f} → 0.10 "
-                        f"(FX pip-risk protection)"
-                    )
-                    lot = 0.10
+                # [S34] Asset-specific MICRO lot caps.
+                # The balance/12000 formula produces lot sizes that are too large
+                # for this account size. Hard caps based on dollar risk per trade:
+                #   XAU MICRO: max 0.05 lots (10-pip SL = ~$5 risk at current balance)
+                #   FX  MICRO: max 0.10 lots (10-pip SL = ~$10 risk)
+                if is_micro:
+                    if 'XAU' in symbol and lot > 0.05:
+                        self.log_info(
+                            f"🛡️ XAU MICRO Lot Cap: {symbol} {lot:.2f} → 0.05 "
+                            f"(Gold pip-risk protection)"
+                        )
+                        lot = 0.05
+                    elif 'XAG' in symbol and lot > 0.02:
+                        self.log_info(
+                            f"🛡️ XAG MICRO Lot Cap: {symbol} {lot:.2f} → 0.02 "
+                            f"(Silver pip-risk protection)"
+                        )
+                        lot = 0.02
+                    else:
+                        _is_fx_symbol = (
+                            not any(k in symbol for k in ['XAU', 'XAG', 'Oil', 'NGAS',
+                                                           'SP 500', 'Tech 100', 'Germany'])
+                        )
+                        if _is_fx_symbol and lot > 0.10:
+                            self.log_info(
+                                f"🛡️ FX MICRO Lot Cap: {symbol} {lot:.2f} → 0.10 "
+                                f"(FX pip-risk protection)"
+                            )
+                            lot = 0.10
 
                 if lot > max_lot:
                     capped = _math.floor(max_lot * step_inv) / step_inv
