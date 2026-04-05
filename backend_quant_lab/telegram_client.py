@@ -6,9 +6,21 @@ import time
 
 class TelegramNotifier:
     def __init__(self):
-        # [SECURITY FIX] Credentials from environment — never hardcode tokens.
-        self.token   = os.getenv("TELEGRAM_BOT_TOKEN",  "8357033749:AAH05DRZxdtvQv8l2rtOLUeBjCijXODw5Zw")
-        self.chat_id = os.getenv("TELEGRAM_CHAT_ID",    "5268311560")
+        # [SECURITY FIX S35 / BUG-75] Token MUST come from environment variable.
+        # The hardcoded fallback was removed — it exposed credentials in source
+        # control and in this conversation. Rotate the old token in BotFather
+        # immediately, then set TELEGRAM_BOT_TOKEN in your environment.
+        #
+        # Windows:  setx TELEGRAM_BOT_TOKEN "your_token_here"
+        # Linux:    export TELEGRAM_BOT_TOKEN="your_token_here"
+        # Or add to a .env file loaded at startup (never commit .env to git).
+        self.token = os.getenv("TELEGRAM_BOT_TOKEN")
+        if not self.token:
+            raise ValueError(
+                "TELEGRAM_BOT_TOKEN environment variable is not set.\n"
+                "Set it before starting Kom: export TELEGRAM_BOT_TOKEN='your_token'"
+            )
+        self.chat_id = os.getenv("TELEGRAM_CHAT_ID", "5268311560")
 
         # [PROXY FIX] api.telegram.org is blocked at ISP level on this machine.
         # If TELEGRAM_PROXY is set in the environment, route all Telegram API

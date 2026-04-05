@@ -1,19 +1,78 @@
+# ============================================================
+# Kom v1.0 — bot_engine.py
+# [SPRINT 35: GOLD ENGINE + HYBRID MULTI-TIER + EXIT OVERHAUL]
+#
+# SPRINT 35 CHANGES:
+#   [GOLD ENGINE] Dedicated GoldScalpEngine replaces analyst.py
+#     for XAUUSD. Runs 7 strategies: London Judas, NY Judas,
+#     Silver Bullet FVG, Asian Fade, OB Retrace, VWAP Fade,
+#     Momentum Rider. Up to 3 concurrent Gold positions across
+#     4 sizing tiers: NANO / MICRO / STANDARD / MACRO.
+#   [EXIT ENGINE] DynamicExitEngine replaces the generic trailing
+#     stop for Gold: BE@0.6R → Partial@1R(30%) → Partial@1.5R(20%)
+#     → Trail(0.5×ATR) → MomentumExit@1.5R(80%) → TimeExit.
+#   [DAILY LIMIT] Max 8 non-Gold trades per day — prevents the
+#     March 23 scenario (51 trades, -$203 net).
+#   [MIN HOLD TIME] 10-minute no-exit window on all positions to
+#     prevent noise-stop on <5-min scalps (32% WR → $-785).
+#   [XAGUSD SUSPENDED] Removed from vip_assets pending dedicated
+#     strategy. 74 trades, 36.5% WR, -$780. Reactivate in S36.
+#
+# SPRINT 35 BUG FIXES:
+#   BUG-70: self.db_path never defined → AttributeError in
+#     _check_weekly_loss_limit() and strategy perf weighting.
+#   BUG-71: self.ml_scorer never instantiated → all ML confidence
+#     nudges silently skipped (process_symbol try/except swallows it).
+#   BUG-73: /amd Telegram command called compute_amd_phase and
+#     SESSION_WINDOWS which were removed in Sprint 12. Command now
+#     uses the live analysis cycle output instead.
+#   BUG-74: M1 scalp engine fired on XAGUSD and BTCUSD with no
+#     session gate. Restricted to XAUUSD London Open only.
+#
+# NOTE: XAUUSD now bypasses process_symbol() entirely.
+#   All Gold signals originate from GoldScalpEngine.analyse()
+#   and are executed through execute_gold_signal(). The existing
+#   process_symbol() / analyze_market_structure() path remains
+#   active for all non-Gold assets unchanged.
+# ============================================================
+
 import os
 import logging
 import json
 import pandas as pd
 from datetime import datetime, timedelta
 import time
-import MetaTrader5 as mt5 
+import MetaTrader5 as mt5
 from mt5_interface import MT5Gateway
 from analyst import analyze_market_structure, AnalysisRequest, calculate_atr, detect_candlestick_pattern
 from models import Candle
 from telegram_client import TelegramNotifier
 from db_manager import DBManager
-from quant_analyzer import QuantEngine 
-from news_manager import NewsManager  
+from quant_analyzer import QuantEngine
+from news_manager import NewsManager
 import threading
 import math
+
+# [S35] Gold engine — dedicated XAUUSD signal generator and exit manager
+try:
+    from gold_engine import GoldScalpEngine, DynamicExitEngine, TIER_PARAMS as GOLD_TIER_PARAMS
+    _GOLD_ENGINE_OK = True
+except ImportError as _ge_err:
+    _GOLD_ENGINE_OK = False
+    GoldScalpEngine = None
+    DynamicExitEngine = None
+    GOLD_TIER_PARAMS = {}
+    logging.getLogger("TradeCoreEngine").warning(
+        f"[S35] gold_engine.py not found — XAUUSD will fall back to analyst.py: {_ge_err}"
+    )
+
+# [BUG-71] ML model scorer — was never instantiated in __init__
+try:
+    from model_trainer import LiveScorer
+    _LIVE_SCORER_OK = True
+except ImportError:
+    _LIVE_SCORER_OK = False
+    LiveScorer = None
 
 # ==========================================
 # ADVANCED TIERED LOGGING SETUP
@@ -62,45 +121,46 @@ if not logger.handlers:
 class TradingBot:
     def __init__(self):
         self.gateway = MT5Gateway()
-        self.notifier = TelegramNotifier() 
-        self.news_manager = NewsManager() 
-        
+        self.notifier = TelegramNotifier()
+        self.news_manager = NewsManager()
+
         self.mt5_lock = threading.Lock()
-        
+
+        # [S35] Elite 10 asset matrix — XAGUSD suspended (S35 diagnosis: 74 trades, 36.5% WR, -$780)
+        # Reactivate in Sprint 36 with dedicated Silver strategy.
         self.vip_assets = [
             "EURUSD", "GBPUSD", "USDJPY",
-            "XAUUSD", "XAGUSD", "US Oil",
+            "XAUUSD",
+            # "XAGUSD",  # [S35-SUSPENDED] 74t 36.5%WR -$780 — no edge at current SL sizing
+            "US Oil",
             "US SP 500", "US Tech 100",
-            # [S34] BTCUSD/ETHUSD removed — crypto shuts down on weekends/nights
-            # and showed net -$134 on 55 trades with no session edge.
-            # Replaced with deep-liquidity FX pairs that fit the M1 scalp engine:
-            "USDCHF",   # Safe-haven pair, London/NY sessions, +$77 net in live data
-            "NZDUSD",   # Asian session exposure, near-breakeven, mean-reversion candidate
+            "USDCHF",
+            "NZDUSD",
         ]
-        
-        self.active_symbols = [] 
-        self.symbol_cooldowns = {} 
-        
-        self.MAX_OPEN_TRADES = 12       
-        self.MAX_SNIPER_SLOTS = 5      
-        self.MAX_GOLD_TRADES = 3       
-        
+
+        self.active_symbols = []
+        self.symbol_cooldowns = {}
+
+        self.MAX_OPEN_TRADES  = 12
+        self.MAX_SNIPER_SLOTS = 5
+        self.MAX_GOLD_TRADES  = 3   # [S35] Up to 3 Gold slots (1 per tier)
+
         self.logs = []
         self.is_running = False
         self.active_tickets = set()
-        self.execution_lock = set() 
-        
+        self.execution_lock = set()
+
         self._closing_tickets = set()
-        
+
         # --- STATE PERSISTENCE ---
         self.state_file = "logs/tradecore_state.json"
-        self.scaled_positions = set()  
-        self.trade_confidences = {} 
-        
+        self.scaled_positions = set()
+        self.trade_confidences = {}
+
         self.daily_start_balance = 0.0
         self.last_trade_day = -1
         self.kill_switch_active = False
-        self.kill_switch_time   = None    
+        self.kill_switch_time   = None
 
         self.current_var = 0.0
         self.market_regime = "CALIBRATING..."
@@ -111,18 +171,45 @@ class TradingBot:
         self._stale_zone_cooldowns: dict = {}
         self._stale_trap_counts: dict = {}
         self._momentum_watch: dict = {}
-        self._last_markov_gate: str = "OK"  
+        self._last_markov_gate: str = "OK"
         self._manual_pause_until: datetime = None
 
         self.quant_engine = QuantEngine()
         self._risk_reduction_mode = False
 
+        # [BUG-70 FIX] self.db_path was referenced in _check_weekly_loss_limit()
+        # and strategy perf weighting but never defined — caused silent AttributeError.
+        self.db_path = "tradecore.db"
+
+        # [BUG-71 FIX] LiveScorer was never instantiated — ML nudges were silently skipped.
+        if _LIVE_SCORER_OK and LiveScorer is not None:
+            self.ml_scorer = LiveScorer()
+        else:
+            self.ml_scorer = None
+
+        # [S35] Gold engine — dedicated XAUUSD signal generator
+        if _GOLD_ENGINE_OK and GoldScalpEngine is not None:
+            self.gold_engine  = GoldScalpEngine()
+            self.exit_engine  = DynamicExitEngine()
+        else:
+            self.gold_engine  = None
+            self.exit_engine  = None
+
+        # [S35] Daily trade counter — gates non-Gold signals at MAX_DAILY_TRADES
+        # Data shows no edge beyond ~8 trades/day; March 23 had 51 trades (-$203 net)
+        self.MAX_DAILY_TRADES   = 8       # non-Gold trades per calendar day
+        self._daily_trade_count = 0
+        self._daily_trade_date  = None    # date of last reset
+
+        # [S35] Gold tier occupancy tracking — prevents duplicate tier positions
+        # { 'NANO': ticket, 'MICRO': ticket, 'STANDARD': ticket, 'MACRO': ticket }
+        self._gold_tier_slots: dict = {}
+
         # [S33] Automated ML retraining tracking
-        self._last_retrain_trade_count = 0   # N at last retrain
-        # [S34-FIX] Initialise to now so the 1-hour gate blocks the first post-startup
-        # attempt. Without this, every bot restart triggers an immediate retrain attempt.
+        self._last_retrain_trade_count = 0
+        # [S34-FIX] Initialise to now so the 1-hour gate blocks first post-startup attempt.
         self._last_retrain_ts = datetime.utcnow()
-        self._retrain_in_progress = False    # guard against concurrent runs
+        self._retrain_in_progress = False
 
     def _get_current_account_id(self):
         try:
@@ -530,31 +617,28 @@ class TradingBot:
             except Exception as e:
                 self.async_alert(f"⚠️ Risk query error: {e}")
         elif cmd == "/amd":
+            # [BUG-73 FIX S35] compute_amd_phase() and SESSION_WINDOWS were removed
+            # in Sprint 12. Command now reads the last logged signal cache which
+            # stores AMD phase data from the most recent 60s analysis cycle.
             try:
-                from analyst import compute_amd_phase, SESSION_WINDOWS
+                now_str = datetime.utcnow().strftime('%H:%M UTC')
+                lines = [f"🔄 **AMD Phase Report** ({now_str})\n━━━━━━━━━━━━━━━━━━━━"]
                 target_sym = args[0].upper() if args else None
-                syms = ([target_sym] if target_sym else self.active_symbols[:10])
-                import MetaTrader5 as _mt5
-                import pandas as _pd
-                lines = ["🔄 **AMD Phase Report**\n━━━━━━━━━━━━━━━━━━━━"]
+                syms = ([target_sym] if target_sym
+                        else list(self._last_logged_signal.keys())[:12])
                 for sym in syms:
-                    try:
-                        _rates = _mt5.copy_rates_from_pos(
-                            self.gateway.find_symbol(sym) or sym,
-                            _mt5.TIMEFRAME_M15, 0, 200
+                    last = self._last_logged_signal.get(sym)
+                    if last:
+                        sig, conf, status = last
+                        icon = ("🟢" if "BUY" in str(sig) else
+                                "🔴" if "SELL" in str(sig) else "⚪")
+                        lines.append(
+                            f"{icon} {sym}: {sig} | {conf*100:.0f}% | {status}"
                         )
-                        if _rates is None:
-                            lines.append(f"⚪ {sym}: no data")
-                            continue
-                        df = _pd.DataFrame(_rates)
-                        df['time'] = _pd.to_datetime(df['time'], unit='s')
-                        df.set_index('time', inplace=True)
-                        phase, conf, _ = compute_amd_phase(df)
-                        icon = {"ACCUMULATION": "🟡", "MANIPULATION": "🟠",
-                                "DISTRIBUTION": "🟢"}.get(phase, "⚪")
-                        lines.append(f"{icon} {sym}: {phase} ({conf:.0%})")
-                    except Exception:
-                        lines.append(f"⚪ {sym}: error")
+                    else:
+                        lines.append(f"⚪ {sym}: no recent data")
+                lines.append("━━━━━━━━━━━━━━━━━━━━")
+                lines.append("Gold tier slots: " + str(self._gold_tier_slots))
                 self.async_alert("\n".join(lines))
             except Exception as e:
                 self.async_alert(f"⚠️ AMD query error: {e}")
@@ -982,14 +1066,36 @@ class TradingBot:
                 symbol = pos['symbol']
                 ticket = pos['ticket']
                 is_buy = pos['type'] == 'BUY'
-                
-                duration_hours = (time.time() - pos['time']) / 3600.0
-                profit = pos['profit']
-                
+
+                duration_hours  = (time.time() - pos['time']) / 3600.0
+                duration_min    = duration_hours * 60.0
+                profit          = pos['profit']
+
+                # [S35] Minimum hold time guard — 10 minutes.
+                # Data shows 128 trades held <5min with 32.8% WR and -$785 net.
+                # Noise-stops triggered by the execution engine before the setup
+                # has time to develop are the primary cause. This gate suppresses
+                # all bot-initiated exits for the first 10 minutes, letting the
+                # broker SL/TP handle the worst cases. Gold positions managed by
+                # DynamicExitEngine use their own per-tier minimum (15/35m).
+                MIN_HOLD_MIN = 10.0
+                if duration_min < MIN_HOLD_MIN:
+                    # Still update MAE/MFE for analytics — just skip exit logic
+                    tick = mt5.symbol_info_tick(symbol)
+                    if tick:
+                        open_price = pos.get('open_price', 0.0)
+                        if is_buy:
+                            adverse   = max(0.0, open_price - tick.bid)
+                            favorable = max(0.0, tick.bid - open_price)
+                        else:
+                            adverse   = max(0.0, tick.ask - open_price)
+                            favorable = max(0.0, open_price - tick.ask)
+                        DBManager.update_mae_mfe(ticket, adverse, favorable)
+                    continue   # skip all exit logic until hold > 10 min
+
                 tick = mt5.symbol_info_tick(symbol)
                 if tick:
                     open_price = pos.get('open_price', 0.0)
-                    is_buy     = pos['type'] == 'BUY'
                     if is_buy:
                         adverse   = max(0.0, open_price - tick.bid)
                         favorable = max(0.0, tick.bid - open_price)
@@ -1001,10 +1107,10 @@ class TradingBot:
                 if duration_hours > 12.0 and profit < 0:
                     if ticket in self._closing_tickets: continue
                     self._closing_tickets.add(ticket)
-                    
-                    self.log_info(f"⏳ Time Decay Killswitch: {symbol} stuck in dead momentum for >12H. Liquidating.")
+
+                    self.log_info(f"⏳ Time Decay Killswitch: {symbol} >12H dead momentum. Liquidating.")
                     self.gateway.close_position(ticket, symbol, pos['volume'], pos['type'])
-                    self.async_alert(f"⏳ **Dead Momentum Liquidated:** {symbol}\nTrade closed early to free up margin.")
+                    self.async_alert(f"⏳ **Dead Momentum Liquidated:** {symbol}\nClosed to free margin.")
                     self.symbol_cooldowns[symbol] = datetime.utcnow()
                     continue
 
@@ -1143,33 +1249,53 @@ class TradingBot:
                             raw_ts = int(time.time())
                         open_time = datetime.utcfromtimestamp(raw_ts).strftime('%Y-%m-%d %H:%M:%S')
                         DBManager.save_trade(
-                            ticket     = ticket,
-                            symbol     = pos['symbol'],
-                            type_op    = pos['type'],
-                            vol        = pos.get('volume', 0.0),
-                            open_price = pos.get('open_price', 0.0),
-                            sl         = pos.get('sl', 0.0),
-                            tp         = pos.get('tp', 0.0),
-                            time       = open_time,
-                            regime     = info.get('regime'),
-                            account_id = info.get('account_id'),
-                            model_type = info.get('model_type'),
+                            ticket       = ticket,
+                            symbol       = pos['symbol'],
+                            type_op      = pos['type'],
+                            vol          = pos.get('volume', 0.0),
+                            open_price   = pos.get('open_price', 0.0),
+                            sl           = pos.get('sl', 0.0),
+                            tp           = pos.get('tp', 0.0),
+                            time         = open_time,
+                            regime       = info.get('regime'),
+                            account_id   = info.get('account_id'),
+                            model_type   = info.get('model_type'),
                             model_sizing = info.get('model_sizing'),
                         )
-                        
+
                         self.trade_confidences[str(ticket)] = info.get('confidence', 0.77)
                         self._save_state()
-                        
+
                         sl_d = abs(pos.get('open_price', 0.0) - pos.get('sl', 0.0))
                         self._momentum_watch[ticket] = {
-                            'symbol':          pos['symbol'],
-                            'type':            pos['type'],
-                            'open_price':      pos.get('open_price', 0.0),
-                            'sl_dist':         sl_d,
-                            'fill_time':       datetime.utcnow(),
-                            'checked':         False,
+                            'symbol':      pos['symbol'],
+                            'type':        pos['type'],
+                            'open_price':  pos.get('open_price', 0.0),
+                            'sl_dist':     sl_d,
+                            'fill_time':   datetime.utcnow(),
+                            'checked':     False,
                         }
-                        self.log_debug(f"[{pos['symbol']}] Trade recorded: ticket={ticket} (Conf: {self.trade_confidences[str(ticket)]})")
+
+                        # [S35] Gold limit order filled — register with exit engine
+                        # _gold_tier key is written into _pending_order_info by execute_gold_signal
+                        gold_tier = info.get('_gold_tier')
+                        if gold_tier and 'XAU' in pos['symbol'] and self.exit_engine is not None:
+                            self.exit_engine.register_position(
+                                ticket, gold_tier, datetime.utcnow()
+                            )
+                            self._gold_tier_slots[gold_tier] = ticket
+                            self.log_debug(
+                                f"[{pos['symbol']}] Gold [{gold_tier}] limit filled — "
+                                f"exit engine registered ticket={ticket}"
+                            )
+                            # [S35] Increment daily non-Gold counter is NOT done here —
+                            # Gold has its own concurrent slot system. Only non-Gold
+                            # executions increment _daily_trade_count (done in execute_signal).
+
+                        self.log_debug(
+                            f"[{pos['symbol']}] Trade recorded: ticket={ticket} "
+                            f"(Conf: {self.trade_confidences[str(ticket)]})"
+                        )
                     except Exception as e:
                         self.log_debug(f"Fill Record Error ({ticket}): {e}")
 
@@ -1219,6 +1345,18 @@ class TradingBot:
                 scale_key = f"{db_trade['symbol']}_{open_px}_{db_trade.get('type','BUY')}"
                 self.scaled_positions.discard(scale_key)
                 self._save_state()
+
+                # [S35] Clean up Gold exit engine state when position closes
+                if (self.exit_engine is not None and
+                        'XAU' in db_trade.get('symbol', '') and
+                        self.exit_engine.is_gold_managed(db_ticket)):
+                    tier = self.exit_engine.get_tier(db_ticket)
+                    if self._gold_tier_slots.get(tier) == db_ticket:
+                        self._gold_tier_slots.pop(tier, None)
+                    self.exit_engine.cleanup_position(db_ticket)
+                    self.log_debug(
+                        f"[S35] Gold [{tier}] exit engine cleaned: ticket={db_ticket}"
+                    )
 
                 self.log_info(f"{icon} Trade Closed: #{db_ticket} {db_trade['symbol']} | P&L: ${net_profit:+.2f}")
                 self.async_alert(f"{icon} **Trade Closed — {outcome}**\n{db_trade['symbol']} | P&L: ${net_profit:+.2f}")
@@ -1466,6 +1604,19 @@ class TradingBot:
         is_sniper_mode = (current_count >= self.MAX_OPEN_TRADES)
         upcoming_news = self.news_manager.get_upcoming_news() if self.news_manager else []
 
+        # [S35] Daily trade counter reset — non-Gold trades only
+        _today = datetime.utcnow().date()
+        if self._daily_trade_date != _today:
+            self._daily_trade_date  = _today
+            self._daily_trade_count = 0
+
+        # [S35] Sync Gold tier occupancy from live MT5 positions
+        # Clears stale entries for positions that have since closed
+        live_gold_tickets = {p['ticket'] for p in current_positions if 'XAU' in p['symbol']}
+        for tier in list(self._gold_tier_slots.keys()):
+            if self._gold_tier_slots[tier] not in live_gold_tickets:
+                self._gold_tier_slots.pop(tier, None)
+
         from analyst import get_after_hours_active_symbols
         _tradable = get_after_hours_active_symbols(self.active_symbols, datetime.utcnow())
         for symbol in _tradable:
@@ -1473,10 +1624,10 @@ class TradingBot:
                 continue
 
             if symbol in self.symbol_cooldowns:
-                time_since_close = datetime.utcnow() - self.symbol_cooldowns[symbol]  
+                time_since_close = datetime.utcnow() - self.symbol_cooldowns[symbol]
                 if time_since_close < timedelta(minutes=15):
-                    continue 
-            
+                    continue
+
             current_usd_locks = len([s for s in self.execution_lock if "USD" in s])
             if "USD" in symbol and (usd_exposure_base + current_usd_locks) >= 2:
                 continue
@@ -1488,25 +1639,441 @@ class TradingBot:
 
             symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
             nano_trades = len([p for p in current_positions if p['symbol'] == symbol and p.get('magic', 510000) == 510001])
-            
+
             if "DEAD MARKET" in self.market_regime and nano_trades >= 1:
-                continue 
+                continue
 
             if "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
-                if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1): 
-                    continue 
-                elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES: 
-                    continue 
-            
-            if is_sniper_mode and symbol_trades >= 3: 
-                continue 
-            elif not is_sniper_mode and symbol_trades >= 2: 
-                continue 
-            
-            self.process_symbol(symbol, is_sniper_mode, upcoming_news)
+                if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1):
+                    continue
+                elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES:
+                    continue
+
+            if is_sniper_mode and symbol_trades >= 3:
+                continue
+            elif not is_sniper_mode and symbol_trades >= 2:
+                continue
+
+            # [S35] XAUUSD routes to dedicated Gold engine instead of analyst.py
+            if "XAU" in symbol and self.gold_engine is not None:
+                self._process_gold(symbol, upcoming_news)
+            else:
+                # [S35] Daily trade limit gate for non-Gold assets
+                # Data shows no edge beyond ~8 trades/day on non-Gold pairs
+                if self._daily_trade_count >= self.MAX_DAILY_TRADES:
+                    if datetime.utcnow().second < 5:
+                        self.log_debug(
+                            f"[S35] Daily non-Gold trade limit ({self.MAX_DAILY_TRADES}) reached. "
+                            f"Skipping {symbol}."
+                        )
+                    continue
+                self.process_symbol(symbol, is_sniper_mode, upcoming_news)
 
         # [S33] Automated ML retraining check — runs at end of each cycle
         self._check_ml_retrain_trigger()
+
+    # ══════════════════════════════════════════════════════════════════════
+    # [S35] GOLD ENGINE INTEGRATION
+    # ══════════════════════════════════════════════════════════════════════
+
+    def _process_gold(self, symbol: str, upcoming_news=None):
+        """
+        [S35] XAUUSD-specific analysis and execution cycle.
+        Replaces process_symbol() for Gold — calls GoldScalpEngine.analyse()
+        and executes the highest-quality non-conflicting signals.
+
+        Concurrent position logic:
+          - Up to 3 Gold positions (self.MAX_GOLD_TRADES)
+          - Maximum 1 position per tier (NANO / MICRO / STANDARD / MACRO)
+          - Tier occupancy tracked in self._gold_tier_slots
+          - GoldScalpEngine.set_occupied_tiers() informs the engine which
+            tiers to skip before it runs its strategies
+        """
+        if upcoming_news is None:
+            upcoming_news = []
+
+        now = datetime.utcnow()
+
+        # News guard — identical to process_symbol
+        in_news, news_reason = self.news_manager.is_news_window(now=now)
+        if in_news:
+            if now.second < 5:
+                self.log_info(f"📰 News Guard (Gold): {news_reason}")
+            return
+
+        if symbol in self.execution_lock:
+            return
+
+        # Spread check
+        props = self.gateway.get_symbol_properties(symbol)
+        if not props:
+            return
+        spread = (props['ask'] - props['bid']) / props['point']
+        _t_min = now.hour * 60 + now.minute
+        _rollover = (_t_min >= 22 * 60 or _t_min < 30)
+        if spread > (4000 if _rollover else 1000):
+            return
+
+        # Fetch data
+        df_m15 = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
+        df_h4  = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_H4)
+        if df_m15.empty:
+            return
+
+        # M1 data
+        df_m1 = None
+        try:
+            raw_m1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, 80)
+            if raw_m1 is not None and len(raw_m1) >= 20:
+                df_m1 = pd.DataFrame(raw_m1)
+                df_m1.rename(columns={"time": "timestamp", "tick_volume": "volume"}, inplace=True)
+                df_m1["timestamp"] = pd.to_datetime(df_m1["timestamp"], unit="s")
+        except Exception:
+            pass
+
+        # Account info for sizing
+        acc = self.gateway.get_account_info()
+        balance = acc['balance'] if acc else 6000.0
+
+        # Tell the gold engine which tiers are already occupied
+        self.gold_engine.set_occupied_tiers(set(self._gold_tier_slots.keys()))
+
+        # Run analysis
+        try:
+            signals = self.gold_engine.analyse(df_m1, df_m15, df_h4, now, balance)
+        except Exception as e:
+            self.log_debug(f"[GoldEngine] analyse() error: {e}")
+            return
+
+        if not signals:
+            self.log_debug(f"[{symbol}] Gold engine: no signals this cycle.")
+            return
+
+        # Execute up to 2 signals per cycle (prevents flooding on high-confluence moments)
+        executed = 0
+        for sig in signals:
+            if executed >= 2:
+                break
+            if sig.tier in self._gold_tier_slots:
+                continue   # slot still occupied
+            self.log_info(
+                f"🥇 Gold [{sig.tier}] {sig.strategy}: "
+                f"{sig.direction} Score:{sig.score:.2f} "
+                f"Lot:{sig.lot} SL:{sig.sl:.2f} TP:{sig.tp:.2f} "
+                f"[{sig.kill_zone}]"
+            )
+            # Log signal to DB
+            DBManager.log_signal(
+                symbol, sig.signal_type, sig.score,
+                {"strategy": sig.strategy, "tier": sig.tier,
+                 "reason": sig.reason, "regime": self.market_regime},
+                result="ATTEMPTED",
+                ict_score=sig.score, kill_zone=sig.kill_zone,
+                ict_conditions=sig.conditions,
+                model_type=f"GOLD_{sig.strategy}",
+                model_sizing=sig.tier,
+                account_id=self._get_current_account_id(),
+            )
+            self.execute_gold_signal(symbol, sig, df_m15, props)
+            executed += 1
+
+    def execute_gold_signal(self, symbol: str, sig, df_m15: pd.DataFrame, props: dict):
+        """
+        [S35] Direct execution path for GoldSignal objects.
+        Uses pre-calculated entry/sl/tp/lot from GoldScalpEngine — no
+        re-derivation needed. Routes market vs limit based on sig.is_market.
+        """
+        if symbol in self.execution_lock:
+            return
+        self.execution_lock.add(symbol)
+
+        def _exec_async():
+            try:
+                import time as _time
+
+                tick = mt5.symbol_info_tick(symbol)
+                if not tick:
+                    return
+
+                is_buy    = sig.direction == 'BUY'
+                price     = float(sig.entry)
+                sl        = float(sig.sl)
+                tp        = float(sig.tp)
+                lot       = float(sig.lot)
+
+                # ── Final direction guard ──────────────────────────────────
+                # TP must be in profit direction, SL must be on loss side
+                _ref = tick.ask if is_buy else tick.bid
+                if ((is_buy and tp <= _ref) or (not is_buy and tp >= _ref) or
+                        (is_buy and sl >= _ref) or (not is_buy and sl <= _ref)):
+                    self.log_info(
+                        f"⚠️ Gold [{sig.tier}] TP/SL direction guard: "
+                        f"price={_ref:.2f} tp={tp:.2f} sl={sl:.2f} — skipped"
+                    )
+                    DBManager.update_signal_result(symbol, sig.signal_type,
+                                                   "REJECTED: TP/SL direction invalid")
+                    return
+
+                # ── Normalise prices ───────────────────────────────────────
+                price = self.gateway.normalize_price(symbol, price)
+                sl    = self.gateway.normalize_price(symbol, sl)
+                tp    = self.gateway.normalize_price(symbol, tp)
+
+                # ── Filling mode ───────────────────────────────────────────
+                fm = props.get('filling_mode', 0)
+                if fm & 1:   type_filling = mt5.ORDER_FILLING_FOK
+                elif fm & 2: type_filling = mt5.ORDER_FILLING_IOC
+                else:        type_filling = mt5.ORDER_FILLING_RETURN
+
+                # ── Magic number — tier encoded in magic for exit engine ───
+                # NANO=510004  MICRO=510003  STANDARD=510000  MACRO=510000
+                magic_map = {'NANO': 510004, 'MICRO': 510003,
+                             'STANDARD': 510000, 'MACRO': 510000}
+                magic = magic_map.get(sig.tier, 510000)
+
+                expiry_ts = int(_time.time()) + sig.expiry_min * 60
+
+                if sig.is_market:
+                    # MARKET ORDER (NANO / Silver Bullet / VWAP Fade)
+                    request = {
+                        "action":       mt5.TRADE_ACTION_DEAL,
+                        "symbol":       symbol,
+                        "volume":       lot,
+                        "type":         (mt5.ORDER_TYPE_BUY if is_buy
+                                         else mt5.ORDER_TYPE_SELL),
+                        "price":        tick.ask if is_buy else tick.bid,
+                        "sl":           sl,
+                        "tp":           tp,
+                        "deviation":    15,
+                        "magic":        magic,
+                        "comment":      f"Kom_v1.0_G{sig.tier[0]}",
+                        "type_time":    mt5.ORDER_TIME_GTC,
+                        "type_filling": type_filling,
+                    }
+                    # Filling mode fallback for market orders
+                    result = None
+                    for fmode in [type_filling, mt5.ORDER_FILLING_IOC,
+                                  mt5.ORDER_FILLING_FOK, mt5.ORDER_FILLING_RETURN]:
+                        request["type_filling"] = fmode
+                        with self.mt5_lock:
+                            result = mt5.order_send(request)
+                        if result and result.retcode == mt5.TRADE_RETCODE_DONE:
+                            break
+                        if result and result.retcode != 10038:
+                            break
+                else:
+                    # LIMIT ORDER (Judas, OB Retrace, Momentum Rider, Asian Fade)
+                    # Skip if price already past entry level
+                    if is_buy and price >= tick.ask:
+                        self.log_info(
+                            f"⏭️ Gold [{sig.tier}] BUY_LIMIT {price:.2f} above market "
+                            f"ask {tick.ask:.2f} — skipped."
+                        )
+                        DBManager.update_signal_result(symbol, sig.signal_type,
+                                                       "REJECTED: Price above market")
+                        return
+                    if not is_buy and price <= tick.bid:
+                        self.log_info(
+                            f"⏭️ Gold [{sig.tier}] SELL_LIMIT {price:.2f} below market "
+                            f"bid {tick.bid:.2f} — skipped."
+                        )
+                        DBManager.update_signal_result(symbol, sig.signal_type,
+                                                       "REJECTED: Price below market")
+                        return
+
+                    request = {
+                        "action":       mt5.TRADE_ACTION_PENDING,
+                        "symbol":       symbol,
+                        "volume":       lot,
+                        "type":         (mt5.ORDER_TYPE_BUY_LIMIT if is_buy
+                                         else mt5.ORDER_TYPE_SELL_LIMIT),
+                        "price":        price,
+                        "sl":           sl,
+                        "tp":           tp,
+                        "deviation":    10,
+                        "magic":        magic,
+                        "comment":      f"Kom_v1.0_G{sig.tier[0]}",
+                        "type_time":    mt5.ORDER_TIME_SPECIFIED,
+                        "expiration":   expiry_ts,
+                        "type_filling": type_filling,
+                    }
+                    with self.mt5_lock:
+                        result = mt5.order_send(request)
+
+                # ── Handle result ──────────────────────────────────────────
+                if result and result.retcode == mt5.TRADE_RETCODE_DONE:
+                    order_ticket = result.order
+                    action_label = "MARKET" if sig.is_market else "LIMIT"
+                    self.log_info(
+                        f"⚡ Gold {action_label} [{sig.tier}]: {symbol} "
+                        f"{sig.direction} #{order_ticket} | "
+                        f"Lot:{lot} Entry:{price:.2f} SL:{sl:.2f} TP:{tp:.2f} "
+                        f"Score:{sig.score:.2f} [{sig.strategy}]"
+                    )
+                    self.async_alert(
+                        f"🥇 **Gold {sig.tier} {sig.direction}** — {sig.strategy}\n"
+                        f"{symbol} | Lot:{lot} | Entry:{price:.2f}\n"
+                        f"SL:{sl:.2f} | TP:{tp:.2f} | Conf:{sig.score*100:.0f}%"
+                    )
+
+                    DBManager.update_signal_result(symbol, sig.signal_type, "FILLED")
+
+                    # Post-fill cooldown (3 min) to prevent double-fill on next cycle
+                    self.symbol_cooldowns[symbol] = (
+                        datetime.utcnow() - timedelta(minutes=12)
+                    )
+
+                    # Register tier slot
+                    self._gold_tier_slots[sig.tier] = order_ticket
+
+                    # Register with exit engine (market orders only — limits register on fill)
+                    if sig.is_market and self.exit_engine is not None:
+                        self.exit_engine.register_position(
+                            order_ticket, sig.tier, datetime.utcnow()
+                        )
+
+                    # Persist to DB
+                    acc_id = self._get_current_account_id()
+                    if sig.is_market:
+                        DBManager.save_trade(
+                            ticket=order_ticket, symbol=symbol,
+                            type_op=sig.direction, vol=lot,
+                            open_price=price, sl=sl, tp=tp,
+                            time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                            regime=self.market_regime,
+                            account_id=acc_id,
+                            model_type=f"GOLD_{sig.strategy}",
+                            model_sizing=sig.tier,
+                        )
+                        self.trade_confidences[str(order_ticket)] = sig.score
+                        self._save_state()
+                    else:
+                        self._pending_order_info[order_ticket] = {
+                            'regime':       self.market_regime,
+                            'account_id':   acc_id,
+                            'model_type':   f"GOLD_{sig.strategy}",
+                            'model_sizing': sig.tier,
+                            'confidence':   sig.score,
+                            '_gold_tier':   sig.tier,  # for exit engine on fill
+                        }
+
+                else:
+                    err  = result.comment if result else "Unknown"
+                    code = result.retcode if result else -1
+                    self.log_info(
+                        f"❌ Gold [{sig.tier}] rejected {symbol}: {err} (retcode={code})"
+                    )
+                    self.symbol_cooldowns[symbol] = datetime.utcnow()
+                    DBManager.update_signal_result(symbol, sig.signal_type,
+                                                   f"REJECTED: {err}")
+
+            except Exception as e:
+                self.log_debug(f"[Gold] execute_gold_signal error on {symbol}: {e}")
+                self.symbol_cooldowns[symbol] = datetime.utcnow()
+            finally:
+                self.execution_lock.discard(symbol)
+
+        threading.Thread(target=_exec_async, daemon=True).start()
+
+    def _apply_gold_exit(self, pos: dict, current_price: float,
+                          tick, props: dict, df_m1=None):
+        """
+        [S35] Gold-specific exit logic using DynamicExitEngine.
+        Called by apply_trailing_stop() for positions where
+        exit_engine.is_gold_managed(ticket) is True.
+
+        Handles: breakeven, partial close, trailing stop, momentum exit,
+        time exit — all with Gold-calibrated parameters per tier.
+        """
+        if self.exit_engine is None:
+            return
+
+        ticket = pos['ticket']
+        symbol = pos['symbol']
+
+        # Get ATR for the position
+        try:
+            df_m15_exit = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
+            if df_m15_exit.empty or len(df_m15_exit) < 14:
+                return
+            atr_series = df_m15_exit['high'] - df_m15_exit['low']
+            atr = float(atr_series.tail(14).mean())
+        except Exception:
+            atr = 2.5   # fallback ATR for Gold
+
+        if atr <= 0:
+            return
+
+        action = self.exit_engine.manage(pos, df_m1, current_price, atr)
+
+        if action['action'] == 'NONE':
+            return
+
+        phase  = action['phase']
+        reason = action['reason']
+
+        if action['action'] == 'MODIFY_SL':
+            new_sl = action['new_sl']
+            min_stop = 0.0
+            if props:
+                _sinfo = mt5.symbol_info(self.gateway.find_symbol(symbol) or symbol)
+                if _sinfo:
+                    min_stop = getattr(_sinfo, 'stops_level', 0) * _sinfo.point
+
+            # Validate: SL must not be too close to current price
+            is_buy = pos['type'] == 'BUY'
+            sl_dist_from_price = abs(current_price - new_sl)
+            if sl_dist_from_price < max(min_stop, 0.01):
+                return
+
+            req = {
+                "action":   mt5.TRADE_ACTION_SLTP,
+                "position": ticket,
+                "sl":       self.gateway.normalize_price(symbol, new_sl),
+                "tp":       pos.get('tp', 0.0),
+            }
+            with self.mt5_lock:
+                res = mt5.order_send(req)
+            if res and res.retcode == mt5.TRADE_RETCODE_DONE:
+                self.log_info(f"🛡️ Gold [{self.exit_engine.get_tier(ticket)}] "
+                              f"{symbol} SL→{new_sl:.2f} ({phase})")
+                self.exit_engine.mark_phase_complete(ticket, phase)
+
+        elif action['action'] in ('PARTIAL_CLOSE', 'FULL_CLOSE'):
+            close_pct = action['close_pct']
+            vol_step  = props.get('volume_step', 0.01) if props else 0.01
+            min_lot   = props.get('min_lot', 0.01) if props else 0.01
+            cur_vol   = float(pos.get('volume', 0.01))
+            close_vol = round((cur_vol * close_pct) / vol_step) * vol_step
+            close_vol = max(min_lot, min(close_vol, cur_vol))
+
+            if close_vol < min_lot:
+                return
+
+            if ticket in self._closing_tickets:
+                return
+            self._closing_tickets.add(f"{ticket}_GOLD_{phase}")
+
+            ok = self.gateway.close_position(ticket, symbol, close_vol, pos['type'])
+            if ok:
+                self.log_info(
+                    f"✂️ Gold [{self.exit_engine.get_tier(ticket)}] "
+                    f"{symbol} partial {close_pct:.0%} ({phase}) — "
+                    f"{close_vol:.2f}L closed"
+                )
+                self.async_alert(
+                    f"✂️ **Gold Partial Exit** — {symbol}\n"
+                    f"Tier:{self.exit_engine.get_tier(ticket)} | "
+                    f"Phase:{phase} | {close_pct:.0%} closed\n{reason}"
+                )
+                self.exit_engine.mark_phase_complete(ticket, phase)
+
+                # If this was a full close, clean up tier slot
+                if action['action'] == 'FULL_CLOSE' or close_pct >= 0.95:
+                    tier = self.exit_engine.get_tier(ticket)
+                    if self._gold_tier_slots.get(tier) == ticket:
+                        self._gold_tier_slots.pop(tier, None)
+                    self.exit_engine.cleanup_position(ticket)
 
     def _trigger_ml_retrain(self, reason: str = "auto"):
         """
@@ -1717,10 +2284,30 @@ class TradingBot:
             try:
                 symbol = pos['symbol']
                 ticket = pos['ticket']
-                magic = pos.get('magic', 510000)
+                magic  = pos.get('magic', 510000)
+
+                # [S35] GOLD EXIT ENGINE — route all Gold-managed positions through
+                # DynamicExitEngine before falling through to the generic trailing logic.
+                # This provides Gold-calibrated BE / partial / trail / momentum exits.
+                if (self.exit_engine is not None and
+                        'XAU' in symbol and
+                        self.exit_engine.is_gold_managed(ticket)):
+                    tick = mt5.symbol_info_tick(self.gateway.find_symbol(symbol) or symbol)
+                    if tick:
+                        cur_px = tick.bid if pos['type'] == 'BUY' else tick.ask
+                        props  = self.gateway.get_symbol_properties(symbol)
+                        # Fetch M1 for momentum exit detection
+                        df_m1_exit = None
+                        try:
+                            raw_m1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, 10)
+                            if raw_m1 is not None and len(raw_m1) >= 4:
+                                df_m1_exit = pd.DataFrame(raw_m1)
+                        except Exception:
+                            pass
+                        self._apply_gold_exit(pos, cur_px, tick, props, df_m1_exit)
+                    continue   # Gold positions never fall through to generic logic
+
                 # ── [S31] Bishop Exit: ADX > 45 overheated trend ──────────
-                # "If ADX exceeds 40 and ticks down, liquidate immediately."
-                # We use ADX > 45 as proxy for overheated + reversal imminent.
                 # Skip M1 scalps (magic 510003) — they have own TP/SL.
                 try:
                     if magic != 510003:
@@ -2903,11 +3490,13 @@ class TradingBot:
                     
                     DBManager.update_signal_result(symbol, analysis.signal, "FILLED")
 
+                    # [S35] Daily trade counter — non-Gold fills only.
+                    # Gold fills are handled by execute_gold_signal.
+                    if 'XAU' not in symbol and 'XAG' not in symbol:
+                        self._daily_trade_count += 1
+
                     # [S33] Dual-fire guard: apply cooldown after successful execution.
-                    # Previously cooldown only fired on rejection; this allows two cycles
-                    # to both find the same signal and both execute before the first
-                    # position registers in MT5. Now we gate the symbol for 3 min post-fill.
-                    _post_fill_cooldown = 3   # minutes — short enough not to miss next setup
+                    _post_fill_cooldown = 3   # minutes
                     self.symbol_cooldowns[symbol] = datetime.utcnow() - timedelta(minutes=15 - _post_fill_cooldown)
 
                     acc_id = self._get_current_account_id()

@@ -4324,65 +4324,8 @@ def compute_scalp_confluence(df: pd.DataFrame, df_macro: pd.DataFrame,
     return sig, score, reason, cond, kill_zone
 
 
-def compute_mean_reversion_confluence(df: pd.DataFrame, symbol: str, current_atr: float) -> tuple:
-    """
-    [S19g] Mean Reversion Model for DEAD MARKET regimes.
-    Bypasses structural ICT logic to trade statistical extremes in ranging markets.
-    Requires a pierce of the 2.5 Standard Deviation Bollinger Band + RSI confirmation.
-    """
-    empty_ret = ("NEUTRAL", 0.0, "Mean Reversion: No setup", {}, "N/A")
-    if len(df) < 30 or current_atr <= 0: 
-        return empty_ret
-
-    df = df.copy()
-    
-    # Calculate RSI (14-period)
-    delta = df['close'].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-    rs = gain / (loss + 1e-9)
-    df['rsi'] = 100 - (100 / (1 + rs))
-
-    # Calculate Bollinger Bands (20-period, 2.5 Standard Deviations)
-    df['bb_mid'] = df['close'].rolling(20).mean()
-    df['bb_std'] = df['close'].rolling(20).std()
-    df['bb_upper'] = df['bb_mid'] + (df['bb_std'] * 2.5)
-    df['bb_lower'] = df['bb_mid'] - (df['bb_std'] * 2.5)
-
-    c1 = df.iloc[-2] # Last closed candle
-    c0 = df.iloc[-1] # Current live candle
-
-    score = 0.0
-    signal = "NEUTRAL"
-    cond = {'mode': 'MEAN_REVERSION', 'poi_type': 'STATISTICAL_BAND'}
-
-    # Bullish Reversion: Pierced lower band + Oversold + Reversing
-    if c1['low'] < c1['bb_lower'] and c1['rsi'] < 30:
-        signal = "BUY_NANO"
-        score += 0.50
-        depth = (c1['bb_lower'] - c1['low']) / current_atr
-        score += min(0.20, depth * 0.10)       # Reward deeper pierces
-        if c1['rsi'] < 25: score += 0.10       # Extreme oversold bonus
-        if c0['close'] > c1['high']: score += 0.15 # Reversal confirmed by current candle
-        cond['ob_entry_price'] = c0['close']
-
-    # Bearish Reversion: Pierced upper band + Overbought + Reversing
-    elif c1['high'] > c1['bb_upper'] and c1['rsi'] > 70:
-        signal = "SELL_NANO"
-        score += 0.50
-        depth = (c1['high'] - c1['bb_upper']) / current_atr
-        score += min(0.20, depth * 0.10)       
-        if c1['rsi'] > 75: score += 0.10       
-        if c0['close'] < c1['low']: score += 0.15 
-        cond['ob_entry_price'] = c0['close']
-
-    score = min(0.99, round(score, 3))
-    if score < 0.70:
-        return empty_ret
-
-    reason = f"Mean Reversion [{symbol}] | Score:{score:.2f} | RSI:{c1['rsi']:.1f} | Pierced 2.5σ Band"
-    return signal, score, reason, cond, "STATISTICAL_EXTREME"
-
+# [BUG-72 FIX S35] First duplicate of compute_mean_reversion_confluence removed.
+# The canonical (second) definition follows below.
 def compute_mean_reversion_confluence(df: pd.DataFrame, symbol: str, current_atr: float) -> tuple:
     """
     [S19g] Mean Reversion Model for DEAD MARKET regimes.
@@ -4520,9 +4463,14 @@ def analyze_market_structure(
 
     # ── [S27-B] M1 MICRO-SCALP + [S30] Silver Asian Reversion ──────
     _df_m1 = getattr(request, 'df_m1', None)
-    # [S34] Scalp engine: XAUUSD + XAGUSD only (crypto removed)
-    _scalp_sym = any(k in sym.upper() for k in ['XAU', 'XAG'])
-    _scalp_ok  = _scalp_sym
+    # [BUG-74 FIX S35] M1 scalp restricted to XAUUSD + London Open window only.
+    # Data: XAGUSD 74t/36.5%WR/-$780, BTCUSD 53t/34%WR/-$134 — both unprofitable.
+    # XAUUSD Gold engine (gold_engine.py) now handles ALL Gold M1 signals natively.
+    # analyst.py M1 scalp kept as fallback only (if gold_engine not available).
+    # London Open (07:00-09:00 UTC) is the only session with confirmed M1 edge.
+    _t_now_min = utc_now.hour * 60 + utc_now.minute
+    _scalp_sym = 'XAU' in sym.upper()
+    _scalp_ok  = _scalp_sym and (7 * 60 <= _t_now_min < 9 * 60)
 
     # [S32] Slingshot reversal — commodities during London/NY (crypto removed S34)
     _sling_sym = any(k in sym.upper() for k in ['XAU', 'XAG', 'Oil', 'NGAS'])
