@@ -47113,3 +47113,35 @@
 2026-04-07 22:16:56 [INFO] ✅ DB integrity check passed (WAL checkpointed).
 2026-04-07 22:16:56 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 1 Elite Assets.
 2026-04-07 22:17:22 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-07 22:26:00 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=97%. No new positions.
+2026-04-07 22:50:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 22:52:45 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 22:55:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 22:57:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:00:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:02:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:05:20 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:07:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:10:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:12:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:15:14 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:17:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:17:46 [INFO] 🔁 ML Retrain started — reason: 50 new trades (N=239)
+2026-04-07 23:17:49 [INFO] 🔁 ML pipeline done — 183 samples extracted
+2026-04-07 23:18:00 [INFO] ✅ ML Retrain complete — 183 samples | reason: 50 new trades (N=239)
+2026-04-07 23:19:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:22:54 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:25:06 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:27:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:29:54 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:32:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:34:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:37:22 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:39:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:42:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:44:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:47:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:49:49 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:50:00 [INFO] 📋 Daily summary dispatched via Telegram.
+2026-04-07 23:52:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 23:52:41 [INFO] Stopped.
