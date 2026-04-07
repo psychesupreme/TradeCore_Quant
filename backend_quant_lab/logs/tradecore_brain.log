@@ -45002,3 +45002,2111 @@
 2026-03-30 22:11:57 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
 2026-03-30 22:11:57 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
 2026-03-30 22:11:57 [INFO] Stopped.
+2026-04-05 21:49:10 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-04-05 21:49:10 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 7 Elite Assets.
+2026-04-05 21:49:23 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-05 22:02:56 [INFO] Stopped.
+2026-04-06 14:35:13 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-04-06 14:35:13 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 7 Elite Assets.
+2026-04-06 14:35:24 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-06 14:38:23 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:38:24 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:38:25 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:38:25 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:38:26 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:40:25 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:40:25 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:40:25 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:40:25 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:40:25 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:43:01 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:43:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:43:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:43:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:43:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:44:20 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:44:20 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:44:20 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:44:20 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:44:20 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:46:17 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:46:17 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:46:17 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:46:17 [INFO] 🥇 Gold [MICRO] VWAP_FADE: SELL Score:0.68 Lot:0.01 SL:4693.85 TP:4649.36 [London_PM]
+2026-04-06 14:46:18 [INFO] ⚡ Gold MARKET [MICRO]: XAUUSD SELL #8605712284 | Lot:0.01 Entry:4683.56 SL:4693.85 TP:4649.35 Score:0.68 [VWAP_FADE]
+2026-04-06 14:46:18 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:49:05 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:49:05 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:49:05 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:49:05 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:50:24 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:50:24 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:50:24 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:50:24 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:50:24 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:53:02 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:53:02 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:53:02 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:53:02 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:53:02 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:54:52 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:54:52 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:54:52 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:54:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:54:52 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:56:25 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:56:25 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:56:25 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:56:25 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:56:25 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:59:05 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-06 14:59:05 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:59:05 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 14:59:05 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 14:59:05 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:00:24 [DEBUG] [EURUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-04-06 15:00:24 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:00:24 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:00:24 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 15:00:24 [INFO] 🔎 MTF Confluence Locked: US Oil SELL_MICRO (Conf: 92%)
+2026-04-06 15:00:24 [DEBUG] [US Oil] SMC Breaker TP: 100.65
+2026-04-06 15:00:24 [INFO] 🛡️ HIGH_VOL Lot Cap: US Oil 0.27 → 0.01 (GARCH regime protection)
+2026-04-06 15:00:24 [INFO] ❌ MT5 REJECTED US Oil: Invalid volume (retcode=10014)
+2026-04-06 15:02:32 [DEBUG] [EURUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-04-06 15:02:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:02:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:02:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 15:04:27 [DEBUG] [EURUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-04-06 15:04:27 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:04:28 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:04:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 15:06:23 [DEBUG] [EURUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-04-06 15:06:23 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:06:23 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:06:23 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 15:09:32 [DEBUG] [EURUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-04-06 15:09:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:09:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:09:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 15:11:27 [DEBUG] [EURUSD] DISTRIBUTION [London_NY]: No OB/FVG retest in BULLISH direction.
+2026-04-06 15:11:27 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:11:27 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 15:11:27 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 15:11:34 [INFO] 🛡️ Gold [MICRO] XAUUSD SL→4683.47 (BREAKEVEN)
+2026-04-06 15:11:44 [INFO] ✂️ Gold [MICRO] XAUUSD partial 30% (PARTIAL_1) — 0.01L closed
+2026-04-06 15:11:55 [DEBUG] [S35] Gold [MICRO] exit engine cleaned: ticket=8605712284
+2026-04-06 15:11:55 [INFO] 🟢 Trade Closed: #8605712284 XAUUSD | P&L: $+8.94
+2026-04-06 15:24:02 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=97%. No new positions.
+2026-04-06 15:28:48 [INFO] Stopped.
+2026-04-06 21:02:01 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-04-06 21:02:01 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 7 Elite Assets.
+2026-04-06 21:02:26 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-06 21:05:22 [INFO] 🔎 MTF Confluence Locked: EURUSD BUY_MICRO (Conf: 82%)
+2026-04-06 21:05:22 [DEBUG] [EURUSD] SMC Breaker TP: 1.1545
+2026-04-06 21:05:22 [INFO] 🛡️ FX MICRO Lot Cap: EURUSD 0.55 → 0.10 (FX pip-risk protection)
+2026-04-06 21:05:23 [INFO] ⚡ TRAP SET: EURUSD BUY_LIMIT | Entry: 1.154 | Lot: 0.1
+2026-04-06 21:05:24 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:05:24 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:05:24 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:06:08 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:06:15 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 92%)
+2026-04-06 21:06:15 [DEBUG] [US SP 500] SMC Breaker TP: 6612
+2026-04-06 21:06:15 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 12.7R → capped at 3.0R (6600.37000)
+2026-04-06 21:06:15 [INFO] ⚠️ Lot Cap: US SP 500 calculated 34.4 lots → capped at 0.5 (MICRO)
+2026-04-06 21:06:17 [INFO] ⚡ TRAP SET: US SP 500 BUY_LIMIT | Entry: 6596.77 | Lot: 0.5
+2026-04-06 21:06:43 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY_MICRO (Conf: 82%)
+2026-04-06 21:06:43 [DEBUG] [US Tech 100] SMC Breaker TP: 24112
+2026-04-06 21:06:43 [INFO] ⚠️ Price Validation: US Tech 100 BUY_LIMIT 24111.3 too close to market (24108.7). Min distance: 0.02000. Rejection #1/4.
+2026-04-06 21:07:07 [DEBUG] [US SP 500] Trade recorded: ticket=8606122398 (Conf: 0.92)
+2026-04-06 21:07:26 [INFO] ⚖️ Scaling Out: US SP 500 hit 1:1 RR. Closing 0.4 Lots to secure 80% (Sniper Stalled) cash.
+2026-04-06 21:07:30 [INFO] 🛡️ Dynamic Profit Locked: US SP 500 SL secured at 6597.29
+2026-04-06 21:07:47 [INFO] 🎯 TP Ratcheted: US SP 500 at 2.4R → new TP 6598.92000 (+1.0R ahead)
+2026-04-06 21:07:47 [INFO] 🛡️ Dynamic Profit Locked: US SP 500 SL secured at 6597.42
+2026-04-06 21:08:07 [INFO] 🎯 TP Ratcheted: US SP 500 at 2.1R → new TP 6599.17000 (+1.0R ahead)
+2026-04-06 21:08:07 [INFO] 🛡️ Dynamic Profit Locked: US SP 500 SL secured at 6597.48
+2026-04-06 21:08:49 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:08:51 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:08:51 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:08:51 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:08:51 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY_MICRO (Conf: 82%)
+2026-04-06 21:08:51 [DEBUG] [US Tech 100] SMC Breaker TP: 24112
+2026-04-06 21:08:51 [INFO] ⚠️ Price Validation: US Tech 100 BUY_LIMIT 24111.3 too close to market (24105.7). Min distance: 0.02000. Rejection #2/4.
+2026-04-06 21:10:07 [INFO] 🟢 Trade Closed: #8606122398 US SP 500 | P&L: $+0.08
+2026-04-06 21:10:17 [INFO] 🗑️ Stale Trap Avoided: Cancelled EURUSD limit order. (Target reached before entry (Stale Trap))
+2026-04-06 21:10:17 [DEBUG] ⚠️ Stale trap #1/3 for EURUSD @ 1.154.
+2026-04-06 21:11:00 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:11:00 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:11:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:11:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:11:01 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:11:01 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 82%)
+2026-04-06 21:11:01 [DEBUG] [US SP 500] SMC Breaker TP: 6612
+2026-04-06 21:11:01 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 12.7R → capped at 3.0R (6600.37000)
+2026-04-06 21:11:01 [INFO] ⚠️ Lot Cap: US SP 500 calculated 27.5 lots → capped at 0.5 (MICRO)
+2026-04-06 21:11:01 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6606.6 tp=6600.4 sl=6595.6 (BUY) — would be retcode 10016
+2026-04-06 21:11:01 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY_MICRO (Conf: 92%)
+2026-04-06 21:11:01 [DEBUG] [US Tech 100] SMC Breaker TP: 24157
+2026-04-06 21:11:01 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 18.9R → capped at 3.0R (24118.50000)
+2026-04-06 21:11:01 [INFO] ⚠️ Lot Cap: US Tech 100 calculated 17.1 lots → capped at 0.5 (MICRO)
+2026-04-06 21:11:01 [INFO] ⚠️ TP/SL direction guard blocked US Tech 100: price=24149 tp=24118 sl=24109 (BUY) — would be retcode 10016
+2026-04-06 21:12:40 [DEBUG] [EURUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:12:40 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:12:40 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:12:40 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:12:40 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:12:40 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 82%)
+2026-04-06 21:12:40 [DEBUG] [US SP 500] SMC Breaker TP: 6612
+2026-04-06 21:12:40 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 12.7R → capped at 3.0R (6600.37000)
+2026-04-06 21:12:40 [INFO] ⚠️ Lot Cap: US SP 500 calculated 27.5 lots → capped at 0.5 (MICRO)
+2026-04-06 21:12:40 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6606.4 tp=6600.4 sl=6595.6 (BUY) — would be retcode 10016
+2026-04-06 21:12:41 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY_MICRO (Conf: 92%)
+2026-04-06 21:12:41 [DEBUG] [US Tech 100] SMC Breaker TP: 24157
+2026-04-06 21:12:41 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 18.9R → capped at 3.0R (24118.50000)
+2026-04-06 21:12:41 [INFO] ⚠️ Lot Cap: US Tech 100 calculated 17.1 lots → capped at 0.5 (MICRO)
+2026-04-06 21:12:41 [INFO] ⚠️ TP/SL direction guard blocked US Tech 100: price=24152 tp=24118 sl=24109 (BUY) — would be retcode 10016
+2026-04-06 21:15:19 [INFO] 🔎 MTF Confluence Locked: EURUSD BUY_MICRO (Conf: 92%)
+2026-04-06 21:15:19 [DEBUG] [EURUSD] SMC Breaker TP: 1.1558
+2026-04-06 21:15:19 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:15:19 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:15:19 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:15:19 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:15:19 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 90%)
+2026-04-06 21:15:19 [DEBUG] [US SP 500] SMC Breaker TP: 6612
+2026-04-06 21:15:19 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 13.6R → capped at 3.0R (6598.77000)
+2026-04-06 21:15:19 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY_MICRO (Conf: 99%)
+2026-04-06 21:15:19 [DEBUG] [US Tech 100] SMC Breaker TP: 24157
+2026-04-06 21:15:19 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 25.6R → capped at 3.0R (24102.50000)
+2026-04-06 21:19:13 [INFO] 🛡️ FX MICRO Lot Cap: EURUSD 0.55 → 0.10 (FX pip-risk protection)
+2026-04-06 21:20:01 [INFO] ⚡ TRAP SET: EURUSD BUY_LIMIT | Entry: 1.15395 | Lot: 0.1
+2026-04-06 21:20:04 [INFO] ⚠️ Lot Cap: US Tech 100 calculated 17.1 lots → capped at 0.5 (MICRO)
+2026-04-06 21:20:04 [INFO] ⚠️ TP/SL direction guard blocked US Tech 100: price=24184 tp=24102 sl=24093 (BUY) — would be retcode 10016
+2026-04-06 21:20:09 [INFO] ⚠️ Lot Cap: US SP 500 calculated 26.4 lots → capped at 0.5 (MICRO)
+2026-04-06 21:20:09 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6612.5 tp=6598.8 sl=6593.8 (BUY) — would be retcode 10016
+2026-04-06 21:21:18 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:21:18 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:21:18 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:21:18 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:21:18 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 84%)
+2026-04-06 21:21:18 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 29.9R → capped at 3.0R (6598.77000)
+2026-04-06 21:21:19 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:23:33 [INFO] ⚠️ Lot Cap: US SP 500 calculated 26.4 lots → capped at 0.5 (MICRO)
+2026-04-06 21:23:33 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6614.6 tp=6598.8 sl=6593.8 (BUY) — would be retcode 10016
+2026-04-06 21:24:25 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:24:25 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:24:25 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:24:25 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:24:25 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:24:25 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:26:50 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:26:50 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:26:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:26:50 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:26:50 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:26:50 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:29:27 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:29:27 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:29:27 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:29:27 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:29:27 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:29:27 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:32:02 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:32:02 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:32:02 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:32:03 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-06 21:32:03 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:1.2x | Trend:BULLISH | S13[VWAP_Z:3.87 HVN:True Δ:2116] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-04-06 21:32:07 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.9x | Trend:BULLISH | S13[VWAP_Z:2.29 HVN:True Δ:2438] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-04-06 21:34:30 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:34:34 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:34:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:34:34 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:34:34 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 90%)
+2026-04-06 21:34:34 [DEBUG] [US SP 500] SMC Breaker TP: 6612
+2026-04-06 21:34:38 [INFO] ⚠️ Lot Cap: US SP 500 calculated 2.3 lots → capped at 0.5 (MICRO)
+2026-04-06 21:34:38 [INFO] ⚡ TRAP SET: US SP 500 BUY_LIMIT | Entry: 6605.77 | Lot: 0.5
+2026-04-06 21:34:39 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:34:57 [INFO] 🗑️ Stale Trap Avoided: Cancelled US SP 500 limit order. (Target reached before entry (Stale Trap))
+2026-04-06 21:34:57 [DEBUG] ⚠️ Stale trap #1/3 for US SP 500 @ 6605.77.
+2026-04-06 21:37:01 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:37:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:37:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:37:01 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:37:01 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:39:20 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:39:20 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:39:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:39:21 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:39:21 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:39:25 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:41:45 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:41:45 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:41:45 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:41:45 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:41:46 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 82%)
+2026-04-06 21:41:46 [DEBUG] [US SP 500] SMC Breaker TP: 6612
+2026-04-06 21:41:55 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:45:11 [INFO] ⚠️ Lot Cap: US SP 500 calculated 2.3 lots → capped at 0.5 (MICRO)
+2026-04-06 21:47:22 [INFO] ⚡ TRAP SET: US SP 500 BUY_LIMIT | Entry: 6605.77 | Lot: 0.5
+2026-04-06 21:47:43 [INFO] 🗑️ Stale Trap Avoided: Cancelled US SP 500 limit order. (Target reached before entry (Stale Trap))
+2026-04-06 21:47:43 [DEBUG] ⚠️ Stale trap #2/3 for US SP 500 @ 6605.77.
+2026-04-06 21:47:50 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:48:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:48:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:48:10 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:48:19 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:50:49 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:50:49 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:50:49 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:50:49 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:51:42 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:52:26 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:55:35 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:55:49 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:55:49 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:55:54 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:55:54 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:55:54 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:57:45 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 21:57:45 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 21:57:45 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 21:57:45 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-06 21:57:46 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 21:57:46 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:00:37 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:00:37 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:00:37 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:00:37 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:00:37 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:00:37 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:04:32 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:04:55 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:04:55 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:06:38 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:07:10 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:07:10 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:07:10 [INFO] 🔁 ML Retrain started — reason: 50 new trades (N=232)
+2026-04-06 22:07:13 [INFO] 🔁 ML pipeline done — 176 samples extracted
+2026-04-06 22:07:33 [INFO] ✅ ML Retrain complete — 176 samples | reason: 50 new trades (N=232)
+2026-04-06 22:10:21 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:10:22 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:10:22 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:10:22 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:10:22 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 92%)
+2026-04-06 22:10:41 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:11:31 [DEBUG] Close Detection Error: database is locked
+2026-04-06 22:11:44 [INFO] ⚠️ Lot Cap: US SP 500 calculated 7.5 lots → capped at 0.5 (MICRO)
+2026-04-06 22:13:27 [INFO] ❌ MT5 REJECTED US SP 500: Request rejected due to absence of network connection (retcode=10031)
+2026-04-06 22:13:29 [INFO] 📩 Received Command: /status
+2026-04-06 22:13:52 [INFO] 📩 Received Command: /balance
+2026-04-06 22:14:56 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:14:56 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:14:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:14:56 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:14:56 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:18:23 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:19:26 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:19:26 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:21:09 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:21:34 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:24:17 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:24:17 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:24:17 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:24:17 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:24:17 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:26:48 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:26:50 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:26:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:27:07 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:27:16 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:29:46 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:29:46 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:29:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:29:46 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:29:46 [DEBUG] [US Tech 100] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:31:49 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:31:49 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:31:49 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:31:49 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:31:49 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:34:25 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:34:25 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:34:25 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:34:25 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:34:25 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:36:49 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:36:50 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:36:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:36:50 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:36:50 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:39:35 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:39:35 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:39:35 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:39:35 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:39:35 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:41:47 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:41:48 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:41:48 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:41:48 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:41:48 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:44:35 [DEBUG] [GBPUSD] DISTRIBUTION [NY_PM2]: No OB/FVG retest in NEUTRAL direction.
+2026-04-06 22:44:35 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:44:35 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:44:35 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:44:35 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:45:06 [INFO] ⚖️ Scaling Out: US SP 500 hit 1:1 RR. Closing 0.2 Lots to secure 50% (Standard) cash.
+2026-04-06 22:45:07 [INFO] 🎯 2R TP Set: US SP 500 residual half locked at 6619.77000 (2R = 8.42000 from entry)
+2026-04-06 22:45:07 [INFO] 🛡️ Dynamic Profit Locked: US SP 500 SL secured at 6613.54
+2026-04-06 22:45:18 [INFO] 🎯 TP Ratcheted: US SP 500 at 2.3R → new TP 6618.67000 (+1.0R ahead)
+2026-04-06 22:45:18 [INFO] 🛡️ Dynamic Profit Locked: US SP 500 SL secured at 6615.46
+2026-04-06 22:46:45 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:46:45 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:46:45 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:46:45 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:46:45 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:46:55 [INFO] 📩 Received Command: /status
+2026-04-06 22:47:15 [INFO] 📩 Received Command: /help
+2026-04-06 22:49:44 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:49:44 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:49:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:49:44 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:49:45 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:49:57 [INFO] 🎯 TP Ratcheted: US SP 500 at 2.2R → new TP 6624.65000 (+1.0R ahead)
+2026-04-06 22:49:57 [INFO] 🛡️ Dynamic Profit Locked: US SP 500 SL secured at 6618.7
+2026-04-06 22:51:45 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:51:45 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:51:45 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:51:45 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:53:29 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:53:42 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:56:26 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:56:26 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:56:26 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:56:26 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:56:26 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:56:38 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:58:47 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:58:48 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 22:58:48 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 22:58:49 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:58:49 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 22:58:49 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:01:23 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:01:23 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:01:23 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:01:23 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:01:23 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BULLISH | S13[VWAP_Z:3.78 HVN:True Δ:452] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-04-06 23:01:52 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:03:46 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:03:46 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:03:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:03:46 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:03:46 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2] | Score:0.47 | OB:False FVG:True BOS:True OTE:False Vol:0.8x | Trend:BULLISH | S13[VWAP_Z:3.84 HVN:True Δ:48] | SMC[IFVG_ALIGNED,MACRO_OB +0.07]
+2026-04-06 23:03:46 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:06:24 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:06:24 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:06:24 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:06:24 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:06:24 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:06:25 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:08:46 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:08:46 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:08:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:08:46 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:08:46 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:08:46 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:11:33 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:11:33 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:11:33 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:11:33 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:11:33 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:11:33 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:13:48 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:13:48 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:13:48 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:13:48 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:13:48 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:13:48 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:17:37 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:17:37 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:17:37 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:17:37 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:17:38 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:17:39 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:20:25 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:20:25 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:20:25 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:20:25 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:20:25 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:20:25 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:22:58 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:22:58 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:22:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:22:58 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:22:58 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:22:58 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:24:51 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:24:51 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:24:51 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:24:51 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:24:51 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:24:51 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:27:06 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:27:06 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:27:06 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:27:06 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:27:06 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:27:06 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:28:54 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:28:54 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:28:54 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:28:54 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:28:54 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:28:54 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:31:53 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:31:53 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:31:53 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:31:53 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:31:53 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:31:53 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:33:48 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:33:48 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:33:48 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:33:48 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:33:48 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:33:49 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:36:41 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:36:41 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:36:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:36:41 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:36:41 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:36:41 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:38:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:38:30 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:38:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:38:30 [DEBUG] [US Oil] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:38:30 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:38:30 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:41:47 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:41:48 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:41:48 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:42:17 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:42:17 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:42:17 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:44:36 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:44:38 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:44:38 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:45:07 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:45:07 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:45:07 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:47:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:47:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:47:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:47:32 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:47:32 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:47:32 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:49:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:49:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:49:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:49:31 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:49:34 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:49:35 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:50:00 [INFO] 📋 Daily summary dispatched via Telegram.
+2026-04-06 23:52:40 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:52:40 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:52:40 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:52:40 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:52:40 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:52:40 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:54:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:54:30 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:54:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:54:30 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:54:30 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:54:30 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:57:43 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:57:43 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:57:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:57:43 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:57:43 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:57:43 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:59:39 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-06 23:59:39 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-06 23:59:39 [DEBUG] [US SP 500] DISTRIBUTION [NY_PM2]: No OB/FVG retest in BULLISH direction.
+2026-04-06 23:59:39 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 00:02:37 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:04:38 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:07:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:09:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:12:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:13:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:15:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:18:20 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:20:26 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:23:22 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:25:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:28:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:30:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:33:40 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:35:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:38:53 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:40:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:43:47 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:45:45 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 00:48:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 01:13:15 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 01:13:15 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 01:13:15 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 01:14:55 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 01:14:55 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 01:14:55 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 01:16:29 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 01:16:29 [INFO] 🔎 MTF Confluence Locked: USDJPY BUY_MICRO (Conf: 82%)
+2026-04-07 01:16:29 [INFO] 🛡️ FX MICRO Lot Cap: USDJPY 0.27 → 0.10 (FX pip-risk protection)
+2026-04-07 01:16:30 [INFO] ⚡ TRAP SET: USDJPY BUY_LIMIT | Entry: 159.538 | Lot: 0.1
+2026-04-07 03:01:46 [DEBUG] 🧹 Stale scaled position purged: US SP 500_6611.35_BUY
+2026-04-07 03:01:46 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-07 03:01:57 [DEBUG] [EURUSD] Trade recorded: ticket=8606134238 (Conf: 0.917)
+2026-04-07 03:54:47 [INFO] 🗑️ Stale Trap Avoided: Cancelled USDJPY limit order. (Target reached before entry (Stale Trap))
+2026-04-07 03:54:47 [DEBUG] ⚠️ Stale trap #1/3 for USDJPY @ 159.538.
+2026-04-07 03:57:13 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 03:57:14 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 03:57:14 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 03:58:56 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 03:58:56 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 03:58:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 04:00:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 04:00:30 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 04:00:30 [INFO] 🥇 Gold [MICRO] VWAP_FADE: BUY Score:0.68 Lot:0.01 SL:4636.61 TP:4660.59 [Asian]
+2026-04-07 04:00:31 [INFO] ⚡ Gold MARKET [MICRO]: XAUUSD BUY #8606389233 | Lot:0.01 Entry:4646.60 SL:4636.60 TP:4660.59 Score:0.68 [VWAP_FADE]
+2026-04-07 04:00:33 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 04:33:57 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 04:33:57 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 04:33:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 04:33:58 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 04:35:29 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 04:35:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 04:35:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 04:35:29 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 04:38:33 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 04:38:33 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 04:38:33 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 04:38:33 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 04:38:47 [INFO] 🔴 Trade Closed: #8606134238 EURUSD | P&L: $-5.90
+2026-04-07 05:11:46 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 05:11:47 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 05:11:47 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:11:47 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 05:11:47 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 05:19:04 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 05:19:04 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:19:05 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:19:05 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 05:19:05 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 05:26:18 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 05:26:18 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:26:18 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:26:18 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 05:26:18 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 05:33:57 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 05:33:57 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:33:58 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:33:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 05:33:58 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 05:41:07 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 05:41:07 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:41:07 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:41:07 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 05:41:07 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 05:48:13 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 05:48:14 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:48:14 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:48:14 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 05:48:14 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 05:54:58 [DEBUG] [EURUSD] DISTRIBUTION [Asian]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 05:54:58 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:54:59 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 05:54:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 05:54:59 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:02:02 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:02:02 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:02:02 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:02:02 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:02:02 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:09:10 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:09:11 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:09:11 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:09:11 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:09:11 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:15:56 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:15:56 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:15:56 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:15:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:15:56 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:23:12 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:23:13 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:23:13 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:23:13 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:23:13 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:30:05 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:30:06 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:30:06 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:30:06 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:30:06 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:36:59 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:36:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:37:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:37:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:37:00 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:44:09 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:44:09 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:44:09 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:44:09 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:44:09 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:51:09 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:51:09 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:51:09 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:51:09 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:51:09 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:54:21 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:54:21 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:54:21 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:54:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:54:21 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 06:56:28 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 06:56:28 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:56:28 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 06:56:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 06:56:28 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:01:17 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:01:17 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:01:17 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:01:17 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:01:17 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:03:51 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:03:51 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:03:51 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:03:51 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:03:51 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:05:54 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:05:54 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:05:54 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:05:54 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:05:54 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:07:30 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:07:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:07:30 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:07:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:07:30 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:10:40 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:10:40 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:10:40 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:10:40 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:10:40 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:12:32 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:12:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:12:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:12:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:12:32 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:15:40 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:15:40 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:15:41 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:15:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:15:41 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:17:28 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:17:28 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:17:28 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:17:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:17:28 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:20:30 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:20:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:20:30 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:20:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:20:30 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:22:31 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:22:31 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:22:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:22:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:22:31 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:25:29 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:25:29 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:25:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:25:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:25:29 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:27:29 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:27:29 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:27:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:27:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:27:29 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:30:32 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:30:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:30:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:30:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:30:32 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:32:29 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:32:29 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:32:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:32:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:32:29 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:35:21 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:35:21 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:35:21 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:35:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:35:21 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:37:29 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:37:29 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:37:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:37:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:37:29 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:40:22 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:40:22 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:40:22 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:40:22 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:40:22 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:42:29 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:42:29 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:42:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:42:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:42:29 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:45:20 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:45:20 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:45:20 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:45:20 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:45:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:47:29 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:47:29 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:47:29 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:47:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:47:29 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:50:10 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:50:10 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:50:10 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:50:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:50:10 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:51:52 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:51:52 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:51:52 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:51:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:51:52 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:53:30 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:53:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:53:30 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:53:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:53:30 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:56:20 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:56:20 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:56:20 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:56:20 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:56:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 07:58:27 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 07:58:27 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:58:27 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 07:58:27 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 07:58:27 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 08:01:12 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:01:12 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 08:01:12 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 08:01:12 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:01:12 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 08:01:12 [INFO] Stopped.
+2026-04-07 08:01:30 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-04-07 08:01:30 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 7 Elite Assets.
+2026-04-07 08:01:32 [INFO] 📩 Received Command: /status
+2026-04-07 08:01:32 [INFO] 📩 Received Command: /balance
+2026-04-07 08:01:41 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-07 08:04:20 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:04:21 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:04:21 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:04:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:04:21 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:05:37 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:05:37 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:05:37 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:05:37 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:05:37 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:07:42 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:07:42 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:07:42 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:07:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:07:42 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:10:11 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:10:11 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:10:11 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:10:11 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:10:11 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:11:44 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:11:44 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:11:44 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:11:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:11:44 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:14:28 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:14:28 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:14:28 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:14:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:14:28 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:16:01 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:16:01 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:16:01 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:16:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:16:01 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:17:43 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:17:43 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:17:43 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:17:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:17:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:20:20 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:20:20 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:20:20 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:20:20 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:20:20 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:21:44 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:21:44 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:21:44 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:21:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:21:44 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:24:10 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:24:10 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:24:10 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:24:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:24:10 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:26:01 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:26:01 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:26:01 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:26:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:26:01 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:27:43 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:27:43 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:27:43 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:27:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:27:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:30:34 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:30:34 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:30:34 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:30:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:30:34 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:32:43 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:32:43 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:32:43 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:32:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:32:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:35:33 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:35:33 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:35:34 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:35:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:35:34 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:37:41 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:37:41 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:37:41 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:37:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:37:41 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:40:39 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:40:39 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:40:39 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:40:39 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:40:39 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:42:43 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:42:43 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:42:43 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:42:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:42:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:45:44 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:45:44 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:45:44 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:45:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:45:44 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:47:44 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 08:47:44 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:47:44 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:47:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:47:44 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:50:49 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:50:49 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:50:49 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:50:49 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:50:49 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:52:43 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:52:43 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:52:43 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:52:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:52:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:55:46 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:55:46 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:55:46 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:55:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:55:46 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:57:41 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 08:57:41 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:57:41 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 08:57:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 08:57:41 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:00:29 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:00:29 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:00:29 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:00:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:00:29 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:02:18 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:02:18 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:02:18 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:02:18 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:02:18 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:02:18 [INFO] 🔁 ML Retrain started — reason: 50 new trades (N=234)
+2026-04-07 09:02:20 [INFO] 🔁 ML pipeline done — 178 samples extracted
+2026-04-07 09:02:29 [INFO] ✅ ML Retrain complete — 178 samples | reason: 50 new trades (N=234)
+2026-04-07 09:03:56 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:03:56 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:03:56 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:03:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:03:56 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:06:36 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:06:36 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:06:36 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:06:36 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:06:37 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:08:57 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:08:57 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:08:57 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:08:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:08:57 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:11:23 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:11:23 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:11:23 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:11:23 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:11:23 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:12:43 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:12:43 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:12:43 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:12:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:12:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:15:13 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:15:13 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:15:13 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:15:13 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:15:13 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:17:04 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:17:04 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:17:04 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:17:04 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:17:04 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:18:43 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:18:43 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:18:43 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:18:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:18:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:21:42 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:21:42 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:21:42 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:21:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:21:42 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:23:42 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:23:42 [DEBUG] [GBPUSD] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:23:42 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:23:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:23:42 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:26:51 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:26:51 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:26:52 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:26:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:26:52 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:28:44 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:28:44 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:28:44 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:28:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:28:44 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:31:50 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:31:50 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:31:50 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:31:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:31:50 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:33:42 [DEBUG] [EURUSD] DEAD MARKET: No mean reversion setup.
+2026-04-07 09:33:42 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:33:42 [DEBUG] [USDJPY] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:33:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:33:42 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:36:41 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:36:41 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:36:41 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:36:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:36:41 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:38:42 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:38:42 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:38:42 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:38:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:38:42 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:41:32 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:41:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:41:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:41:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:41:32 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:43:42 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:43:42 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:43:42 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:43:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:43:42 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:46:20 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:46:21 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:46:21 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:46:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:46:21 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:48:03 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:48:03 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:48:03 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 09:48:04 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:48:04 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:49:44 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:49:44 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:49:44 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:49:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:49:44 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:52:23 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:52:23 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:52:23 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:52:23 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:52:23 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:53:43 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:53:43 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:53:43 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 09:53:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:53:43 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:56:28 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:56:28 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:56:28 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 09:56:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:56:28 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:58:04 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:58:04 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:58:04 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:58:04 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:58:04 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 09:59:42 [DEBUG] [EURUSD] DISTRIBUTION [PreLondon]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 09:59:42 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:59:42 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 09:59:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 09:59:42 [DEBUG] [US Oil] [ACCUMULATION] No sweep or displacement detected.
+2026-04-07 10:02:34 [DEBUG] [EURUSD] DISTRIBUTION [London]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 10:02:34 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 94%)
+2026-04-07 10:02:34 [DEBUG] [GBPUSD] SMC Breaker TP: 1.3228
+2026-04-07 10:02:34 [INFO] 🛡️ FX MICRO Lot Cap: GBPUSD 0.68 → 0.10 (FX pip-risk protection)
+2026-04-07 10:02:34 [INFO] 🎯 M1 Tight: GBPUSD TP=1.3215 SL=1.3255 ATR=0.001 R:R=4.99:1
+2026-04-07 10:02:34 [INFO] ⚡ M1 MARKET ORDER: GBPUSD SELL @ 1.3248 Lot:0.10
+2026-04-07 10:02:35 [INFO] ⚡ TRAP SET: GBPUSD SELL_LIMIT | Entry: 1.32481 | Lot: 0.1
+2026-04-07 10:02:35 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 10:02:35 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 10:02:35 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:02:42 [DEBUG] [GBPUSD] Trade recorded: ticket=8606620294 (Conf: 0.94)
+2026-04-07 10:04:41 [DEBUG] [EURUSD] DISTRIBUTION [London]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 10:04:41 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 10:04:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 10:04:41 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:07:42 [DEBUG] [EURUSD] DISTRIBUTION [London]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 10:07:42 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 10:07:42 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 10:07:42 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:09:41 [DEBUG] [EURUSD] DISTRIBUTION [London]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 10:09:41 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 10:09:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 10:09:41 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:12:58 [DEBUG] [EURUSD] DISTRIBUTION [London]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 10:12:58 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 10:12:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 10:12:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:14:56 [DEBUG] [EURUSD] DISTRIBUTION [London]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 10:14:57 [DEBUG] [USDJPY] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 10:14:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 10:14:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:18:08 [INFO] 🔎 MTF Confluence Locked: EURUSD SELL_MICRO (Conf: 88%)
+2026-04-07 10:18:08 [DEBUG] [EURUSD] SMC Breaker TP: 1.1536
+2026-04-07 10:18:08 [INFO] 🛡️ FX MICRO Lot Cap: EURUSD 0.54 → 0.10 (FX pip-risk protection)
+2026-04-07 10:18:08 [INFO] 🎯 M1 Tight: EURUSD TP=1.1526 SL=1.155 ATR=0.000 R:R=4.04:1
+2026-04-07 10:18:08 [INFO] ⚡ M1 MARKET ORDER: EURUSD SELL @ 1.1545 Lot:0.10
+2026-04-07 10:18:08 [INFO] ⚡ TRAP SET: EURUSD SELL_LIMIT | Entry: 1.15454 | Lot: 0.1
+2026-04-07 10:18:08 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:18:12 [DEBUG] [EURUSD] Trade recorded: ticket=8606631862 (Conf: 0.88)
+2026-04-07 10:19:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:23:11 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:24:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:27:53 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:29:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:33:02 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:34:55 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:37:39 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:39:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:42:36 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:44:55 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:47:30 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:49:21 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:51:09 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:53:52 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 10:59:34 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 11:06:51 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 11:14:04 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 11:21:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 11:27:09 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 11:28:43 [INFO] 🔴 Trade Closed: #8606620294 GBPUSD | P&L: $-10.50
+2026-04-07 11:28:43 [INFO] 🔴 Trade Closed: #8606631862 EURUSD | P&L: $-7.70
+2026-04-07 11:29:44 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:02:05 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 12:02:07 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:02:07 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 12:02:07 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 12:02:08 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:04:46 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 12:04:46 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:04:46 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 12:04:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 12:04:46 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:06:59 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 12:06:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:06:59 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 12:06:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 12:06:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:10:08 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 12:10:08 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:10:08 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 12:10:08 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 12:10:08 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:11:59 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 12:11:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:11:59 [DEBUG] [USDJPY] DISTRIBUTION [London_PM]: No OB/FVG retest in NEUTRAL direction.
+2026-04-07 12:11:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 12:11:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:15:07 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 12:15:08 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 97%)
+2026-04-07 12:15:08 [INFO] 🎯 TP Cap Applied: GBPUSD structural TP was 10.9R → capped at 3.0R (1.32660)
+2026-04-07 12:15:10 [INFO] 🛡️ FX MICRO Lot Cap: GBPUSD 0.69 → 0.10 (FX pip-risk protection)
+2026-04-07 12:15:10 [INFO] ⚡ TRAP SET: GBPUSD SELL_LIMIT | Entry: 1.3284 | Lot: 0.1
+2026-04-07 12:15:12 [INFO] 🔎 MTF Confluence Locked: USDJPY BUY_MICRO (Conf: 94%)
+2026-04-07 12:15:12 [DEBUG] [USDJPY] SMC Breaker TP: 159.63
+2026-04-07 12:15:12 [INFO] 🛡️ FX MICRO Lot Cap: USDJPY 0.34 → 0.10 (FX pip-risk protection)
+2026-04-07 12:15:12 [INFO] 🎯 M1 Tight: USDJPY TP=159.83 SL=159.38 ATR=0.085 R:R=4.34:1
+2026-04-07 12:15:12 [INFO] ⚡ M1 MARKET ORDER: USDJPY BUY @ 159.47 Lot:0.10
+2026-04-07 12:15:13 [INFO] ⚡ TRAP SET: USDJPY BUY_LIMIT | Entry: 159.466 | Lot: 0.1
+2026-04-07 12:15:14 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 12:15:14 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:15:24 [DEBUG] [USDJPY] Trade recorded: ticket=8606738449 (Conf: 0.94)
+2026-04-07 12:17:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:19:51 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:22:02 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:24:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:27:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:29:47 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:32:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:34:40 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:37:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:39:30 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:41:18 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:43:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:45:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:48:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:50:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:53:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:56:12 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 12:58:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:00:58 [INFO] 🔎 MTF Confluence Locked: US Oil BUY (Conf: 86%)
+2026-04-07 13:00:58 [INFO] 🛡️ HIGH_VOL Lot Cap: US Oil 0.54 → 0.01 (GARCH regime protection)
+2026-04-07 13:00:58 [INFO] ❌ MT5 REJECTED US Oil: Invalid volume (retcode=10014)
+2026-04-07 13:02:22 [INFO] 🗑️ Stale Trap Avoided: Cancelled GBPUSD limit order. (Target reached before entry (Stale Trap))
+2026-04-07 13:02:22 [DEBUG] ⚠️ Stale trap #1/3 for GBPUSD @ 1.3284.
+2026-04-07 13:03:01 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:03:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:03:03 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:05:59 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:05:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:05:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:08:00 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:08:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:08:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:10:59 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:10:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:10:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:13:00 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:13:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:13:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:15:51 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:15:52 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:15:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:18:00 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:18:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:18:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:18:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:20:46 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:20:46 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:20:46 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:20:46 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:23:00 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:23:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:23:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:23:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:25:40 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:25:40 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 13:25:40 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:25:40 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:28:00 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:28:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:28:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:28:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:30:40 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:30:40 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:30:40 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:30:41 [INFO] 🔎 MTF Confluence Locked: US Oil BUY (Conf: 84%)
+2026-04-07 13:32:39 [INFO] 🛡️ HIGH_VOL Lot Cap: US Oil 0.54 → 0.01 (GARCH regime protection)
+2026-04-07 13:32:39 [INFO] ❌ MT5 REJECTED US Oil: Invalid volume (retcode=10014)
+2026-04-07 13:33:34 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:33:34 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:33:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:36:04 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:36:04 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:36:04 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:38:22 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:38:22 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:38:22 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:40:00 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:40:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:40:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:42:51 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:42:51 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:42:51 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:45:01 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:45:01 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 13:45:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:47:52 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:47:52 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 13:47:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:47:52 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:50:01 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:50:01 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 13:50:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:50:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:52:51 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:52:51 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 13:52:51 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:52:51 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:55:01 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:55:01 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 13:55:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:55:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 13:57:41 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 13:57:41 [DEBUG] [GBPUSD] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 13:57:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 13:57:41 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:00:01 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 14:00:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:00:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:00:01 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 14:02:30 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 14:02:30 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:02:30 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:02:30 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 14:04:19 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 14:04:19 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:04:19 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:04:19 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 14:05:58 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 14:05:58 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:05:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:05:58 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 14:08:57 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 14:08:57 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:08:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:08:57 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 14:11:00 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 14:11:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:11:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:11:00 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 14:13:52 [DEBUG] [EURUSD] DISTRIBUTION [London_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 14:13:52 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:13:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:13:52 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 14:15:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:15:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:15:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:15:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:18:57 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:18:57 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:18:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:18:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:20:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:20:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:20:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:20:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:24:07 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:24:07 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:24:07 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:24:07 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:25:58 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:25:58 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:25:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:25:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:29:03 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:29:03 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:29:03 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:29:03 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:30:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:30:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:30:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 14:30:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 14:31:04 [INFO] 🟢 Trade Closed: #8606738449 USDJPY | P&L: $+16.95
+2026-04-07 14:47:23 [INFO] 📩 Received Command: /status
+2026-04-07 15:03:31 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:03:31 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:03:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:03:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:03:34 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:05:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:05:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:05:59 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:05:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:05:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:08:31 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:08:31 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:08:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:08:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:08:32 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:11:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:11:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:11:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:11:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:11:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:13:06 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:13:06 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:13:06 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:13:06 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:13:06 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:15:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:15:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:15:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:15:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:15:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:17:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:17:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:17:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:17:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:17:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:20:08 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:20:08 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:20:08 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:20:08 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:20:08 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:21:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:21:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:21:59 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:21:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:21:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:25:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:25:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:25:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:25:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:25:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:27:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:27:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:27:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:27:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:27:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:29:56 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:29:56 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:29:56 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:29:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:29:56 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:32:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:32:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:32:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:32:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:32:00 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:34:39 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:34:39 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:34:39 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:34:39 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:34:39 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:37:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:37:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:37:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:37:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:37:00 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:39:31 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:39:31 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:39:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:39:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:39:31 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:41:20 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:41:20 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:41:20 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:41:20 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:41:20 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:43:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:43:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:43:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:43:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:43:01 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:45:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:45:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:45:59 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:45:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:45:59 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:48:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:48:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:48:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:48:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:48:01 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:50:54 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:50:54 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:50:54 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:50:54 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:50:54 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:53:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:53:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:53:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:53:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:53:00 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:55:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:55:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:55:59 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:55:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:55:59 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 15:58:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:58:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:58:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 15:58:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 15:58:01 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:01:10 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:01:10 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:01:10 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:01:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:01:10 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:03:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:03:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:03:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:03:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:03:01 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:06:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:06:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:06:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:06:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:06:01 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:07:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:07:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:07:59 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:07:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:08:00 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:10:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:10:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:10:59 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:10:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:10:59 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:13:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:13:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:13:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:13:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:13:01 [DEBUG] [US Oil] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:15:50 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:15:50 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:15:50 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:15:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:15:50 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:18:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:18:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:18:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:18:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:18:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:20:41 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:20:41 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:20:41 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:20:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:20:41 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:23:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:23:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:23:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:23:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:23:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:25:31 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:25:31 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:25:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:25:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:25:31 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:27:19 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:27:19 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:27:19 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:27:19 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:27:19 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:28:58 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:28:58 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:28:58 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:28:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:28:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:31:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:31:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:31:59 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:31:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:31:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:31:59 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:32:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:34:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:34:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:34:00 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:34:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:34:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:34:00 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:34:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:36:54 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:36:54 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:36:54 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:36:54 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:36:54 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:36:54 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:36:54 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:39:00 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:39:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:39:00 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:39:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:39:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:39:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:39:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:42:07 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:42:07 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:42:07 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:42:07 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:42:07 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:42:07 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:42:07 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:44:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:44:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:44:01 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:44:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:44:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:44:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:44:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:47:07 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:47:07 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:47:07 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:47:07 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:47:07 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:47:07 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:47:07 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:49:01 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:49:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:49:01 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:49:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:49:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:49:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:49:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:52:06 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:52:07 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:52:07 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:52:07 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:52:07 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:52:07 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:52:07 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:53:59 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:53:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:53:59 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:53:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:53:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:53:59 [DEBUG] [US SP 500] [MANIPULATION] No sweep or displacement detected.
+2026-04-07 16:53:59 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:57:13 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:57:13 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:57:13 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:57:13 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:57:13 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:57:13 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:57:13 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:59:03 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:59:03 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:59:03 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 16:59:03 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 16:59:03 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:59:03 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 16:59:03 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:02:08 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:02:08 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:02:08 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:02:08 [INFO] 🥇 Gold [NANO] MOMENTUM_RIDER: SELL Score:0.71 Lot:0.01 SL:4652.27 TP:4626.49 [London_NY]
+2026-04-07 17:02:12 [INFO] ⚡ Gold LIMIT [NANO]: XAUUSD SELL #8607023423 | Lot:0.01 Entry:4636.63 SL:4652.27 TP:4626.48 Score:0.71 [MOMENTUM_RIDER]
+2026-04-07 17:02:12 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:02:12 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:02:12 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:04:05 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:04:05 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:04:05 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:04:05 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:04:05 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:04:05 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:07:05 [INFO] 🗑️ Stale Trap Avoided: Cancelled XAUUSD limit order. (Target reached before entry (Stale Trap))
+2026-04-07 17:07:05 [DEBUG] ⚠️ Stale trap #1/3 for XAUUSD @ 4636.63.
+2026-04-07 17:07:08 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:07:08 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:07:08 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:07:08 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:07:08 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:07:08 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:07:08 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:09:12 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:09:12 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:09:12 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:09:12 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:09:13 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:09:13 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:09:13 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:12:10 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:12:10 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:12:10 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:12:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:12:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:12:10 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:12:10 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:14:19 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:14:19 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:14:19 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:14:19 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:14:19 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:14:19 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:14:19 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:16:50 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:16:50 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:16:50 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:16:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:16:50 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:16:50 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:16:51 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:18:55 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:18:55 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:18:55 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:18:55 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:18:55 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:18:55 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:18:55 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:21:19 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:21:19 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:21:19 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:21:19 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:21:19 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:21:19 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:21:19 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:23:15 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:23:15 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:23:15 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:23:15 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:23:15 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:23:15 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:23:15 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:24:58 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:24:58 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:24:58 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:24:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:24:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:24:59 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:24:59 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:28:10 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:28:10 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:28:10 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:28:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:28:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:28:10 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:28:10 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:29:56 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:29:56 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:29:56 [DEBUG] [USDJPY] DISTRIBUTION [NY_Open]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:29:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:29:56 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:29:56 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:29:56 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:33:11 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:33:11 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:33:11 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:33:11 [INFO] 🥇 Gold [MICRO] NY_JUDAS: BUY Score:0.80 Lot:0.01 SL:4607.68 TP:4694.31 [NY_Open]
+2026-04-07 17:33:14 [INFO] ⏭️ Gold [MICRO] BUY_LIMIT 4649.29 above market ask 4648.70 — skipped.
+2026-04-07 17:33:14 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:33:14 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 99%)
+2026-04-07 17:33:14 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 64.4R → capped at 3.0R (6564.47000)
+2026-04-07 17:33:14 [INFO] ⚠️ Lot Cap: US SP 500 calculated 34.3 lots → capped at 0.5 (MICRO)
+2026-04-07 17:33:14 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6575.4 tp=6564.5 sl=6559.7 (BUY) — would be retcode 10016
+2026-04-07 17:33:15 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY (Conf: 99%)
+2026-04-07 17:33:15 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 160.5R → capped at 3.0R (23898.00000)
+2026-04-07 17:33:15 [INFO] 🛡️ HIGH_VOL Lot Cap: US Tech 100 34.10 → 0.01 (GARCH regime protection)
+2026-04-07 17:33:15 [INFO] ⚠️ TP/SL direction guard blocked US Tech 100: price=23950 tp=23898 sl=23888 (BUY) — would be retcode 10016
+2026-04-07 17:34:57 [DEBUG] [EURUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:34:57 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:34:57 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:34:57 [INFO] 🥇 Gold [MICRO] NY_JUDAS: BUY Score:0.80 Lot:0.01 SL:4607.68 TP:4694.31 [NY_Open]
+2026-04-07 17:35:00 [INFO] ⚡ Gold LIMIT [MICRO]: XAUUSD BUY #8607071037 | Lot:0.01 Entry:4652.64 SL:4607.68 TP:4694.31 Score:0.80 [NY_JUDAS]
+2026-04-07 17:35:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:35:00 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 80%)
+2026-04-07 17:35:00 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 64.4R → capped at 3.0R (6564.47000)
+2026-04-07 17:35:00 [INFO] ⚠️ Lot Cap: US SP 500 calculated 27.4 lots → capped at 0.5 (MICRO)
+2026-04-07 17:35:00 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6580.8 tp=6564.5 sl=6559.7 (BUY) — would be retcode 10016
+2026-04-07 17:35:02 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY (Conf: 94%)
+2026-04-07 17:35:02 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 7.4R → capped at 3.0R (24125.17071)
+2026-04-07 17:35:02 [INFO] ⚠️ Price Validation: US Tech 100 BUY_LIMIT 24022.05 too close to market (23970.95). Min distance: 0.02000. Rejection #1/4.
+2026-04-07 17:35:34 [DEBUG] [XAUUSD] Gold [MICRO] limit filled — exit engine registered ticket=8607071037
+2026-04-07 17:35:34 [DEBUG] [XAUUSD] Trade recorded: ticket=8607071037 (Conf: 0.801)
+2026-04-07 17:38:07 [INFO] 🔎 MTF Confluence Locked: EURUSD SELL_MICRO (Conf: 87%)
+2026-04-07 17:38:07 [DEBUG] [EURUSD] SMC Breaker TP: 1.1549
+2026-04-07 17:38:07 [INFO] ⚠️ Price Validation: EURUSD SELL_LIMIT 1.15731 too close to market (1.1579). Min distance: 0.00002. Rejection #1/4.
+2026-04-07 17:38:10 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:38:10 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:38:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:38:10 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:38:10 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 80%)
+2026-04-07 17:38:10 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 64.4R → capped at 3.0R (6564.47000)
+2026-04-07 17:38:11 [INFO] ⚠️ Lot Cap: US SP 500 calculated 27.4 lots → capped at 0.5 (MICRO)
+2026-04-07 17:38:11 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6580.9 tp=6564.5 sl=6559.7 (BUY) — would be retcode 10016
+2026-04-07 17:38:11 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY (Conf: 94%)
+2026-04-07 17:38:11 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 7.4R → capped at 3.0R (24125.17071)
+2026-04-07 17:38:11 [INFO] ⚠️ Price Validation: US Tech 100 BUY_LIMIT 24022.05 too close to market (23961.7). Min distance: 0.02000. Rejection #2/4.
+2026-04-07 17:39:58 [INFO] 🔎 MTF Confluence Locked: EURUSD SELL_MICRO (Conf: 87%)
+2026-04-07 17:39:58 [DEBUG] [EURUSD] SMC Breaker TP: 1.1549
+2026-04-07 17:39:58 [INFO] ⚠️ Price Validation: EURUSD SELL_LIMIT 1.15731 too close to market (1.15785). Min distance: 0.00002. Rejection #2/4.
+2026-04-07 17:40:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:40:02 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:40:02 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:40:02 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:40:02 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 80%)
+2026-04-07 17:40:02 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 64.4R → capped at 3.0R (6564.47000)
+2026-04-07 17:40:02 [INFO] ⚠️ Lot Cap: US SP 500 calculated 27.4 lots → capped at 0.5 (MICRO)
+2026-04-07 17:40:02 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6578.2 tp=6564.5 sl=6559.7 (BUY) — would be retcode 10016
+2026-04-07 17:40:02 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY (Conf: 94%)
+2026-04-07 17:40:02 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 7.4R → capped at 3.0R (24125.65287)
+2026-04-07 17:40:02 [INFO] ⚠️ Price Validation: US Tech 100 BUY_LIMIT 24022.05 too close to market (23944.45). Min distance: 0.02000. Rejection #3/4.
+2026-04-07 17:42:57 [INFO] 🔎 MTF Confluence Locked: EURUSD SELL_MICRO (Conf: 87%)
+2026-04-07 17:42:57 [DEBUG] [EURUSD] SMC Breaker TP: 1.1549
+2026-04-07 17:42:57 [INFO] ⚠️ Price Validation: EURUSD SELL_LIMIT 1.15731 too close to market (1.158). Min distance: 0.00002. Rejection #3/4.
+2026-04-07 17:42:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:42:59 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 17:42:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 17:42:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:42:59 [INFO] 🔎 MTF Confluence Locked: US SP 500 BUY_MICRO (Conf: 99%)
+2026-04-07 17:43:00 [INFO] 🎯 TP Cap Applied: US SP 500 structural TP was 64.4R → capped at 3.0R (6564.47000)
+2026-04-07 17:43:00 [INFO] ⚠️ Lot Cap: US SP 500 calculated 34.3 lots → capped at 0.5 (MICRO)
+2026-04-07 17:43:00 [INFO] ⚠️ TP/SL direction guard blocked US SP 500: price=6575.6 tp=6564.5 sl=6559.7 (BUY) — would be retcode 10016
+2026-04-07 17:43:01 [INFO] 🔎 MTF Confluence Locked: US Tech 100 BUY (Conf: 94%)
+2026-04-07 17:43:01 [INFO] 🎯 TP Cap Applied: US Tech 100 structural TP was 7.3R → capped at 3.0R (24126.18321)
+2026-04-07 17:43:01 [INFO] ⚠️ Price Validation: US Tech 100 BUY_LIMIT 24022.05 too close to market (23928.2). Min distance: 0.02000. Rejection #4/4.
+2026-04-07 17:43:01 [INFO] 🚫 Stale Zone Invalidated: US Tech 100 entry 24022.05 rejected 4× — OB swept. Signal cancelled. 15-min cooldown started.
+2026-04-07 17:45:01 [INFO] 🔎 MTF Confluence Locked: EURUSD SELL_MICRO (Conf: 82%)
+2026-04-07 17:45:01 [DEBUG] [EURUSD] SMC Breaker TP: 1.1549
+2026-04-07 17:45:04 [INFO] 🛡️ FX MICRO Lot Cap: EURUSD 0.55 → 0.10 (FX pip-risk protection)
+2026-04-07 17:45:04 [INFO] 🎯 M1 Tight: EURUSD TP=1.1563 SL=1.1591 ATR=0.001 R:R=1.84:1
+2026-04-07 17:45:04 [INFO] ⚡ M1 MARKET ORDER: EURUSD SELL @ 1.1581 Lot:0.10
+2026-04-07 17:45:04 [INFO] ⚡ TRAP SET: EURUSD SELL_LIMIT | Entry: 1.15812 | Lot: 0.1
+2026-04-07 17:45:04 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:45:04 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:45:04 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:45:14 [DEBUG] [EURUSD] Trade recorded: ticket=8607083636 (Conf: 0.82)
+2026-04-07 17:48:02 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:48:02 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:48:02 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:50:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:50:00 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:50:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:52:52 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:52:52 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:52:52 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:55:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:55:00 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:55:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:57:50 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:57:50 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:57:50 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:59:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:59:59 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 17:59:59 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:02:49 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:02:49 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:02:49 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:05:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:05:00 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:05:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:07:48 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:07:48 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:07:48 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:09:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:09:59 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:09:59 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:10:41 [INFO] ✂️ Gold [MICRO] XAUUSD partial 100% (TIME_EXIT) — 0.01L closed
+2026-04-07 18:10:54 [INFO] 🔴 Trade Closed: #8607071037 XAUUSD | P&L: $-15.81
+2026-04-07 18:12:35 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:12:35 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:12:35 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:17:02 [INFO] 🔴 Markov Gate HALT: P(BEAR)=0% P(HIGH_VOL)=97%. No new positions.
+2026-04-07 18:24:09 [INFO] 📩 Received Command: /status
+2026-04-07 18:45:57 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:45:57 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 18:45:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 18:45:57 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:45:57 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:45:57 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:48:47 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:48:47 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 18:48:47 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 18:48:47 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:48:47 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:48:47 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:50:58 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:50:58 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 18:50:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 18:50:58 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:50:58 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:50:58 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:53:58 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:53:58 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 18:53:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 18:53:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:53:59 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:53:59 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:56:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:56:00 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 18:56:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 18:56:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:56:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:56:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:58:44 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:58:44 [DEBUG] [USDJPY] DISTRIBUTION [NY_PM]: No OB/FVG retest in BULLISH direction.
+2026-04-07 18:58:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 18:58:44 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:58:44 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 18:58:44 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 19:00:58 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:00:58 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:00:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:00:58 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:00:58 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:00:58 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:03:43 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:05:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:08:39 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:10:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:13:33 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:16:08 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:16:08 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:16:08 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:16:08 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:16:08 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:16:08 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:18:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:21:13 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:23:26 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:25:44 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:28:35 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:31:14 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:31:14 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:31:14 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:31:14 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:31:14 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:31:14 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:33:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:35:56 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:38:16 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:41:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:43:09 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:46:04 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:48:12 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:48:12 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:48:12 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:48:12 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:48:12 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:48:12 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 19:50:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:53:13 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:56:10 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 19:58:11 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:00:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:03:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:05:52 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:05:52 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:05:52 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:05:52 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:05:52 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:05:52 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:08:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:11:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:13:02 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:15:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:18:02 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:21:09 [DEBUG] [GBPUSD] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:21:09 [DEBUG] [USDJPY] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:21:09 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:21:09 [DEBUG] [US Oil] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:21:09 [DEBUG] [US SP 500] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:21:09 [DEBUG] [US Tech 100] NY Lunch: Reaccumulation. Skipped.
+2026-04-07 20:23:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:26:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:27:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:30:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:30:59 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:30:59 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:30:59 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:30:59 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:31:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:33:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:33:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:33:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:33:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:33:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:33:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:35:47 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:35:47 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:35:47 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:35:47 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:35:47 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:35:47 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:38:00 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:38:00 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:38:00 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:38:00 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:38:00 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:38:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:40:34 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:40:34 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:40:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:40:34 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:40:34 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:40:34 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:43:04 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:43:04 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:43:04 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:43:04 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:43:04 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:43:04 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:45:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:45:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:45:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:45:32 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:45:32 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:45:32 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:48:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:48:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:48:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:48:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:48:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:48:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:50:32 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:50:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:50:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:50:32 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:50:32 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:50:32 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:53:02 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:53:02 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:53:02 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:53:02 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:53:02 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:53:02 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:55:26 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:55:26 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:55:26 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:55:26 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:55:26 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:55:26 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:57:25 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:57:25 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:57:25 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:57:25 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:57:25 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:57:25 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:59:03 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:59:03 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:59:03 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 20:59:03 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:59:03 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 20:59:03 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:02:09 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:02:09 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:02:09 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:02:09 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:02:09 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:02:09 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:04:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:04:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:04:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:04:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:04:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:04:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:07:01 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:07:01 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:07:01 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:07:01 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:07:01 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:07:01 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:09:12 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:09:12 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:09:12 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:09:12 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:09:12 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:09:12 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:09:12 [INFO] Stopped.
+2026-04-07 21:18:40 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-04-07 21:18:40 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 7 Elite Assets.
+2026-04-07 21:19:08 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-07 21:23:59 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:25:37 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:25:37 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:27:15 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:28:46 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:28:47 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:32:56 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:32:57 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:32:57 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:34:41 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:36:20 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:38:00 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:41:36 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:42:45 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:42:45 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:44:26 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:45:05 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:45:09 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:48:15 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 83%)
+2026-04-07 21:48:15 [INFO] ⚠️ Price Validation: GBPUSD SELL_LIMIT 1.32501 too close to market (1.32634). Min distance: 0.00002. Rejection #1/4.
+2026-04-07 21:48:19 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:48:19 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:48:44 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:48:44 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:48:44 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:50:47 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 83%)
+2026-04-07 21:50:47 [INFO] ⚠️ Price Validation: GBPUSD SELL_LIMIT 1.32501 too close to market (1.32619). Min distance: 0.00002. Rejection #2/4.
+2026-04-07 21:50:49 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:50:49 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:50:49 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:50:50 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:50:50 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:53:31 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 83%)
+2026-04-07 21:53:31 [INFO] ⚠️ Price Validation: GBPUSD SELL_LIMIT 1.32501 too close to market (1.32619). Min distance: 0.00002. Rejection #3/4.
+2026-04-07 21:53:32 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:53:32 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:53:32 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:53:32 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:53:32 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:55:44 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 99%)
+2026-04-07 21:55:44 [INFO] ⚠️ Price Validation: GBPUSD SELL_LIMIT 1.32501 too close to market (1.3256299999999999). Min distance: 0.00002. Rejection #4/4.
+2026-04-07 21:55:44 [INFO] 🚫 Stale Zone Invalidated: GBPUSD entry 1.32501 rejected 4× — OB swept. Signal cancelled. 15-min cooldown started.
+2026-04-07 21:55:46 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:55:46 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:55:46 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:58:36 [INFO] 🔎 MTF Confluence Locked: GBPUSD SELL_MICRO (Conf: 89%)
+2026-04-07 21:58:38 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:58:38 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 21:58:38 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:58:38 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 21:58:38 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:00:36 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:00:37 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:00:37 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 22:00:37 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:00:37 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:00:37 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:03:31 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:03:31 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:03:31 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 22:03:31 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:03:31 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:03:31 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:05:41 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:05:41 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:05:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 22:05:41 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:05:41 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:05:41 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:07:59 [INFO] 🟢 Trade Closed: #8607083636 EURUSD | P&L: $+4.30
+2026-04-07 22:08:28 [DEBUG] [GBPUSD] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:08:28 [DEBUG] [USDJPY] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:08:28 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-07 22:08:28 [DEBUG] [US Oil] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:08:28 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:08:28 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
+2026-04-07 22:08:53 [INFO] Stopped.

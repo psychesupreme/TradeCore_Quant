@@ -38,6 +38,7 @@
     "asset_Commodity",
     "asset_Forex",
     "asset_Index",
+    "regime_DEAD",
     "regime_HIGH",
     "regime_NORMAL",
     "regime_UNKNOWN",
@@ -46,11 +47,11 @@
     "dow_sin",
     "dow_cos"
   ],
-  "n_trades": 171,
-  "cv_accuracy": 0.5958,
-  "cv_accuracy_std": 0.0631,
-  "cv_precision": 0.5102,
-  "cv_precision_std": 0.0702,
+  "n_trades": 178,
+  "cv_accuracy": 0.6068,
+  "cv_accuracy_std": 0.0927,
+  "cv_precision": 0.5322,
+  "cv_precision_std": 0.1215,
   "precision_gate": "ACTIVE",
-  "trained_at": "2026-03-30T14:36:27.812256+00:00"
+  "trained_at": "2026-04-07T06:02:29.787082+00:00"
 }

@@ -3,14 +3,14 @@
   "scaled_positions": [],
   "last_logged_signal": {
     "EURUSD": [
-      "NEUTRAL",
-      0.0,
-      "SKIPPED"
-    ],
-    "GBPUSD": [
       "SELL_MICRO",
       0.82,
       "ATTEMPTED"
+    ],
+    "GBPUSD": [
+      "NEUTRAL",
+      0.0,
+      "SKIPPED"
     ],
     "USDJPY": [
       "NEUTRAL",
@@ -99,8 +99,6 @@
     ]
   },
   "trade_confidences": {
-    "8598962770": 0.99,
-    "8599000831": 0.99,
-    "8599119285": 0.98
+    "8607083636": 0.82
   }
 }

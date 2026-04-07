@@ -1,39 +1,34 @@
 # ============================================================
 # Kom v1.0 — bot_engine.py
-# [SPRINT 35: GOLD ENGINE + HYBRID MULTI-TIER + EXIT OVERHAUL]
+# [SPRINT 36: GOLD-ONLY SYSTEM + FULL SIMPLIFICATION]
 #
-# SPRINT 35 CHANGES:
-#   [GOLD ENGINE] Dedicated GoldScalpEngine replaces analyst.py
-#     for XAUUSD. Runs 7 strategies: London Judas, NY Judas,
-#     Silver Bullet FVG, Asian Fade, OB Retrace, VWAP Fade,
-#     Momentum Rider. Up to 3 concurrent Gold positions across
-#     4 sizing tiers: NANO / MICRO / STANDARD / MACRO.
-#   [EXIT ENGINE] DynamicExitEngine replaces the generic trailing
-#     stop for Gold: BE@0.6R → Partial@1R(30%) → Partial@1.5R(20%)
-#     → Trail(0.5×ATR) → MomentumExit@1.5R(80%) → TimeExit.
-#   [DAILY LIMIT] Max 8 non-Gold trades per day — prevents the
-#     March 23 scenario (51 trades, -$203 net).
-#   [MIN HOLD TIME] 10-minute no-exit window on all positions to
-#     prevent noise-stop on <5-min scalps (32% WR → $-785).
-#   [XAGUSD SUSPENDED] Removed from vip_assets pending dedicated
-#     strategy. 74 trades, 36.5% WR, -$780. Reactivate in S36.
+# SPRINT 36 CHANGES:
+#   [GOLD-ONLY] vip_assets reduced to ["XAUUSD"] exclusively.
+#     Non-Gold assets removed: EURUSD (-$85), GBPUSD (-$231),
+#     USDJPY (+$4), US SP 500 (-$6), USDCHF (+$77), NZDUSD (-$9),
+#     XAGUSD (-$780 S35-suspended), BTCUSD (-$134 S34-removed.
+#     XAUUSD is the only historically profitable asset (+$202).
+#     System will be perfected on Gold before introducing Silver.
 #
-# SPRINT 35 BUG FIXES:
-#   BUG-70: self.db_path never defined → AttributeError in
-#     _check_weekly_loss_limit() and strategy perf weighting.
-#   BUG-71: self.ml_scorer never instantiated → all ML confidence
-#     nudges silently skipped (process_symbol try/except swallows it).
-#   BUG-73: /amd Telegram command called compute_amd_phase and
-#     SESSION_WINDOWS which were removed in Sprint 12. Command now
-#     uses the live analysis cycle output instead.
-#   BUG-74: M1 scalp engine fired on XAGUSD and BTCUSD with no
-#     session gate. Restricted to XAUUSD London Open only.
+#   [SIMPLIFIED CYCLE] run_analysis_cycle() now calls _process_gold()
+#     exclusively. All FX/index/commodity branching removed.
+#     The daily trade counter is removed (Gold has its own tier-slot
+#     concurrency system). Non-Gold process_symbol() path kept for
+#     future asset reintroduction but never called.
 #
-# NOTE: XAUUSD now bypasses process_symbol() entirely.
-#   All Gold signals originate from GoldScalpEngine.analyse()
-#   and are executed through execute_gold_signal(). The existing
-#   process_symbol() / analyze_market_structure() path remains
-#   active for all non-Gold assets unchanged.
+#   [DB CLEANUP] sprint36_db_cleanup.py archives 46,979 non-Gold
+#     signals and flags 161 non-Gold trades as ARCHIVED_S36 so
+#     Kelly/ML pipelines only use Gold data going forward.
+#
+# SPRINT 35 BUGS FIXED (preserved from S35):
+#   BUG-70: db_path defined  |  BUG-71: ml_scorer instantiated
+#   BUG-73: /amd command fixed  |  BUG-74: M1 session gate
+#
+# SPRINT 36 NEW BUGS FIXED:
+#   BUG-77: VWAP_FADE fired into HV storm (Apr 7 risk-off) — now
+#     suppressed when H4 ATR > 1.4× its 20-bar average.
+#   BUG-78: Market order SL too tight (1.0×ATR) — hit in 30 seconds.
+#     Now enforced at minimum 2.0×M15_ATR for market orders.
 # ============================================================
 
 import os
@@ -126,17 +121,13 @@ class TradingBot:
 
         self.mt5_lock = threading.Lock()
 
-        # [S35] Elite 10 asset matrix — XAGUSD suspended (S35 diagnosis: 74 trades, 36.5% WR, -$780)
-        # Reactivate in Sprint 36 with dedicated Silver strategy.
-        self.vip_assets = [
-            "EURUSD", "GBPUSD", "USDJPY",
-            "XAUUSD",
-            # "XAGUSD",  # [S35-SUSPENDED] 74t 36.5%WR -$780 — no edge at current SL sizing
-            "US Oil",
-            "US SP 500", "US Tech 100",
-            "USDCHF",
-            "NZDUSD",
-        ]
+        # [S36] GOLD-ONLY ASSET UNIVERSE
+        # System stripped to XAUUSD exclusively. One asset perfected before
+        # introducing the next. XAUUSD: 74 trades, 45.9% WR, +$202 net — the
+        # only historically profitable asset in the system.
+        # Non-Gold signals (FX, indices, commodities) accounted for -$1,366 net.
+        # XAGUSD: suspended S35 (-$780). All others: archived.
+        self.vip_assets = ["XAUUSD"]
 
         self.active_symbols = []
         self.symbol_cooldowns = {}
@@ -1604,70 +1595,28 @@ class TradingBot:
         is_sniper_mode = (current_count >= self.MAX_OPEN_TRADES)
         upcoming_news = self.news_manager.get_upcoming_news() if self.news_manager else []
 
-        # [S35] Daily trade counter reset — non-Gold trades only
-        _today = datetime.utcnow().date()
-        if self._daily_trade_date != _today:
-            self._daily_trade_date  = _today
-            self._daily_trade_count = 0
-
-        # [S35] Sync Gold tier occupancy from live MT5 positions
-        # Clears stale entries for positions that have since closed
+        # [S36] Sync Gold tier occupancy from live MT5 positions
         live_gold_tickets = {p['ticket'] for p in current_positions if 'XAU' in p['symbol']}
         for tier in list(self._gold_tier_slots.keys()):
             if self._gold_tier_slots[tier] not in live_gold_tickets:
                 self._gold_tier_slots.pop(tier, None)
 
-        from analyst import get_after_hours_active_symbols
-        _tradable = get_after_hours_active_symbols(self.active_symbols, datetime.utcnow())
-        for symbol in _tradable:
-            if _is_manually_paused:
-                continue
+        # [S36] GOLD-ONLY EXECUTION LOOP
+        # System is Gold-only. No FX/index/commodity routing.
+        # process_symbol() is retained for future asset reintroduction
+        # but never called in this sprint.
+        if _is_manually_paused:
+            # Markov / retrain still run even when signals are paused
+            pass
+        elif gold_trades < self.MAX_GOLD_TRADES and self.gold_engine is not None:
+            symbol = 'XAUUSD'
+            real_sym = self.gateway.find_symbol(symbol) or symbol
 
-            if symbol in self.symbol_cooldowns:
-                time_since_close = datetime.utcnow() - self.symbol_cooldowns[symbol]
-                if time_since_close < timedelta(minutes=15):
-                    continue
-
-            current_usd_locks = len([s for s in self.execution_lock if "USD" in s])
-            if "USD" in symbol and (usd_exposure_base + current_usd_locks) >= 2:
-                continue
-
-            sym_base = symbol[:3]
-            live_base_count = base_exposure.get(sym_base, 0) + (1 if symbol in self.execution_lock else 0)
-            if live_base_count >= 2:
-                continue
-
-            symbol_trades = len([p for p in current_positions if p['symbol'] == symbol]) + (1 if symbol in self.execution_lock else 0)
-            nano_trades = len([p for p in current_positions if p['symbol'] == symbol and p.get('magic', 510000) == 510001])
-
-            if "DEAD MARKET" in self.market_regime and nano_trades >= 1:
-                continue
-
-            if "XAU" in symbol or "XAG" in symbol or "Oil" in symbol or "NGAS" in symbol:
-                if is_sniper_mode and gold_trades >= (self.MAX_GOLD_TRADES + 1):
-                    continue
-                elif not is_sniper_mode and gold_trades >= self.MAX_GOLD_TRADES:
-                    continue
-
-            if is_sniper_mode and symbol_trades >= 3:
-                continue
-            elif not is_sniper_mode and symbol_trades >= 2:
-                continue
-
-            # [S35] XAUUSD routes to dedicated Gold engine instead of analyst.py
-            if "XAU" in symbol and self.gold_engine is not None:
-                self._process_gold(symbol, upcoming_news)
-            else:
-                # [S35] Daily trade limit gate for non-Gold assets
-                # Data shows no edge beyond ~8 trades/day on non-Gold pairs
-                if self._daily_trade_count >= self.MAX_DAILY_TRADES:
-                    if datetime.utcnow().second < 5:
-                        self.log_debug(
-                            f"[S35] Daily non-Gold trade limit ({self.MAX_DAILY_TRADES}) reached. "
-                            f"Skipping {symbol}."
-                        )
-                    continue
-                self.process_symbol(symbol, is_sniper_mode, upcoming_news)
+            # Cooldown check
+            in_cooldown = (symbol in self.symbol_cooldowns and
+                           (datetime.utcnow() - self.symbol_cooldowns[symbol]).total_seconds() < 900)
+            if not in_cooldown and symbol not in self.execution_lock:
+                self._process_gold(real_sym, upcoming_news)
 
         # [S33] Automated ML retraining check — runs at end of each cycle
         self._check_ml_retrain_trigger()
