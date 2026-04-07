@@ -47145,3 +47145,10 @@
 2026-04-07 23:50:00 [INFO] 📋 Daily summary dispatched via Telegram.
 2026-04-07 23:52:41 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
 2026-04-07 23:52:41 [INFO] Stopped.
+2026-04-08 00:19:53 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-04-08 00:19:53 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 1 Elite Assets.
+2026-04-08 00:20:09 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
+2026-04-08 00:23:58 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-08 00:25:29 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-08 00:28:21 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-08 00:30:19 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
