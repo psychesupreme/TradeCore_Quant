@@ -47110,3 +47110,6 @@
 2026-04-07 22:08:28 [DEBUG] [US SP 500] [INDETERMINATE] No sweep or displacement detected.
 2026-04-07 22:08:28 [DEBUG] [US Tech 100] [INDETERMINATE] No sweep or displacement detected.
 2026-04-07 22:08:53 [INFO] Stopped.
+2026-04-07 22:16:56 [INFO] ✅ DB integrity check passed (WAL checkpointed).
+2026-04-07 22:16:56 [INFO] ✅ Kom v1.0: Engine Active. Monitoring 1 Elite Assets.
+2026-04-07 22:17:22 [DEBUG] 🧹 Garbage Collection: Cleared stale state tracking variables.
