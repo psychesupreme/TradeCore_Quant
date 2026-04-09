@@ -1,0 +1,24 @@
+# Kom v1.0 — requirements.txt
+# Python 3.11+
+# Install: pip install -r requirements.txt
+
+# Broker interface
+MetaTrader5==5.0.4424
+
+# Data & ML
+pandas==2.2.2
+numpy==1.26.4
+xgboost==2.0.3
+scikit-learn==1.4.2
+
+# API server & scheduling
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+APScheduler==3.10.4
+
+# HTTP
+httpx==0.27.0
+requests==2.31.0
+
+# Utilities
+python-dotenv==1.0.1
