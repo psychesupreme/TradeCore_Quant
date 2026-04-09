@@ -11,3 +11,6 @@ venv/
 *.sqlite3
 *.tradecore.db
 *.tmp.driveupload
+*.logs
+*.Media
+
