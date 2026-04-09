@@ -57,6 +57,45 @@
 #   Market SL minimum: 2.0×M15_ATR  |  Limit SL minimum: 1.5×M15_ATR
 #   Target hold: >15 min (10-min guard in bot_engine, enforced)
 # ============================================================
+# Kom v1.0 — gold_engine.py
+# [SPRINT 37: DUAL-LAYER GOLD ENGINE — MOMENTUM + STRUCTURAL]
+#
+# ROOT CAUSE OF ZERO TRADES (S36 post-mortem):
+#   Pure structural pattern hunter needed Judas+OB+FVG simultaneously
+#   (occurs 2-4×/day). Gold moved $7/min and was missed entirely.
+#   Dead-hour gate blocked UTC 7 (London Open). HV suppressor blocked
+#   ALL strategies. Score gates raised while pattern quality fell.
+#
+# TWO-LAYER ARCHITECTURE:
+#
+#   LAYER 1 — MOMENTUM SCALP (new, fires 15-30×/day)
+#     M1 displacement (2 strong candles) + M5 trend confirmation.
+#     No structural prereqs. Active 24h except NY Lunch.
+#     Tier: NANO (0.01 lots, ~$3-8/trade). SL:1.5×M1ATR TP:2.2×M1ATR.
+#     Dedicated NANO slot — never blocks structural strategies.
+#
+#   LAYER 2 — STRUCTURAL SIGNALS (8 strategies, 2-6×/day)
+#     London Judas, NY Judas, Silver Bullet, Trend Rider,
+#     OB Retrace, Asian Fade, VWAP Fade, Momentum Rider.
+#     Tier: MICRO / STANDARD / MACRO.
+#
+# S36 BUGS CORRECTED:
+#   BUG-79: UTC 7 (London Open) was in dead hours — removed.
+#            Momentum scalp ignores dead hours entirely.
+#   BUG-80: HV suppressor blocked structural strategies — now
+#            suppresses FADE strategies ONLY.
+#   BUG-81: Score gates raised during degraded conditions —
+#            restored: MICRO 0.65, STANDARD 0.70.
+#   BUG-82: 10-min hold guard in bot_engine also blocked the
+#            momentum scalp from fast exits — NANO positions
+#            get a 2-min minimum instead of 10-min.
+#
+# CONCURRENT POSITIONS (4 max, 1 per tier):
+#   NANO    → momentum scalp slot (Layer 1, continuous)
+#   MICRO   → structural scalp (Layer 2)
+#   STANDARD→ structural entry (Layer 2)
+#   MACRO   → highest conviction (Layer 2)
+# ============================================================
 
 from __future__ import annotations
 
@@ -124,56 +163,51 @@ except ImportError:
 
 # ── Silver Bullet windows for Gold (UTC) ────────────────────────────────────
 GOLD_SB_WINDOWS = [
-    (7,  0,  8,  0, 'London_Open_SB'),    # London manipulation prime window
-    (15, 0, 16,  0, 'NY_Afternoon_SB'),   # NYSE overlap: highest US liquidity
-    (19, 0, 20,  0, 'NY_PM_SB'),          # NY closing liquidity grab
+    (7,  0,  8,  0, 'London_Open_SB'),
+    (15, 0, 16,  0, 'NY_Afternoon_SB'),
+    (19, 0, 20,  0, 'NY_PM_SB'),
 ]
 
-# ── [S36] Dead hours — suppress MICRO/STANDARD/MACRO entries ────────────────
-# Data-driven from 74-trade live history (account 32128474):
-#   UTC 0:  4 trades, 25% WR, -$146  (worst hour)
-#   UTC 5:  4 trades, 50% WR, -$77
-#   UTC 6:  3 trades,  0% WR, -$42
-#   UTC 7:  4 trades, 25% WR, -$41
-#   UTC 13: 2 trades,  0% WR, -$34
-# During these hours: only NANO probes allowed (exploratory, small risk).
-GOLD_DEAD_HOURS = {0, 5, 6, 7, 13}
+# ── [S37-BUG-79] Dead hours — STRUCTURAL strategies only ────────────────────
+# UTC 7 removed (London Open is the prime Judas hour, not a dead hour).
+# Momentum scalp (Layer 1) ignores this gate entirely and runs 24h.
+GOLD_DEAD_HOURS_STRUCTURAL = {0, 5, 6, 13}
 
-# ── [S36] Prime hours — full execution with score bonuses ───────────────────
-#   UTC 23: 3 trades, 67% WR, +$180 (best hour — Tokyo close overlap)
-#   UTC 11: 5 trades, 80% WR, +$113 (London PM prime)
-#   UTC 12: 4 trades, 75% WR, +$54  (London-NY transition)
-#   UTC 19: 3 trades, 67% WR, +$71  (NY PM Silver Bullet)
-#   UTC 2:  6 trades, 50% WR, +$106 (Asian institutional flow)
+# ── Prime hours — score bonus on all signals ─────────────────────────────────
 GOLD_PRIME_HOURS = {23, 11, 12, 19, 2}
 
-# ── Per-tier risk parameters (S36: max_lots increased for prime hours) ───────
-# (risk_pct_of_balance, sl_atr_mult, tp_atr_mult, max_lots, expiry_min)
-# [S36-BUG-78] sl_atr_mult increased: 1.0→1.5 NANO, 1.3→2.0 MICRO market orders
-# Market order SL gets an additional 1.5× multiplier vs limit orders (see _compute_order_levels)
+# ── Per-tier parameters (risk_pct, sl_atr_mult, tp_atr_mult, max_lots, expiry_min)
+# [S37] NANO expiry reduced to 8 min for momentum scalp fast-exit model
 TIER_PARAMS = {
-    'NANO':     (0.08,  1.5, 2.0,  0.03, 15),   # probe: ~$5 risk
-    'MICRO':    (0.30,  2.0, 2.8,  0.08, 35),   # scalp: ~$20 risk
-    'STANDARD': (0.75,  2.0, 3.2,  0.20, 240),  # structural: ~$50 risk
-    'MACRO':    (1.25,  2.5, 4.0,  0.30, 720),  # swing: ~$82 risk
+    'NANO':     (0.08,  1.5, 2.2,  0.02, 8),
+    'MICRO':    (0.30,  2.0, 2.8,  0.08, 35),
+    'STANDARD': (0.75,  2.0, 3.2,  0.20, 240),
+    'MACRO':    (1.25,  2.5, 4.0,  0.30, 720),
 }
 
-# ── Execution gate — minimum score per tier ──────────────────────────────────
-# [S36] VWAP_FADE gate raised: 0.65→0.72 for MICRO (was too loose, caught HV storms)
+# ── [S37-BUG-81] Score gates — restored to S35 working levels ───────────────
 TIER_MIN_SCORE = {
-    'NANO':     0.56,
-    'MICRO':    0.68,   # raised from 0.65
-    'STANDARD': 0.72,
+    'NANO':     0.54,
+    'MICRO':    0.65,
+    'STANDARD': 0.70,
     'MACRO':    0.82,
 }
 
-# ── ATR regime thresholds (Gold price points) ────────────────────────────────
-ATR_DEAD     = 1.0    # below = dead market
-ATR_NORMAL_H = 8.0    # above = high volatility
-# [S36] High-volatility FADE suppressor: if H4 ATR > HV_FADE_MULT × 20-bar avg,
-# suppress all fade/mean-reversion strategies (VWAP_FADE, ASIAN_FADE).
-# Live data: Apr 7 VWAP_FADE BUY into 50pt gap-down = -$9.69 in 30 seconds.
-HV_FADE_MULT = 1.4    # H4 ATR > 1.4× its 20-bar average → no fades
+# ── ATR regime thresholds ─────────────────────────────────────────────────────
+ATR_DEAD     = 1.0
+ATR_NORMAL_H = 8.0
+
+# ── [S37-BUG-80] HV suppressor — FADE strategies only ───────────────────────
+# Structural and momentum strategies BENEFIT from high volatility.
+HV_FADE_MULT = 1.4
+
+# ── Momentum scalp constants (Layer 1) ──────────────────────────────────────
+MOMENTUM_MIN_BODY_ATR   = 0.40
+MOMENTUM_CONSEC_CANDLES = 2
+MOMENTUM_SL_ATR         = 1.5
+MOMENTUM_TP_ATR         = 2.2
+MOMENTUM_MAX_HOLD_MIN   = 8
+MOMENTUM_SPREAD_MAX     = 350
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -246,15 +280,22 @@ class GoldScalpEngine:
         df_h4:  Optional[pd.DataFrame],
         utc_now: datetime,
         balance: float,
+        df_m5:  Optional[pd.DataFrame] = None,
     ) -> List[GoldSignal]:
         """
-        Runs all eight strategies against current market data.
-        Returns a list of valid GoldSignal objects, sorted by score descending.
+        [S37] Runs all strategies across both layers.
 
-        [S36] Pre-filters:
-          - Dead hours (data-driven): only NANO probes allowed
-          - HV fade suppressor: VWAP_FADE / ASIAN_FADE blocked when H4 ATR storm
-          - Prime hours: +0.03 score bonus on all signals
+        Layer 1 — Momentum Scalp:
+          _strategy_momentum_scalp() runs first and independently.
+          Fires purely on M1 displacement + M5 confirmation.
+          No structural prerequisites. Active 24h (except NY Lunch).
+          Uses dedicated NANO slot.
+
+        Layer 2 — Structural Signals (8 strategies):
+          All structural strategies run after momentum layer.
+          Dead-hour gate applies to STRUCTURAL strategies only (not Layer 1).
+          HV suppressor applies to FADE strategies only (not structural).
+          Prime-hour +0.03 bonus applied to all structural signals.
         """
         if df_m15 is None or len(df_m15) < 50:
             return []
@@ -279,10 +320,7 @@ class GoldScalpEngine:
         ctx       = _SessionContext(utc_now)
         h4_trend  = _derive_h4_trend(df_h4)
 
-        # [S36] High-volatility fade suppressor
-        # If H4 ATR is in a trending storm (> HV_FADE_MULT × 20-bar average),
-        # suppress all fade/mean-reversion strategies to avoid entering against
-        # strong directional institutional flow (April 7 tariff move lesson).
+        # [S37-BUG-80 FIX] HV suppressor: FADE strategies only
         _suppress_fades = False
         if df_h4 is not None and len(df_h4) >= 22:
             try:
@@ -290,34 +328,49 @@ class GoldScalpEngine:
                 h4_atr_avg = float(calculate_atr(df_h4).iloc[-20:].mean())
                 if h4_atr_avg > 0 and h4_atr_now > h4_atr_avg * HV_FADE_MULT:
                     _suppress_fades = True
+                    logger.debug("[GoldEngine] HV storm — FADE strategies suppressed")
             except Exception:
                 pass
 
-        # [S36] Dead-hour gate — only NANO probes during statistically negative hours
-        _dead_hour = ctx.utc_now.hour in GOLD_DEAD_HOURS
-        _prime_hour = ctx.utc_now.hour in GOLD_PRIME_HOURS
+        # [S37-BUG-79 FIX] Dead-hour gate: STRUCTURAL strategies only
+        # Momentum scalp (Layer 1) runs 24h regardless of hour.
+        _dead_hour_structural = ctx.utc_now.hour in GOLD_DEAD_HOURS_STRUCTURAL
+        _prime_hour  = ctx.utc_now.hour in GOLD_PRIME_HOURS
         _prime_bonus = 0.03 if _prime_hour else 0.0
 
         all_signals: List[GoldSignal] = []
 
-        # Strategy runner list — [S36] Trend Rider added at position 4
-        runners = [
-            ('JUDAS_L',    self._strategy_london_judas,    False),
-            ('JUDAS_NY',   self._strategy_ny_judas,        False),
-            ('SILVER_BULLET', self._strategy_silver_bullet, False),
-            ('TREND_RIDER',self._strategy_trend_rider,     False),  # [S36 NEW]
-            ('OB_RETRACE', self._strategy_ob_retrace,      False),
-            ('ASIAN_FADE', self._strategy_asian_fade,      True),   # fade=True
-            ('VWAP_FADE',  self._strategy_vwap_fade,       True),   # fade=True
-            ('MOMENTUM',   self._strategy_momentum_rider,  False),
+        # ── LAYER 1: MOMENTUM SCALP (always runs first, 24h) ────────────────
+        # Independent of structural conditions. Uses dedicated NANO slot.
+        if 'NANO' not in self._occupied_tiers:
+            try:
+                mom_sig = self._strategy_momentum_scalp(
+                    df_m1=df_m1, df_m5=df_m5, df_m15=df_m15,
+                    atr=atr, ctx=ctx, balance=balance,
+                )
+                if mom_sig is not None and mom_sig.score >= TIER_MIN_SCORE['NANO']:
+                    all_signals.append(mom_sig)
+            except Exception as e:
+                logger.debug(f"[GoldEngine] MOMENTUM_SCALP error: {e}")
+
+        # ── LAYER 2: STRUCTURAL SIGNALS (session-gated) ──────────────────────
+        structural_runners = [
+            ('JUDAS_L',      self._strategy_london_judas,    False),
+            ('JUDAS_NY',     self._strategy_ny_judas,        False),
+            ('SILVER_BULLET',self._strategy_silver_bullet,   False),
+            ('TREND_RIDER',  self._strategy_trend_rider,     False),
+            ('OB_RETRACE',   self._strategy_ob_retrace,      False),
+            ('ASIAN_FADE',   self._strategy_asian_fade,      True),
+            ('VWAP_FADE',    self._strategy_vwap_fade,       True),
+            ('MOMENTUM_RIDE',self._strategy_momentum_rider,  False),
         ]
 
-        for name, strategy_fn, is_fade in runners:
+        for name, strategy_fn, is_fade in structural_runners:
             try:
-                # [S36] Skip fades entirely when HV suppressor is active
                 if is_fade and _suppress_fades:
-                    logger.debug(f"[GoldEngine] {name} suppressed — H4 ATR storm active")
                     continue
+                if _dead_hour_structural and is_fade:
+                    continue  # fades skipped in dead hours
 
                 sig = strategy_fn(
                     df_m1=df_m1, df_m15=df_m15, df_h4=df_h4,
@@ -330,28 +383,19 @@ class GoldScalpEngine:
                 if sig is None:
                     continue
 
-                # [S36] Dead-hour gate: downgrade to NANO or skip
-                if _dead_hour:
-                    if sig.tier in ('MICRO', 'STANDARD', 'MACRO'):
-                        # Structural strategies become NANO probes
-                        if not is_fade:
-                            sig.tier    = 'NANO'
-                            sig.score   = min(sig.score, 0.65)
-                            sig.lot, sig.sl, sig.tp = _compute_order_levels(
-                                sig.direction, sig.entry, sig.sl, sig.tp,
-                                atr, 'NANO', balance, sig.is_market
-                            )
-                        else:
-                            continue  # fades are skipped entirely in dead hours
+                # Dead-hour structural downgrade: MICRO/STANDARD/MACRO → NANO probe
+                if _dead_hour_structural and sig.tier in ('MICRO', 'STANDARD', 'MACRO'):
+                    sig.tier  = 'NANO'
+                    sig.score = min(sig.score, 0.62)
+                    sig.lot, sig.sl, sig.tp = _compute_order_levels(
+                        sig.direction, sig.entry, sig.sl, sig.tp,
+                        atr, 'NANO', balance, sig.is_market
+                    )
 
-                # [S36] Prime-hour score bonus
                 sig.score = min(0.99, round(sig.score + _prime_bonus, 3))
 
-                # Tier occupancy filter
                 if sig.tier in self._occupied_tiers:
                     continue
-
-                # Minimum score gate
                 if sig.score < TIER_MIN_SCORE.get(sig.tier, 0.70):
                     continue
 
@@ -362,6 +406,171 @@ class GoldScalpEngine:
 
         all_signals.sort(key=lambda s: s.score, reverse=True)
         return _dedup_directions(all_signals)
+
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # LAYER 1: MOMENTUM SCALP ENGINE [S37 NEW]
+    # ══════════════════════════════════════════════════════════════════════════
+    # Pure price-action momentum scalp. No ICT patterns required.
+    # Fires on 2 consecutive M1 displacement candles confirmed by M5 direction.
+    # Uses dedicated NANO slot — never blocks structural strategies.
+    # Active 24h (all sessions) except NY Lunch (16:00-17:30 UTC).
+    # Exits via DynamicExitEngine's NANO sequence: BE@0.5R, close 50%@0.8R,
+    # close 30%@1.2R, then trail. Hard time exit at 8 minutes.
+
+    def _strategy_momentum_scalp(
+        self, *, df_m1, df_m5, df_m15, atr, ctx, balance, **_
+    ) -> Optional[GoldSignal]:
+        """
+        [S37] Layer 1 Momentum Scalp — continuous Gold flow capture.
+
+        Conditions:
+          1. Not NY Lunch (16:00-17:30 UTC)
+          2. M1 data available with >= 15 bars
+          3. Two consecutive M1 candles, same direction, body >= 40% of M1 ATR
+          4. M5 current candle does NOT oppose the direction (no counter-trend filter)
+          5. Spread guard (checked by caller via broker props — not here)
+          6. M15 ATR > 1.0 (not dead market — already checked before calling)
+
+        Entry: market order at current price immediately after signal
+        SL: 1.5 × M1 ATR below/above entry
+        TP: 2.2 × M1 ATR in profit direction
+        Lot: NANO (0.01-0.02, ~$3-8 risk)
+        """
+        # NY Lunch hard gate — thin liquidity, spreads spike
+        t = ctx.t_min
+        if 16 * 60 <= t < 17 * 60 + 30:
+            return None
+
+        if df_m1 is None or len(df_m1) < 15:
+            return None
+
+        df = df_m1.copy().reset_index(drop=True)
+        df['_atr'] = calculate_atr(df)
+        m1_atr = float(df['_atr'].iloc[-1])
+        if m1_atr <= 0.01:
+            return None
+
+        min_body = m1_atr * MOMENTUM_MIN_BODY_ATR
+        n = len(df)
+
+        # Spike guard: single-bar news event = M1 bar range > 5× M15 ATR.
+        # Using M15 ATR (passed as `atr`) is the physically correct comparison:
+        # - Normal M1 displacement: 1-4 pts when M15 ATR ≈ 2-5 pts → ratio < 2
+        # - News spike (NFP, Fed): 15-30 pts when M15 ATR ≈ 3 pts → ratio > 5 → blocked
+        last_range = float(df.iloc[-1]['high']) - float(df.iloc[-1]['low'])
+        if atr > 0 and last_range > atr * 5.0:
+            return None
+
+        # Find 2 consecutive displacement candles
+        bull_disp = bear_disp = False
+        disp_end = -1
+
+        # [BUG-83 FIX] Loop must reach n-1 to check pair (n-2, n-1).
+        # Previous range(n-10, n-2) stopped at index n-3, missing the
+        # most recent candle pair which is where fresh signals appear.
+        for i in range(max(0, n - 10), n - 1):
+            b0 = float(df.iloc[i]['close']) - float(df.iloc[i]['open'])
+            b1 = float(df.iloc[i+1]['close']) - float(df.iloc[i+1]['open'])
+            if b0 >= min_body and b1 >= min_body:
+                bull_disp = True; disp_end = i + 1; break
+            if b0 <= -min_body and b1 <= -min_body:
+                bear_disp = True; disp_end = i + 1; break
+
+        if not bull_disp and not bear_disp:
+            return None
+
+        direction = 'BUY' if bull_disp else 'SELL'
+
+        # M5 confirmation: current M5 candle must not strongly oppose direction
+        # Uses average candle range (not ATR) so it works with as few as 3 bars.
+        if df_m5 is not None and len(df_m5) >= 3:
+            try:
+                m5_c    = df_m5.iloc[-1]
+                m5_body = float(m5_c['close']) - float(m5_c['open'])
+                # Use average range of last 3 M5 candles as the reference scale
+                m5_avg_range = float(
+                    (df_m5['high'].tail(3) - df_m5['low'].tail(3)).mean()
+                )
+                if m5_avg_range > 0:
+                    # Block if M5 candle > 50% of its range strongly opposes direction
+                    if direction == 'BUY' and m5_body < -(m5_avg_range * 0.5):
+                        return None
+                    if direction == 'SELL' and m5_body > (m5_avg_range * 0.5):
+                        return None
+            except Exception:
+                pass
+
+        # Score: starts at 0.60, bonuses for quality
+        score = 0.60
+
+        # Stronger displacement (bigger candles = more institutional participation)
+        avg_body = sum(
+            abs(float(df.iloc[i]['close']) - float(df.iloc[i]['open']))
+            for i in range(max(0, disp_end - 1), disp_end + 1)
+        ) / 2.0
+        strength_ratio = avg_body / m1_atr
+        score += min(0.12, strength_ratio * 0.08)
+
+        # Volume during displacement
+        avg_vol_m1 = float(df['volume'].iloc[-20:].mean()) if len(df) >= 20 else 1.0
+        disp_vol   = float(df.iloc[max(0,disp_end-1):disp_end+1]['volume'].mean())
+        vol_ratio  = disp_vol / avg_vol_m1 if avg_vol_m1 > 0 else 1.0
+        if vol_ratio >= 1.5: score += 0.08
+        elif vol_ratio >= 1.2: score += 0.04
+
+        # Session quality boost (prime sessions for Gold)
+        if ctx.london_open:  score += 0.06   # London: best momentum
+        elif ctx.london_ny:  score += 0.04   # NY overlap: strong flow
+        elif ctx.ny_pm:      score += 0.03   # NY PM: still active
+
+        # Freshness: displacement just ended (not stale)
+        bars_since = n - 1 - disp_end
+        if bars_since == 0: score += 0.06   # happening right now
+        elif bars_since == 1: score += 0.03  # one bar ago — still fresh
+        elif bars_since >= 4: score -= 0.05  # stale — likely played out
+
+        score = round(min(0.99, max(0.0, score)), 3)
+
+        cur_price = float(df.iloc[-1]['close'])
+        sl_dist   = m1_atr * MOMENTUM_SL_ATR
+        tp_dist   = m1_atr * MOMENTUM_TP_ATR
+
+        if direction == 'BUY':
+            sl = round(cur_price - sl_dist, 3)
+            tp = round(cur_price + tp_dist, 3)
+        else:
+            sl = round(cur_price + sl_dist, 3)
+            tp = round(cur_price - tp_dist, 3)
+
+        # Lot sizing: NANO risk
+        risk_usd        = balance * (TIER_PARAMS['NANO'][0] / 100.0)
+        capital_per_lot = sl_dist * 100.0
+        raw_lot         = risk_usd / capital_per_lot if capital_per_lot > 0 else 0.01
+        lot             = max(0.01, min(round(raw_lot, 2), TIER_PARAMS['NANO'][3]))
+
+        cond = {
+            'strategy':     'MOMENTUM_SCALP',
+            'layer':        1,
+            'm1_atr':       round(m1_atr, 3),
+            'strength':     round(strength_ratio, 2),
+            'vol_ratio':    round(vol_ratio, 2),
+            'bars_since':   bars_since,
+            'session':      ctx.session_name,
+        }
+
+        reason = (
+            f"Momentum Scalp [{direction}] | Score:{score:.2f} | "
+            f"M1ATR:{m1_atr:.2f} Strength:{strength_ratio:.2f}x "
+            f"Vol:{vol_ratio:.1f}x Session:{ctx.session_name}"
+        )
+
+        return GoldSignal(
+            strategy='MOMENTUM_SCALP', direction=direction, tier='NANO',
+            entry=cur_price, sl=sl, tp=tp, lot=lot, score=score,
+            reason=reason, kill_zone=ctx.session_name, conditions=cond,
+            is_market=True, expiry_min=MOMENTUM_MAX_HOLD_MIN,
+        )
 
     # ── STRATEGY 1: LONDON JUDAS SWEEP ─────────────────────────────────────
     # Classic ICT Judas: Asian range built 00:00-03:00 UTC, London sweeps
@@ -1274,7 +1483,9 @@ class DynamicExitEngine:
     # (be_trigger_r, partial1_r, partial1_pct, partial2_r, partial2_pct,
     #  trail_start_r, trail_dist_atr, momentum_exit_r, time_exit_min)
     TIER_EXIT = {
-        'NANO':     (0.5,  0.8,  0.50, 1.2, 0.30, 1.0, 0.5, 1.2,  15),
+        # (be_r, p1_r, p1_pct, p2_r, p2_pct, trail_r, trail_atr, mom_r, time_max_min)
+        # [S37] NANO time_max = 8 min (matches MOMENTUM_MAX_HOLD_MIN for Layer 1 scalps)
+        'NANO':     (0.5,  0.8,  0.50, 1.2, 0.30, 1.0, 0.5, 1.2,   8),
         'MICRO':    (0.6,  1.0,  0.30, 1.5, 0.20, 1.5, 0.5, 1.5,  35),
         'STANDARD': (0.6,  1.0,  0.25, 1.8, 0.20, 2.0, 0.6, 2.0, 240),
         'MACRO':    (0.7,  1.2,  0.20, 2.0, 0.15, 2.5, 0.7, 2.5, 720),

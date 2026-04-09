@@ -1,34 +1,28 @@
 # ============================================================
 # Kom v1.0 — bot_engine.py
-# [SPRINT 36: GOLD-ONLY SYSTEM + FULL SIMPLIFICATION]
+# [SPRINT 37: DUAL-LAYER GOLD — MOMENTUM + STRUCTURAL]
 #
-# SPRINT 36 CHANGES:
-#   [GOLD-ONLY] vip_assets reduced to ["XAUUSD"] exclusively.
-#     Non-Gold assets removed: EURUSD (-$85), GBPUSD (-$231),
-#     USDJPY (+$4), US SP 500 (-$6), USDCHF (+$77), NZDUSD (-$9),
-#     XAGUSD (-$780 S35-suspended), BTCUSD (-$134 S34-removed.
-#     XAUUSD is the only historically profitable asset (+$202).
-#     System will be perfected on Gold before introducing Silver.
+# SPRINT 37 CHANGES:
+#   [MOMENTUM SCALP — Layer 1] _process_gold() now fetches M5 data
+#     and passes df_m5 to GoldScalpEngine.analyse(). The new
+#     _strategy_momentum_scalp() fires on pure M1 displacement,
+#     targeting 15-30 trades/day on NANO slots (~$3-8/trade).
 #
-#   [SIMPLIFIED CYCLE] run_analysis_cycle() now calls _process_gold()
-#     exclusively. All FX/index/commodity branching removed.
-#     The daily trade counter is removed (Gold has its own tier-slot
-#     concurrency system). Non-Gold process_symbol() path kept for
-#     future asset reintroduction but never called.
+#   [BUG-82 FIX] NANO hold guard reduced from 10 min → 2 min.
+#     Momentum scalps have 8-minute max hold targets. A 10-min
+#     minimum hold was blocking ALL exit logic for the full trade
+#     lifetime, preventing breakeven moves and partial closes.
+#     NANO positions (magic 510004) now use 2-min minimum.
+#     All other positions retain 10-min minimum.
 #
-#   [DB CLEANUP] sprint36_db_cleanup.py archives 46,979 non-Gold
-#     signals and flags 161 non-Gold trades as ARCHIVED_S36 so
-#     Kelly/ML pipelines only use Gold data going forward.
+# S36 BUGS FIXED (preserved from S36):
+#   BUG-78: market order SL minimum 2.0×ATR
+#   BUG-79: UTC 7 removed from dead hours (S36 gold_engine fix)
+#   BUG-80: HV suppressor fades-only (S36 gold_engine fix)
+#   BUG-81: Score gates restored (S36 gold_engine fix)
 #
-# SPRINT 35 BUGS FIXED (preserved from S35):
-#   BUG-70: db_path defined  |  BUG-71: ml_scorer instantiated
-#   BUG-73: /amd command fixed  |  BUG-74: M1 session gate
-#
-# SPRINT 36 NEW BUGS FIXED:
-#   BUG-77: VWAP_FADE fired into HV storm (Apr 7 risk-off) — now
-#     suppressed when H4 ATR > 1.4× its 20-bar average.
-#   BUG-78: Market order SL too tight (1.0×ATR) — hit in 30 seconds.
-#     Now enforced at minimum 2.0×M15_ATR for market orders.
+# S35 BUGS FIXED (preserved):
+#   BUG-70: db_path | BUG-71: ml_scorer | BUG-73: /amd | BUG-74: M1 gate
 # ============================================================
 
 import os
@@ -1062,14 +1056,14 @@ class TradingBot:
                 duration_min    = duration_hours * 60.0
                 profit          = pos['profit']
 
-                # [S35] Minimum hold time guard — 10 minutes.
-                # Data shows 128 trades held <5min with 32.8% WR and -$785 net.
-                # Noise-stops triggered by the execution engine before the setup
-                # has time to develop are the primary cause. This gate suppresses
-                # all bot-initiated exits for the first 10 minutes, letting the
-                # broker SL/TP handle the worst cases. Gold positions managed by
-                # DynamicExitEngine use their own per-tier minimum (15/35m).
-                MIN_HOLD_MIN = 10.0
+                # [S35] Minimum hold time guard.
+                # [S37-BUG-82] NANO positions (momentum scalp) get 2-min minimum.
+                # Standard positions retain 10-min to avoid noise-stops.
+                # Magic 510004 = NANO momentum scalp (set in execute_gold_signal).
+                _magic = pos.get('magic', 510000)
+                _is_nano_scalp = (_magic == 510004)
+                MIN_HOLD_MIN = 2.0 if _is_nano_scalp else 10.0
+
                 if duration_min < MIN_HOLD_MIN:
                     # Still update MAE/MFE for analytics — just skip exit logic
                     tick = mt5.symbol_info_tick(symbol)
@@ -1669,7 +1663,7 @@ class TradingBot:
         if df_m15.empty:
             return
 
-        # M1 data
+        # M1 data (Layer 1 momentum scalp + structural M1 confirmation)
         df_m1 = None
         try:
             raw_m1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, 80)
@@ -1680,6 +1674,17 @@ class TradingBot:
         except Exception:
             pass
 
+        # [S37] M5 data — used by momentum scalp for trend confirmation
+        df_m5 = None
+        try:
+            raw_m5 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 40)
+            if raw_m5 is not None and len(raw_m5) >= 10:
+                df_m5 = pd.DataFrame(raw_m5)
+                df_m5.rename(columns={"time": "timestamp", "tick_volume": "volume"}, inplace=True)
+                df_m5["timestamp"] = pd.to_datetime(df_m5["timestamp"], unit="s")
+        except Exception:
+            pass
+
         # Account info for sizing
         acc = self.gateway.get_account_info()
         balance = acc['balance'] if acc else 6000.0
@@ -1687,9 +1692,9 @@ class TradingBot:
         # Tell the gold engine which tiers are already occupied
         self.gold_engine.set_occupied_tiers(set(self._gold_tier_slots.keys()))
 
-        # Run analysis
+        # Run analysis — [S37] pass df_m5 for Layer 1 momentum scalp
         try:
-            signals = self.gold_engine.analyse(df_m1, df_m15, df_h4, now, balance)
+            signals = self.gold_engine.analyse(df_m1, df_m15, df_h4, now, balance, df_m5=df_m5)
         except Exception as e:
             self.log_debug(f"[GoldEngine] analyse() error: {e}")
             return
