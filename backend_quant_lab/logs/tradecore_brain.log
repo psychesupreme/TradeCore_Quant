@@ -197,3 +197,15 @@
 2026-04-09 13:03:19 [INFO] ⚡ Gold MARKET [NANO]: XAUUSD BUY #8609027996 | Lot:0.02 Entry:4731.62 SL:4728.79 TP:4735.76 Score:0.66 [MOMENTUM_SCALP]
 2026-04-09 13:05:07 [DEBUG] [S35] Gold [NANO] exit engine cleaned: ticket=8609027996
 2026-04-09 13:05:07 [INFO] 🔴 Trade Closed: #8609027996 XAUUSD | P&L: $-6.04
+2026-04-09 13:39:37 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-09 13:42:09 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-09 13:44:04 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-09 13:45:34 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-09 13:48:39 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-09 13:50:34 [INFO] 🥇 Gold [NANO] MOMENTUM_SCALP: BUY Score:0.72 Lot:0.02 SL:4741.89 TP:4749.56 [London_PM]
+2026-04-09 13:50:34 [INFO] ⚡ Gold MARKET [NANO]: XAUUSD BUY #8609064599 | Lot:0.02 Entry:4745.00 SL:4741.88 TP:4749.56 Score:0.72 [MOMENTUM_SCALP]
+2026-04-09 13:53:39 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-09 13:55:33 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
+2026-04-09 13:58:47 [DEBUG] [S35] Gold [NANO] exit engine cleaned: ticket=8609064599
+2026-04-09 13:58:47 [INFO] 🔴 Trade Closed: #8609064599 XAUUSD | P&L: $-6.54
+2026-04-09 13:58:50 [DEBUG] [XAUUSD] Gold engine: no signals this cycle.
