@@ -1,16 +1,166 @@
-# --- Python / Backend ---
+# ================================================================
+# Kom v1.0 / TradeCore Quant — .gitignore
+# Last updated: Sprint 37
+#
+# Rule of thumb: if it contains live trade data, credentials,
+# account information, model weights, or is generated at runtime
+# — it does NOT go to version control.
+# ================================================================
+
+
+# ── Python runtime ────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+
+
+# ── Virtual environments ──────────────────────────────────────
 venv/
+.venv/
+env/
+.env/
+ENV/
+
+
+# ── Environment & credentials (NEVER commit these) ───────────
 .env
-.DS_Store
+.env.*
+*.env
+secrets.json
+credentials.json
+config_local.py
+telegram_token.txt
+*.key
+*.pem
+*.p12
+*.pfx
 
-# --- Database (Don't upload the live record) ---
+
+# ── Live trading database ─────────────────────────────────────
+# Contains all trade history, account snapshots, signals, P&L
 *.db
+*.db-wal
+*.db-shm
+*.sqlite
 *.sqlite3
-*.tradecore.db
-*.tmp.driveupload
-*.logs
-*.Media
+tradecore.db
+tradecore_*.db
 
+
+# ── Bot runtime state (contains live account data) ───────────
+logs/
+*_state.json
+tradecore_state.json
+*.state.json
+
+
+# ── News & market data cache ──────────────────────────────────
+news_cache.json
+*_cache.json
+*.cache
+market_data/
+tick_data/
+
+
+# ── ML pipeline artifacts ─────────────────────────────────────
+# Training matrices contain historical P&L and account data
+training_matrix*.csv
+training_data/
+*.pkl
+*.pickle
+*.joblib
+*.model
+*.h5
+xgboost_*.json
+model_*.json
+model_*.bin
+ml_models/
+models/
+
+
+# ── Media, screenshots, charts ───────────────────────────────
+# Charts and screenshots may contain account balances
+Media/
+media/
+screenshots/
+charts/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.webp
+
+
+# ── Log files ────────────────────────────────────────────────
+# Logs contain order flow, IPs, Telegram IDs, broker data
+*.log
+*.logs
+logs/
+tradecore_brain.log
+tradecore_*.log
+
+
+# ── Temporary & OS files ──────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+
+# ── Dart / Flutter (TradeCore Quant frontend) ────────────────
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+build/
+*.g.dart
+*.freezed.dart
+coverage/
+.pub-cache/
+.pub/
+
+
+# ── Node / package managers ───────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# ── Backups & sprint archives ────────────────────────────────
+*_backup.py
+*_s3*.py
+*_s3?.py
+*_sprint*.py
+bot_engine_s*.py
+gold_engine_s*.py
+sprint*_backup/
+
+
+# ── Report exports ────────────────────────────────────────────
+*.xlsx
+*.csv
+reports/
+exports/
