@@ -1,6 +1,6 @@
 # ============================================================
 # Kom v1.0 — bot_engine.py
-# [SPRINT 37: DUAL-LAYER GOLD — MOMENTUM + STRUCTURAL]
+# [SPRINT 38: CLEAN 3-LAYER M5/M15/M30 GOLD SCALPER]
 #
 # SPRINT 37 CHANGES:
 #   [MOMENTUM SCALP — Layer 1] _process_gold() now fetches M5 data
@@ -44,7 +44,7 @@ import math
 
 # [S35] Gold engine — dedicated XAUUSD signal generator and exit manager
 try:
-    from gold_engine import GoldScalpEngine, DynamicExitEngine, TIER_PARAMS as GOLD_TIER_PARAMS
+    from gold_engine import GoldScalpEngine, DynamicExitEngine, ProfitController, LAYER_PARAMS as GOLD_TIER_PARAMS
     _GOLD_ENGINE_OK = True
 except ImportError as _ge_err:
     _GOLD_ENGINE_OK = False
@@ -176,9 +176,11 @@ class TradingBot:
         if _GOLD_ENGINE_OK and GoldScalpEngine is not None:
             self.gold_engine  = GoldScalpEngine()
             self.exit_engine  = DynamicExitEngine()
+            self.profit_ctrl  = ProfitController()   # [S38] rolling P&L tracker
         else:
             self.gold_engine  = None
             self.exit_engine  = None
+            self.profit_ctrl  = None
 
         # [S35] Daily trade counter — gates non-Gold signals at MAX_DAILY_TRADES
         # Data shows no edge beyond ~8 trades/day; March 23 had 51 trades (-$203 net)
@@ -1343,6 +1345,11 @@ class TradingBot:
                         f"[S35] Gold [{tier}] exit engine cleaned: ticket={db_ticket}"
                     )
 
+                # [S38] ProfitController: update rolling window
+                if 'XAU' in db_trade.get('symbol', '') and self.profit_ctrl is not None:
+                    self.profit_ctrl.record_close(net_profit)
+                    self.log_debug(f'[ProfitCtrl] {self.profit_ctrl.status()}')
+
                 self.log_info(f"{icon} Trade Closed: #{db_ticket} {db_trade['symbol']} | P&L: ${net_profit:+.2f}")
                 self.async_alert(f"{icon} **Trade Closed — {outcome}**\n{db_trade['symbol']} | P&L: ${net_profit:+.2f}")
         except Exception as _ce:
@@ -1523,40 +1530,17 @@ class TradingBot:
         self.market_regime, self.current_var = self.evaluate_risk_metrics(current_positions)
 
         markov = self.quant_engine.markov_regime()
+        # [S38] Markov Gate: HALT only blocks FX/indices, NOT Gold.
+        # Gold benefits from bear/high-vol regimes (short Gold = profit).
+        # Log the gate but never halt XAUUSD-only execution.
         if markov.get('trading_gate') == 'HALT':
             if datetime.utcnow().second < 5:
                 p_bear = markov.get('p_bear_next', 0)
                 p_hv   = markov.get('p_high_vol_next', 0)
-                self.log_info(f"🔴 Markov Gate HALT: P(BEAR)={p_bear:.0%} P(HIGH_VOL)={p_hv:.0%}. No new positions.")
+                self.log_debug(f"Markov Gate HALT logged (Gold execution continues): P(BEAR)={p_bear:.0%}")
 
-            p_bear = markov.get('p_bear_next', 0)
-            p_hv   = markov.get('p_high_vol_next', 0)
-            new_gate = "HALT_BEAR" if p_bear > 0.65 else "HALT_HVOL" if p_hv > 0.50 else "HALT"
-            if new_gate != self._last_markov_gate:
-                self._last_markov_gate = new_gate
-                try:
-                    raw_orders = mt5.orders_get()
-                    if raw_orders:
-                        cancel_types = set()
-                        if "BEAR" in new_gate:
-                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_BUY_STOP}
-                        else:  
-                            cancel_types = {mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_SELL_LIMIT,
-                                            mt5.ORDER_TYPE_BUY_STOP,  mt5.ORDER_TYPE_SELL_STOP}
-                        cancelled = 0
-                        for order in raw_orders:
-                            if order.type in cancel_types:
-                                req = {"action": mt5.TRADE_ACTION_REMOVE, "order": order.ticket}
-                                with self.mt5_lock:
-                                    res = mt5.order_send(req)
-                                if res and res.retcode == mt5.TRADE_RETCODE_DONE:
-                                    self._pending_order_info.pop(order.ticket, None)
-                                    cancelled += 1
-                        if cancelled:
-                            self.log_info(f"🧹 Markov Cleanup: {cancelled} contra-regime limit(s) cancelled.")
-                except Exception:
-                    pass
-            return
+            # [S38] Markov HALT: log only, do not return — Gold system continues.
+            pass
         else:
             if self._last_markov_gate != "OK":
                 self._last_markov_gate = "OK"
@@ -1657,44 +1641,40 @@ class TradingBot:
         if spread > (4000 if _rollover else 1000):
             return
 
-        # Fetch data
-        df_m15 = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_M15)
-        df_h4  = self.gateway.get_market_data(symbol, timeframe=mt5.TIMEFRAME_H4)
-        if df_m15.empty:
+        # [S38] Fetch all required timeframes — three-layer scalper
+        def _tf(timeframe, n_bars):
+            try:
+                raw = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)
+                if raw is not None and len(raw) >= 10:
+                    df = pd.DataFrame(raw)
+                    df.rename(columns={"time":"timestamp","tick_volume":"volume"}, inplace=True)
+                    df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
+                    return df
+            except Exception:
+                pass
+            return None
+
+        df_m5  = _tf(mt5.TIMEFRAME_M5,  50)
+        df_m15 = _tf(mt5.TIMEFRAME_M15, 60)
+        df_m30 = _tf(mt5.TIMEFRAME_M30, 60)
+        df_h1  = _tf(mt5.TIMEFRAME_H1,  80)
+        df_m1  = _tf(mt5.TIMEFRAME_M1,  80)   # for exit engine momentum detection only
+
+        if df_m5 is None and df_m15 is None:
             return
 
-        # M1 data (Layer 1 momentum scalp + structural M1 confirmation)
-        df_m1 = None
-        try:
-            raw_m1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, 80)
-            if raw_m1 is not None and len(raw_m1) >= 20:
-                df_m1 = pd.DataFrame(raw_m1)
-                df_m1.rename(columns={"time": "timestamp", "tick_volume": "volume"}, inplace=True)
-                df_m1["timestamp"] = pd.to_datetime(df_m1["timestamp"], unit="s")
-        except Exception:
-            pass
-
-        # [S37] M5 data — used by momentum scalp for trend confirmation
-        df_m5 = None
-        try:
-            raw_m5 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 40)
-            if raw_m5 is not None and len(raw_m5) >= 10:
-                df_m5 = pd.DataFrame(raw_m5)
-                df_m5.rename(columns={"time": "timestamp", "tick_volume": "volume"}, inplace=True)
-                df_m5["timestamp"] = pd.to_datetime(df_m5["timestamp"], unit="s")
-        except Exception:
-            pass
-
-        # Account info for sizing
-        acc = self.gateway.get_account_info()
-        balance = acc['balance'] if acc else 6000.0
+        # Account info + ProfitController lot multiplier
+        acc       = self.gateway.get_account_info()
+        balance   = acc['balance'] if acc else 6000.0
+        _lot_mult = self.profit_ctrl.get_lot_multiplier() if self.profit_ctrl else 1.0
 
         # Tell the gold engine which tiers are already occupied
         self.gold_engine.set_occupied_tiers(set(self._gold_tier_slots.keys()))
 
-        # Run analysis — [S37] pass df_m5 for Layer 1 momentum scalp
+        # Run analysis — [S38] three-layer M5/M15/M30
         try:
-            signals = self.gold_engine.analyse(df_m1, df_m15, df_h4, now, balance, df_m5=df_m5)
+            signals = self.gold_engine.analyse(df_m5, df_m15, df_m30, df_h1, now, balance,
+                                                       lot_multiplier=_lot_mult)
         except Exception as e:
             self.log_debug(f"[GoldEngine] analyse() error: {e}")
             return
@@ -1877,7 +1857,9 @@ class TradingBot:
                         datetime.utcnow() - timedelta(minutes=12)
                     )
 
-                    # Register tier slot
+                    # [BUG-83 FIX S38] Mark tier slot on ORDER SEND (not on fill).
+                    # Pending limits occupy the slot immediately to prevent the
+                    # same signal firing again every 60s before the limit fills.
                     self._gold_tier_slots[sig.tier] = order_ticket
 
                     # Register with exit engine (market orders only — limits register on fill)
